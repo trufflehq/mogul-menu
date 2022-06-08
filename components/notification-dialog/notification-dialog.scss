@@ -1,0 +1,50 @@
+.c-browser-extension-notification-dialog {
+  .dialog {
+    // TODO add a background secondary css var
+    background-color: rgba(22, 31, 44, 1) !important;
+
+    > .top {
+      background-color: var(--primary-base) !important;
+      color: var(--primary-base-text);
+    }
+  }
+
+  .content {
+    > .transaction {
+      display: flex;
+      box-sizing: border-box;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(var(--bg-base-text-rgb-csv), 0.16);
+
+      > .info {
+        display: flex;
+        flex-direction: column;
+
+        > .name {
+          font-size: 14px;
+          line-height: 21px;
+          color: var(--bg-base-text);
+        }
+
+        > .date {
+          font-size: 12px;
+          line-height: 18px;
+          color: rgba(var(--bg-base-text-rgb-csv), 0.64);
+        }
+      }
+
+      > .score {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex:1;
+
+        > .amount {
+          margin-right: 6px;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+}

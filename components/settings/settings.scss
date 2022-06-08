@@ -1,0 +1,63 @@
+.c-browser-extension-settings {
+
+  color: var(--bg-base-text);
+
+  .settings-header {
+    font-weight: 600;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 12px 0;
+  }
+
+  .section {
+    padding: 12px 0;
+
+    .header {
+      text-transform: uppercase;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .label {
+      margin-bottom: 4px;
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+  }
+
+  .c-input {
+    .input, .input:hover, .input:focus {
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .c-toggle {
+    > .track {
+      background: rgba(255, 255, 255, 0.29);
+      border: none;
+    }
+
+    > .knob {
+      background: var(--bg-base-text);
+
+      > .icon {
+        display: none;
+      }
+    }
+
+    &.is-selected {
+      > .track {
+        background: var(--secondary-base);
+      }
+    }
+  }
+
+  
+}

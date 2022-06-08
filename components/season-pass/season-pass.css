@@ -1,0 +1,780 @@
+.c-browser-extension-season-pass {
+  margin-bottom: 36px;
+  color: white;
+}
+
+.c-browser-extension-season-pass > .top-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.c-browser-extension-season-pass > .top-info > .left {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: relative;
+  width: 100%;
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .account {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .level-progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 100%;
+  max-width: 200px;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding-left: 24px;
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .level-progress > .xp {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding-bottom: 4px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .level-progress > .progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(var(--primary-base-rgb-csv), 0.21);
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .level-progress > .progress-bar > .filler {
+  background-color: #75DB9E;
+  height: 100%;
+}
+
+.c-browser-extension-season-pass > .top-info > .left > .level-progress > .level {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+  padding-left: 0;
+}
+
+.c-browser-extension-season-pass > .top-info > .right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+  width: 100%;
+}
+
+.c-browser-extension-season-pass > .top-info > .right > .end-time {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  font-size: 24px;
+  line-height: 20px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  margin-bottom: 16px;
+}
+
+.c-browser-extension-season-pass > .top-info > .right > .end-time > .highlight {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  height: 100%;
+  margin-right: 4px;
+  color: var(--secondary-base);
+}
+
+.c-browser-extension-season-pass > .pages {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 28px;
+  background-color: #161f2c;
+  border-radius: 4px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 12px;
+}
+
+.c-browser-extension-season-pass > .pages > .days {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.c-browser-extension-season-pass > .pages > .button {
+  color: var(--inherit-base-text);
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.c-browser-extension-season-pass > .pages > .button.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: transparent;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .actions {
+  margin-bottom: 20px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .tier-info {
+  position: absolute;
+  pointer-events: none;
+  left: -16px;
+  right: -16px;
+  top: calc(16px + 32px + 12px);
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .tier-info > .tier {
+  color: var(--bg-base);
+  margin-bottom: calc(100px + 30px + 18px + 4px);
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--bg-base-text-20);
+  line-height: 28px;
+  padding: 0 28px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: column;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  grid-gap: 8px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level {
+  position: relative;
+  z-index: 2;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 16px 0;
+  border-radius: calc(12px * var(--border-radius-multiplier));
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level.is-locked {
+  opacity: 0.5;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level.is-current-level {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level > .number {
+  padding: 0 4px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  vertical-align: middle;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level > .reward {
+  margin-bottom: 8px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 100%;
+  height: 120px;
+  min-height: 120px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level > .reward.is-first-with-tier-name {
+  margin-top: 52px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level > .reward.has-tier-name {
+  margin-bottom: 60px;
+}
+
+.c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .levels > .level > .reward:last-child {
+  margin-bottom: 0;
+}
+
+.c-browser-extension-season-pass .actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+
+.c-browser-extension-season-pass .actions > .action {
+  margin-right: 16px;
+  color: var(--secondary-base);
+}
+
+.c-browser-extension-season-pass .actions > .action:last-child {
+  margin-right: 0;
+}
+
+.c-browser-extension-season-pass .actions > .action > .c-button {
+  font-size: 12px;
+  border-radius: calc(4px * var(--border-radius-multiplier));
+}
+
+.c-browser-extension-season-pass .actions > .action.purchase-premium {
+  color: var(--inherit-base);
+}
+
+.c-browser-extension-season-pass .actions > .action.purchase-premium > .c-button {
+  width: 100%;
+  color: var(--inherit-base);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 20px 16px;
+  background: linear-gradient(94.02deg, var(--secondary-base) 0%, var(--primary-base) 100%), var(--secondary-base);
+}
+
+.c-positioned-overlay > .content {
+  border-radius: 8px;
+}
+
+.c-reward-tooltip {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 200px;
+  height: 100%;
+  z-index: 2;
+  border-radius: 8px;
+  border: 1px solid #FFFFFF;
+  background: var(--bg-base-text);
+  /* This renders in a portal w/o selected css vars */
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.c-reward-tooltip > .title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 8px;
+  color: var(--bg-base);
+  font-weight: 600;
+  width: 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.c-reward-tooltip > .title > .thumbnail {
+  margin-right: 8px;
+}
+
+.c-reward-tooltip > .description {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 12px 12px 16px 12px;
+  font-weight: 500;
+  font-size: 14px;
+  background: var(--bg-base-text);
+  /* This renders in a portal w/o selected css vars */
+  height: 100%;
+  color: var(--bg-base);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.c-rewards-dialog > .c-dialog > .dialog > .top {
+  text-transform: uppercase;
+  background: var(--primary-base);
+  color: var(--primary-base-text);
+}
+
+.c-rewards-dialog > .c-sheet > .sheet > .inner > .top {
+  text-transform: uppercase;
+  background: var(--primary-base);
+  color: var(--primary-base-text);
+}
+
+.c-rewards-dialog_content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 16px 0 72px 0;
+  overflow: auto;
+}
+
+.c-rewards-dialog_content > .level-rewards {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.c-rewards-dialog_content > .level-rewards > .level {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 40px;
+  font-family: var(--header-font);
+  line-height: 57px;
+  padding: 32px 0;
+  text-transform: uppercase;
+}
+
+.c-rewards-dialog_content > .level-rewards > .level > .level-number {
+  margin: 0 12px;
+}
+
+.c-rewards-dialog_content > .level-rewards > .message {
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.c-rewards-dialog_content > .level-rewards > .rewards {
+  display: -ms-grid;
+  display: grid;
+  width: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-grid-columns: (100px)[auto-fit];
+      grid-template-columns: repeat(auto-fit, 100px);
+  grid-gap: 16px;
+}
+
+.c-transaction-history-dialog > .c-dialog > .dialog > .top {
+  background: var(--primary-base);
+  color: var(--primary-base-text);
+}
+
+.c-transaction-history-dialog > .c-sheet > .sheet > .inner > .top {
+  background: var(--primary-base);
+  color: var(--primary-base-text);
+}
+
+.c-transaction-history_content {
+  min-height: 400px;
+  padding: 0px 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.c-transaction-history_content > .empty {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 24px;
+  line-height: 40px;
+  font-weight: 700;
+}
+
+.c-transaction-history_content > .transaction {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 16px 0;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-bottom: 1px solid var(--bg-base-text-20);
+}
+
+.c-transaction-history_content > .transaction > .action {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.c-transaction-history_content > .transaction > .action > .time {
+  font-family: var(--body-font);
+  color: var(--inherit-base-text-60);
+  line-height: 1.23em;
+  letter-spacing: 0.37px;
+}
+
+.c-transaction-history_content > .transaction > .xp {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: var(--primary-base);
+  padding-right: 8px;
+}
+
+.c-reward {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 16px 0;
+  border-radius: 4px;
+  z-index: 2;
+  gap: 12px;
+}
+
+.c-reward.has-tooltip {
+  cursor: pointer;
+}
+
+.c-reward.has-tooltip:not(.is-selected):hover {
+  background-color: rgba(var(--secondary-base-rgb-csv), 0.35);
+}
+
+.c-reward > .inner {
+  position: relative;
+  z-index: 2;
+}
+
+.c-reward > .inner > .image {
+  margin-bottom: 8px;
+}
+
+.c-reward > .inner > .image > img {
+  width: 56px;
+  height: 56px;
+  display: block;
+  margin: auto;
+}
+
+.c-reward > .inner > .name {
+  font-weight: 600;
+  text-align: center;
+  font-size: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.c-reward .status-icon {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  z-index: 3;
+  background: var(--bg-base);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.c-reward .status-icon.locked {
+  border: 1px solid #EBC564;
+}
+
+.c-reward .status-icon.unlocked {
+  border: 1px solid #75DB9E;
+}
+
+.c-reward.free {
+  border: 1px solid var(--primary-base);
+  background-color: transparent;
+}
+
+.c-reward.is-selected {
+  background: var(--bg-base);
+}
+
+.c-locked-reward-item-dialog .item-name {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 8px;
+}
+
+.c-locked-reward-item-dialog .item-name > .status-icon {
+  background: var(--bg-base);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.c-locked-reward-item-dialog .item-name > .status-icon.locked {
+  border: 1px solid #EBC564;
+}
+
+.c-locked-reward-item-dialog .item-name > .status-icon.unlocked {
+  border: 1px solid #75DB9E;
+}
+
+.c-locked-reward-item-dialog .value-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 5px;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .backdrop {
+  opacity: 40% !important;
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+  background-color: #000000 !important;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog {
+  background-color: var(--bg-mod-inverse-5) !important;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .top {
+  border-bottom: none !important;
+  background: var(--highlight-gradient);
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .top > .inner > .title {
+  font-weight: 600;
+  color: var(--bg-base);
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .top > .inner > .top-right {
+  margin-right: 12px;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .content {
+  padding-bottom: 16px !important;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .actions {
+  gap: 12px;
+}
+
+.c-multiple-rewards-dialog .c-dialog > .dialog > .actions > .button {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.c-multiple-rewards-dialog .body > .title {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.c-multiple-rewards-dialog .body .reward {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 36px;
+}
+
+.c-multiple-rewards-dialog .body .reward .info {
+  margin-left: 16px;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .title > .name {
+  font-size: 16px;
+  font-weight: 600px;
+  line-height: 24px;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .title > .icon {
+  background: var(--bg-base);
+  padding: 4px;
+  border-radius: 4px;
+  margin-left: 8px;
+  border: 1px solid #75DB9E;
+  padding: 2px;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .title > .icon.locked {
+  border: 1px solid #EBC564;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .title > .icon.unlocked {
+  border: 1px solid #75DB9E;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .description {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--bg-base-text-80);
+}
+
+.c-multiple-rewards-dialog .body .reward .info .button {
+  margin-top: 12px;
+}
+
+.c-multiple-rewards-dialog .body .reward .info .button > button {
+  height: 32px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+/*# sourceMappingURL=season-pass.css.map */
