@@ -1,4 +1,4 @@
-import * as _ from 'https://jspm.dev/lodash-es'
+import _ from 'https://esm.sh/lodash'
 import React, { useMemo, useEffect, useRef } from 'react'
 
 import { createSubject, op, Obs } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
@@ -62,8 +62,8 @@ const BASE_IFRAME_STYLES_IN_VIDEO = {
   // right: '20px',
   // top: '50px',
   // FAZEFIXME: rm faze styles
-  right: typeof window !== 'undefined' && window.location?.hostname === 'faze1.live' ? '10px' : '20px',
-  top: typeof window !== 'undefined' && window.location?.hostname === 'faze1.live' ? '72px' : '50px',
+  right: typeof document !== 'undefined' && window.location?.hostname === 'faze1.live' ? '10px' : '20px',
+  top: typeof document !== 'undefined' && window.location?.hostname === 'faze1.live' ? '72px' : '50px',
   'max-height': 'calc(100% - 50px)'
 }
 
@@ -161,7 +161,7 @@ function getStorageKey (prefix) {
 }
 
 function getExtensionMappingId () {
-  if (typeof window !== 'undefined') {
+  if (typeof document !== 'undefined') {
     // get query params
     const urlSearchParams = new URLSearchParams(window.location.search)
     const params = Object.fromEntries(urlSearchParams.entries())
@@ -196,7 +196,7 @@ export const getTwitchPageIdentifier = (
   )
 
 export default function $browserExtensionMenu (props) {
-  if (typeof window === 'undefined') return <></>
+  if (typeof document === 'undefined') return <></>
 
   const {
     hasChannelPoints, hasBattlePass, iconImageObj, channelPointsImageObj, xpImageObj,
@@ -665,6 +665,7 @@ export default function $browserExtensionMenu (props) {
                 const hasBadge = tabBadgeStates.get(tab.slug)
                 return (
                   <div
+                    key={i}
                     className={`tab ${classKebab({ isActive, hasBadge })}`}
                     onClick={() => {
                       // clear any badges when the user navigates away from the tab

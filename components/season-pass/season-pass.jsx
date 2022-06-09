@@ -1,4 +1,4 @@
-import * as _ from 'https://jspm.dev/lodash-es'
+import _ from 'https://esm.sh/lodash'
 import React, { useMemo, useRef, useEffect } from 'react'
 
 import { createSubject } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
@@ -7,7 +7,7 @@ import { zeroPrefix } from 'https://tfl.dev/@truffle/utils@0.0.1/format/format.j
 import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js'
 import { getModel } from 'https://tfl.dev/@truffle/api@0.0.1/legacy/index.js'
 import Spinner from 'https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx'
-import cssVars from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
+import cssVars, { rgb2rgba, hexOpacity } from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
 
 import { getLevelBySeasonPassAndXp, getXPBarBySeasonPassAndXp } from '../../util/season-pass/season-pass.js'
 
@@ -248,7 +248,7 @@ export default function SeasonPass (props) {
             <div
               className="levels-wrapper"
               ref={$$levelsRef}
-              ontouchstart={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
             >
               {tiers?.length
                 ? <div className="tier-info">

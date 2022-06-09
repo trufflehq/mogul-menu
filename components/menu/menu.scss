@@ -81,6 +81,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   width: 100%;
   position: relative;
   color: var(--bg-base-text);
+  background: red;
 
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);

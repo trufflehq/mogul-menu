@@ -1,15 +1,22 @@
 import { Router } from "wouter";
 import staticLocationHook from "wouter/static-location";
-import createServer from "https://raw.githubusercontent.com/deckchairlabs/ultra/v2/server.ts";
-import { reactHelmetPlugin } from "https://raw.githubusercontent.com/deckchairlabs/ultra/v2/src/plugins/react-helmet.ts";
-import { ServerAppProps } from "https://raw.githubusercontent.com/deckchairlabs/ultra/v2/src/types.ts";
+import createServer from "https://raw.githubusercontent.com/austinhallock/ultra/v2/server.ts";
+import { reactHelmetPlugin } from "https://raw.githubusercontent.com/austinhallock/ultra/v2/src/plugins/react-helmet.ts";
+import { ServerAppProps } from "https://raw.githubusercontent.com/austinhallock/ultra/v2/src/types.ts";
+
+import globalContext from 'https://tfl.dev/@truffle/global-context@1.0.0/index.js'
+
 import App from "./app/layout.tsx";
 
 /**
  * This is the component that will be rendered server side.
  */
 function ServerApp({ state }: ServerAppProps) {
-  return (
+  console.log('server');
+  
+  // TODO: wrap this in globalContext.run when this is added:
+  // https://github.com/denoland/deno/issues/5638#issuecomment-1147780998
+  return globalContext.run({}, () =>
     <Router hook={staticLocationHook(state.url.pathname)}>
       <App state={state} />
     </Router>
@@ -17,8 +24,9 @@ function ServerApp({ state }: ServerAppProps) {
 }
 
 const server = await createServer(ServerApp, {
-  mode: "production",
+  // mode: "production", // let env var dictate
   bootstrapModules: ["./client.tsx"],
+  // renderStrategy: 'static' // static | stream
 });
 
 /**
