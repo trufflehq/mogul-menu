@@ -1,0 +1,302 @@
+.z-channel-points {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  align-items: center;
+  border-right: none;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.z-channel-points .message {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  opacity: 0;
+  height: 100%;
+  background: linear-gradient(-45deg, #000000, #000000, #EBAD64, #ffffff00, #ffffff00, #ffffff00);
+  margin: 1px 0px 1px 1px;
+  background-size: 400% 400%;
+  background-position: 0% 0%;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 12px 10px;
+  border-right: none;
+}
+
+.z-channel-points .message.is-visible {
+  opacity: 1;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  -webkit-animation: gleam 3s ease infinite;
+          animation: gleam 3s ease infinite;
+}
+
+.z-channel-points .message.is-visible > .points {
+  -webkit-animation: fade-in-then-out 4s ease infinite;
+          animation: fade-in-then-out 4s ease infinite;
+}
+
+.z-channel-points > .channel-points {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: var(--bg-base);
+  border-right: none;
+  padding: 6px;
+  z-index: 2;
+}
+
+.z-channel-points > .channel-points > .points {
+  font-weight: 600;
+  font-family: var(--body-font);
+  font-size: 14px;
+}
+
+.z-channel-points > .claim {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  opacity: .5;
+  pointer-events: none;
+  -webkit-transform: skew(-20deg) translateX(70%) scale(0%, 100%);
+          transform: skew(-20deg) translateX(70%) scale(0%, 100%);
+  height: 100%;
+  z-index: 0;
+  font-size: 14px;
+  color: var(--primary-base-text);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px 10px;
+  -webkit-transition: all 0.75s cubic-bezier(0.25, 0.14, 0.5, 1);
+  transition: all 0.75s cubic-bezier(0.25, 0.14, 0.5, 1);
+}
+
+.z-channel-points > .claim.is-visible {
+  -webkit-transform: skew(0deg) translateX(0%) scale(100%, 100%);
+          transform: skew(0deg) translateX(0%) scale(100%, 100%);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.z-channel-points > .claim.has-text > .icon {
+  margin-right: 8px;
+}
+
+.z-channel-points > .claim > .icon {
+  -webkit-animation: claim-shake 2s infinite cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+          animation: claim-shake 2s infinite cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
+}
+
+@-webkit-keyframes gleam {
+  0% {
+    background-position: 0% 0%;
+  }
+  45% {
+    background-position: 100% 50%;
+  }
+  55% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes gleam {
+  0% {
+    background-position: 0% 0%;
+  }
+  45% {
+    background-position: 100% 50%;
+  }
+  55% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@-webkit-keyframes scale-in-then-out {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  25% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  75% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  100% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+}
+
+@keyframes scale-in-then-out {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  25% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  75% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  100% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+}
+
+@-webkit-keyframes fade-in-then-out {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-then-out {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes claim-shake {
+  0% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+  40% {
+    -webkit-transform: rotate(1deg);
+            transform: rotate(1deg);
+  }
+  45% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  50% {
+    -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+  }
+  52% {
+    -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+  }
+  56% {
+    -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+  }
+  59% {
+    -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+  }
+  61% {
+    -webkit-transform: rotate(1deg);
+            transform: rotate(1deg);
+  }
+  100% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+}
+
+@keyframes claim-shake {
+  0% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+  40% {
+    -webkit-transform: rotate(1deg);
+            transform: rotate(1deg);
+  }
+  45% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  50% {
+    -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+  }
+  52% {
+    -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+  }
+  56% {
+    -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+  }
+  59% {
+    -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+  }
+  61% {
+    -webkit-transform: rotate(1deg);
+            transform: rotate(1deg);
+  }
+  100% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+}
+/*# sourceMappingURL=channel-points.css.map */

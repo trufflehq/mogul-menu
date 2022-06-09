@@ -21,9 +21,9 @@ import Spinner from 'https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinne
 import SignUpForm from 'https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.jsx'
 import cssVars from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
 
-import SeasonPass from '../season-pass/season-pass.jsx'
-// import ChannelPoints from '../channel-points/channel-points.jsx'
-// import SnackBarContainer from '../snack-bar-container/snack-bar-container.jsx'
+import SeasonPass from '../season-pass/season-pass.tsx'
+import ChannelPoints from '../channel-points/channel-points.tsx'
+import SnackBarContainer from '../snack-bar-container/snack-bar-container.tsx'
 // TODO: replace all classKebabs, Components, Legacy, Subject, useObservables, context
 
 import styles from './menu.css' assert { type: 'css' }
@@ -31,8 +31,6 @@ document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
 
 function Component () { return '' }
 function ImageByAspectRatio () { return '' }
-function ChannelPoints () { return '' }
-function SnackBarContainer () { return '' }
 // function Component () { return '' }
 
 const ONE_SECOND_MS = 1000

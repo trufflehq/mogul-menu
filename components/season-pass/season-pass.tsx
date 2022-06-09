@@ -255,6 +255,7 @@ export default function SeasonPass (props) {
                 {
                   // FIXME: the reverse here is a hack for Faze
                   _.reverse(_.map(tiers, (tier) => {
+                    console.log('tier', tier);
                     return tier?.name && <div className='tier' style={{
                       background: tier?.background
                     }}>
@@ -276,6 +277,8 @@ export default function SeasonPass (props) {
                 {_.map(visibleLevels, (levelNum) => {
                   return (
                     <$level
+                      key={levelNum}
+                      abc='def'
                       level={groupedLevels[levelNum]}
                       tierNums={tierNums}
                       userTierNum={userTierNum}
@@ -601,7 +604,7 @@ export function $level (props) {
         const isUnlocked = reward && isValidTierNum && isUnlockedLevel
 
         return (
-          <div className={`reward tier-${tierNum} ${classKebab({
+          <div key={tierNum} className={`reward tier-${tierNum} ${classKebab({
             isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
             hasTierName: Boolean(tierName)
           })}`}>

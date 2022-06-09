@@ -209,7 +209,6 @@
   content: '';
   position: absolute;
   border-radius: 50%;
-  background: red;
   border: 1px solid black;
   width: 6px;
   height: 6px;
@@ -448,7 +447,6 @@
   content: '';
   position: absolute;
   border-radius: 50%;
-  background: red;
   border: 1px solid black;
   width: 16px;
   height: 16px;
