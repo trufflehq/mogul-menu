@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import { Ultra } from "@ultra/react";
 import App from "./app/layout.tsx";
 
-import io from 'https://tfl.dev/@truffle/api@0.0.1/io.js'
+import io from 'https://tfl.dev/@truffle/api@0.0.1/legacy/io.js'
 import globalContext from 'https://tfl.dev/@truffle/global-context@1.0.0/index.js'
 
 io.connect()

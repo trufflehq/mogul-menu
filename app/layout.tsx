@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Helmet, HelmetProvider } from "react-helmet";
 import { Route, Switch } from "wouter";
 import type { RenderState } from "https://raw.githubusercontent.com/austinhallock/ultra/v2/server.ts";
