@@ -1,22 +1,17 @@
-import React, { useContext } from 'react'
-import {
-  context,
-  Component
-} from '@spore/platform'
+import React from 'react'
+
+import Icon from 'https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx'
+import cssVars from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
 
 export default function Page ({ title, headerTopRight, onBack, content }) {
-  const { cssVars } = useContext(context)
-
   return <div className="c-page">
       <div className='header'>
         <div className='left'>
           <div className='back-icon'>
-            <Component slug="icon"
-              props={{
-                icon: 'back',
-                color: cssVars.$bgBaseText,
-                onclick: onBack
-              }}
+            <Icon
+              icon='back'
+              color={cssVars.$bgBaseText}
+              onclick={onBack}
             />
           </div>
           <div className='text'>{ title }</div>

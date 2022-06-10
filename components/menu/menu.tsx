@@ -16,22 +16,21 @@ import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 import Modal from 'https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.jsx'
 import Ripple from 'https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.jsx'
 import Icon from 'https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx'
-// import ImageByAspectRatio from 'https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx'
+import ImageByAspectRatio from 'https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx'
 import Spinner from 'https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx'
 import SignUpForm from 'https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.jsx'
 import cssVars from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
 
-import SeasonPass from '../season-pass/season-pass.tsx'
 import ChannelPoints from '../channel-points/channel-points.tsx'
+import Page from '../page/page.tsx'
+import SeasonPass from '../season-pass/season-pass.tsx'
 import SnackBarContainer from '../snack-bar-container/snack-bar-container.tsx'
-// TODO: replace all classKebabs, Components, Legacy, Subject, useObservables, context
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
 
+// FIXME: replace all <Component slug="..." /> w/ normal react
 function Component () { return '' }
-function ImageByAspectRatio () { return '' }
-// function Component () { return '' }
 
 const ONE_SECOND_MS = 1000
 const ONE_MINUTE_MS = 60 * 1000
@@ -1026,50 +1025,45 @@ function SettingsPage ({ extensionIconPositionSubject, extensionInfo, onBack }) 
     jumper.call('comms.postMessage', MESSAGE.INVALIDATE_USER)
   }
 
-  return (
-    <Component
-      slug="browser-extension-menu-page"
+  const SettingsPageContent = () => <div className="c-settings-page_content">
+    {hasSporeUserSettings &&
+      <>
+        <div className='name'>
+          <Component
+            slug="input"
+            props={{
+              label: 'Display name',
+              valueSubject: nameSubject
+            }}
+          />
+        </div>
+        <div className='color'>
+          <Component
+            slug="input-color"
+            props={{
+              label: 'Chat name color',
+              colorSubject: nameColorSubject,
+              isLabelVisible: true
+            }}
+          />
+        </div>
+      </>
+    }
+    <PositionChooser extensionInfo={extensionInfo} extensionIconPositionSubject={extensionIconPositionSubject} />
+    {isChanged && <Component
+      slug='unsaved-snackbar'
       props={{
-        title: 'Settings',
-        content: <div className="c-settings-page_content">
-          {<>
-          {hasSporeUserSettings &&
-            <>
-            <div className='name'>
-              <Component
-                slug="input"
-                props={{
-                  label: 'Display name',
-                  valueSubject: nameSubject
-                }}
-              />
-            </div>
-            <div className='color'>
-              <Component
-                slug="input-color"
-                props={{
-                  label: 'Chat name color',
-                  colorSubject: nameColorSubject,
-                  isLabelVisible: true
-                }}
-              />
-            </div>
-            </>
-          }
-            <PositionChooser extensionInfo={extensionInfo} extensionIconPositionSubject={extensionIconPositionSubject} />
-            {
-              isChanged && <Component
-                slug='unsaved-snackbar'
-                props={{
-                  onSave: save,
-                  onCancel: reset
-                }}
-              />
-            }
-          </>}
-        </div>,
-        onBack
+        onSave: save,
+        onCancel: reset
       }}
+    />}
+  </div>
+
+  return (
+    <Page
+      title='Settings'
+      content={<SettingsPageContent />}
+      onBack={onBack}
     />
   )
 }
@@ -1402,34 +1396,27 @@ function HomeTab ({
           />
         </div>
         <div className='icon'>
-          <Component
-            slug="icon"
-            props={{
-              icon: 'settings',
-              onclick: () => pushPage(SettingsPage, {
-                extensionIconPositionSubject,
-                extensionInfo,
-                onBack: popPage
-              }),
-              color: cssVars.$bgBaseText,
-              hasRipple: true,
-              size: '24px',
-              iconViewBox: '24px'
-            }}
+          <Icon
+            icon='settings'
+            onclick={() => pushPage(SettingsPage, {
+              extensionIconPositionSubject,
+              extensionInfo,
+              onBack: popPage
+            })}
+            color={cssVars.$bgBaseText}
+            hasRipple={true}
+            size='24px'
+            iconViewBox='24px'
           />
         </div>
         <div className='icon'>
-          <Component
-            slug="icon"
-            layoutSlug="notification-bell"
-            props={{
-              icon: 'bell',
-              onclick: handleOpenNotificationDialog,
-              color: cssVars.$bgBaseText,
-              hasRipple: true,
-              size: '24px',
-              iconViewBox: '24px'
-            }}
+          <Icon
+            icon='bell'
+            onclick={handleOpenNotificationDialog}
+            color={cssVars.$bgBaseText}
+            hasRipple={true}
+            size='24px'
+            iconViewBox='24px'
           />
         </div>
       </div>
