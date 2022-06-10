@@ -1,4 +1,4 @@
-import _ from 'https://esm.sh/lodash'
+import _ from 'https://esm.sh/lodash?no-check'
 import React, { useMemo, useEffect, useRef } from 'react'
 
 import { createSubject, op, Obs } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
@@ -483,7 +483,7 @@ export default function $browserExtensionMenu (props) {
   }
 
   const mostRecentPoll = activePollConnection?.nodes?.[0]
-  const isMostRecentPollOutdated = mostRecentPoll?.data?.hasWinner && new Date(mostRecentPoll?.time) < Date.now() - POLL_VISIBLE_MAX_TIME_MS
+  const isMostRecentPollOutdated = mostRecentPoll?.data?.hasWinner && new Date(mostRecentPoll?.time).getTime() < Date.now() - POLL_VISIBLE_MAX_TIME_MS
   const activePoll = isMostRecentPollOutdated ? null : mostRecentPoll
 
   useEffect(() => {

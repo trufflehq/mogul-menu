@@ -1,4 +1,4 @@
-import _ from 'https://esm.sh/lodash'
+import _ from 'https://esm.sh/lodash?no-check'
 
 export function getLevelBySeasonPassAndXp (seasonPass, xp) {
   const currentXp = xp?.count ? xp.count : 0
