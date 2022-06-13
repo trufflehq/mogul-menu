@@ -29,23 +29,23 @@ const Ultra = ({ state }: AppProps) => {
             {/* <script type="importMap">
               {`{
                 "imports": {
-                  "react": "https://esm.sh/preact/compat",
-                  "react-dom": "https://esm.sh/preact/compat/client",
-                  "https://esm.sh/react@18.2.0-next-47944142f-20220608": "https://esm.sh/preact/compat",
-                  "https://esm.sh/react-dom@18.2.0-next-47944142f-20220608": "https://esm.sh/preact/compat/client",
-                  "https://esm.sh/v85/react@18.2.0-next-47944142f-202206/es2022/react.js": "https://esm.sh/preact/compat",
-                  "https://esm.sh/v85/react-dom@18.2.0-next-47944142f-202206/es2022/react-dom.js": "https://esm.sh/preact/compat",
-                  "https://esm.sh/react-dom@18.2.0-next-47944142f-20220608/client": "https://esm.sh/preact/compat",
-                  "prop-types": "https://esm.sh/prop-types"
+                  "react": "https://npm.tfl.dev/preact/compat",
+                  "react-dom": "https://npm.tfl.dev/preact/compat/client",
+                  "https://npm.tfl.dev/react@18.2.0-next-47944142f-20220608": "https://npm.tfl.dev/preact/compat",
+                  "https://npm.tfl.dev/react-dom@18.2.0-next-47944142f-20220608": "https://npm.tfl.dev/preact/compat/client",
+                  "https://npm.tfl.dev/v85/react@18.2.0-next-47944142f-202206/es2022/react.js": "https://npm.tfl.dev/preact/compat",
+                  "https://npm.tfl.dev/v85/react-dom@18.2.0-next-47944142f-202206/es2022/react-dom.js": "https://npm.tfl.dev/preact/compat",
+                  "https://npm.tfl.dev/react-dom@18.2.0-next-47944142f-20220608/client": "https://npm.tfl.dev/preact/compat",
+                  "prop-types": "https://npm.tfl.dev/prop-types"
                 }
               }`}
             </script> */}
             <script type="importMap">
               {`{
                 "imports": {
-                  "react": "https://esm.sh/react@18.2.0-next-47944142f-20220608?dev",
-                  "react-dom": "https://esm.sh/react-dom@18.2.0-next-47944142f-20220608?dev",
-                  "prop-types": "https://esm.sh/prop-types"
+                  "react": "https://npm.tfl.dev/react@18.2.0-next-47944142f-20220608?dev",
+                  "react-dom": "https://npm.tfl.dev/react-dom@18.2.0-next-47944142f-20220608?dev",
+                  "prop-types": "https://npm.tfl.dev/prop-types"
                 }
               }`}
             </script>

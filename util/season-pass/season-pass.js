@@ -1,4 +1,4 @@
-import _ from 'https://esm.sh/lodash?no-check'
+import _ from 'https://npm.tfl.dev/lodash?no-check'
 
 export function getLevelBySeasonPassAndXp (seasonPass, xp) {
   const currentXp = xp?.count ? xp.count : 0
