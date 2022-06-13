@@ -2,8 +2,9 @@ import React, { lazy, Suspense } from 'react'
 import { Helmet, HelmetProvider } from "react-helmet";
 import { Route, Switch } from "wouter";
 import type { RenderState } from "https://raw.githubusercontent.com/austinhallock/ultra/v2/server.ts";
+import { useAsync } from "@ultra/react";
 
-import { TruffleSetup } from '../util/truffle/setup.tsx'
+import { TruffleSetup } from 'https://tfl.dev/@truffle/utils@0.0.1/ultra/setup.jsx'
 
 type AppProps = {
   state: RenderState;
@@ -52,17 +53,15 @@ const Ultra = ({ state }: AppProps) => {
           </Helmet>
         </head>
         <body>
-          <TruffleSetup hostname={state?.url?.hostname} />
-          <main>
-            <Switch>
-              <Route path="/">
-                {typeof document !== 'undefined' && <Suspense><HomePage /></Suspense>}
-              </Route>
-              <Route>
-                <strong>404</strong>
-              </Route>
-            </Switch>
-          </main>
+          <TruffleSetup state={state} useAsync={useAsync}>
+            <main>
+              <Switch>
+                <Route>
+                  <HomePage state={state} />
+                </Route>
+              </Switch>
+            </main>
+          </TruffleSetup>
         </body>
       </html>
     </HelmetProvider>
