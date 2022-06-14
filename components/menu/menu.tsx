@@ -32,7 +32,7 @@ import { getModel } from 'https://tfl.dev/@truffle/api@0.0.1/legacy/index.js'
 
 import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js'
 
-import { snackBarService } from '../../util/menu/snackbar.ts'
+import { getSnackbarService } from '../../util/menu/snackbar.ts'
 
 import HomeTab from '../home-tab/home-tab.tsx'
 
@@ -380,7 +380,7 @@ export default function BrowserExtensionMenu (props) {
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
-      <SnackBarContainer snackBarQueueSubject={snackBarService.queueSubject} visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS} />
+      <SnackBarContainer snackBarQueueSubject={getSnackbarService().queueSubject} visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS} />
       {/* TODO: refactor NewExtensionUserTooltip */}
       {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip
