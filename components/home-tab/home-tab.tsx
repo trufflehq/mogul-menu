@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSnackBar } from '../../util/menu/snackbar.ts'
+import { useSnackBar } from 'https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js'
 
 import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx'
 import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx'

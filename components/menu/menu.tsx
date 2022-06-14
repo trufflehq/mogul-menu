@@ -23,7 +23,7 @@ import ImageByAspectRatio from 'https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Spinner from 'https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx'
 import SignUpForm from 'https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.jsx'
 import cssVars from 'https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js'
-import SnackBarContainer from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-container/snack-bar-container.jsx'
+import SnackBarProvider from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-provider/snack-bar-provider.jsx'
 
 import { createSubject, op, Obs } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
 import useObservables from 'https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js'
@@ -31,8 +31,6 @@ import jumper from 'https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js'
 import { getModel } from 'https://tfl.dev/@truffle/api@0.0.1/legacy/index.js'
 
 import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js'
-
-import { snackBarService } from '../../util/menu/snackbar.ts'
 
 import HomeTab from '../home-tab/home-tab.tsx'
 
@@ -370,17 +368,19 @@ export default function BrowserExtensionMenu (props) {
               }) }
             />*/
           }
-          {
-            !isPageStackEmpty
-              ? <div className='page-stack'>
-                { <PageStackHead.Component { ...PageStackHead.props } />}
-              </div>
-              : <div className="body"><$activeTabEl /></div>
-          }
+          <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
+            {
+              !isPageStackEmpty
+                ? <div className='page-stack'>
+                  { <PageStackHead.Component { ...PageStackHead.props } />}
+                </div>
+                : <div className="body"><$activeTabEl /></div>
+            }
+          </SnackBarProvider>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
-      <SnackBarContainer snackBarQueueSubject={snackBarService.queueSubject} visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS} />
+      
       {/* TODO: refactor NewExtensionUserTooltip */}
       {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip
