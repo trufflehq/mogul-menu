@@ -10,7 +10,10 @@ type AppProps = {
   state: RenderState;
 };
 
-const HomePage = lazy(() => import('./home/page.tsx'))
+const HomePage = lazy(() => import('./home/page.tsx')
+  // TODO: css imports in deno (need deno to support)
+  .catch((err) => { console.error('err', err); return { default: () => '' } })
+)
 
 const Ultra = ({ state }: AppProps) => {
   return (
