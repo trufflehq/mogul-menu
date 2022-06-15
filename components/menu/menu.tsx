@@ -9,6 +9,7 @@ Services that the menu component should provide:
 - Interface for enqueueing snackbar
 - Interface for pushing/popping page onto page stack
 - Interface for displaying action banners
+- Interface for displaying a button to the right of tabs (like the channel points claim button)
 */
 
 import React, { useMemo, useEffect, useRef, useState, JSX } from 'react'
@@ -33,6 +34,8 @@ import { getModel } from 'https://tfl.dev/@truffle/api@0.0.1/legacy/index.js'
 import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js'
 
 import HomeTab from '../home-tab/home-tab.tsx'
+
+import { TabNameContext } from '../../util/tab-name/tab-name.ts'
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
@@ -96,6 +99,7 @@ const DEFAULT_TABS = [
     // $el: CollectionTab
   },
   {
+    text: 'Battle Pass',
     slug: 'battle-pass',
     imgUrl:
       'https://cdn.bio/assets/images/features/browser_extension/gamepad.svg',
@@ -118,7 +122,7 @@ export default function BrowserExtensionMenu (props) {
   const {
     hasChannelPoints, hasBattlePass, iconImageObj, channelPointsImageObj, xpImageObj,
     hasSupportChat, darkChannelPointsImageObj, darkXpImageObj,
-    creatorName, highlightButtonBg
+    creatorName
   } = props
 
   // fetched values
@@ -212,7 +216,19 @@ export default function BrowserExtensionMenu (props) {
     return true
   })
 
-  const $activeTabEl: () => JSX.Element = visibleTabs[activeTabIndex].$el ?? (() => <></>)
+  // set up state for TabNameContext
+  const [tabNamesState, setTabNamesState] = useState(visibleTabs.map((tab) => tab.text))
+  const tabNameContextValue = {
+    tabNames: tabNamesState,
+    setTabNames: setTabNamesState
+  }
+
+  const $activeTabEl: (...args: any[]) => JSX.Element = visibleTabs[activeTabIndex].$el ?? (() => <></>)
+
+  const isPageStackEmpty = pageStack.length === 0
+  const PageStackHead = pageStack[pageStack.length - 1]
+
+  const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab({ isOpen, hasNotification, isClaimable })}`
 
   // actions
   const toggleIsOpen = () => setIsOpen(prev => !prev)
@@ -228,7 +244,7 @@ export default function BrowserExtensionMenu (props) {
     const tabSlug = visibleTabs[activeTabIndex].slug
     setBadge(tabSlug, false)
   }
-    // pushes a component onto the page stack;
+  // pushes a component onto the page stack;
   // used for creating pages that take over
   // the whole extension UI (like the
   // prediction page, for example)
@@ -246,20 +262,10 @@ export default function BrowserExtensionMenu (props) {
     pageStackSubject.next([])
   }
 
-  const isPageStackEmpty = pageStack.length === 0
-  const PageStackHead = pageStack[pageStack.length - 1]
-
-  const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab({ isOpen, hasNotification, isClaimable })}`
+  // effects
 
   return (
     <div className={className}>
-      <style>
-      {`
-        .z-browser-extension-menu {
-          --highlight-gradient: ${highlightButtonBg ?? cssVars.$bgBaseText};
-        }
-      `}
-      </style>
       <div className="extension-icon"
         style={{
           backgroundImage: iconImageObj ? `url(${getModel().image.getSrcByImageObj(iconImageObj)})` : undefined
@@ -267,7 +273,7 @@ export default function BrowserExtensionMenu (props) {
         ref={$$extensionIconRef}
         onClick={toggleIsOpen}
       >
-        <Ripple color={cssVars.textColor} />
+        <Ripple color="var(--truffle-color-text-bg-primary)" />
       </div>
       <div className="menu">
         <div className="inner">
@@ -289,11 +295,11 @@ export default function BrowserExtensionMenu (props) {
                     }}
                   >
                     <div className="icon">
-                      <ImageByAspectRatio imageUrl={tab.imgUrl} aspectRatio={1} widthPx={18} height={18} />
+                      <ImageByAspectRatio imageUrl={tab.imgUrl} aspectRatio={1} width={18} height={18} />
                     </div>
                     { /* TODO: add a way for tabs to set the tab name */ }
-                    <div className="title">{tab.text}</div>
-                    <Ripple color={cssVars.textColor} />
+                    <div className="title truffle-text-body-2">{tabNamesState[i]}</div>
+                    <Ripple color="var(--truffle-color-text-bg-primary)" />
                   </div>
                 )
               })}
@@ -368,15 +374,17 @@ export default function BrowserExtensionMenu (props) {
               }) }
             />*/
           }
-          <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
-            {
-              !isPageStackEmpty
-                ? <div className='page-stack'>
-                  { <PageStackHead.Component { ...PageStackHead.props } />}
-                </div>
-                : <div className="body"><$activeTabEl /></div>
-            }
-          </SnackBarProvider>
+          <TabNameContext.Provider value={tabNameContextValue}>
+            <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
+              {
+                !isPageStackEmpty
+                  ? <div className='page-stack'>
+                    { <PageStackHead.Component { ...PageStackHead.props } />}
+                  </div>
+                  : <div className="body"><$activeTabEl tabIdx={activeTabIndex} /></div>
+              }
+            </SnackBarProvider>
+          </TabNameContext.Provider>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
