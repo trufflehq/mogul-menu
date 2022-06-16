@@ -4,15 +4,15 @@ import { useSnackBar } from 'https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js
 import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx'
 import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx'
 
-import { useTabName } from '../../util/tab-name/tab-name.ts'
+import { useTabState } from '../../util/tabs/tab-state.ts'
 
-export default function HomeTab ({ tabIdx }) {
+export default function HomeTab ({ tabId }) {
 
   const enqueueSnackBar = useSnackBar()
   const [count, setCount] = useState(0)
   const [isSelected, setSelected] = useState(false)
 
-  const [tabName, setTabName] = useTabName(tabIdx)
+  const tabState = useTabState(tabId)
 
   const snackBarHandler = () => {
     console.log('enqueueing snackbar')
@@ -22,14 +22,16 @@ export default function HomeTab ({ tabIdx }) {
   }
 
   const tabNameHandler = () => {
-    setTabName(`Home (${count})`)
+    tabState.setTabText(`Home (${count})`)
+    tabState.setTabBadge(isSelected)
     setCount(prev => prev + 1)
+    setSelected(prev => !prev)
   }
 
   return (
     <div className="z-home-tab">
-      <div className="truffle-text-header-1">Tab idx: {tabIdx}</div>
-      <div className="truffle-text-header-1">Tab name: {tabName}</div>
+      <div className="truffle-text-header-1">Tab id: {tabId}</div>
+      <div className="truffle-text-header-1">Tab name: {tabState.text}</div>
       <div>
         <Button
           onClick={snackBarHandler}

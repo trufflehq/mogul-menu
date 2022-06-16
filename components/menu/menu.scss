@@ -6,6 +6,7 @@
     border: 1px solid $stroke;
     width: $width;
     height: $height;
+    background: red;
 
     @if $location == bottom-right {
       right: 4px;

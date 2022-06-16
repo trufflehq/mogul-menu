@@ -209,6 +209,7 @@
   border: 1px solid black;
   width: 6px;
   height: 6px;
+  background: red;
   right: -4px;
   top: 0;
 }
@@ -336,6 +337,7 @@
   border: 1px solid black;
   width: 16px;
   height: 16px;
+  background: red;
   right: -5.33333px;
   bottom: -5.33333px;
 }

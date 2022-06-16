@@ -35,7 +35,8 @@ import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.
 
 import HomeTab from '../home-tab/home-tab.tsx'
 
-import { TabNameContext } from '../../util/tab-name/tab-name.ts'
+import { TabElement } from '../../util/tabs/tab-definition.ts'
+import { TabContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
@@ -202,7 +203,6 @@ export default function BrowserExtensionMenu (props) {
 
   // state
   const [isOpen, setIsOpen] = useState(false)
-  const [activeTabIndex, setActiveTabIndex] = useState(0)
 
   // computed values
   const visibleTabs = DEFAULT_TABS
@@ -217,13 +217,13 @@ export default function BrowserExtensionMenu (props) {
   })
 
   // set up state for TabNameContext
-  const [tabNamesState, setTabNamesState] = useState(visibleTabs.map((tab) => tab.text))
-  const tabNameContextValue = {
-    tabNames: tabNamesState,
-    setTabNames: setTabNamesState
-  }
+  const tabStateManager: TabStateManager = useTabStateManager(visibleTabs)
+  const { tabStates } = tabStateManager
+  const tabIds = Object.keys(tabStates)
+  const [activeTabId, setActiveTabId] = useState(tabIds[0])
 
-  const $activeTabEl: (...args: any[]) => JSX.Element = visibleTabs[activeTabIndex].$el ?? (() => <></>)
+  const activeTabIndex = tabIds.indexOf(activeTabId)
+  const $activeTabEl: TabElement = visibleTabs[activeTabIndex].$el ?? (() => <></>)
 
   const isPageStackEmpty = pageStack.length === 0
   const PageStackHead = pageStack[pageStack.length - 1]
@@ -279,26 +279,26 @@ export default function BrowserExtensionMenu (props) {
         <div className="inner">
           <div className="bottom">
             <div className="tabs">
-              {_.map(visibleTabs, (tab, i) => {
-                const isActive = i === activeTabIndex
-                const hasBadge = tabBadgeStates?.get(tab.slug)
+              {_.map(Object.entries(tabStates), ([id, tabState]) => {
+                const isActive = id === activeTabId
+                const { text: tabText, hasBadge, icon } = tabState
                 return (
                   <div
-                    key={i}
+                    key={id}
                     className={`tab ${classKebab({ isActive, hasBadge })}`}
                     onClick={() => {
                       // clear any badges when the user navigates away from the tab
                       clearActiveTabBadge()
                       clearPageStack()
                       // set the tab that was clicked to the current tab
-                      setActiveTabIndex(i)
+                      setActiveTabId(id)
                     }}
                   >
                     <div className="icon">
-                      <ImageByAspectRatio imageUrl={tab.imgUrl} aspectRatio={1} width={18} height={18} />
+                      <ImageByAspectRatio imageUrl={icon} aspectRatio={1} width={18} height={18} />
                     </div>
                     { /* TODO: add a way for tabs to set the tab name */ }
-                    <div className="title truffle-text-body-2">{tabNamesState[i]}</div>
+                    <div className="title truffle-text-body-2">{tabText}</div>
                     <Ripple color="var(--truffle-color-text-bg-primary)" />
                   </div>
                 )
@@ -374,17 +374,17 @@ export default function BrowserExtensionMenu (props) {
               }) }
             />*/
           }
-          <TabNameContext.Provider value={tabNameContextValue}>
+          <TabContext.Provider value={tabStateManager}>
             <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
               {
                 !isPageStackEmpty
                   ? <div className='page-stack'>
                     { <PageStackHead.Component { ...PageStackHead.props } />}
                   </div>
-                  : <div className="body"><$activeTabEl tabIdx={activeTabIndex} /></div>
+                  : <div className="body"><$activeTabEl tabId={activeTabId} /></div>
               }
             </SnackBarProvider>
-          </TabNameContext.Provider>
+          </TabContext.Provider>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
