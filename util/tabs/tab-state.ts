@@ -37,16 +37,16 @@ export function useTabStateManager (tabs: TabDefinition[]) {
     return tabStates
   }
 
-  interface DispatchArgs {
-    type: keyof TabState,
+  interface DispatchArgs<T extends keyof TabState> {
+    type: T,
     payload: {
-      id: string;
-      value: any
+      tabId: string;
+      value: TabState[T]
     }
   }
 
   const [tabStates, dispatch]: 
-    [TabStateMap, (args: DispatchArgs) => void]
+    [TabStateMap, <T extends keyof TabState>(args: DispatchArgs<T>) => void]
     = useReducer(updateTabState, tabs, initTabStates)
 
   return { tabStates, dispatch }
@@ -60,8 +60,8 @@ export function useTabState (tabId: string) {
     text: currentTabState?.text,
     icon: currentTabState?.icon,
     hasBadge: currentTabState?.hasBadge,
-    setTabText: (value: string) => dispatch({ type: 'text', payload: { id: tabId, value } }),
-    setTabIcon: (value: string) => dispatch({ type: 'icon', payload: { id: tabId, value } }),
-    setTabBadge: (value: boolean) => dispatch({ type: 'hasBadge', payload: { id: tabId, value } })
+    setTabText: (value: string) => dispatch({ type: 'text', payload: { tabId, value } }),
+    setTabIcon: (value: string) => dispatch({ type: 'icon', payload: { tabId, value } }),
+    setTabBadge: (value: boolean) => dispatch({ type: 'hasBadge', payload: { tabId, value } })
   }
 }
