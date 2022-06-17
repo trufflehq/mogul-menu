@@ -317,6 +317,11 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
           }
         }
       }
+
+      > .tab-component {
+        position: relative;
+        flex: 1;
+      }
     }
 
     // TODO: extract action banner component

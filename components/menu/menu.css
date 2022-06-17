@@ -278,6 +278,13 @@
   }
 }
 
+.z-browser-extension-menu > .menu > .inner > .tab-component {
+  position: relative;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
 .z-browser-extension-menu.position-chat > .menu {
   -webkit-clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
           clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));

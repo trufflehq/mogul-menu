@@ -35,10 +35,12 @@ import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.
 
 import HomeTab from '../home-tab/home-tab.tsx'
 import CollectionTab from "../collection-tab/collection-tab.tsx";
+import PageStack from "../page-stack/page-stack.tsx";
 
 import { TabElement } from '../../util/tabs/types.ts'
 import { TabStateContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
 import { TabIdContext } from '../../util/tabs/tab-id.ts'
+import { PageStackContext } from '../../util/page-stack/page-stack.ts'
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
@@ -133,8 +135,6 @@ export default function BrowserExtensionMenu (props) {
   const {
     extensionIconPositionObs,
     hasViewedOnboardTooltipObs,
-    tabBadgeStatesSubject,
-    extensionIconBadgeStateObs,
     pageStackSubject
   } = useMemo(() => {
     const extensionIconPositionObs = Obs.from(
@@ -161,40 +161,20 @@ export default function BrowserExtensionMenu (props) {
         ?.then((value) => value || false) || ''
     )
 
-    // keeps track of which tabs have a badge;
-    // by default, none of the tabs have badges;
-    // the value of this stream is a Map of (tabSlug -> badgeIsVisible)
-    const tabBadgeStatesSubject = createSubject(
-      new Map(DEFAULT_TABS.map((tab) => [tab.slug, false]))
-    )
-    // keeps track of whether or not the extension icon has a badge;
-    // if at least one of the tabs has a visible badge, the extension will have a badge;
-    // the value of this stream is a boolean
-    const extensionIconBadgeStateObs = tabBadgeStatesSubject.obs.pipe(
-      op.map(badges => Array.from(badges.values()).reduce((acc, isVisible) => acc || isVisible))
-    )
-
     return {
       extensionIconPositionObs,
       hasViewedOnboardTooltipObs,
-      tabBadgeStatesSubject,
-      extensionIconBadgeStateObs,
       pageStackSubject: createSubject([])
     }
-  })
+  }, [])
 
   const {
     extensionIconPosition,
     hasViewedOnboardTooltip,
-    extensionIconBadgeState,
-    tabBadgeStates,
-    hasNotification,
     pageStack
   } = useObservables(() => ({
     extensionIconPosition: extensionIconPositionObs,
     hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
-    tabBadgeStates: tabBadgeStatesSubject.obs,
-    hasNotification: extensionIconBadgeStateObs,
     pageStack: pageStackSubject.obs,
   }))
 
@@ -249,32 +229,20 @@ export default function BrowserExtensionMenu (props) {
     return onNavigateAway
   }, [activeTabId])
 
-  const isPageStackEmpty = pageStack.length === 0
-  const PageStackHead = pageStack[pageStack.length - 1]
+  const hasNotification = Object.values(tabStates).reduce((acc, tabState) => acc || tabState.hasBadge, false)
 
   const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab({ isOpen, hasNotification, isClaimable })}`
 
   // actions
   const toggleIsOpen = () => setIsOpen(prev => !prev)
 
-  // sets the badge state for a tab using its slug
-  const setBadge = (slug, isShowing) => {
-    tabBadgeStates.set(slug, isShowing)
-    tabBadgeStatesSubject.next(tabBadgeStates)
-  }
-
-  // removes the badge from the actively selected tab
-  const clearActiveTabBadge = () => {
-    const tabSlug = visibleTabs[activeTabIndex].slug
-    setBadge(tabSlug, false)
-  }
   // pushes a component onto the page stack;
   // used for creating pages that take over
   // the whole extension UI (like the
   // prediction page, for example)
-  const pushPage = (Component, props) => {
+  const pushPage = (Component) => {
     const currentPageStack = pageStackSubject.getValue()
-    pageStackSubject.next(currentPageStack.concat({ Component, props }))
+    pageStackSubject.next(currentPageStack.concat(Component))
   }
 
   const popPage = () => {
@@ -310,8 +278,6 @@ export default function BrowserExtensionMenu (props) {
                     key={id}
                     className={`tab ${classKebab({ isActive, hasBadge })}`}
                     onClick={() => {
-                      // clear any badges when the user navigates away from the tab
-                      clearActiveTabBadge()
                       clearPageStack()
                       // set the tab that was clicked to the current tab
                       setActiveTabId(id)
@@ -397,19 +363,20 @@ export default function BrowserExtensionMenu (props) {
               }) }
             />*/
           }
-          <TabIdContext.Provider value={activeTabId}>
-            <TabStateContext.Provider value={tabStateManager}>
-              <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
-                {
-                  !isPageStackEmpty
-                    ? <div className='page-stack'>
-                      { <PageStackHead.Component { ...PageStackHead.props } />}
+          <div className="tab-component">
+            <TabIdContext.Provider value={activeTabId}>
+              <TabStateContext.Provider value={tabStateManager}>
+                <PageStackContext.Provider value={{ pushPage, popPage }}>
+                  <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
+                    <PageStack pageStackSubject={pageStackSubject} />
+                    <div className="body">
+                      <ActiveTab tabId={activeTabId} />
                     </div>
-                    : <div className="body"><ActiveTab tabId={activeTabId} /></div>
-                }
-              </SnackBarProvider>
-            </TabStateContext.Provider>
-          </TabIdContext.Provider>
+                  </SnackBarProvider>
+                </PageStackContext.Provider>
+              </TabStateContext.Provider>
+            </TabIdContext.Provider>
+          </div>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}

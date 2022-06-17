@@ -6,6 +6,8 @@ import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/sna
 
 import { useTabState } from '../../util/tabs/tab-state.ts'
 import { useTabId } from "../../util/tabs/tab-id.ts";
+import { usePageStack } from "../../util/page-stack/page-stack.ts";
+import ChromeExtSettings from "../settings/settings.tsx";
 
 export default function HomeTab () {
 
@@ -15,6 +17,8 @@ export default function HomeTab () {
 
   const tabId = useTabId()
   const tabState = useTabState()
+
+  const { pushPage, popPage } = usePageStack()
 
   const snackBarHandler = () => {
     console.log('enqueueing snackbar')
@@ -28,6 +32,10 @@ export default function HomeTab () {
     tabState.setTabBadge(isSelected)
     setCount(prev => prev + 1)
     setSelected(prev => !prev)
+  }
+
+  const pushPageHandler = () => {
+    pushPage(<ChromeExtSettings nonce={1} />)
   }
 
   return (
@@ -48,6 +56,10 @@ export default function HomeTab () {
         <Button
           onClick={tabNameHandler}
           text="Set tab name"
+        />
+        <Button
+          onClick={pushPageHandler}
+          text="Push page"
         />
       </div>
     </div>
