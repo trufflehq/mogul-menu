@@ -302,8 +302,7 @@ export default function BrowserExtensionMenu (props) {
           <div className="bottom">
             <div className="tabs">
               {_.map(Object.entries(tabStates), ([id, tabState]) => {
-                const isActive = id === activeTabId
-                const { text: tabText, hasBadge, icon } = tabState
+                const { text: tabText, hasBadge, icon, isActive } = tabState
                 return (
                   <div
                     key={id}
