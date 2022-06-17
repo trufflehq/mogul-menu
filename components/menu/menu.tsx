@@ -4,10 +4,10 @@ NOTES
 
 Services that the menu component should provide:
 - Linking of Truffle account -> Twitch/Youtube account
-- Interface for setting/unseting tab badge
-- Interface for setting tab name
-- Interface for enqueueing snackbar
-- Interface for pushing/popping page onto page stack
+- Interface for setting/unseting tab badge - done
+- Interface for setting tab name - done
+- Interface for enqueueing snackbar - done
+- Interface for pushing/popping page onto page stack - done
 - Interface for displaying action banners
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
 */
@@ -223,7 +223,29 @@ export default function BrowserExtensionMenu (props) {
   const [activeTabId, setActiveTabId] = useState(tabIds[0])
 
   const activeTabIndex = tabIds.indexOf(activeTabId)
-  const $activeTabEl: TabElement = visibleTabs[activeTabIndex].$el ?? (() => <></>)
+  const ActiveTab: TabElement = visibleTabs[activeTabIndex].$el ?? (() => <></>)
+
+  useEffect(() => {
+    const setTabState =
+      (tabId: string, isActive: boolean) => tabStateManager.dispatch({
+        type: 'isActive',
+        payload: {
+          tabId: tabId,
+          value: isActive
+        }
+      })
+
+    // set the current tab state to active
+    setTabState(activeTabId, true)
+
+    const onNavigateAway = () => {
+      // set the tab to inactive when the user
+      // navigates to a different tab
+      setTabState(activeTabId, false)
+    }
+    
+    return onNavigateAway
+  }, [activeTabId])
 
   const isPageStackEmpty = pageStack.length === 0
   const PageStackHead = pageStack[pageStack.length - 1]
@@ -381,7 +403,7 @@ export default function BrowserExtensionMenu (props) {
                   ? <div className='page-stack'>
                     { <PageStackHead.Component { ...PageStackHead.props } />}
                   </div>
-                  : <div className="body"><$activeTabEl tabId={activeTabId} /></div>
+                  : <div className="body"><ActiveTab tabId={activeTabId} /></div>
               }
             </SnackBarProvider>
           </TabContext.Provider>

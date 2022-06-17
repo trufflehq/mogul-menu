@@ -32,6 +32,7 @@ export default function HomeTab ({ tabId }) {
     <div className="z-home-tab">
       <div className="truffle-text-header-1">Tab id: {tabId}</div>
       <div className="truffle-text-header-1">Tab name: {tabState.text}</div>
+      <div className="truffle-text-header-1">Tab isActive: {String(tabState.isActive)}</div>
       <div>
         <Button
           onClick={snackBarHandler}

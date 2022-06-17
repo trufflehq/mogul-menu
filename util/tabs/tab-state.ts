@@ -29,7 +29,8 @@ export function useTabStateManager (tabs: TabDefinition[]) {
       tabStates[uniqueId()] = {
         text: tab.text,
         icon: tab.imgUrl,
-        hasBadge: false
+        hasBadge: false,
+        isActive: false
       }
     }
 
@@ -59,6 +60,7 @@ export function useTabState (tabId: string) {
     text: currentTabState?.text,
     icon: currentTabState?.icon,
     hasBadge: currentTabState?.hasBadge,
+    isActive: currentTabState?.isActive,
     setTabText: (value: string) => dispatch({ type: 'text', payload: { tabId, value } }),
     setTabIcon: (value: string) => dispatch({ type: 'icon', payload: { tabId, value } }),
     setTabBadge: (value: boolean) => dispatch({ type: 'hasBadge', payload: { tabId, value } })
