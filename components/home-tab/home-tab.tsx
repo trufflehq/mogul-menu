@@ -5,14 +5,16 @@ import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx'
 
 import { useTabState } from '../../util/tabs/tab-state.ts'
+import { useTabId } from "../../util/tabs/tab-id.ts";
 
-export default function HomeTab ({ tabId }) {
+export default function HomeTab () {
 
   const enqueueSnackBar = useSnackBar()
   const [count, setCount] = useState(0)
   const [isSelected, setSelected] = useState(false)
 
-  const tabState = useTabState(tabId)
+  const tabId = useTabId()
+  const tabState = useTabState()
 
   const snackBarHandler = () => {
     console.log('enqueueing snackbar')

@@ -2,10 +2,11 @@ import { useContext, createContext, useReducer } from 'react'
 import _ from 'https://npm.tfl.dev/lodash?no-check'
 import { TabDefinition, TabState, TabStateMap } from './types.ts'
 import { uniqueId } from '../general.ts'
+import { useTabId } from "./tab-id.ts";
 
 export type TabStateManager = ReturnType<typeof useTabStateManager>
 
-export const TabContext = createContext<TabStateManager>()
+export const TabStateContext = createContext<TabStateManager>()
 
 export function useTabStateManager (tabs: TabDefinition[]) {
 
@@ -44,8 +45,9 @@ export function useTabStateManager (tabs: TabDefinition[]) {
   return { tabStates, dispatch }
 }
 
-export function useTabState (tabId: string) {
-  const {tabStates, dispatch}: TabStateManager = useContext(TabContext)
+export function useTabState () {
+  const tabId = useTabId()
+  const {tabStates, dispatch}: TabStateManager = useContext(TabStateContext)
   const currentTabState = tabStates[tabId]
 
   return {

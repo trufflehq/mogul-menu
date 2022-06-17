@@ -34,9 +34,11 @@ import { getModel } from 'https://tfl.dev/@truffle/api@0.0.1/legacy/index.js'
 import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js'
 
 import HomeTab from '../home-tab/home-tab.tsx'
+import CollectionTab from "../collection-tab/collection-tab.tsx";
 
 import { TabElement } from '../../util/tabs/types.ts'
-import { TabContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
+import { TabStateContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
+import { TabIdContext } from '../../util/tabs/tab-id.ts'
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
@@ -97,7 +99,7 @@ const DEFAULT_TABS = [
     slug: 'collection',
     imgUrl:
       'https://cdn.bio/assets/images/features/browser_extension/collection.svg',
-    // $el: CollectionTab
+    $el: CollectionTab
   },
   {
     text: 'Battle Pass',
@@ -395,17 +397,19 @@ export default function BrowserExtensionMenu (props) {
               }) }
             />*/
           }
-          <TabContext.Provider value={tabStateManager}>
-            <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
-              {
-                !isPageStackEmpty
-                  ? <div className='page-stack'>
-                    { <PageStackHead.Component { ...PageStackHead.props } />}
-                  </div>
-                  : <div className="body"><ActiveTab tabId={activeTabId} /></div>
-              }
-            </SnackBarProvider>
-          </TabContext.Provider>
+          <TabIdContext.Provider value={activeTabId}>
+            <TabStateContext.Provider value={tabStateManager}>
+              <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
+                {
+                  !isPageStackEmpty
+                    ? <div className='page-stack'>
+                      { <PageStackHead.Component { ...PageStackHead.props } />}
+                    </div>
+                    : <div className="body"><ActiveTab tabId={activeTabId} /></div>
+                }
+              </SnackBarProvider>
+            </TabStateContext.Provider>
+          </TabIdContext.Provider>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
