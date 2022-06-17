@@ -12,3 +12,12 @@ export interface TabDefinition {
   imgUrl: string;
   $el?: TabElement
 }
+
+export interface TabState {
+  hasBadge: boolean;
+  text: string;
+  icon: string;
+  isActive: boolean;
+}
+
+export type TabStateMap = Record<string, TabState>

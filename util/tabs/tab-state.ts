@@ -1,16 +1,8 @@
 import { useContext, createContext, useReducer } from 'react'
 import _ from 'https://npm.tfl.dev/lodash?no-check'
-import { TabDefinition } from './tab-definition.ts'
+import { TabDefinition, TabState, TabStateMap } from './types.ts'
 import { uniqueId } from '../general.ts'
 
-export interface TabState {
-  hasBadge: boolean;
-  text: string;
-  icon: string;
-  isActive: boolean;
-}
-
-export type TabStateMap = Record<string, TabState>
 export type TabStateManager = ReturnType<typeof useTabStateManager>
 
 export const TabContext = createContext<TabStateManager>()

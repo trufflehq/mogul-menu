@@ -35,7 +35,7 @@ import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.
 
 import HomeTab from '../home-tab/home-tab.tsx'
 
-import { TabElement } from '../../util/tabs/tab-definition.ts'
+import { TabElement } from '../../util/tabs/types.ts'
 import { TabContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
 
 import styles from './menu.css' assert { type: 'css' }
