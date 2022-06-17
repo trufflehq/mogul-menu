@@ -237,12 +237,11 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
             padding: 0px 12px;
 
             &:hover {
-              background-color: var(--bg-mod-inverse-3);
+              background-color: var(--truffle-color-bg-secondary);
             }
 
             &.is-active {
-              // background-color: rgba(var(--primary-base-rgb-csv), 0.5)
-              background-color: var(--tertiary-base);
+              background-color: var(--truffle-color-bg-tertiary);
             }
 
             &.has-badge > .icon {
