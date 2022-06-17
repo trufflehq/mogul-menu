@@ -6,6 +6,7 @@
     border: 1px solid $stroke;
     width: $width;
     height: $height;
+    background: red;
 
     @if $location == bottom-right {
       right: 4px;
@@ -130,7 +131,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     width: calc(100% - #{$extension-right-offset});
     border-radius: 2px;
     box-sizing: border-box;
-    background: var(--bg-base);
+    background: var(--truffle-color-bg-primary);
     border: 1px solid rgba(60, 58, 65, 1);
 
     > .inner {
@@ -235,18 +236,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 
             padding: 0px 12px;
 
-            background-color: var(--bg-base);
-            color: var(--bg-base-text);
-
-            font-size: 12px;
-
             &:hover {
-              background-color: var(--bg-mod-inverse-3);
+              background-color: var(--truffle-color-bg-secondary);
             }
 
             &.is-active {
-              // background-color: rgba(var(--primary-base-rgb-csv), 0.5)
-              background-color: var(--tertiary-base);
+              background-color: var(--truffle-color-bg-tertiary);
             }
 
             &.has-badge > .icon {
@@ -264,27 +259,28 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
           }
         }
 
-        > .channel-points {
-          box-sizing: border-box;
-          height: 100%;
-          height: 40px;
+        // TODO: generalize buttons next to tabs
+        // > .channel-points {
+        //   box-sizing: border-box;
+        //   height: 100%;
+        //   height: 40px;
 
-          display: flex;
+        //   display: flex;
 
-          > .c-channel-points {
-            > .channel-points {
-              display: none;
-            }
+        //   > .c-channel-points {
+        //     > .channel-points {
+        //       display: none;
+        //     }
 
-            > .claim {
-              display: none;
+        //     > .claim {
+        //       display: none;
 
-              &.is-visible {
-                display: flex;
-              }
-            }
-          }
-        }
+        //       &.is-visible {
+        //         display: flex;
+        //       }
+        //     }
+        //   }
+        // }
 
         > .extension-icon {
           background-color: var(--primary-base);
@@ -323,73 +319,57 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    .action-banner {
-      display: flex;
-      align-items: center;
-      background-color: var(--secondary-base);
-      box-sizing: border-box;
-      padding: 2px 16px;
+    // TODO: extract action banner component
+    // .action-banner {
+    //   display: flex;
+    //   align-items: center;
+    //   background-color: var(--secondary-base);
+    //   box-sizing: border-box;
+    //   padding: 2px 16px;
 
-      > .info {
-        font-size: 14px;
-        line-height: 21px;
-        font-weight: 600;
-        color: var(--secondary-base-text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+    //   > .info {
+    //     font-size: 14px;
+    //     line-height: 21px;
+    //     font-weight: 600;
+    //     color: var(--secondary-base-text);
+    //     white-space: nowrap;
+    //     overflow: hidden;
+    //     text-overflow: ellipsis;
+    //   }
 
-      &.action-banner-style-twitch {
-        background: #772CE8;
+    //   &.action-banner-style-twitch {
+    //     background: #772CE8;
 
-        > .info {
-          color:rgba(255, 255, 255, 1);
-        }
-      }
+    //     > .info {
+    //       color:rgba(255, 255, 255, 1);
+    //     }
+    //   }
 
-      > .signup {
-        display: flex;
-        justify-content: flex-end;
-        flex: 1;
-        margin-left: 8px;
+    //   > .signup {
+    //     display: flex;
+    //     justify-content: flex-end;
+    //     flex: 1;
+    //     margin-left: 8px;
         
-        > button {
-          font-size: 12px;
-          line-height: 18px;
-          font-weight: 500;
-          max-width: 120px;
-          padding: 8px 24px;
-          border-radius: 4px;
-        }
-      }
-    }
+    //     > button {
+    //       font-size: 12px;
+    //       line-height: 18px;
+    //       font-weight: 500;
+    //       max-width: 120px;
+    //       padding: 8px 24px;
+    //       border-radius: 4px;
+    //     }
+    //   }
+    // }
   }
 
-  .c-snack-bar-container {
-    top: 40px + 16px;
-    right: $extension-right-offset;
-    width: calc(100% - #{$closed-offest-width});
-    max-width: 280px;
-    left: unset;
-    pointer-events: none;
-
-    > .c-snack-bar-el {
-      display: none;
-
-      &.always-visible {
-        display: flex;
-        pointer-events: all;
-      }
-    }
-  }
-
-  &.is-claimable {
-    > .menu {
-      clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 78px));
-      transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
-    }
-  }
+  // TODO: generalize button in tab menu behavior
+  // &.is-claimable {
+  //   > .menu {
+  //     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 78px));
+  //     transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
+  //   }
+  // }
 
   &.position-chat {
     > .menu {
@@ -408,18 +388,19 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    &.is-claimable {
-      > .menu {
-        clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 78px));
-      }
-    }
+    // TODO: generalize button in tab menu behavior
+    // &.is-claimable {
+    //   > .menu {
+    //     clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 78px));
+    //   }
+    // }
 
     .c-snack-bar-container {
       bottom: 40px + 16px;
     }
   }
 
-  &.is-open, &.is-open.is-claimable {
+  &.is-open {
     > .menu {
       clip-path: inset(0% 0% 0% 0%);
       transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
