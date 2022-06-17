@@ -41,6 +41,7 @@ import { TabElement } from '../../util/tabs/types.ts'
 import { TabStateContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
 import { TabIdContext } from '../../util/tabs/tab-id.ts'
 import { PageStackContext } from '../../util/page-stack/page-stack.ts'
+import { usePageStackManager } from '../../util/page-stack/manager.ts'
 
 import styles from './menu.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
@@ -135,7 +136,6 @@ export default function BrowserExtensionMenu (props) {
   const {
     extensionIconPositionObs,
     hasViewedOnboardTooltipObs,
-    pageStackSubject
   } = useMemo(() => {
     const extensionIconPositionObs = Obs.from(
       jumper?.call('storage.get', { key: getStorageKey(STORAGE_POSITION_PREFIX) })
@@ -164,18 +164,15 @@ export default function BrowserExtensionMenu (props) {
     return {
       extensionIconPositionObs,
       hasViewedOnboardTooltipObs,
-      pageStackSubject: createSubject([])
     }
   }, [])
 
   const {
     extensionIconPosition,
     hasViewedOnboardTooltip,
-    pageStack
   } = useObservables(() => ({
     extensionIconPosition: extensionIconPositionObs,
     hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
-    pageStack: pageStackSubject.obs,
   }))
 
   const isClaimable = false
@@ -197,6 +194,13 @@ export default function BrowserExtensionMenu (props) {
     }
     return true
   })
+
+  const {
+    pushPage,
+    popPage,
+    clearPageStack,
+    pageStackSubject
+  } = usePageStackManager()
 
   // set up state for TabNameContext
   const tabStateManager: TabStateManager = useTabStateManager(visibleTabs)
@@ -235,24 +239,6 @@ export default function BrowserExtensionMenu (props) {
 
   // actions
   const toggleIsOpen = () => setIsOpen(prev => !prev)
-
-  // pushes a component onto the page stack;
-  // used for creating pages that take over
-  // the whole extension UI (like the
-  // prediction page, for example)
-  const pushPage = (Component) => {
-    const currentPageStack = pageStackSubject.getValue()
-    pageStackSubject.next(currentPageStack.concat(Component))
-  }
-
-  const popPage = () => {
-    const currentPageStack = pageStackSubject.getValue()
-    pageStackSubject.next(currentPageStack.slice(0, -1))
-  }
-
-  const clearPageStack = () => {
-    pageStackSubject.next([])
-  }
 
   // effects
 

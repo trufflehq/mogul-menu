@@ -1,6 +1,5 @@
-import React, { JSX } from 'react'
+import React from 'react'
 import useObservables from 'https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js'
-import { op } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
 
 import styles from './page-stack.css' assert { type: 'css' }
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
