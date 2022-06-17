@@ -1,7 +1,5 @@
 import { useContext, createContext, useReducer } from 'react'
 import _ from 'https://npm.tfl.dev/lodash?no-check'
-import { createSubject, op, Obs } from 'https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js'
-import useObservables from 'https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js'
 import { TabDefinition } from './tab-definition.ts'
 import { uniqueId } from '../general.ts'
 
@@ -9,6 +7,7 @@ export interface TabState {
   hasBadge: boolean;
   text: string;
   icon: string;
+  isActive: boolean;
 }
 
 export type TabStateMap = Record<string, TabState>
@@ -20,7 +19,7 @@ export function useTabStateManager (tabs: TabDefinition[]) {
 
   const updateTabState = (state, { type, payload }) => {
     const newState = {...state}
-    newState[payload.id][type] = payload.value
+    newState[payload.tabId][type] = payload.value
     return newState
   }
 
