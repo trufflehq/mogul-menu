@@ -1,0 +1,1 @@
+export const CRYSTAL_BALL_ICON_VIEWBOX = 20;

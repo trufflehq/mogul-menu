@@ -39,6 +39,7 @@ import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 
 import HomeTab from "../home-tab/home-tab.tsx";
+// import HomeTab from "../test-tab/test-tab.tsx";
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
