@@ -14,6 +14,7 @@ Services that the menu component should provide:
 
 import React, { useMemo, useEffect, useRef, useState, JSX } from 'react'
 import _ from 'https://npm.tfl.dev/lodash?no-check'
+import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
 
 import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx'
 // import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.jsx'
@@ -42,9 +43,6 @@ import { TabStateContext, TabStateManager, useTabStateManager } from '../../util
 import { TabIdContext } from '../../util/tabs/tab-id.ts'
 import { PageStackContext } from '../../util/page-stack/page-stack.ts'
 import { usePageStackManager } from '../../util/page-stack/manager.ts'
-
-import styles from './menu.css' assert { type: 'css' }
-document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
 
 function getStorageKey (prefix) {
   const extensionMappingId = getExtensionMappingId()
@@ -243,7 +241,11 @@ export default function BrowserExtensionMenu (props) {
   // effects
 
   return (
-    <div className={className}>
+    <root.div className={className}>
+      <link
+        rel="stylesheet"
+        href={new URL("menu.css", import.meta.url).toString()}
+      />
       <div className="extension-icon"
         style={{
           backgroundImage: iconImageObj ? `url(${getModel().image.getSrcByImageObj(iconImageObj)})` : undefined
@@ -383,6 +385,6 @@ export default function BrowserExtensionMenu (props) {
           onComplete={transferJwt}
         />
       </Modal> */}
-    </div>
+    </root.div>
   )
 }

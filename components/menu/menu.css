@@ -1,4 +1,4 @@
-.z-browser-extension-menu {
+:host {
   height: 100%;
   width: 100%;
   position: relative;
@@ -7,7 +7,7 @@
   --success-green: rgba(107, 190, 86, 1);
 }
 
-.z-browser-extension-menu > .extension-icon {
+:host > .extension-icon {
   cursor: pointer;
   position: absolute;
   z-index: 99999;
@@ -29,18 +29,18 @@
   transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
 }
 
-.z-browser-extension-menu > .extension-icon:hover {
+:host > .extension-icon:hover {
   background-color: rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
           box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
 }
 
-.z-browser-extension-menu.position-chat > .extension-icon {
+:host.position-chat > .extension-icon {
   top: initial;
   bottom: 10px;
 }
 
-.z-browser-extension-menu > .menu {
+:host > .menu {
   -webkit-clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
           clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
   -webkit-transition: -webkit-clip-path 0.5s cubic-bezier(0.4, 0.71, 0.18, 0.99);
@@ -59,7 +59,7 @@
   border: 1px solid #3c3a41;
 }
 
-.z-browser-extension-menu > .menu > .inner {
+:host > .menu > .inner {
   height: 100%;
   width: 100%;
   position: relative;
@@ -72,14 +72,14 @@
           flex-direction: column;
 }
 
-.z-browser-extension-menu > .menu > .inner > .close {
+:host > .menu > .inner > .close {
   position: absolute;
   top: 48px;
   right: 12px;
   cursor: pointer;
 }
 
-.z-browser-extension-menu > .menu > .inner > .body {
+:host > .menu > .inner > .body {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -89,12 +89,12 @@
   padding: 16px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .body::-webkit-scrollbar {
+:host > .menu > .inner > .body::-webkit-scrollbar {
   width: 0;
   background: transparent;
 }
 
-.z-browser-extension-menu > .menu > .inner > .body > .prediction {
+:host > .menu > .inner > .body > .prediction {
   background: var(--bg-base);
   position: absolute;
   z-index: 10;
@@ -105,12 +105,12 @@
   overflow-y: auto;
 }
 
-.z-browser-extension-menu > .menu > .inner > .body > .prediction::-webkit-scrollbar {
+:host > .menu > .inner > .body > .prediction::-webkit-scrollbar {
   width: 0;
   background: transparent;
 }
 
-.z-browser-extension-menu > .menu > .inner > .body > .prediction > .close {
+:host > .menu > .inner > .body > .prediction > .close {
   height: 40px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -121,7 +121,7 @@
   padding-left: 8px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom {
+:host > .menu > .inner > .bottom {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -132,7 +132,7 @@
   width: 100%;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs {
+:host > .menu > .inner > .bottom > .tabs {
   opacity: 0;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: reverse;
@@ -154,26 +154,26 @@
   margin-bottom: -5px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs::-webkit-scrollbar {
+:host > .menu > .inner > .bottom > .tabs::-webkit-scrollbar {
   width: 20px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs::-webkit-scrollbar-track {
+:host > .menu > .inner > .bottom > .tabs::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs::-webkit-scrollbar-thumb {
+:host > .menu > .inner > .bottom > .tabs::-webkit-scrollbar-thumb {
   background-color: var(--bg-base-text-10);
   border-radius: 20px;
   border: 4px solid transparent;
   background-clip: content-box;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs:hover::-webkit-scrollbar-thumb {
+:host > .menu > .inner > .bottom > .tabs:hover::-webkit-scrollbar-thumb {
   background-color: var(--bg-base-text-50);
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab {
+:host > .menu > .inner > .bottom > .tabs > .tab {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -190,19 +190,19 @@
   padding: 0px 12px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab:hover {
+:host > .menu > .inner > .bottom > .tabs > .tab:hover {
   background-color: var(--truffle-color-bg-secondary);
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab.is-active {
+:host > .menu > .inner > .bottom > .tabs > .tab.is-active {
   background-color: var(--truffle-color-bg-tertiary);
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab.has-badge > .icon {
+:host > .menu > .inner > .bottom > .tabs > .tab.has-badge > .icon {
   position: relative;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab.has-badge > .icon::after {
+:host > .menu > .inner > .bottom > .tabs > .tab.has-badge > .icon::after {
   content: '';
   position: absolute;
   border-radius: 50%;
@@ -214,29 +214,29 @@
   top: 0;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab > .icon {
+:host > .menu > .inner > .bottom > .tabs > .tab > .icon {
   margin-right: 8px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .tabs > .tab > .title {
+:host > .menu > .inner > .bottom > .tabs > .tab > .title {
   white-space: nowrap;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .extension-icon {
+:host > .menu > .inner > .bottom > .extension-icon {
   background-color: var(--primary-base);
   border-radius: 0px;
   border: 1px solid transparent;
   position: relative;
 }
 
-.z-browser-extension-menu > .menu > .inner > .bottom > .extension-icon-placeholder {
+:host > .menu > .inner > .bottom > .extension-icon-placeholder {
   -ms-flex-negative: 0;
       flex-shrink: 0;
   width: 40px;
   height: 40px;
 }
 
-.z-browser-extension-menu > .menu > .inner > .page-stack {
+:host > .menu > .inner > .page-stack {
   height: 100%;
   width: 100%;
   min-height: 0;
@@ -278,37 +278,37 @@
   }
 }
 
-.z-browser-extension-menu > .menu > .inner > .tab-component {
+:host > .menu > .inner > .tab-component {
   position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
 }
 
-.z-browser-extension-menu.position-chat > .menu {
+:host.position-chat > .menu {
   -webkit-clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
           clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
   top: initial;
   bottom: 10px;
 }
 
-.z-browser-extension-menu.position-chat > .menu > .inner > .body {
+:host.position-chat > .menu > .inner > .body {
   -webkit-box-ordinal-group: 2;
       -ms-flex-order: 1;
           order: 1;
 }
 
-.z-browser-extension-menu.position-chat > .menu > .inner > .bottom {
+:host.position-chat > .menu > .inner > .bottom {
   -webkit-box-ordinal-group: 3;
       -ms-flex-order: 2;
           order: 2;
 }
 
-.z-browser-extension-menu.position-chat .c-snack-bar-container {
+:host.position-chat .c-snack-bar-container {
   bottom: 56px;
 }
 
-.z-browser-extension-menu.is-open > .menu {
+:host(.is-open) > .menu {
   -webkit-clip-path: inset(0% 0% 0% 0%);
           clip-path: inset(0% 0% 0% 0%);
   -webkit-transition: -webkit-clip-path 0.5s cubic-bezier(0.4, 0.71, 0.18, 0.99);
@@ -317,11 +317,11 @@
   transition: clip-path 0.5s cubic-bezier(0.4, 0.71, 0.18, 0.99), -webkit-clip-path 0.5s cubic-bezier(0.4, 0.71, 0.18, 0.99);
 }
 
-.z-browser-extension-menu.is-open > .menu > .inner > .bottom > .tabs {
+:host(.is-open) > .menu > .inner > .bottom > .tabs {
   opacity: 1;
 }
 
-.z-browser-extension-menu.is-open > .c-snack-bar-container {
+:host(.is-open) > .c-snack-bar-container {
   top: unset;
   right: unset;
   width: 95%;
@@ -330,14 +330,14 @@
   pointer-events: none;
 }
 
-.z-browser-extension-menu.is-open > .c-snack-bar-container > .c-snack-bar-el {
+:host(.is-open) > .c-snack-bar-container > .c-snack-bar-el {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   pointer-events: all;
 }
 
-.z-browser-extension-menu.has-notification:not(.is-open) > .extension-icon::after {
+:host(.has-notification):not(.is-open) > .extension-icon::after {
   content: '';
   position: absolute;
   border-radius: 50%;
@@ -1291,4 +1291,3 @@
   -webkit-transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
           transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
 }
-/*# sourceMappingURL=menu.css.map */

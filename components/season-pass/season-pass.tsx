@@ -11,9 +11,6 @@ import cssVars, { rgb2rgba, hexOpacity } from 'https://tfl.dev/@truffle/ui@0.0.1
 
 import { getLevelBySeasonPassAndXp, getXPBarBySeasonPassAndXp } from '../../util/season-pass/season-pass.js'
 
-import styles from './season-pass.css' assert { type: 'css' }
-document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
-
 const GREEN = '#75DB9E'
 const YELLOW = '#EBC564'
 

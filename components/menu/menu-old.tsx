@@ -26,9 +26,6 @@ import Page from '../page/page.tsx'
 import SeasonPass from '../season-pass/season-pass.tsx'
 import SnackBarContainer from '../snack-bar-container/snack-bar-container.tsx'
 
-import styles from './menu.css' assert { type: 'css' }
-document.adoptedStyleSheets = [...document.adoptedStyleSheets, styles]
-
 // FIXME: replace all <Component slug="..." /> w/ normal react
 function Component () { return '' }
 

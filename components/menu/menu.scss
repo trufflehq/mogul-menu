@@ -76,7 +76,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 //   background: transparent !important;
 // }
 
-.z-browser-extension-menu {
+:host {
   height: 100%;
   width: 100%;
   position: relative;
@@ -403,43 +403,43 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     .c-snack-bar-container {
       bottom: 40px + 16px;
     }
-  }
+  }  
+}
 
-  &.is-open {
-    > .menu {
-      clip-path: inset(0% 0% 0% 0%);
-      transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
+:host(.is-open) {
+  > .menu {
+    clip-path: inset(0% 0% 0% 0%);
+    transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
 
-      > .inner {
-        > .bottom {
-          > .tabs {
-            opacity: 1;
-          }
+    > .inner {
+      > .bottom {
+        > .tabs {
+          opacity: 1;
         }
       }
     }
-
-    > .c-snack-bar-container {
-      top: unset;
-      right: unset;
-      width: 95%;
-      max-width: unset;
-      left: calc((100% - #{$snackbar-container-width}) / 2);
-      pointer-events: none;
-
-      > .c-snack-bar-el {
-        display: flex;
-        pointer-events: all;
-      }
-    }
   }
 
-  &.has-notification:not(.is-open){
-    > .extension-icon {
-      @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
+  > .c-snack-bar-container {
+    top: unset;
+    right: unset;
+    width: 95%;
+    max-width: unset;
+    left: calc((100% - #{$snackbar-container-width}) / 2);
+    pointer-events: none;
+
+    > .c-snack-bar-el {
+      display: flex;
+      pointer-events: all;
     }
   }
-  
+}
+
+
+:host(.has-notification):not(.is-open){
+  > .extension-icon {
+    @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
+  }
 }
 
 .z-browser-extension-menu_terms {
