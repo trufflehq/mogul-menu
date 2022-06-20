@@ -69,27 +69,19 @@ function getExtensionMappingId() {
   }
 }
 
-export const isYoutubeSourceType = (
-  sourceType,
-) =>
+export const isYoutubeSourceType = (sourceType) =>
   sourceType === "youtube" ||
   sourceType === "youtubeLive" ||
   sourceType === "youtubeVideo";
 
-export const getYoutubePageIdentifier = (
-  pageInfoIdentifiers,
-) =>
+export const getYoutubePageIdentifier = (pageInfoIdentifiers) =>
   pageInfoIdentifiers?.find((identifier) =>
     isYoutubeSourceType(identifier.sourceType)
   );
 
-export const isTwitchSourceType = (
-  sourceType,
-) => sourceType === "twitch";
+export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
-export const getTwitchPageIdentifier = (
-  pageInfoIdentifiers,
-) =>
+export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
   pageInfoIdentifiers?.find((identifier) =>
     isTwitchSourceType(identifier.sourceType)
   );
@@ -146,59 +138,58 @@ export default function BrowserExtensionMenu(props) {
 
   // fetched values
   // TODO: implement logic for fetching from backend
-  const {
-    extensionIconPositionObs,
-    hasViewedOnboardTooltipObs,
-  } = useMemo(() => {
-    const extensionIconPositionObs = Obs.from(
-      jumper?.call("storage.get", {
-        key: getStorageKey(STORAGE_POSITION_PREFIX),
-      })
-        // TODO: remove entire .then in mid-june 2022. legacy code to use old window.localStorage value
-        ?.then(async (value) => {
-          try {
-            if (!value) {
-              const legacyValue = await jumper?.call("storage.get", {
-                key: STORAGE_POSITION_PREFIX,
-              }) ||
-                window.localStorage.getItem("extensionIconPosition");
-              await jumper.call("storage.set", {
-                key: getStorageKey(STORAGE_POSITION_PREFIX),
-                value: legacyValue,
-              });
-              value = legacyValue;
-              // cleanup old values
-              jumper.call("storage.set", {
-                key: STORAGE_POSITION_PREFIX,
-                value: "",
-              });
-              window.localStorage.removeItem("extensionIconPosition");
-            }
-          } catch {}
-          return value;
-        }) || "",
-    );
-    // want this to always be true/false since it's async
-    const hasViewedOnboardTooltipObs = Obs.from(
-      jumper?.call("storage.get", {
-        key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
-      })
-        ?.then((value) => value || false) || "",
-    );
+  const { extensionIconPositionObs, hasViewedOnboardTooltipObs } =
+    useMemo(() => {
+      const extensionIconPositionObs = Obs.from(
+        jumper
+          ?.call("storage.get", {
+            key: getStorageKey(STORAGE_POSITION_PREFIX),
+          })
+          // TODO: remove entire .then in mid-june 2022. legacy code to use old window.localStorage value
+          ?.then(async (value) => {
+            try {
+              if (!value) {
+                const legacyValue =
+                  (await jumper?.call("storage.get", {
+                    key: STORAGE_POSITION_PREFIX,
+                  })) || window.localStorage.getItem("extensionIconPosition");
+                await jumper.call("storage.set", {
+                  key: getStorageKey(STORAGE_POSITION_PREFIX),
+                  value: legacyValue,
+                });
+                value = legacyValue;
+                // cleanup old values
+                jumper.call("storage.set", {
+                  key: STORAGE_POSITION_PREFIX,
+                  value: "",
+                });
+                window.localStorage.removeItem("extensionIconPosition");
+              }
+            } catch {}
+            return value;
+          }) || ""
+      );
+      // want this to always be true/false since it's async
+      const hasViewedOnboardTooltipObs = Obs.from(
+        jumper
+          ?.call("storage.get", {
+            key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
+          })
+          ?.then((value) => value || false) || ""
+      );
 
-    return {
-      extensionIconPositionObs,
-      hasViewedOnboardTooltipObs,
-    };
-  }, []);
+      return {
+        extensionIconPositionObs,
+        hasViewedOnboardTooltipObs,
+      };
+    }, []);
 
-  const {
-    extensionIconPosition,
-    hasViewedOnboardTooltip,
-  } = useObservables(() => ({
-    extensionIconPosition: extensionIconPositionObs,
-    hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
-  }));
+  const { extensionIconPosition, hasViewedOnboardTooltip } = useObservables(
+    () => ({
+      extensionIconPosition: extensionIconPositionObs,
+      hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
+    })
+  );
 
   const isClaimable = false;
 
@@ -210,23 +201,18 @@ export default function BrowserExtensionMenu(props) {
   const toggleIsOpen = () => setIsOpen((prev) => !prev);
 
   // computed values
-  const visibleTabs = DEFAULT_TABS
-    .filter((tab) => {
-      if (!hasChannelPoints) {
-        return tab.slug !== "shop";
-      }
-      if (!hasBattlePass) {
-        return tab.slug !== "battle-pass";
-      }
-      return true;
-    });
+  const visibleTabs = DEFAULT_TABS.filter((tab) => {
+    if (!hasChannelPoints) {
+      return tab.slug !== "shop";
+    }
+    if (!hasBattlePass) {
+      return tab.slug !== "battle-pass";
+    }
+    return true;
+  });
 
-  const {
-    pushPage,
-    popPage,
-    clearPageStack,
-    pageStackSubject,
-  } = usePageStackManager();
+  const { pushPage, popPage, clearPageStack, pageStackSubject } =
+    usePageStackManager();
 
   // set up state for TabNameContext
   const tabStateManager: TabStateManager = useTabStateManager(visibleTabs);
@@ -235,8 +221,8 @@ export default function BrowserExtensionMenu(props) {
   const [activeTabId, setActiveTabId] = useState(tabIds[0]);
 
   const activeTabIndex = tabIds.indexOf(activeTabId);
-  const ActiveTab: TabElement = visibleTabs[activeTabIndex].$el ??
-    (() => <></>);
+  const ActiveTab: TabElement =
+    visibleTabs[activeTabIndex].$el ?? (() => <></>);
 
   useEffect(() => {
     const setTabState = (tabId: string, isActive: boolean) =>
@@ -262,20 +248,16 @@ export default function BrowserExtensionMenu(props) {
 
   const hasNotification = Object.values(tabStates).reduce(
     (acc, tabState) => acc || tabState.hasBadge,
-    false,
+    false
   );
 
   // action banners
-  const {
-    actionBannerObjSubject,
-    displayActionBanner,
-    removeActionBanner,
-  } = useActionBannerManager();
+  const { actionBannerObjSubject, displayActionBanner, removeActionBanner } =
+    useActionBannerManager();
 
-  const className =
-    `z-browser-extension-menu position-${extensionIconPosition} ${
-      classKebab({ isOpen, hasNotification, isClaimable })
-    }`;
+  const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab(
+    { isOpen, hasNotification, isClaimable }
+  )}`;
 
   return (
     <root.div className={className}>
@@ -327,8 +309,7 @@ export default function BrowserExtensionMenu(props) {
               })}
             </div>
             {/* TODO: refactor channel points component */}
-            {
-              /*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
+            {/*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
               <ChannelPoints {...{
                 hasText: isOpen,
                 fontColor: '#FFFFFF',
@@ -373,18 +354,15 @@ export default function BrowserExtensionMenu(props) {
                   )
                 }
               }} />
-            </div> */
-            }
+            </div> */}
             <div className="extension-icon-placeholder"></div>
           </div>
           {/* TODO: put back account linking logic */}
-          {
-            /*shouldShowSignupBanner && <ActionBanner
+          {/*shouldShowSignupBanner && <ActionBanner
             message="Finish setting up your account"
             buttonText="Sign up"
             onClick={handleSignup}
-          />*/
-          }
+          />*/}
           {/*shouldShowTwitchBanner && getModel().user.isMember(me) && credentials?.sourceType === 'twitch' && !hasConnectedAccount && <TwitchSignupBanner /> */}
           {
             // TODO: move this to the actions page
@@ -400,53 +378,54 @@ export default function BrowserExtensionMenu(props) {
               }) }
             />*/
           }
-          <div className="tab-component">
-            <TabIdContext.Provider value={activeTabId}>
-              <ActionBannerContext.Provider
-                value={{ displayActionBanner, removeActionBanner }}
-              >
-                <TabStateContext.Provider value={tabStateManager}>
-                  <PageStackContext.Provider value={{ pushPage, popPage }}>
-                    <SnackBarProvider
-                      visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
-                    >
-                      <PageStack pageStackSubject={pageStackSubject} />
-                      <ActionBannerContainer
-                        actionBannerObjSubject={actionBannerObjSubject}
-                      />
-                      <div className="body">
-                        <ActiveTab tabId={activeTabId} />
+          <div className="body">
+            <ActionBannerContext.Provider
+              value={{ displayActionBanner, removeActionBanner }}
+            >
+              <TabStateContext.Provider value={tabStateManager}>
+                <PageStackContext.Provider value={{ pushPage, popPage }}>
+                  <SnackBarProvider
+                    visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
+                  />
+                  <PageStack pageStackSubject={pageStackSubject} />
+                  <ActionBannerContainer
+                    actionBannerObjSubject={actionBannerObjSubject}
+                  />
+                  {visibleTabs.map(({ $el: TabComponent }, idx) => (
+                    <TabIdContext.Provider value={tabIds[idx]}>
+                      <div
+                        className={`tab-component ${classKebab({
+                          isActive: idx === activeTabIndex,
+                        })}`}
+                      >
+                        {TabComponent && <TabComponent />}
                       </div>
-                    </SnackBarProvider>
-                  </PageStackContext.Provider>
-                </TabStateContext.Provider>
-              </ActionBannerContext.Provider>
-            </TabIdContext.Provider>
+                    </TabIdContext.Provider>
+                  ))}
+                </PageStackContext.Provider>
+              </TabStateContext.Provider>
+            </ActionBannerContext.Provider>
           </div>
         </div>
       </div>
       {/* TODO: refactor snackbar container component */}
 
       {/* TODO: refactor NewExtensionUserTooltip */}
-      {
-        /* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
+      {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip
           hasViewedOnboardTooltipSubject={hasViewedOnboardTooltipSubject}
           $$extensionIconRef={$$extensionIconRef}
         />
-      </Modal> */
-      }
+      </Modal> */}
       {/* TODO: wire up */}
-      {
-        /* <Modal isVisibleSubject={isSignupVisibleSubject}>
+      {/* <Modal isVisibleSubject={isSignupVisibleSubject}>
         <SignUpForm
           source='extension-sign-up'
           prefillName={me?.name}
           infoMessage='Create an account to secure your collection'
           onComplete={transferJwt}
         />
-      </Modal> */
-      }
+      </Modal> */}
     </root.div>
   );
 }

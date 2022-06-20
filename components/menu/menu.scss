@@ -166,7 +166,14 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         flex: 1;
         overflow-y: auto;
         box-sizing: border-box;
-        padding: $tab-body-padding;
+
+        >.tab-component {
+          display: none;
+
+          &.is-active {
+            display: block;
+          }
+        }
 
         &::-webkit-scrollbar {
           width: 0;

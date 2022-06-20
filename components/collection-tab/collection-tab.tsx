@@ -8,8 +8,5 @@ export default function CollectionTab() {
     console.log("collection tab id", tabId);
   }, [tabId]);
 
-  return (
-    <div className="c-collection-tab">
-    </div>
-  );
+  return <div className="c-collection-tab">Hello?</div>;
 }

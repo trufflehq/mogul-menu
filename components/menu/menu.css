@@ -87,7 +87,14 @@
   overflow-y: auto;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  padding: 16px;
+}
+
+:host > .menu > .inner > .body > .tab-component {
+  display: none;
+}
+
+:host > .menu > .inner > .body > .tab-component.is-active {
+  display: block;
 }
 
 :host > .menu > .inner > .body::-webkit-scrollbar {
