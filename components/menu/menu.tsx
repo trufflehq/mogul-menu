@@ -37,12 +37,15 @@ import classKebab from 'https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.
 import HomeTab from '../home-tab/home-tab.tsx'
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
+import ActionBannerContainer from '../action-banner-container/action-banner-container.tsx'
 
 import { TabElement } from '../../util/tabs/types.ts'
 import { TabStateContext, TabStateManager, useTabStateManager } from '../../util/tabs/tab-state.ts'
 import { TabIdContext } from '../../util/tabs/tab-id.ts'
 import { PageStackContext } from '../../util/page-stack/page-stack.ts'
 import { usePageStackManager } from '../../util/page-stack/manager.ts'
+import { useActionBannerManager } from '../../util/action-banner/manager.ts'
+import { ActionBannerContext } from '../../util/action-banner/action-banner.ts'
 
 function getStorageKey (prefix) {
   const extensionMappingId = getExtensionMappingId()
@@ -178,8 +181,9 @@ export default function BrowserExtensionMenu (props) {
   // references
   const $$extensionIconRef = useRef(null)
 
-  // state
+  // isOpen state
   const [isOpen, setIsOpen] = useState(false)
+  const toggleIsOpen = () => setIsOpen(prev => !prev)
 
   // computed values
   const visibleTabs = DEFAULT_TABS
@@ -233,12 +237,14 @@ export default function BrowserExtensionMenu (props) {
 
   const hasNotification = Object.values(tabStates).reduce((acc, tabState) => acc || tabState.hasBadge, false)
 
+  // action banners
+  const {
+    actionBannerObjSubject,
+    displayActionBanner,
+    removeActionBanner
+  } = useActionBannerManager()
+
   const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab({ isOpen, hasNotification, isClaimable })}`
-
-  // actions
-  const toggleIsOpen = () => setIsOpen(prev => !prev)
-
-  // effects
 
   return (
     <root.div className={className}>
@@ -353,16 +359,19 @@ export default function BrowserExtensionMenu (props) {
           }
           <div className="tab-component">
             <TabIdContext.Provider value={activeTabId}>
-              <TabStateContext.Provider value={tabStateManager}>
-                <PageStackContext.Provider value={{ pushPage, popPage }}>
-                  <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
-                    <PageStack pageStackSubject={pageStackSubject} />
-                    <div className="body">
-                      <ActiveTab tabId={activeTabId} />
-                    </div>
-                  </SnackBarProvider>
-                </PageStackContext.Provider>
-              </TabStateContext.Provider>
+              <ActionBannerContext.Provider value={{displayActionBanner, removeActionBanner}}>
+                <TabStateContext.Provider value={tabStateManager}>
+                  <PageStackContext.Provider value={{ pushPage, popPage }}>
+                    <SnackBarProvider visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}>
+                      <PageStack pageStackSubject={pageStackSubject} />
+                      <ActionBannerContainer actionBannerObjSubject={actionBannerObjSubject} />
+                      <div className="body">
+                        <ActiveTab tabId={activeTabId} />
+                      </div>
+                    </SnackBarProvider>
+                  </PageStackContext.Provider>
+                </TabStateContext.Provider>
+              </ActionBannerContext.Provider>
             </TabIdContext.Provider>
           </div>
         </div>

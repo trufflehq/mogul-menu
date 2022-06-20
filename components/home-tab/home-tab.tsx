@@ -7,6 +7,7 @@ import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/sna
 import { useTabState } from '../../util/tabs/tab-state.ts'
 import { useTabId } from "../../util/tabs/tab-id.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
+import { useActionBanner } from '../../util/action-banner/action-banner.ts'
 import ChromeExtSettings from "../settings/settings.tsx";
 
 export default function HomeTab () {
@@ -19,6 +20,8 @@ export default function HomeTab () {
   const tabState = useTabState()
 
   const { pushPage, popPage } = usePageStack()
+
+  const { displayActionBanner } = useActionBanner()
 
   const snackBarHandler = () => {
     console.log('enqueueing snackbar')
@@ -36,6 +39,10 @@ export default function HomeTab () {
 
   const pushPageHandler = () => {
     pushPage(<ChromeExtSettings nonce={1} />)
+  }
+
+  const actionBannerHandler = () => {
+    displayActionBanner(<div className="truffle-text-header-1">Action banner</div>)
   }
 
   return (
@@ -60,6 +67,10 @@ export default function HomeTab () {
         <Button
           onClick={pushPageHandler}
           text="Push page"
+        />
+        <Button
+          onClick={actionBannerHandler}
+          text="Show action banner"
         />
       </div>
     </div>
