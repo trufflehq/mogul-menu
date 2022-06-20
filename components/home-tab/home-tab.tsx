@@ -52,9 +52,7 @@ export default function HomeTab() {
       <ActionBanner
         message="Finish setting up your account"
         buttonText="Sign up"
-        onClick={() => {
-          removeActionBanner(actionBannerId);
-        }}
+        onClick={() => removeActionBanner(actionBannerId)}
       />
     );
   };

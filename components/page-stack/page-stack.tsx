@@ -1,9 +1,11 @@
 import React from "react";
+import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
-export default function PageStack(
-  { pageStackSubject, background = "var(--truffle-color-bg-primary)" },
-) {
+export default function PageStack({
+  pageStackSubject,
+  background = "var(--truffle-color-bg-primary)",
+}) {
   const { pageStack } = useObservables(() => ({
     pageStack: pageStackSubject.obs,
   }));
@@ -12,9 +14,14 @@ export default function PageStack(
 
   return (
     <>
-      {isPageStackEmpty
-        ? <></>
-        : (
+      {isPageStackEmpty ? (
+        <></>
+      ) : (
+        <root.div>
+          <link
+            rel="stylesheet"
+            href={new URL("page-stack.css", import.meta.url).toString()}
+          />
           <div className="c-page-stack" style={{ "--background": background }}>
             <div className="container">
               {pageStack.map((Component, idx) => (
@@ -24,7 +31,8 @@ export default function PageStack(
               ))}
             </div>
           </div>
-        )}
+        </root.div>
+      )}
     </>
   );
 }
