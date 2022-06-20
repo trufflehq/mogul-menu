@@ -2,7 +2,6 @@
   height: 100%;
   width: 100%;
   position: relative;
-  color: var(--bg-base-text);
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
 }
@@ -56,6 +55,8 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   background: var(--truffle-color-bg-primary);
+  color: var(--truffle-color-text-bg-primary);
+  font-family: var(--truffle-font-family);
   border: 1px solid #3c3a41;
 }
 
@@ -844,7 +845,8 @@
   margin-bottom: 4px;
 }
 
-.c-mogul-pass-tab > .description, .c-mogul-pass-tab > .learn-more {
+.c-mogul-pass-tab > .description,
+.c-mogul-pass-tab > .learn-more {
   font-size: 14px;
   font-weight: 400;
 }

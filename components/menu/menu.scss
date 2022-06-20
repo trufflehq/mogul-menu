@@ -1,4 +1,4 @@
-@mixin badge($location: bottom-right, $width: 6px, $height: 6px, $stroke: rgba(0,0,0,1)) {
+@mixin badge($location: bottom-right, $width: 6px, $height: 6px, $stroke: rgba(0, 0, 0, 1)) {
   &::after {
     content: '';
     position: absolute;
@@ -8,19 +8,27 @@
     height: $height;
     background: red;
 
-    @if $location == bottom-right {
+    @if $location ==bottom-right {
       right: 4px;
       bottom: 4px;
-    } @else if $location == top-right {
+    }
+
+    @else if $location ==top-right {
       right: -4px;
       top: 0;
-    } @else if $location == outer-top-right {
+    }
+
+    @else if $location ==outer-top-right {
       right: -$width * 1 / 3;
       top: -$height * 1 / 3;
-    } @else if $location == outer-bottom-right {
+    }
+
+    @else if $location ==outer-bottom-right {
       right: -$width * 1 / 3;
       bottom: -$height * 1 / 3;
-    } @else if $location == outer-top-left {
+    }
+
+    @else if $location ==outer-top-left {
       left: -$width * 1 / 3;
       top: -$height * 1 / 3;
     }
@@ -28,6 +36,7 @@
 }
 
 @mixin roundedTriangle() {
+
   // https://stackoverflow.com/questions/14446677/how-to-make-3-corner-rounded-triangle-in-css
   .triangle {
     position: absolute;
@@ -37,28 +46,32 @@
     text-align: left;
     z-index: 1;
   }
+
   .triangle:before,
   .triangle:after {
     content: '';
     position: absolute;
     background-color: inherit;
   }
+
   .triangle,
   .triangle:before,
   .triangle:after {
-    width:  20px;
+    width: 20px;
     height: 20px;
     border-top-right-radius: 30%;
   }
-  
+
   .triangle {
-    transform: rotate(-60deg) skewX(-30deg) scale(1,.866);
+    transform: rotate(-60deg) skewX(-30deg) scale(1, .866);
   }
+
   .triangle:before {
-    transform: rotate(-135deg) skewX(-45deg) scale(1.414,.707) translate(0,-50%);
+    transform: rotate(-135deg) skewX(-45deg) scale(1.414, .707) translate(0, -50%);
   }
+
   .triangle:after {
-    transform: rotate(135deg) skewY(-45deg) scale(.707,1.414) translate(50%);
+    transform: rotate(135deg) skewY(-45deg) scale(.707, 1.414) translate(50%);
   }
 }
 
@@ -70,7 +83,7 @@ $tab-body-padding: 16px;
 $snackbar-container-width: 95%;
 $closed-offest-width: 60px;
 
-$ease-function: cubic-bezier(.4,.71,.18,.99);
+$ease-function: cubic-bezier(.4, .71, .18, .99);
 
 // body {
 //   background: transparent !important;
@@ -80,13 +93,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   height: 100%;
   width: 100%;
   position: relative;
-  color: var(--bg-base-text);
 
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
 
 
-  > .extension-icon {
+  >.extension-icon {
     cursor: pointer;
     position: absolute;
     z-index: 99999;
@@ -111,13 +123,13 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   }
 
   &.position-chat {
-    > .extension-icon {
+    >.extension-icon {
       top: initial;
       bottom: 10px;
     }
   }
 
-  > .menu {
+  >.menu {
     // we use clipping so extension menu can close w/ an animation
     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
     transition: clip-path .5s $ease-function;
@@ -132,34 +144,36 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--truffle-color-bg-primary);
+    color: var(--truffle-color-text-bg-primary);
+    font-family: var(--truffle-font-family);
     border: 1px solid rgba(60, 58, 65, 1);
 
-    > .inner {
+    >.inner {
       height: 100%;
       width: 100%;
       position: relative;
       display: flex;
       flex-direction: column;
 
-      > .close {
+      >.close {
         position: absolute;
         top: 48px;
         right: 12px;
         cursor: pointer;
       }
 
-      > .body {
+      >.body {
         flex: 1;
         overflow-y: auto;
         box-sizing: border-box;
         padding: $tab-body-padding;
-        
+
         &::-webkit-scrollbar {
           width: 0;
           background: transparent;
         }
 
-        > .prediction {
+        >.prediction {
           background: var(--bg-base);
           position: absolute;
           z-index: 10;
@@ -168,13 +182,13 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
           width: 100%;
           height: 100%;
           overflow-y: auto;
-          
+
           &::-webkit-scrollbar {
             width: 0;
             background: transparent;
           }
 
-          > .close {
+          >.close {
             height: 40px;
             display: flex;
             align-items: center;
@@ -183,13 +197,13 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         }
       }
 
-      > .bottom {
+      >.bottom {
         display: flex;
         justify-content: flex-end;
         max-height: 40px;
         width: 100%;
 
-        > .tabs {
+        >.tabs {
           opacity: 0;
           flex-direction: row-reverse;
           box-sizing: border-box;
@@ -204,29 +218,29 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 
           //fix for firefox
           scrollbar-width: none;
-          margin-bottom: -5px; 
+          margin-bottom: -5px;
           // margin-right: -5px;
 
           &::-webkit-scrollbar {
             width: 20px;
           }
-          
+
           &::-webkit-scrollbar-track {
             background-color: transparent;
           }
-          
+
           &::-webkit-scrollbar-thumb {
             background-color: var(--bg-base-text-10);
             border-radius: 20px;
             border: 4px solid transparent;
             background-clip: content-box;
           }
-          
+
           &:hover::-webkit-scrollbar-thumb {
             background-color: var(--bg-base-text-50);
           }
 
-          > .tab {
+          >.tab {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,16 +258,16 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
               background-color: var(--truffle-color-bg-tertiary);
             }
 
-            &.has-badge > .icon {
+            &.has-badge>.icon {
               position: relative;
               @include badge(top-right);
             }
 
-            > .icon {
+            >.icon {
               margin-right: 8px;
             }
 
-            > .title {
+            >.title {
               white-space: nowrap;
             }
           }
@@ -282,21 +296,21 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         //   }
         // }
 
-        > .extension-icon {
+        >.extension-icon {
           background-color: var(--primary-base);
           border-radius: 0px;
           border: 1px solid transparent;
           position: relative;
         }
 
-        > .extension-icon-placeholder {
+        >.extension-icon-placeholder {
           flex-shrink: 0;
           width: 40px;
           height: 40px;
         }
-      } 
+      }
 
-      > .page-stack {
+      >.page-stack {
         height: 100%;
         width: 100%;
         // allow to expand to full height (flex hack)
@@ -305,20 +319,21 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         display: flex;
         flex-direction: column;
         animation: animatebottom 0.4s $ease-function;
-        @keyframes animatebottom{
+
+        @keyframes animatebottom {
           from {
             transform: translateY(100px);
-            opacity:0
+            opacity: 0
           }
-    
+
           to {
             transform: translateY(0);
-            opacity:1
+            opacity: 1
           }
         }
       }
 
-      > .tab-component {
+      >.tab-component {
         position: relative;
         flex: 1;
       }
@@ -355,7 +370,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     //     justify-content: flex-end;
     //     flex: 1;
     //     margin-left: 8px;
-        
+
     //     > button {
     //       font-size: 12px;
     //       line-height: 18px;
@@ -377,17 +392,17 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   // }
 
   &.position-chat {
-    > .menu {
+    >.menu {
       clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
       top: initial;
       bottom: 10px;
 
-      > .inner {
-        > .body {
+      >.inner {
+        >.body {
           order: 1;
         }
 
-        > .bottom {
+        >.bottom {
           order: 2;
         }
       }
@@ -403,24 +418,24 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     .c-snack-bar-container {
       bottom: 40px + 16px;
     }
-  }  
+  }
 }
 
 :host(.is-open) {
-  > .menu {
+  >.menu {
     clip-path: inset(0% 0% 0% 0%);
-    transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
+    transition: clip-path .5s cubic-bezier(.4, .71, .18, .99);
 
-    > .inner {
-      > .bottom {
-        > .tabs {
+    >.inner {
+      >.bottom {
+        >.tabs {
           opacity: 1;
         }
       }
     }
   }
 
-  > .c-snack-bar-container {
+  >.c-snack-bar-container {
     top: unset;
     right: unset;
     width: 95%;
@@ -428,7 +443,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     left: calc((100% - #{$snackbar-container-width}) / 2);
     pointer-events: none;
 
-    > .c-snack-bar-el {
+    >.c-snack-bar-el {
       display: flex;
       pointer-events: all;
     }
@@ -436,8 +451,8 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 }
 
 
-:host(.has-notification):not(.is-open){
-  > .extension-icon {
+:host(.has-notification):not(.is-open) {
+  >.extension-icon {
     @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
   }
 }
@@ -469,7 +484,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     cursor: pointer;
   }
 
-  > .header {
+  >.header {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -480,7 +495,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     box-sizing: border-box;
     margin-bottom: 20px;
 
-    > .icon {
+    >.icon {
       background-color: $tile-bg;
       border-radius: 100%;
       width: 40px;
@@ -488,12 +503,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       border-width: 1px;
       border-style: solid;
 
-      > div {
+      >div {
         margin: auto;
       }
     }
 
-    > .text {
+    >.text {
       font-weight: 500;
       font-size: 16px;
       letter-spacing: 0.02em;
@@ -510,10 +525,10 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   box-sizing: border-box;
   display: flex;
 
-  > .image {
+  >.image {
     flex: 0 1 153px;
 
-    > img {
+    >img {
       display: block;
       width: 100%;
       height: 100%;
@@ -521,7 +536,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     }
   }
 
-  > .content {
+  >.content {
     flex: 1 0 0%;
     padding: 16px 22px;
     display: flex;
@@ -529,16 +544,16 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     justify-content: space-between;
     gap: 16px;
 
-    > .text {
-      > .ad {
+    >.text {
+      >.ad {
         font-weight: 400;
         font-size: 14px;
         line-height: 21px;
         letter-spacing: 0.0025em;
         color: var(--bg-base-text-80);
       }
-  
-      > .tagline {
+
+      >.tagline {
         font-weight: 400;
         font-size: 16px;
         line-height: 24px;
@@ -546,8 +561,8 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    > .actions {
-      > .c-button {
+    >.actions {
+      >.c-button {
         &:hover {
           border: 1px solid var(--bg-base-text);
         }
@@ -558,63 +573,63 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 }
 
 .c-home-tab {
-  > .header {
+  >.header {
     display: flex;
     align-items: center;
 
     margin-bottom: 16px;
 
-    > .user {
+    >.user {
       display: flex;
       flex: 1;
 
 
-      > .c-account-avatar {
+      >.c-account-avatar {
         margin-right: 16px;
       }
-  
-      > .info {
+
+      >.info {
         display: flex;
         flex-direction: column;
         justify-content: center;
 
-        > .top {
+        >.top {
           display: flex;
           align-items: center;
           margin-bottom: 4px;
-    
-          > .name {
+
+          >.name {
             font-size: 20px;
             font-weight: 600;
           }
 
-          > .powerup {
+          >.powerup {
             width: 24px;
             height: 24px;
             margin-left: 8px;
           }
 
         }
-  
-        > .amounts {
+
+        >.amounts {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 18px;
-          
-          > .amount {
+
+          >.amount {
             display: flex;
             align-items: center;
-    
-            > .icon {
+
+            >.icon {
               margin-right: 8px;
             }
           }
         }
-  
+
       }
     }
 
-    > .support {
+    >.support {
       font-size: 12px;
       line-height: 16px;
       text-decoration: underline;
@@ -628,12 +643,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     }
 
 
-    > .actions {
+    >.actions {
       display: flex;
       justify-content: flex-end;
       gap: 16px;
 
-      > .icon {
+      >.icon {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -646,12 +661,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 
   }
 
-  > .tile-grid {
+  >.tile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 
-    > .live-info {
+    >.live-info {
       grid-column: span 2;
       display: flex;
       flex-direction: column;
@@ -659,9 +674,9 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       border: 1px solid var(--tertiary-base);
       border-radius: 8px;
       margin-bottom: 24px;
-  
-  
-      > .header {
+
+
+      >.header {
         font-size: 16px;
         line-height: 24px;
         font-weight: 600;
@@ -672,39 +687,39 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
       }
-  
-      > .info {
+
+      >.info {
         box-sizing: border-box;
         padding: 16px;
-  
-        > .message {
+
+        >.message {
           box-sizing: border-box;
           padding: 8px 0;
           font-weight: 400;
           font-size: 14px;
           line-height: 21px;
         }
-  
-        > .grid {
+
+        >.grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           box-sizing: border-box;
           padding-bottom: 4px;
-  
-          > .timer {
+
+          >.timer {
             display: flex;
             flex-direction: column;
             align-items: center;
-  
-            > .time {
+
+            >.time {
               min-height: 36px;
               color: var(--primary-base);
               font-size: 24px;
               line-height: 36px;
               font-weight: 600;
             }
-  
-            > .title {
+
+            >.title {
               font-size: 14px;
               line-height: 21px;
               font-weight: 400;
@@ -714,22 +729,22 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    > .prediction-tile {
+    >.prediction-tile {
 
-      > .content {
+      >.content {
         flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: end;
         padding: 16px;
 
-        > .primary-text {
+        >.primary-text {
           font-weight: 600;
           font-size: 16px;
           letter-spacing: 0.005em;
         }
 
-        > .secondary-text {
+        >.secondary-text {
           font-weight: 500;
           font-size: 12px;
           letter-spacing: 0.004em;
@@ -737,9 +752,9 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    > .leaderboard-tile {
+    >.leaderboard-tile {
 
-      > .content {
+      >.content {
         padding: 14px 21px;
         display: flex;
         gap: 20px;
@@ -747,17 +762,17 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         max-width: 250px;
         margin: 0 auto;
 
-        > .contestant {
+        >.contestant {
           position: relative;
 
-          > .avatar {
+          >.avatar {
             border-radius: 100%;
             border-width: 1px;
             border-style: solid;
             box-sizing: border-box;
             margin-bottom: 4px;
 
-            > .username {
+            >.username {
               position: absolute;
               bottom: -28px;
               left: 50%;
@@ -779,51 +794,51 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
             &:hover {
               cursor: pointer;
 
-               > .username {
-                 visibility: visible;
-               }
+              >.username {
+                visibility: visible;
+              }
             }
           }
 
-          > .rank {
+          >.rank {
             font-weight: 500;
             font-size: 12px;
             text-align: center;
             letter-spacing: 0.004em;
           }
 
-          
+
         }
 
       }
     }
 
-    > .king-tile {
-      
-      > .content {
+    >.king-tile {
+
+      >.content {
         flex: 1;
         padding: 20px 16px;
         display: flex;
         gap: 12px;
         align-items: center;
 
-        > .info {
+        >.info {
           max-width: 100%;
           overflow: hidden;
 
-          > .username {
+          >.username {
             margin-bottom: 4.5px;
             font-weight: 400;
             font-size: 16px;
             letter-spacing: 0.005em;
           }
 
-          > .powerups {
+          >.powerups {
             display: flex;
             align-items: center;
             gap: 10px;
 
-            > .powerup {
+            >.powerup {
               width: 24px;
               height: 24px;
             }
@@ -832,13 +847,13 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    > .base-ad-tile {
+    >.base-ad-tile {
       grid-column: span 2;
     }
   }
 
 
-  > .banner {
+  >.banner {
     font-size: 16px;
     font-weight: 600;
     background: var(--tertiary-base);
@@ -848,22 +863,23 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 }
 
 .c-mogul-pass-tab {
-  > .title {
+  >.title {
     font-weight: 600;
     font-size: 16px;
-    margin-bottom: 2px; 
+    margin-bottom: 2px;
   }
 
-  > .description {
+  >.description {
     margin-bottom: 4px;
   }
 
-  > .description, > .learn-more {
+  >.description,
+  >.learn-more {
     font-size: 14px;
     font-weight: 400;
   }
 
-  > .learn-more {
+  >.learn-more {
     color: var(--secondary-base);
     margin-bottom: 20px;
     cursor: pointer;
@@ -874,14 +890,14 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 .c-settings-page_content {
   padding: 16px;
 
-  > .settings {
+  >.settings {
     margin-bottom: 16px;
 
-    > .name {
+    >.name {
       margin-top: 8px;
     }
-  
-    > .color {
+
+    >.color {
       margin-top: 8px;
     }
   }
@@ -891,21 +907,21 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     align-items: center;
     padding: 4px 16px;
 
-    > .actions {
+    >.actions {
       margin-top: 0;
     }
   }
 }
 
 .c-position-chooser {
-  > .label {
+  >.label {
     font-weight: 700;
     font-size: 14px;
     margin-top: 8px;
     margin-bottom: 8px;
   }
 
-  > .option {
+  >.option {
     font-size: 14px;
     padding: 12px;
     border-radius: 4px;
@@ -947,7 +963,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   font-size: 14px;
   font-weight: 400;
 
-  > .icon {
+  >.icon {
     margin-right: 8px;
   }
 }
@@ -960,7 +976,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   margin-top: 16px;
   min-height: 200px;
 
-  > .sponsor {
+  >.sponsor {
     width: 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -979,13 +995,13 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   text-align: center;
   border-radius: 4px;
 
-  > .header-image {
+  >.header-image {
     max-width: 568px;
     margin: 0 auto;
     margin-bottom: 20px;
   }
-  
-  > .text {
+
+  >.text {
     margin-bottom: 16px;
   }
 }
@@ -1000,23 +1016,23 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   box-sizing: border-box;
   max-width: 348px;
 
-  > .wrapper {
+  >.wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
 
-    > .preview {
+    >.preview {
       display: flex;
       flex-direction: column;
       margin-bottom: 12px;
-  
-      > .stack {
+
+      >.stack {
         position: relative;
         width: fit-content;
         margin: auto;
-  
-        > .block {
+
+        >.block {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1025,7 +1041,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
           height: 48px;
           border: 1px solid var(--bg-base);
           border-radius: 6px;
-  
+
           &.front {
             background-color: var(--secondary-base);
             z-index: 2;
@@ -1033,7 +1049,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
             left: 12px;
             top: 12px;
           }
-  
+
           &.back {
             position: relative;
             background-color: var(--primary-base);
@@ -1042,7 +1058,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
         }
       }
 
-      > .message { 
+      >.message {
         margin-top: 24px;
         font-size: 16px;
         line-height: 24px;
@@ -1050,12 +1066,12 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
     }
 
-    > .body {
+    >.body {
       background-color: var(--tertiary-base);
       border-radius: 6px;
       padding: 24px 32px;
 
-      > .title {
+      >.title {
         font-size: 16px;
         line-height: 24px;
         text-transform: uppercase;
@@ -1064,39 +1080,37 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
       }
 
 
-      > .way-to-earn {
+      >.way-to-earn {
         display: flex;
         margin-bottom: 24px;
 
-        > .left {
+        >.left {}
 
-        }
-
-        > .right {
+        >.right {
           display: flex;
           flex-direction: column;
           padding-left: 12px;
 
-          > .description {
+          >.description {
             font-size: 16px;
             line-height: 24px;
             font-weight: 400;
             margin-bottom: 12px;
           }
 
-          > .button {
+          >.button {
             margin-bottom: 12px;
 
-            > button {
+            >button {
               background: var(--highlight-gradient, var(--primary-base));
               color: var(--priimary-base-text);
               border-radius: 4px;
               background-size: 200%;
-              background-position: center; 
+              background-position: center;
             }
           }
 
-          > .link {
+          >.link {
             text-decoration: underline;
             cursor: pointer;
           }
@@ -1112,7 +1126,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     // TODO add a background secondary css var
     background-color: rgba(22, 31, 44, 1) !important;
 
-    > .top {
+    >.top {
       background-color: var(--primary-base) !important;
       color: var(--primary-base-text);
     }
@@ -1140,25 +1154,25 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   box-sizing: border-box;
   margin-bottom: 20px;
 
-  > .name {
+  >.name {
     @include font-body-bold;
   }
 
-  > .reward {
+  >.reward {
     display: flex;
     align-items: center;
     margin-top: 2px;
 
-    > .icon {
-      margin-right: 4px; 
+    >.icon {
+      margin-right: 4px;
     }
 
-    > .amount {
+    >.amount {
       @include font-body-bold;
     }
-  } 
+  }
 
-  > .description {
+  >.description {
     margin-top: 4px;
     @include font-body-caption;
   }
@@ -1166,13 +1180,14 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
 
 .c-learn-more {
   box-sizing: border-box;
-  > .title {
+
+  >.title {
     @include font-body-bold();
     margin-bottom: 8px;
   }
 
-  > .button {
-    > a {
+  >.button {
+    >a {
       font-size: 14px;
       font-weight: normal;
       border-radius: 4px;
@@ -1201,22 +1216,21 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     max-width: 232px;
   }
 
-  > .message {
+  >.message {
     position: relative;
     z-index: 2;
   }
-  > .button {
+
+  >.button {
     display: flex;
     justify-content: flex-end;
     margin-top: 4px;
 
-    > button {
+    >button {
       padding: 16px 8px;
       border-radius: 4px;
     }
   }
-  
+
   @include roundedTriangle();
 }
-
-
