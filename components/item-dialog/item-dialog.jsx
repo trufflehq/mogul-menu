@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Component, context, useObservables, Stream } from '@spore/platform'
+import React, { useContext } from "react";
+import { Component, context, Stream, useObservables } from "@spore/platform";
 
 /**
  * @callback onExit
@@ -28,8 +28,8 @@ import { Component, context, useObservables, Stream } from '@spore/platform'
  * @param {Array<DialogButton>} props.buttons
  * @returns {Object}
  */
-export default function BrowserExtensionItemDialog ({
-  displayMode = 'center',
+export default function BrowserExtensionItemDialog({
+  displayMode = "center",
   imgRel,
   $children,
   $controls,
@@ -42,33 +42,43 @@ export default function BrowserExtensionItemDialog ({
   valueText,
   secondaryText,
   secondaryTextStyle,
-  buttons
+  buttons,
 }) {
-  if (!onExit) console.warn('[browser-extension-item-dialog] onExit not defined')
-  if (!imgRel) console.warn('[browser-extension-item-dialog] fileRel not defined')
+  if (!onExit) {
+    console.warn("[browser-extension-item-dialog] onExit not defined");
+  }
+  if (!imgRel) {
+    console.warn("[browser-extension-item-dialog] fileRel not defined");
+  }
 
-  const { overlay, cssVars, model } = useContext(context)
+  const { overlay, cssVars, model } = useContext(context);
 
   const { error } = useObservables(() => ({
-    error: errorStream?.obs
-  }))
+    error: errorStream?.obs,
+  }));
   const onExitHandler = () => {
-    onExit?.()
-    overlay.close()
-  }
+    onExit?.();
+    overlay.close();
+  };
 
   const actions = (
     <>
-      { buttons?.map((button, idx) => {
-        if (!button.onClick) console.warn(`[browser-extension-item-dialog] button ${idx} does not have a click handler defined`)
+      {buttons?.map((button, idx) => {
+        if (!button.onClick) {
+          console.warn(
+            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`,
+          );
+        }
 
         const { isDisabled } = useObservables(() => ({
-          isDisabled: button.isDisabledStream?.obs ?? Stream.createSubject(false).obs
-        }))
+          isDisabled: button.isDisabledStream?.obs ??
+            Stream.createSubject(false).obs,
+        }));
 
         return (
-          <div key={idx} className='button'>
-            <Component slug="button"
+          <div key={idx} className="button">
+            <Component
+              slug="button"
               key={idx}
               props={{
                 text: button.text,
@@ -80,137 +90,148 @@ export default function BrowserExtensionItemDialog ({
                 textColor: button.textColor,
                 isDisabled,
                 onclick: () => {
-                  button.onClick?.()
-                }
+                  button.onClick?.();
+                },
               }}
             />
           </div>
-        )
+        );
       })}
     </>
-  )
+  );
 
-  if (displayMode === 'left') {
+  if (displayMode === "left") {
     return (
-      <div className='c-browser-extension-item-dialog left use-css-vars-creator'>
+      <div className="c-browser-extension-item-dialog left use-css-vars-creator">
         <style>
-        {`
+          {`
           .c-browser-extension-item-dialog {
-            --highlight-gradient: ${highlightBg ?? ''};
+            --highlight-gradient: ${highlightBg ?? ""};
           }
         `}
         </style>
-        <Component slug="dialog"
+        <Component
+          slug="dialog"
           props={{
             $title,
-            $content:
-            <div className='body'>
-              <div className='image'>
+            $content: (
+              <div className="body">
+                <div className="image">
+                  <Component
+                    slug="image-by-aspect-ratio"
+                    props={{
+                      imageUrl: model.image.getSrcByImageObj(imgRel?.fileObj),
+                      aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
+                      heightPx: 56,
+                      widthPx: 56,
+                    }}
+                  />
+                </div>
+                <div className="info">
+                  <div className="primary-text">{primaryText}</div>
+                  <div className="value-text">{valueText}</div>
+                  <div className="secondary-text">{secondaryText}</div>
+                </div>
+                {error && (
+                  <div className="error">
+                    {error}
+                  </div>
+                )}
+              </div>
+            ),
+            $actions: actions,
+            $topRightButton: (
+              <div className="close-button">
                 <Component
-                  slug="image-by-aspect-ratio"
+                  slug="icon"
                   props={{
-                    imageUrl: model.image.getSrcByImageObj(imgRel?.fileObj),
-                    aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
-                    heightPx: 56,
-                    widthPx: 56
+                    icon: "close",
+                    color: cssVars.$bgBaseText,
+                    onclick: onExitHandler,
                   }}
                 />
               </div>
-              <div className='info'>
-                <div className='primary-text'>{primaryText}</div>
-                <div className='value-text'>{valueText}</div>
-                <div className='secondary-text'>{secondaryText}</div>
-              </div>
-              {
-                error && <div className='error'>
-                  { error}
-                  </div>
-              }
-            </div>,
-            $actions: actions,
-            $topRightButton:
-            <div className='close-button'>
-              <Component slug="icon"
-                props={{
-                  icon: 'close',
-                  color: cssVars.$bgBaseText,
-                  onclick: onExitHandler
-                }}
-              />
-            </div>
+            ),
           }}
         />
       </div>
-    )
+    );
   }
 
   return (
-    <div className='c-browser-extension-item-dialog center use-css-vars-creator'>
+    <div className="c-browser-extension-item-dialog center use-css-vars-creator">
       <style>
-      {`
+        {`
         .c-browser-extension-item-dialog {
           --highlight-gradient: ${highlightBg ?? cssVars.$primaryBase};
         }
       `}
       </style>
-      <Component slug="dialog"
+      <Component
+        slug="dialog"
         props={{
           onCancel: onExitHandler,
           $title,
-          $topRightButton: $title ? <CloseButton onExitHandler={onExitHandler}/> : null,
-          $content:
-          <div className='body'>
-            {
-              !$title ? <CloseButton onExitHandler={onExitHandler}/> : null
-            }
-            {headerText && <div className='header-text'>
-                {headerText}
-              </div>}
-            <div className='children'>
-              {
-                $children || <Component
-                  slug="image-by-aspect-ratio"
-                  props={{
-                    imageUrl: model.image.getSrcByImageObj(imgRel?.fileObj),
-                    aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
-                    heightPx: 72,
-                    widthPx: 72
-                  }}
-                />
-              }
-            </div>
-            <div className='primary-text'>{primaryText}</div>
-            <div className={`secondary-text ${secondaryTextStyle}`}>{secondaryText}</div>
-            {
-              error && <div className='error'>
-                { error}
+          $topRightButton: $title
+            ? <CloseButton onExitHandler={onExitHandler} />
+            : null,
+          $content: (
+            <div className="body">
+              {!$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
+              {headerText && (
+                <div className="header-text">
+                  {headerText}
                 </div>
-            }
-            {
-              $controls && <div className='controls'>
-                {
-                  $controls
-                }
+              )}
+              <div className="children">
+                {$children || (
+                  <Component
+                    slug="image-by-aspect-ratio"
+                    props={{
+                      imageUrl: model.image.getSrcByImageObj(imgRel?.fileObj),
+                      aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
+                      heightPx: 72,
+                      widthPx: 72,
+                    }}
+                  />
+                )}
               </div>
-            }
-          </div>,
-          $actions: actions
+              <div className="primary-text">{primaryText}</div>
+              <div className={`secondary-text ${secondaryTextStyle}`}>
+                {secondaryText}
+              </div>
+              {error && (
+                <div className="error">
+                  {error}
+                </div>
+              )}
+              {$controls && (
+                <div className="controls">
+                  {$controls}
+                </div>
+              )}
+            </div>
+          ),
+          $actions: actions,
         }}
       />
     </div>
-  )
+  );
 }
 
-function CloseButton ({ onExitHandler }) {
-  const { cssVars } = useContext(context)
+function CloseButton({ onExitHandler }) {
+  const { cssVars } = useContext(context);
 
-  return <div className='close-button'>
-    <Component slug="icon"
-      props={{
-        icon: 'close',
-        color: cssVars.$bgBaseText,
-        onclick: onExitHandler
-      }}
-    />
-  </div>
+  return (
+    <div className="close-button">
+      <Component
+        slug="icon"
+        props={{
+          icon: "close",
+          color: cssVars.$bgBaseText,
+          onclick: onExitHandler,
+        }}
+      />
+    </div>
+  );
 }

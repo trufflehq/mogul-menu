@@ -1,55 +1,63 @@
-import React, { useState } from 'react'
-import { useSnackBar } from 'https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js'
+import React, { useState } from "react";
+import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 
-import Button from 'https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx'
-import SnackBar from 'https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx'
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
+import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx";
 
-import { useTabState } from '../../util/tabs/tab-state.ts'
+import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
-import { useActionBanner } from '../../util/action-banner/action-banner.ts'
+import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 import ChromeExtSettings from "../settings/settings.tsx";
 
-export default function HomeTab () {
+export default function HomeTab() {
+  const enqueueSnackBar = useSnackBar();
+  const [count, setCount] = useState(0);
+  const [isSelected, setSelected] = useState(false);
 
-  const enqueueSnackBar = useSnackBar()
-  const [count, setCount] = useState(0)
-  const [isSelected, setSelected] = useState(false)
+  const tabId = useTabId();
+  const tabState = useTabState();
 
-  const tabId = useTabId()
-  const tabState = useTabState()
+  const { pushPage, popPage } = usePageStack();
 
-  const { pushPage, popPage } = usePageStack()
-
-  const { displayActionBanner } = useActionBanner()
+  const { displayActionBanner } = useActionBanner();
 
   const snackBarHandler = () => {
-    console.log('enqueueing snackbar')
-    enqueueSnackBar(() => <SnackBar message={`Congrats! You won. ${count}`} messageBgColor="lightblue" />)
-    setCount(prev => prev + 1)
-    setSelected(prev => !prev)
-  }
+    console.log("enqueueing snackbar");
+    enqueueSnackBar(() => (
+      <SnackBar
+        message={`Congrats! You won. ${count}`}
+        messageBgColor="lightblue"
+      />
+    ));
+    setCount((prev) => prev + 1);
+    setSelected((prev) => !prev);
+  };
 
   const tabNameHandler = () => {
-    tabState.setTabText(`Home (${count})`)
-    tabState.setTabBadge(isSelected)
-    setCount(prev => prev + 1)
-    setSelected(prev => !prev)
-  }
+    tabState.setTabText(`Home (${count})`);
+    tabState.setTabBadge(isSelected);
+    setCount((prev) => prev + 1);
+    setSelected((prev) => !prev);
+  };
 
   const pushPageHandler = () => {
-    pushPage(<ChromeExtSettings nonce={1} />)
-  }
+    pushPage(<ChromeExtSettings nonce={1} />);
+  };
 
   const actionBannerHandler = () => {
-    displayActionBanner(<div className="truffle-text-header-1">Action banner</div>)
-  }
+    displayActionBanner(
+      <div className="truffle-text-header-1">Action banner</div>,
+    );
+  };
 
   return (
     <div className="z-home-tab">
       <div className="truffle-text-header-1">Tab id: {tabId}</div>
       <div className="truffle-text-header-1">Tab name: {tabState.text}</div>
-      <div className="truffle-text-header-1">Tab isActive: {String(tabState.isActive)}</div>
+      <div className="truffle-text-header-1">
+        Tab isActive: {String(tabState.isActive)}
+      </div>
       <div>
         <Button
           onClick={snackBarHandler}
@@ -74,5 +82,5 @@ export default function HomeTab () {
         />
       </div>
     </div>
-  )
+  );
 }

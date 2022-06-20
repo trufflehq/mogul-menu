@@ -1,16 +1,18 @@
-import React from 'react'
+import React from "react";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 
-export default function ChromeExtSettings ({nonce}) {
-
-  const { pushPage, popPage } = usePageStack()
+export default function ChromeExtSettings({ nonce }) {
+  const { pushPage, popPage } = usePageStack();
   const pushSelf = () => {
     // pushPage(<ChromeExtSettings nonce={nonce + 1} />)
-    popPage()
-  }
+    popPage();
+  };
 
   return (
-    <div className="c-browser-extension-settings truffle-text-body-2" onClick={pushSelf}>
+    <div
+      className="c-browser-extension-settings truffle-text-body-2"
+      onClick={pushSelf}
+    >
       Nonce: {nonce}
       <div className="settings-header">
         Settings
@@ -32,37 +34,43 @@ export default function ChromeExtSettings ({nonce}) {
           <div className="switch-label">
             Show global Twitch emotes
           </div>
-          {/* <Component
+          {
+            /* <Component
             slug="toggle"
             props={{
               // TODO: replace with actual stream
               valueStream: Stream.createSubject(false)
             }}
-          /> */}
+          /> */
+          }
         </div>
         <div className="switch-row">
           <div className="switch-label">
             Show BTTV emotes
           </div>
-          {/* <Component
+          {
+            /* <Component
             slug="toggle"
             props={{
               // TODO: replace with actual stream
               valueStream: Stream.createSubject(false)
             }}
-          /> */}
+          /> */
+          }
         </div>
         <div className="switch-row">
           <div className="switch-label">
             Show FFZ emotes
           </div>
-          {/* <Component
+          {
+            /* <Component
             slug="toggle"
             props={{
               // TODO: replace with actual stream
               valueStream: Stream.createSubject(false)
             }}
-          /> */}
+          /> */
+          }
         </div>
       </div>
       <div className="player section">
@@ -73,13 +81,15 @@ export default function ChromeExtSettings ({nonce}) {
           <div className="switch-label">
             Custom theater mode
           </div>
-          {/* <Component
+          {
+            /* <Component
             slug="toggle"
             props={{
               // TODO: replace with actual stream
               valueStream: Stream.createSubject(false)
             }}
-          /> */}
+          /> */
+          }
         </div>
       </div>
       <div className="connections section">
@@ -89,5 +99,5 @@ export default function ChromeExtSettings ({nonce}) {
         {/* <Component slug="browser-extension-ways-to-earn" /> */}
       </div>
     </div>
-  )
+  );
 }

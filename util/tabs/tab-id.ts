@@ -1,7 +1,7 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext } from "react";
 
-export const TabIdContext = createContext()
+export const TabIdContext = createContext();
 
-export function useTabId () {
-  return useContext(TabIdContext)
+export function useTabId() {
+  return useContext(TabIdContext);
 }

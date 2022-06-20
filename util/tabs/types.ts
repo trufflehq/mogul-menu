@@ -1,16 +1,16 @@
-import { JSX } from 'react' 
+import { JSX } from "react";
 
 export interface TabProps {
   tabId: string;
 }
 
-export type TabElement = (props: TabProps) => JSX.Element
+export type TabElement = (props: TabProps) => JSX.Element;
 
 export interface TabDefinition {
   text: string;
   slug: string;
   imgUrl: string;
-  $el?: TabElement
+  $el?: TabElement;
 }
 
 export interface TabState {
@@ -20,4 +20,4 @@ export interface TabState {
   isActive: boolean;
 }
 
-export type TabStateMap = Record<string, TabState>
+export type TabStateMap = Record<string, TabState>;

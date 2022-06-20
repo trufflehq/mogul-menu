@@ -1,25 +1,26 @@
-import React from 'react'
+import React from "react";
 
-import {
-  Component
-} from '@spore/platform'
+import { Component } from "@spore/platform";
 
-export default function CraftingTablePage (props) {
-  const { popPage } = props
+export default function CraftingTablePage(props) {
+  const { popPage } = props;
   props = {
     ...props,
-    onSuccess: popPage
-  }
+    onSuccess: popPage,
+  };
   return (
-  <Component
-    slug="browser-extension-menu-page"
-    props={{
-      title: 'Crafting Table',
-      content: <Component
-        slug="crafting-table"
-        props={props}
-      />,
-      onBack: popPage
-    }}
-  />)
+    <Component
+      slug="browser-extension-menu-page"
+      props={{
+        title: "Crafting Table",
+        content: (
+          <Component
+            slug="crafting-table"
+            props={props}
+          />
+        ),
+        onBack: popPage,
+      }}
+    />
+  );
 }
