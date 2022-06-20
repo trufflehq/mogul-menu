@@ -8,7 +8,9 @@ import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import { useActionBanner } from "../../util/action-banner/action-banner.ts";
+
 import ChromeExtSettings from "../settings/settings.tsx";
+import ActionBanner from "../action-banner/action-banner.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -20,7 +22,7 @@ export default function HomeTab() {
 
   const { pushPage, popPage } = usePageStack();
 
-  const { displayActionBanner } = useActionBanner();
+  const { displayActionBanner, removeActionBanner } = useActionBanner();
 
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
@@ -46,8 +48,14 @@ export default function HomeTab() {
   };
 
   const actionBannerHandler = () => {
-    displayActionBanner(
-      <div className="truffle-text-header-1">Action banner</div>,
+    const actionBannerId = displayActionBanner(
+      <ActionBanner
+        message="Finish setting up your account"
+        buttonText="Sign up"
+        onClick={() => {
+          removeActionBanner(actionBannerId);
+        }}
+      />
     );
   };
 
@@ -68,18 +76,9 @@ export default function HomeTab() {
           transformSelected="scale(103%)"
           icon="https://cdn.bio/assets/images/features/browser_extension/gamepad.svg"
         />
-        <Button
-          onClick={tabNameHandler}
-          text="Set tab name"
-        />
-        <Button
-          onClick={pushPageHandler}
-          text="Push page"
-        />
-        <Button
-          onClick={actionBannerHandler}
-          text="Show action banner"
-        />
+        <Button onClick={tabNameHandler} text="Set tab name" />
+        <Button onClick={pushPageHandler} text="Push page" />
+        <Button onClick={actionBannerHandler} text="Show action banner" />
       </div>
     </div>
   );
