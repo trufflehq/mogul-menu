@@ -39,7 +39,7 @@ export default function HomeTab() {
   //   xp: seasonPassObs.pipe(op.map((seasonPass) => seasonPass?.xp?.count)),
   // }));
 
-  const me = {};
+  const me = { name: "Austin Fay" };
   const org = {};
   const activePowerups: any[] = [];
   const channelPoints = {};
@@ -152,7 +152,6 @@ export default function HomeTab() {
               <Icon
                 icon="help"
                 onclick={handleOpenSupportChat}
-                // color={cssVars.$bgBaseText}
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"
@@ -169,7 +168,6 @@ export default function HomeTab() {
                   // })
                   pushPage(<div onClick={popPage}>Settings page</div>)
                 }
-                // color={cssVars.$bgBaseText}
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"
@@ -179,7 +177,6 @@ export default function HomeTab() {
               <Icon
                 icon="bell"
                 onclick={handleOpenNotificationDialog}
-                // color={cssVars.$bgBaseText}
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"

@@ -118,7 +118,7 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   border-radius: 50%;
-  border: 1px solid var(--bg-base-text-20);
+  border: 1px solid var(--truffle-color-bg-tertiary);
 }
 
 :host .c-home-tab > .tile-grid {
