@@ -53,8 +53,8 @@ export default function PredictionTile({
 
   const { pushPage, popPage } = usePageStack();
 
-  const activePollConnection = {};
-  const isPredictionExpired = {};
+  const activePollConnection = { nodes: [{ question: "Who will win?" }] };
+  const isPredictionExpired = true;
 
   const activePoll = activePollConnection?.nodes?.[0];
   const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
@@ -109,7 +109,7 @@ export default function PredictionTile({
 
   return (
     <Tile
-      className="prediction-tile"
+      className="c-prediction-tile"
       icon={CRYSTAL_BALL_ICON}
       iconViewBox={CRYSTAL_BALL_ICON_VIEWBOX}
       headerText="Prediction"
@@ -123,7 +123,15 @@ export default function PredictionTile({
         //   onBack: popPage,
         // })
       }
-      content={Content}
+      content={() => (
+        <>
+          <link
+            rel="stylesheet"
+            href={new URL("prediction-tile.css", import.meta.url).toString()}
+          />
+          <Content />
+        </>
+      )}
     />
   );
 }

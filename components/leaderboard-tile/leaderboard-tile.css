@@ -1,0 +1,60 @@
+.c-leaderboard-tile > .content {
+  padding: 14px 21px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.c-leaderboard-tile > .content > .contestant {
+  position: relative;
+}
+
+.c-leaderboard-tile > .content > .contestant > .avatar {
+  border-radius: 100%;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-bottom: 4px;
+}
+
+.c-leaderboard-tile > .content > .contestant > .avatar > .username {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+  padding: 2px 10px;
+  background-color: var(--bg-base);
+  border: 1px solid var(--tertiary-base);
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.004em;
+  visibility: hidden;
+}
+
+.c-leaderboard-tile > .content > .contestant > .avatar:not(:hover) {
+  border-color: transparent !important;
+}
+
+.c-leaderboard-tile > .content > .contestant > .avatar:hover {
+  cursor: pointer;
+}
+
+.c-leaderboard-tile > .content > .contestant > .avatar:hover > .username {
+  visibility: visible;
+}
+
+.c-leaderboard-tile > .content > .contestant > .rank {
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 0.004em;
+}
