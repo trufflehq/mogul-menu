@@ -1,0 +1,63 @@
+:host .c-tile {
+  min-width: 0;
+  border-radius: 6px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  min-height: 157px;
+  background-color: var(--truffle-color-bg-secondary);
+  border: 1px solid var(--truffle-color-bg-tertiary);
+  -webkit-transition: -webkit-filter linear 100ms;
+  transition: -webkit-filter linear 100ms;
+  transition: filter linear 100ms;
+  transition: filter linear 100ms, -webkit-filter linear 100ms;
+  position: relative;
+}
+
+:host .c-tile.clickable:hover {
+  -webkit-filter: brightness(80%);
+          filter: brightness(80%);
+  cursor: pointer;
+}
+
+:host .c-tile > .header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 8px;
+  padding: 24px 8px 0 16px;
+  height: 44px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+:host .c-tile > .header > .icon {
+  background-color: var(--truffle-color-bg-secondary);
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+:host .c-tile > .header > .icon > div {
+  margin: auto;
+}
+
+:host .c-tile > .header > .text {
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--truffle-color-bg-secondary);
+}

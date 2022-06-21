@@ -62,6 +62,7 @@ export function LeaderboardTile() {
       icon={TROPHY_ICON}
       headerText="Top Battlepass"
       color="#CEDEE3"
+      textColor="black"
       content={() => (
         <div className="content">
           {top3.map((contestant, idx) => (

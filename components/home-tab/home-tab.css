@@ -1,0 +1,137 @@
+:host .c-home-tab {
+  padding: 16px;
+}
+
+:host .c-home-tab > .header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 16px;
+}
+
+:host .c-home-tab > .header > .user {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+:host .c-home-tab > .header > .user > .c-account-avatar {
+  margin-right: 16px;
+}
+
+:host .c-home-tab > .header > .user > .info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+:host .c-home-tab > .header > .user > .info > .top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 4px;
+}
+
+:host .c-home-tab > .header > .user > .info > .top > .name {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+:host .c-home-tab > .header > .user > .info > .top > .powerup {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+}
+
+:host .c-home-tab > .header > .user > .info > .amounts {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+:host .c-home-tab > .header > .user > .info > .amounts > .amount {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+:host .c-home-tab > .header > .user > .info > .amounts > .amount > .icon {
+  margin-right: 8px;
+}
+
+:host .c-home-tab > .header > .support {
+  font-size: 12px;
+  line-height: 16px;
+  text-decoration: underline;
+  color: var(--secondary-base);
+  margin-right: 16px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+:host .c-home-tab > .header > .support:hover {
+  color: var(--primary-base);
+}
+
+:host .c-home-tab > .header > .actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  gap: 16px;
+}
+
+:host .c-home-tab > .header > .actions > .icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 8px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 50%;
+  border: 1px solid var(--bg-base-text-20);
+}
+
+:host .c-home-tab > .tile-grid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+:host .c-home-tab > .banner {
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--tertiary-base);
+  padding: 4px 15px;
+}

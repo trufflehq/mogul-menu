@@ -1,0 +1,80 @@
+:host {
+  grid-column: span 2;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border: 1px solid var(--truffle-color-bg-tertiary);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+:host > .header {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 12px 16px;
+  color: var(--truffle-color-text-gradient);
+  background: var(--background);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+:host > .info {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 16px;
+}
+
+:host > .info > .message {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 8px 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+:host > .info > .grid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding-bottom: 4px;
+}
+
+:host > .info > .grid > .timer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+:host > .info > .grid > .timer > .time {
+  min-height: 36px;
+  color: var(--truffle-color-primary);
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 600;
+}
+
+:host > .info > .grid > .timer > .title {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+}

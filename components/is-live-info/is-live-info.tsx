@@ -1,4 +1,5 @@
 import React from "react";
+import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
 
 import Timer from "../timer/timer.tsx";
 
@@ -7,10 +8,12 @@ export default function IsLiveInfo(props) {
     secondsRemainingSubject,
     timeWatchedSecondsSubject,
     highlightButtonBg,
-    creatorName,
+    // creatorName,
     hasChannelPoints,
     hasBattlePass,
   } = props;
+
+  const creatorName = "Ludwig";
 
   // const { secondsRemaining, timeWatchedSeconds } = useObservables(() => ({
   //   timeWatchedSeconds: timeWatchedSecondsSubject.obs,
@@ -21,11 +24,15 @@ export default function IsLiveInfo(props) {
   const timeWatchedSeconds = 10;
 
   return (
-    <div className="live-info">
+    <root.div className="live-info">
+      <link
+        rel="stylesheet"
+        href={new URL("is-live-info.css", import.meta.url).toString()}
+      />
       <div
         className="header"
         style={{
-          background: highlightButtonBg,
+          "--background": highlightButtonBg ?? "var(--truffle-gradient)",
         }}
       >
         {creatorName ? `${creatorName} is live!` : ""}
@@ -43,17 +50,19 @@ export default function IsLiveInfo(props) {
             : "Channel Points and XP not currently enabled"}
         </div>
         <div className="grid">
-          {(hasChannelPoints || hasBattlePass) && (
-            <Timer timerSeconds={timeWatchedSeconds} message={"Time watched"} />
+          {(hasChannelPoints || hasBattlePass || true) && (
+            // <Timer timerSeconds={timeWatchedSeconds} message={"Time watched"} />
+            <Timer timerSeconds={10} message={"Time watched"} />
           )}
-          {(hasChannelPoints || hasBattlePass) && (
-            <Timer
-              timerSeconds={secondsRemaining}
-              message={"Time until reward"}
-            />
+          {(hasChannelPoints || hasBattlePass || true) && (
+            // <Timer
+            //   timerSeconds={secondsRemaining}
+            //   message={"Time until reward"}
+            // />
+            <Timer timerSeconds={10} message={"Time until reward"} />
           )}
         </div>
       </div>
-    </div>
+    </root.div>
   );
 }

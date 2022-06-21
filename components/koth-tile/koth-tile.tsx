@@ -1,4 +1,6 @@
 import React from "react";
+import { CROWN_ICON } from "../../util/icon/paths.ts";
+import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
 
 export default function KothTile() {
@@ -22,7 +24,7 @@ export default function KothTile() {
   //   kingOrgUser: kingOrgUserObs,
   // }));
 
-  const kingOrgUser = null;
+  const kingOrgUser = {};
 
   if (!kingOrgUser) return;
 
@@ -30,20 +32,25 @@ export default function KothTile() {
 
   return (
     <Tile
-      className="king-tile"
+      className="c-king-tile"
       icon={CROWN_ICON}
       headerText="King of the Hill"
       color="#E0BB72"
       content={() => (
         <div className="content">
+          <link
+            rel="stylesheet"
+            href={new URL("koth-tile.css", import.meta.url).toString()}
+          />
           <div className="avatar">
-            <Component
+            {/* <Component
               slug="avatar"
               props={{
                 user: kingOrgUser?.user,
                 size: "56px",
               }}
-            />
+            /> */}
+            Avatar
           </div>
           <div className="info">
             <div className="username">{kingOrgUser.name}</div>
