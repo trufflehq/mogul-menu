@@ -11,6 +11,7 @@ import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 
 import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
+import DialogDemo from "https://tfl.dev/@truffle/ui@0.0.1/components/dialog/dialog.jsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -77,6 +78,9 @@ export default function HomeTab() {
         <Button onClick={tabNameHandler} text="Set tab name" />
         <Button onClick={pushPageHandler} text="Push page" />
         <Button onClick={actionBannerHandler} text="Show action banner" />
+      </div>
+      <div>
+        <DialogDemo />
       </div>
     </div>
   );

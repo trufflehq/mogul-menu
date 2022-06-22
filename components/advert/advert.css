@@ -1,0 +1,61 @@
+:host {
+  grid-column: span 2;
+}
+
+:host .c-advert {
+  border: 1px solid var(--truffle-color-secondary);
+  border-radius: 6px;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+:host .c-advert > .image {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 1 153px;
+          flex: 0 1 153px;
+}
+
+:host .c-advert > .image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+:host .c-advert > .content {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 0%;
+          flex: 1 0 0%;
+  padding: 16px 22px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 16px;
+}
+
+:host .c-advert > .content > .text > .ad {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.0025em;
+  color: var(--truffle-color-text-bg-primary);
+}
+
+:host .c-advert > .content > .text > .tagline {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+}

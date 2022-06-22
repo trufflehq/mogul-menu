@@ -16,6 +16,7 @@ import Advert from "../advert/advert.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
+import SettingsPage from "../settings-page/settings-page.tsx";
 
 export default function HomeTab() {
   // const { activePowerupsObs } = useMemo(() => {
@@ -40,7 +41,7 @@ export default function HomeTab() {
   // }));
 
   const me = { name: "Austin Fay" };
-  const org = {};
+  const org = { slug: "ludwig" };
   const activePowerups: any[] = [];
   const channelPoints = {};
   const xp = {};
@@ -92,8 +93,9 @@ export default function HomeTab() {
       buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
       // buttonOnClick,
       buttonText: "Learn more",
-      buttonBgColor: "var(--secondary-base)",
-      buttonTextColor: "var(--secondary-base-text)",
+      buttonBgColor: "var(--truffle-color-secondary)",
+      buttonBgColorHover: "var(--truffle-color-secondary)",
+      buttonTextColor: "var(--truffle-color-text-secondary)",
     },
   };
 
@@ -166,7 +168,7 @@ export default function HomeTab() {
                   //   extensionInfo,
                   //   onBack: popPage,
                   // })
-                  pushPage(<div onClick={popPage}>Settings page</div>)
+                  pushPage(<SettingsPage />)
                 }
                 hasRipple={true}
                 size="24px"
