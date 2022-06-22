@@ -1,0 +1,300 @@
+.z-active-prediction {
+  color: white;
+}
+
+.z-active-prediction .form {
+  padding: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background-color: var(--tertiary-base);
+  margin-bottom: 20px;
+}
+
+.z-active-prediction .form > .amount {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+}
+
+.z-active-prediction .form > .amount > .value {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 6px;
+}
+
+.z-active-prediction .form > .amount > .value > .input {
+  position: relative;
+  max-width: 140px;
+  margin-right: 12px;
+}
+
+.z-active-prediction .form > .amount > .value > .input > .z-channel-points-icon {
+  position: absolute;
+  right: 13px;
+  height: 100%;
+}
+
+.z-active-prediction .form > .amount > .value > .input > .z-input > .input-wrapper > input.input {
+  text-align: right;
+  background: #FFFFFF14;
+  border: none;
+  padding-right: 45px;
+  padding-top: 12px;
+}
+
+.z-active-prediction .form > .amount > .value > .current-amount {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.z-active-prediction .form > .error {
+  margin: 12px 0;
+  color: red;
+  font-weight: 700;
+}
+
+.z-active-prediction .question-banner {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.z-active-prediction .question-banner .question {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  margin-bottom: 2px;
+}
+
+.z-active-prediction .question-banner .status {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.z-active-prediction > .options {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[2];
+      grid-template-columns: repeat(2, 1fr);
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+
+.z-active-prediction > .options > .option {
+  min-width: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.z-active-prediction > .options > .option.option1 {
+  margin-left: 26px;
+  margin-right: 6px;
+}
+
+.z-active-prediction > .options > .option.option1 > .name {
+  color: #419BEE;
+}
+
+.z-active-prediction > .options > .option.option1 > .stats {
+  border: 1px solid #419BEE;
+}
+
+.z-active-prediction > .options > .option.option1 > .stats > .label {
+  color: #419BEE;
+}
+
+.z-active-prediction > .options > .option.option2 {
+  margin-left: 6px;
+  margin-right: 26px;
+}
+
+.z-active-prediction > .options > .option.option2 > .name {
+  color: #EE416B;
+}
+
+.z-active-prediction > .options > .option.option2 > .stats {
+  border: 1px solid #EE416B;
+}
+
+.z-active-prediction > .options > .option.option2 > .stats > .label {
+  color: #EE416B;
+}
+
+.z-active-prediction > .options > .option > .name {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 27px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.z-active-prediction > .options > .option > .stats {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 1fr;
+      grid-template-columns: auto 1fr;
+  border-radius: 12px;
+  padding: 16px 17px;
+  position: relative;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.z-active-prediction > .options > .option > .stats > .percentage {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-column: 1 / span 2;
+  -ms-grid-column-align: center;
+      justify-self: center;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.z-active-prediction > .options > .option > .stats > .label {
+  -ms-grid-column-align: end;
+      justify-self: end;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: right;
+}
+
+.z-active-prediction > .options > .option > .stats > .value {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.z-active-prediction > .options > .option > .stats > .label:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.z-active-prediction > .options > .option > .stats > .vote {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-column: 1 / span 2;
+}
+
+.z-active-prediction > .options > .option > .stats > .vote > .z-button {
+  border-radius: 4px;
+}
+
+.z-active-prediction > .options > .option > .winner-container {
+  padding: 8px;
+}
+
+.z-active-prediction .z-winner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 10px;
+  color: #EBAD64;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.z-active-prediction .z-winner:not(.is-visible) {
+  visibility: hidden;
+}
+
+.z-active-prediction .z-button.style-primary {
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  color: white;
+  letter-spacing: initial;
+}
+
+.z-active-prediction > .summary-info {
+  text-align: center;
+}
+
+.z-active-prediction > .summary-info > .user-prediction-text {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 6px;
+}
+
+.z-active-prediction > .summary-info > .user-prediction-text .option1 {
+  color: #419BEE;
+}
+
+.z-active-prediction > .summary-info > .user-prediction-text .option2 {
+  color: #EE416B;
+}
+
+.z-active-prediction > .summary-info > .channel-point-count {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 7px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-bottom: 4px;
+}
+
+.z-active-prediction > .summary-info > .channel-point-count > .text {
+  margin-top: 2px;
+}
+
+.z-active-prediction > .summary-info > .status {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.z-active-prediction .bmargin-24 {
+  margin-bottom: 24px;
+}
+
+span > .z-channel-points-icon {
+  display: inline-block;
+}
+
+span > .z-channel-points-icon > div {
+  display: inline-block;
+}

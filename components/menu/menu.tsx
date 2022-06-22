@@ -10,6 +10,7 @@ Services that the menu component should provide:
 - Interface for pushing/popping page onto page stack - done
 - Interface for displaying action banners
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
+- Interface for navigating between tabs
 */
 
 import React, { JSX, useEffect, useMemo, useRef, useState } from "react";
@@ -38,8 +39,8 @@ import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 
-// import HomeTab from "../home-tab/home-tab.tsx";
-import HomeTab from "../test-tab/test-tab.tsx";
+import HomeTab from "../home-tab/home-tab.tsx";
+// import HomeTab from "../test-tab/test-tab.tsx";
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
@@ -393,7 +394,7 @@ export default function BrowserExtensionMenu(props) {
                     actionBannerObjSubject={actionBannerObjSubject}
                   />
                   {visibleTabs.map(({ $el: TabComponent }, idx) => (
-                    <TabIdContext.Provider value={tabIds[idx]}>
+                    <TabIdContext.Provider key={idx} value={tabIds[idx]}>
                       <div
                         className={`tab-component ${classKebab({
                           isActive: idx === activeTabIndex,

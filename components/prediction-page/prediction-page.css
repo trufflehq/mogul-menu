@@ -1,0 +1,23 @@
+:host .c-predictions-page_channel-points {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #EBC564;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 6px 12px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:host .c-predictions-page_channel-points > .icon {
+  margin-right: 8px;
+}

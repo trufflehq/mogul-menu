@@ -3,6 +3,7 @@ import { pad } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
+import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
 
 const ONE_SECOND_MS = 1000;
@@ -115,7 +116,7 @@ export default function PredictionTile({
       headerText="Prediction"
       color="#AB8FE9"
       onClick={
-        () => pushPage(<div onClick={popPage}>Prediction page</div>)
+        () => pushPage(<PredictionPage />)
         // pushPage(PredictionPage, {
         //   activePoll,
         //   channelPointsImageObj,

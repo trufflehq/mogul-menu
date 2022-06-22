@@ -2,7 +2,6 @@ import React from "react";
 
 import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
-import cssVars from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
 
 export default function Page({ title, headerTopRight, onBack, content }) {
   return (

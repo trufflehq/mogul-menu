@@ -1,0 +1,26 @@
+.c-collectibles {
+  width: 100%;
+  max-width: 1260px;
+  margin: 0 auto;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 16px;
+}
+
+.c-collectibles > .type-section {
+  margin-bottom: 40px;
+}
+
+.c-collectibles > .type-section > .type {
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.c-collectibles > .type-section > .collectibles {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (112px)[auto-fit];
+      grid-template-columns: repeat(auto-fit, 112px);
+  grid-gap: 32px;
+}
