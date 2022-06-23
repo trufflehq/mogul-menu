@@ -126,12 +126,12 @@ export default function Collectibles(props) {
   return (
     <ScopedStylesheet url={new URL("collectibles.css", import.meta.url)}>
       <div className="c-collectibles">
-        {_.map(groupedCollectibles, ({ collectibles, type }) => {
+        {_.map(groupedCollectibles, ({ collectibles, type }, idx) => {
           return (
-            <div className="type-section">
+            <div key={idx} className="type-section">
               <div className="type">{type}</div>
               <div className="collectibles">
-                {_.map(collectibles, (collectible) => {
+                {_.map(collectibles, (collectible, idx) => {
                   const powerupId = collectible?.data?.redeemData?.powerupId;
                   const activePowerup = _.find(activePowerups, {
                     powerup: { id: powerupId },
@@ -141,6 +141,7 @@ export default function Collectibles(props) {
                     (collectible?.ownedCollectible?.count > 0 ||
                       activePowerup) && (
                       <Collectible
+                        key={idx}
                         collectible={collectible}
                         activePowerup={activePowerup}
                         onViewCollection={onViewCollection}

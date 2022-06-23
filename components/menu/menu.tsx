@@ -56,6 +56,7 @@ import { PageStackContext } from "../../util/page-stack/page-stack.ts";
 import { usePageStackManager } from "../../util/page-stack/manager.ts";
 import { useActionBannerManager } from "../../util/action-banner/manager.ts";
 import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
+import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -110,7 +111,7 @@ const DEFAULT_TABS = [
     slug: "battle-pass",
     imgUrl:
       "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
-    // $el: SeasonPassTab
+    $el: SeasonPassTab,
   },
   {
     text: "Shop",

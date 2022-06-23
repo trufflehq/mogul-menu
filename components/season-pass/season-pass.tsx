@@ -16,12 +16,16 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
+import AccountAvatar from "../account-avatar/account-avatar.tsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
 
 const GREEN = "#75DB9E";
 const YELLOW = "#EBC564";
 
 const config = {};
-const router = {};
+const router = { link: () => null, get: () => null };
 
 function Component() {
   return "";
@@ -38,32 +42,41 @@ export default function SeasonPass(props) {
     numTiles = 4,
     xpImageObj,
     highlightButtonBg,
-    onViewCollection,
+    // onViewCollection,
     enqueueSnackBar,
   } = props;
 
+  const onViewCollection = () => null;
+
   const $$levelsRef = useRef(null);
   const $$levelRef = useRef(null);
-  const { seasonPassObs, focalIndexStream, selectedRewardStream } = useMemo(
-    () => {
+  const { seasonPassObs, focalIndexStream, selectedRewardStream } =
+    useMemo(() => {
       return {
-        seasonPassObs: getModel().seasonPass.getCurrent(),
+        // seasonPassObs: getModel().seasonPass.getCurrent(),
         focalIndexStream: createSubject(0),
         selectedRewardStream: createSubject(),
       };
-    },
-    [],
-  );
+    }, []);
 
-  const { seasonPass, me, meOrgUserWithKv, focalIndex } = useObservables(
-    () => ({
-      seasonPass: seasonPassObs,
-      me: getModel().user.getMe(),
-      org: getModel().org.getMe(),
-      focalIndex: focalIndexStream.obs,
-      meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
-    }),
-  );
+  const {
+    // seasonPass,
+    me,
+    meOrgUserWithKv,
+    focalIndex,
+  } = useObservables(() => ({
+    // seasonPass: seasonPassObs,
+    me: getModel().user.getMe(),
+    org: getModel().org.getMe(),
+    focalIndex: focalIndexStream.obs,
+    meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
+  }));
+
+  const seasonPass = {
+    daysRemaining: 30,
+    levels: [{ minXp: 5 }, { minXp: 15 }],
+    xp: 10,
+  };
 
   if (!seasonPass) {
     return (
@@ -78,35 +91,37 @@ export default function SeasonPass(props) {
 
   const { range, progress } = getXPBarBySeasonPassAndXp(
     seasonPass,
-    seasonPass.xp,
+    seasonPass?.xp
   );
 
   // FIXME hack for faze
-  const isEligibleCryptoGiveawayKv = meOrgUserWithKv?.keyValueConnection?.nodes
-    ?.find(({ key }) => key === "isEligibleCryptoGiveaway");
+  const isEligibleCryptoGiveawayKv =
+    meOrgUserWithKv?.keyValueConnection?.nodes?.find(
+      ({ key }) => key === "isEligibleCryptoGiveaway"
+    );
   const isEligibleCryptoGiveaway = isEligibleCryptoGiveawayKv?.value === "yes";
 
   // FIXME - hack for faze
   const tiers = !isEligibleCryptoGiveaway
     ? _.filter(
-      seasonPass?.data?.tiers,
-      (tier) => tier?.name !== "Crypto-eligible",
-    )
+        seasonPass?.data?.tiers,
+        (tier) => tier?.name !== "Crypto-eligible"
+      )
     : seasonPass?.data?.tiers;
 
   // FIXME - hack for faze
   const levels = !isEligibleCryptoGiveaway
     ? _.map(seasonPass.levels, (level) => {
-      const nonCryptoRewards = _.filter(
-        level.rewards,
-        (reward) => reward.tierNum < 1,
-      );
+        const nonCryptoRewards = _.filter(
+          level.rewards,
+          (reward) => reward.tierNum < 1
+        );
 
-      return {
-        ...level,
-        rewards: nonCryptoRewards,
-      };
-    })
+        return {
+          ...level,
+          rewards: nonCryptoRewards,
+        };
+      })
     : seasonPass.levels;
 
   const groupedLevels = _.keyBy(levels, "levelNum");
@@ -123,7 +138,7 @@ export default function SeasonPass(props) {
     if (currentLevelNum && numTiles) {
       if (currentLevelNum < numTiles) {
         focalIndexStream.next(0);
-      } else if ((currentLevelNum + numTiles - 1) > levelRange?.length) {
+      } else if (currentLevelNum + numTiles - 1 > levelRange?.length) {
         focalIndexStream.next(levelRange?.length - numTiles);
       } else {
         focalIndexStream.next(currentLevelNum - 1);
@@ -149,30 +164,27 @@ export default function SeasonPass(props) {
     selectedRewardStream.next();
   };
 
-  useEffect(() => {
-    if (
-      !_.isEmpty(
-        seasonPass?.seasonPassProgression?.changesSinceLastViewed,
-      )
-    ) {
-      _.map(
-        seasonPass?.seasonPassProgression?.changesSinceLastViewed,
-        (change) => {
-          const Component = change?.rewards?.length > 1
-            ? MultipleRewardLevelUpDialog
-            : LevelUpDialog;
-          overlay.open(Component, {
-            change,
-            onViewCollection,
-            premiumBgColor,
-            premiumAccentColor,
-            highlightButtonBg,
-            enqueueSnackBar,
-          });
-        },
-      );
-    }
-  }, [seasonPass?.seasonPassProgression?.changesSinceLastViewed]);
+  // useEffect(() => {
+  //   if (!_.isEmpty(seasonPass?.seasonPassProgression?.changesSinceLastViewed)) {
+  //     _.map(
+  //       seasonPass?.seasonPassProgression?.changesSinceLastViewed,
+  //       (change) => {
+  //         const Component =
+  //           change?.rewards?.length > 1
+  //             ? MultipleRewardLevelUpDialog
+  //             : LevelUpDialog;
+  //         overlay.open(Component, {
+  //           change,
+  //           onViewCollection,
+  //           premiumBgColor,
+  //           premiumAccentColor,
+  //           highlightButtonBg,
+  //           enqueueSnackBar,
+  //         });
+  //       }
+  //     );
+  //   }
+  // }, [seasonPass?.seasonPassProgression?.changesSinceLastViewed]);
 
   // since the focal index starts at zero, check if we are at the left boundary
   const isNotLeftClickable = focalIndex - numTiles <= -numTiles;
@@ -185,11 +197,13 @@ export default function SeasonPass(props) {
   const visibleLevels = _.slice(levelRange, focalIndex, focalIndex + numTiles);
 
   // FIXME: the reverse here is a hack for Faze
-  let tierNums = _.reverse(_.uniqBy(
-    _.flatten(
-      _.map(seasonPass.levels, (level) => _.map(level.rewards, "tierNum")),
-    ),
-  ));
+  let tierNums = _.reverse(
+    _.uniqBy(
+      _.flatten(
+        _.map(seasonPass.levels, (level) => _.map(level.rewards, "tierNum"))
+      )
+    )
+  );
 
   // FIXME: the reverse here is a hack for Faze
   tierNums = !isEligibleCryptoGiveaway
@@ -202,59 +216,55 @@ export default function SeasonPass(props) {
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   return (
-    <div className="c-browser-extension-season-pass">
-      {seasonPass &&
-        (
+    <ScopedStylesheet url={new URL("season-pass.css", import.meta.url)}>
+      <div className="c-browser-extension-season-pass">
+        {seasonPass && (
           <>
             <div className="top-info">
               <div className="left">
-                {isMember &&
-                  (
-                    <>
-                      <div className="account">
-                        <$accountAvatar />
-                      </div>
-                      <div className="level-progress">
-                        <div className="xp">
-                          <div className="icon">
-                            <Component
-                              slug="image-by-aspect-ratio"
-                              props={{
-                                imageUrl: xpSrc,
-                                aspectRatio: 1,
-                                widthPx: 24,
-                                height: 24,
-                              }}
-                            />
-                          </div>
-                          <div className="amount">{`${progress}/${range}`}</div>
-                        </div>
-                        <div className="progress-bar">
-                          <div
-                            className="filler"
-                            style={{
-                              width: `calc(${(progress / range) * 100}%`,
-                            }}
+                {isMember && (
+                  <>
+                    <div className="account">
+                      <AccountAvatar />
+                    </div>
+                    <div className="level-progress">
+                      <div className="xp">
+                        <div className="icon">
+                          <ImageByAspectRatio
+                            imageUrl={xpSrc}
+                            aspectRatio={1}
+                            widthPx={24}
+                            height={24}
                           />
                         </div>
-                        <div className="level">
-                          {`Level ${
-                            shouldUseCurrentLevelZeroPrefix
-                              ? zeroPrefix(currentLevelNum)
-                              : currentLevelNum
-                          }`}
-                        </div>
+                        <div className="amount">{`${progress}/${range}`}</div>
                       </div>
-                    </>
-                  )}
+                      <div className="progress-bar">
+                        <div
+                          className="filler"
+                          style={{
+                            width: `calc(${(progress / range) * 100}%`,
+                          }}
+                        />
+                      </div>
+                      <div className="level">
+                        {`Level ${
+                          shouldUseCurrentLevelZeroPrefix
+                            ? zeroPrefix(currentLevelNum)
+                            : currentLevelNum
+                        }`}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             {true && (
               <div className="pages">
                 <div
-                  className={`button left ${
-                    classKebab({ isDisabled: isNotLeftClickable })
-                  }`}
+                  className={`button left ${classKebab({
+                    isDisabled: isNotLeftClickable,
+                  })}`}
                   onClick={onLeftClick}
                 >
                   ◂
@@ -263,9 +273,9 @@ export default function SeasonPass(props) {
                   {`Ends in ${seasonPass?.daysRemaining} days`}
                 </div>
                 <div
-                  className={`button right ${
-                    classKebab({ isDisabled: isNotRightClickable })
-                  }`}
+                  className={`button right ${classKebab({
+                    isDisabled: isNotRightClickable,
+                  })}`}
                   onClick={onRightClick}
                 >
                   ▸
@@ -278,28 +288,30 @@ export default function SeasonPass(props) {
                 ref={$$levelsRef}
                 onTouchStart={(e) => e.stopPropagation()}
               >
-                {tiers?.length
-                  ? (
-                    <div className="tier-info">
-                      {
-                        // FIXME: the reverse here is a hack for Faze
-                        _.reverse(_.map(tiers, (tier) => {
+                {tiers?.length ? (
+                  <div className="tier-info">
+                    {
+                      // FIXME: the reverse here is a hack for Faze
+                      _.reverse(
+                        _.map(tiers, (tier) => {
                           console.log("tier", tier);
-                          return tier?.name && (
-                            <div
-                              className="tier"
-                              style={{
-                                background: tier?.background,
-                              }}
-                            >
-                              {tier?.name}
-                            </div>
+                          return (
+                            tier?.name && (
+                              <div
+                                className="tier"
+                                style={{
+                                  background: tier?.background,
+                                }}
+                              >
+                                {tier?.name}
+                              </div>
+                            )
                           );
-                        }))
-                      }
-                    </div>
-                  )
-                  : null}
+                        })
+                      )
+                    }
+                  </div>
+                ) : null}
                 <div
                   className="levels"
                   style={{
@@ -325,7 +337,7 @@ export default function SeasonPass(props) {
                         xpRange={range}
                         xpProgress={progress}
                         xpImgSrc={xpSrc}
-                        enqueueSnackBar={enqueueSnackBar}
+                        // enqueueSnackBar={enqueueSnackBar}
                         xp={seasonPass?.xp?.count ?? 0}
                         onViewCollection={onViewCollection}
                       />
@@ -336,208 +348,205 @@ export default function SeasonPass(props) {
             </div>
           </>
         )}
-    </div>
+      </div>
+    </ScopedStylesheet>
   );
 }
 
-function LevelUpDialog({
-  change,
-  onViewCollection,
-  premiumBgColor,
-  premiumAccentColor,
-  highlightButtonBg,
-  enqueueSnackBar,
-}) {
-  const { selectedRewardStream } = useMemo(() => {
-    return {
-      selectedRewardStream: createSubject(null),
-    };
-  }, []);
+// function LevelUpDialog({
+//   change,
+//   onViewCollection,
+//   premiumBgColor,
+//   premiumAccentColor,
+//   highlightButtonBg,
+//   enqueueSnackBar,
+// }) {
+//   const { selectedRewardStream } = useMemo(() => {
+//     return {
+//       selectedRewardStream: createSubject(null),
+//     };
+//   }, []);
 
-  const reward = change.rewards?.[0];
-  const levelNum = change?.levelNum;
-  const isEmote = reward?.source?.type === "emote";
-  const isTicket = reward?.source?.type === "ticket";
-  const isRedeemable = reward?.source?.type === "redeemable";
-  const levelUpHeaderText = `Level ${levelNum} unlocked`;
-  const $title = "You leveled up!";
+//   const reward = change.rewards?.[0];
+//   const levelNum = change?.levelNum;
+//   const isEmote = reward?.source?.type === "emote";
+//   const isTicket = reward?.source?.type === "ticket";
+//   const isRedeemable = reward?.source?.type === "redeemable";
+//   const levelUpHeaderText = `Level ${levelNum} unlocked`;
+//   const $title = "You leveled up!";
 
-  return (
-    <div className="c-rewards-dialog use-css-vars-creator">
-      {isEmote || isTicket
-        ? (
-          <Component
-            slug="unlocked-emote-dialog"
-            props={{
-              $title,
-              $children: (
-                <Reward
-                  selectedRewardStream={selectedRewardStream}
-                  premiumAccentColor={premiumAccentColor}
-                  premiumBgColor={premiumBgColor}
-                  onClick={() => _.noop}
-                  isUnlocked={true}
-                  reward={reward}
-                  levelNum={change?.levelNum}
-                  isFreeTier={true}
-                  tierNum={reward?.tierNum}
-                />
-              ),
-              highlightBg: highlightButtonBg,
-              headerText: levelUpHeaderText,
-              reward,
-              onViewCollection,
-            }}
-          />
-        )
-        : isRedeemable
-        ? (
-          <Component
-            slug="redeemable-dialog"
-            props={{
-              $title,
-              highlightBg: highlightButtonBg,
-              headerText: levelUpHeaderText,
-              enqueueSnackBar,
-              $children: (
-                <Reward
-                  selectedRewardStream={selectedRewardStream}
-                  premiumAccentColor={premiumAccentColor}
-                  premiumBgColor={premiumBgColor}
-                  onClick={() => _.noop}
-                  isUnlocked={true}
-                  reward={reward}
-                  levelNum={change?.levelNum}
-                  isFreeTier={true}
-                  tierNum={reward?.tierNum}
-                />
-              ),
-              redeemableCollectible: reward,
-              onViewCollection,
-            }}
-          />
-        )
-        : (
-          <NoItemLevelUpDialog
-            $title={$title}
-            headerText={levelUpHeaderText}
-            highlightBg={highlightButtonBg}
-            $children={
-              <Reward
-                selectedRewardStream={selectedRewardStream}
-                premiumAccentColor={premiumAccentColor}
-                premiumBgColor={premiumBgColor}
-                onClick={() => _.noop}
-                isUnlocked={true}
-                reward={{ tierNum: 0 }}
-                levelNum={change?.levelNum}
-                isFreeTier={true}
-                tierNum={reward?.tierNum}
-              />
-            }
-            onViewCollection={onViewCollection}
-          />
-        )}
-    </div>
-  );
-}
+//   return (
+//     <div className="c-rewards-dialog use-css-vars-creator">
+//       {isEmote || isTicket ? (
+//         <Component
+//           slug="unlocked-emote-dialog"
+//           props={{
+//             $title,
+//             $children: (
+//               <Reward
+//                 selectedRewardStream={selectedRewardStream}
+//                 premiumAccentColor={premiumAccentColor}
+//                 premiumBgColor={premiumBgColor}
+//                 onClick={() => _.noop}
+//                 isUnlocked={true}
+//                 reward={reward}
+//                 levelNum={change?.levelNum}
+//                 isFreeTier={true}
+//                 tierNum={reward?.tierNum}
+//               />
+//             ),
+//             highlightBg: highlightButtonBg,
+//             headerText: levelUpHeaderText,
+//             reward,
+//             onViewCollection,
+//           }}
+//         />
+//       ) : isRedeemable ? (
+//         <Component
+//           slug="redeemable-dialog"
+//           props={{
+//             $title,
+//             highlightBg: highlightButtonBg,
+//             headerText: levelUpHeaderText,
+//             enqueueSnackBar,
+//             $children: (
+//               <Reward
+//                 selectedRewardStream={selectedRewardStream}
+//                 premiumAccentColor={premiumAccentColor}
+//                 premiumBgColor={premiumBgColor}
+//                 onClick={() => _.noop}
+//                 isUnlocked={true}
+//                 reward={reward}
+//                 levelNum={change?.levelNum}
+//                 isFreeTier={true}
+//                 tierNum={reward?.tierNum}
+//               />
+//             ),
+//             redeemableCollectible: reward,
+//             onViewCollection,
+//           }}
+//         />
+//       ) : (
+//         <NoItemLevelUpDialog
+//           $title={$title}
+//           headerText={levelUpHeaderText}
+//           highlightBg={highlightButtonBg}
+//           $children={
+//             <Reward
+//               selectedRewardStream={selectedRewardStream}
+//               premiumAccentColor={premiumAccentColor}
+//               premiumBgColor={premiumBgColor}
+//               onClick={() => _.noop}
+//               isUnlocked={true}
+//               reward={{ tierNum: 0 }}
+//               levelNum={change?.levelNum}
+//               isFreeTier={true}
+//               tierNum={reward?.tierNum}
+//             />
+//           }
+//           onViewCollection={onViewCollection}
+//         />
+//       )}
+//     </div>
+//   );
+// }
 
-function MultipleRewardLevelUpDialog({
-  change,
-  onViewCollection,
-  premiumBgColor,
-  highlightButtonBg,
-}) {
-  const levelNum = change?.levelNum;
+// function MultipleRewardLevelUpDialog({
+//   change,
+//   onViewCollection,
+//   premiumBgColor,
+//   highlightButtonBg,
+// }) {
+//   const levelNum = change?.levelNum;
 
-  const $title = "You leveled up!";
-  return (
-    <div className="c-multiple-rewards-dialog use-css-vars-creator">
-      <style>
-        {`
-          .c-multiple-rewards-dialog {
-            --highlight-gradient: ${highlightButtonBg ?? ""};
-          }
-        `}
-      </style>
-      <Component
-        slug="dialog"
-        props={{
-          $title,
-          $content: (
-            <div className="body">
-              <div className="title">
-                {`Level ${levelNum} rewards unlocked!`}
-              </div>
-              {_.map(change.rewards, (reward) => {
-                const imgRel = reward?.source?.fileRel;
-                const rewardAmountValue = reward?.amountValue;
-                const name = rewardAmountValue
-                  ? `x${rewardAmountValue} ${reward?.source?.name}`
-                  : reward?.source?.name;
-                const description = reward?.source?.data?.description;
+//   const $title = "You leveled up!";
+//   return (
+//     <div className="c-multiple-rewards-dialog use-css-vars-creator">
+//       <style>
+//         {`
+//           .c-multiple-rewards-dialog {
+//             --highlight-gradient: ${highlightButtonBg ?? ""};
+//           }
+//         `}
+//       </style>
+//       <Component
+//         slug="dialog"
+//         props={{
+//           $title,
+//           $content: (
+//             <div className="body">
+//               <div className="title">
+//                 {`Level ${levelNum} rewards unlocked!`}
+//               </div>
+//               {_.map(change.rewards, (reward) => {
+//                 const imgRel = reward?.source?.fileRel;
+//                 const rewardAmountValue = reward?.amountValue;
+//                 const name = rewardAmountValue
+//                   ? `x${rewardAmountValue} ${reward?.source?.name}`
+//                   : reward?.source?.name;
+//                 const description = reward?.source?.data?.description;
 
-                return (
-                  <div className="reward">
-                    <div className="image">
-                      <Component
-                        slug="image-by-aspect-ratio"
-                        props={{
-                          imageUrl: getModel().image.getSrcByImageObj(
-                            imgRel?.fileObj,
-                          ),
-                          aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
-                          heightPx: 80,
-                          widthPx: 80,
-                        }}
-                      />
-                    </div>
-                    <div className="info">
-                      <div className="title">
-                        <div className="name">{name}</div>
-                        <div className="icon">
-                          <$unlockedIcon />
-                        </div>
-                      </div>
-                      <div className="description">{description}</div>
-                      <div className="button">
-                        <Component
-                          slug="button"
-                          props={{
-                            text: "View in collection",
-                            isFullWidth: false,
-                            bg: cssVars.$primaryBase,
-                            borderRadius: "4px",
-                            bgColor: cssVars.$primaryBase,
-                            style: "primary",
-                            textColor: cssVars.$bgBase,
-                            onclick: onViewCollection,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ),
-          $topRightButton: (
-            <div className="close-button">
-              <Component
-                slug="icon"
-                props={{
-                  icon: "close",
-                  color: cssVars.$bgBase,
-                  onclick: () => overlay.close(),
-                }}
-              />
-            </div>
-          ),
-        }}
-      />
-    </div>
-  );
-}
+//                 return (
+//                   <div className="reward">
+//                     <div className="image">
+//                       <Component
+//                         slug="image-by-aspect-ratio"
+//                         props={{
+//                           imageUrl: getModel().image.getSrcByImageObj(
+//                             imgRel?.fileObj
+//                           ),
+//                           aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
+//                           heightPx: 80,
+//                           widthPx: 80,
+//                         }}
+//                       />
+//                     </div>
+//                     <div className="info">
+//                       <div className="title">
+//                         <div className="name">{name}</div>
+//                         <div className="icon">
+//                           <$unlockedIcon />
+//                         </div>
+//                       </div>
+//                       <div className="description">{description}</div>
+//                       <div className="button">
+//                         <Component
+//                           slug="button"
+//                           props={{
+//                             text: "View in collection",
+//                             isFullWidth: false,
+//                             bg: cssVars.$primaryBase,
+//                             borderRadius: "4px",
+//                             bgColor: cssVars.$primaryBase,
+//                             style: "primary",
+//                             textColor: cssVars.$bgBase,
+//                             onclick: onViewCollection,
+//                           }}
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 );
+//               })}
+//             </div>
+//           ),
+//           $topRightButton: (
+//             <div className="close-button">
+//               <Component
+//                 slug="icon"
+//                 props={{
+//                   icon: "close",
+//                   color: cssVars.$bgBase,
+//                   onclick: () => overlay.close(),
+//                 }}
+//               />
+//             </div>
+//           ),
+//         }}
+//       />
+//     </div>
+//   );
+// }
 
 export function $level(props) {
   const {
@@ -560,89 +569,81 @@ export function $level(props) {
   const isCurrentLevel = currentLevelNum === level.levelNum;
 
   const onRewardClick = (reward, $$rewardRef, tierNum) => {
-    if (reward) {
-      const isUnlocked = reward && currentLevelNum >= level.levelNum;
-      const isEmote = reward?.source?.type === "emote";
-      const isRedeemable = reward?.source?.type === "redeemable";
-
-      const minXp = level.minXp;
-      selectedRewardStream.next({ sourceId: reward?.sourceId, level });
-
-      // this series of if statements categorize different rewards
-      // and displays the appropriate dialog for each
-
-      // if the user hasn't unlocked the item yet
-      if (!isUnlocked) {
-        overlay.open(() => (
-          <LockedRewardDialog
-            reward={reward}
-            xpImgSrc={xpImgSrc}
-            minXp={minXp}
-            xp={xp}
-          />
-        ));
-
-        // if the user clicked on an emote
-      } else if (isEmote) {
-        overlay.open(() => (
-          <Component
-            slug="unlocked-emote-dialog"
-            props={{
-              reward,
-              onViewCollection,
-            }}
-          />
-        ));
-
-        // if the user clicked on a redeemable
-      } else if (isRedeemable) {
-        overlay.open(() => (
-          <Component
-            slug="redeemable-dialog"
-            props={{
-              enqueueSnackBar,
-              redeemableCollectible: reward,
-              onViewCollection,
-            }}
-          />
-        ));
-      } else {
-        overlay.open(() => (
-          <Component
-            slug="browser-extension-item-dialog"
-            props={{
-              displayMode: "center",
-              imgRel: reward?.source?.fileRel,
-              primaryText: `You unlocked a ${reward?.source?.name}`,
-              secondaryText: "",
-              buttons: [
-                {
-                  text: "Close",
-                  borderRadius: "4px",
-                  bg: cssVars.$tertiaryBase,
-                  textColor: cssVars.$tertiaryBaseText,
-                  onClick: () => overlay.close(),
-                },
-                {
-                  text: "View collection",
-                  borderRadius: "4px",
-                  style: "primary",
-                  onClick: onViewCollection,
-                },
-              ],
-              onExit: () => overlay.close(),
-            }}
-          />
-        ));
-      }
-    }
+    // if (reward) {
+    //   const isUnlocked = reward && currentLevelNum >= level.levelNum;
+    //   const isEmote = reward?.source?.type === "emote";
+    //   const isRedeemable = reward?.source?.type === "redeemable";
+    //   const minXp = level.minXp;
+    //   selectedRewardStream.next({ sourceId: reward?.sourceId, level });
+    //   // this series of if statements categorize different rewards
+    //   // and displays the appropriate dialog for each
+    //   // if the user hasn't unlocked the item yet
+    //   if (!isUnlocked) {
+    //     overlay.open(() => (
+    //       <LockedRewardDialog
+    //         reward={reward}
+    //         xpImgSrc={xpImgSrc}
+    //         minXp={minXp}
+    //         xp={xp}
+    //       />
+    //     ));
+    //     // if the user clicked on an emote
+    //   } else if (isEmote) {
+    //     overlay.open(() => (
+    //       <Component
+    //         slug="unlocked-emote-dialog"
+    //         props={{
+    //           reward,
+    //           onViewCollection,
+    //         }}
+    //       />
+    //     ));
+    //     // if the user clicked on a redeemable
+    //   } else if (isRedeemable) {
+    //     overlay.open(() => (
+    //       <Component
+    //         slug="redeemable-dialog"
+    //         props={{
+    //           enqueueSnackBar,
+    //           redeemableCollectible: reward,
+    //           onViewCollection,
+    //         }}
+    //       />
+    //     ));
+    //   } else {
+    //     overlay.open(() => (
+    //       <Component
+    //         slug="browser-extension-item-dialog"
+    //         props={{
+    //           displayMode: "center",
+    //           imgRel: reward?.source?.fileRel,
+    //           primaryText: `You unlocked a ${reward?.source?.name}`,
+    //           secondaryText: "",
+    //           buttons: [
+    //             {
+    //               text: "Close",
+    //               borderRadius: "4px",
+    //               bg: cssVars.$tertiaryBase,
+    //               textColor: cssVars.$tertiaryBaseText,
+    //               onClick: () => overlay.close(),
+    //             },
+    //             {
+    //               text: "View collection",
+    //               borderRadius: "4px",
+    //               style: "primary",
+    //               onClick: onViewCollection,
+    //             },
+    //           ],
+    //           onExit: () => overlay.close(),
+    //         }}
+    //       />
+    //     ));
+    //   }
+    // }
   };
 
   return (
-    <div
-      className={`level ${classKebab({ isCurrentLevel })}`}
-      ref={$$levelRef}
-    >
+    <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
         Level{" "}
         {shouldUseLevelsZeroPrefix
@@ -660,13 +661,11 @@ export function $level(props) {
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${
-              classKebab({
-                isFirstWithTierName: tierNum === tierNums?.length - 1 &&
-                  Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-                hasTierName: Boolean(tierName),
-              })
-            }`}
+            className={`reward tier-${tierNum} ${classKebab({
+              isFirstWithTierName:
+                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+              hasTierName: Boolean(tierName),
+            })}`}
           >
             <Reward
               selectedRewardStream={selectedRewardStream}
@@ -704,7 +703,8 @@ export function Reward({
   let isRewardSelected;
 
   if (selectedReward?.level) {
-    isRewardSelected = reward &&
+    isRewardSelected =
+      reward &&
       selectedReward?.sourceId === reward.sourceId &&
       selectedReward?.level === level;
   } else {
@@ -721,14 +721,12 @@ export function Reward({
 
   return (
     <div
-      className={`c-reward ${rewardClassname} ${
-        classKebab({
-          isSelected: isRewardSelected,
-          isFreeUnlocked,
-          isPaidUnlocked,
-          hasTooltip: Boolean(reward),
-        })
-      }`}
+      className={`c-reward ${rewardClassname} ${classKebab({
+        isSelected: isRewardSelected,
+        isFreeUnlocked,
+        isPaidUnlocked,
+        hasTooltip: Boolean(reward),
+      })}`}
       ref={$$ref}
       onClick={(e) => {
         onClick(reward, $$ref, tierNum);
@@ -754,15 +752,13 @@ export function Reward({
       }
   `}
       </style>
-      {reward && (
-        isUnlocked ? <$unlockedIcon /> : <$lockIcon />
-      )}
+      {reward && (isUnlocked ? <$unlockedIcon /> : <$lockIcon />)}
       <div className="inner">
         {reward?.source?.fileRel?.fileObj && (
           <div className="image">
             <img
               src={getModel().image.getSrcByImageObj(
-                reward?.source.fileRel.fileObj,
+                reward?.source.fileRel.fileObj
               )}
             />
           </div>
@@ -777,80 +773,86 @@ export function Reward({
   );
 }
 
-function NoItemLevelUpDialog(
-  { $title, $children, onViewCollection, headerText, highlightBg },
-) {
-  return (
-    <div className="c-unlocked-emote-reward-dialog use-css-vars-creator">
-      <Component
-        slug="browser-extension-item-dialog"
-        props={{
-          displayMode: "center",
-          $title,
-          $children,
-          headerText,
-          highlightBg,
-          primaryText: "No item for this level",
-          buttons: [
-            {
-              text: "Close",
-              borderRadius: "4px",
-              bg: cssVars.$tertiaryBase,
-              textColor: cssVars.$tertiaryBaseText,
-              onClick: () => overlay.close(),
-            },
-          ],
-          onExit: () => overlay.close(),
-        }}
-      />
-    </div>
-  );
-}
+// function NoItemLevelUpDialog({
+//   $title,
+//   $children,
+//   onViewCollection,
+//   headerText,
+//   highlightBg,
+// }) {
+//   return (
+//     <div className="c-unlocked-emote-reward-dialog use-css-vars-creator">
+//       <Component
+//         slug="browser-extension-item-dialog"
+//         props={{
+//           displayMode: "center",
+//           $title,
+//           $children,
+//           headerText,
+//           highlightBg,
+//           primaryText: "No item for this level",
+//           buttons: [
+//             {
+//               text: "Close",
+//               borderRadius: "4px",
+//               bg: cssVars.$tertiaryBase,
+//               textColor: cssVars.$tertiaryBaseText,
+//               onClick: () => overlay.close(),
+//             },
+//           ],
+//           onExit: () => overlay.close(),
+//         }}
+//       />
+//     </div>
+//   );
+// }
 
-export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
-  return (
-    <div className="c-locked-reward-item-dialog">
-      <Component
-        slug="browser-extension-item-dialog"
-        props={{
-          displayMode: "left",
-          imgRel: reward?.source?.fileRel,
-          primaryText: (
-            <div className="item-name">
-              <div className="text">{reward?.source?.name}</div>
-              <$lockIcon />
-            </div>
-          ),
-          valueText: (
-            <div className="value-container">
-              <Component
-                slug="image-by-aspect-ratio"
-                props={{
-                  imageUrl: xpImgSrc,
-                  aspectRatio: 1,
-                  widthPx: 18,
-                  height: 18,
-                }}
-              />
-              <div>{xp}/{minXp}</div>
-            </div>
-          ),
-          secondaryText: reward?.description,
-          buttons: [
-            {
-              text: "Close",
-              bg: cssVars.$tertiaryBase,
-              borderRadius: "4px",
-              textColor: cssVars.$tertiaryBaseText,
-              onClick: () => overlay.close(),
-            },
-          ],
-          onExit: () => overlay.close(),
-        }}
-      />
-    </div>
-  );
-}
+// export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
+//   return (
+//     <div className="c-locked-reward-item-dialog">
+//       <Component
+//         slug="browser-extension-item-dialog"
+//         props={{
+//           displayMode: "left",
+//           imgRel: reward?.source?.fileRel,
+//           primaryText: (
+//             <div className="item-name">
+//               <div className="text">{reward?.source?.name}</div>
+//               <$lockIcon />
+//             </div>
+//           ),
+//           valueText: (
+//             <div className="value-container">
+//               <Component
+//                 slug="image-by-aspect-ratio"
+//                 props={{
+//                   imageUrl: xpImgSrc,
+//                   aspectRatio: 1,
+//                   widthPx: 18,
+//                   height: 18,
+//                 }}
+//               />
+//               <div>
+//                 {xp}/{minXp}
+//               </div>
+//             </div>
+//           ),
+//           secondaryText: reward?.description,
+//           buttons: [
+//             {
+//               text: "Close",
+//               bg: cssVars.$tertiaryBase,
+//               borderRadius: "4px",
+//               textColor: cssVars.$tertiaryBaseText,
+//               onClick: () => overlay.close(),
+//             },
+//           ],
+//           onExit: () => overlay.close(),
+//         }}
+//       />
+//     </div>
+//   );
+// }
 
 export function $rewardTooltip({
   name,
@@ -858,9 +860,14 @@ export function $rewardTooltip({
   imageFileObj,
   premiumAccentColor,
 }) {
-  const { breakpoint } = useObservables(() => ({
-    breakpoint: browser.getBreakpointStream().obs,
-  }));
+  // const { breakpoint } = useObservables(() => ({
+  //   breakpoint: browser.getBreakpointStream().obs,
+  // }));
+
+  const breakpoint = "desktop";
+
+  const imageUrl =
+    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
 
   const isMobile = breakpoint === "mobile";
   return (
@@ -907,7 +914,12 @@ export function $rewardTooltip({
       <div className="title">
         {imageFileObj && (
           <div className="thumbnail">
-            <Component
+            <ImageByAspectRatio
+              imageUrl={imageUrl}
+              height={24}
+              isCentered={true}
+            />
+            {/* <Component
               slug="image-by-aspect-ratio"
               props={{
                 imageUrl: getModel().image.getSrcByImageObj(imageFileObj),
@@ -915,7 +927,7 @@ export function $rewardTooltip({
                 heightPx: 24,
                 isCentered: true,
               }}
-            />
+            /> */}
           </div>
         )}
         <div className="name">{name}</div>
@@ -929,16 +941,7 @@ export function $lockIcon() {
   return (
     <div className="status-icon locked">
       <div className="c-lock-icon">
-        {
-          <Component
-            slug="icon"
-            props={{
-              icon: "lock",
-              color: YELLOW,
-              size: "14px",
-            }}
-          />
-        }
+        <Icon icon="lock" color={YELLOW} size="14px" />
       </div>
     </div>
   );
@@ -948,42 +951,8 @@ export function $unlockedIcon() {
   return (
     <div className="status-icon unlocked">
       <div className="c-unlock-icon">
-        {
-          <Component
-            slug="icon"
-            props={{
-              icon: "check",
-              color: GREEN,
-              size: "14px",
-            }}
-          />
-        }
+        <Icon icon="check" color={GREEN} size="14px" />
       </div>
-    </div>
-  );
-}
-
-function $accountAvatar() {
-  const { me /* , breakpoint */ } = useObservables(() => ({
-    me: getModel().user.getMe(),
-    breakpoint: browser.getBreakpointStream().obs,
-  }));
-
-  // const isMobile = breakpoint === 'mobile'
-
-  return (
-    <div className="c-account-avatar">
-      {router.link(
-        <a href={router.get("orgEditProfile")}>
-          <Component
-            slug="avatar"
-            props={{
-              user: me,
-              size: "72px",
-            }}
-          />
-        </a>,
-      )}
     </div>
   );
 }

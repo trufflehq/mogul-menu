@@ -6,13 +6,14 @@ import {
   Stream,
   useObservables,
 } from "@spore/platform";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
 
 export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
   const { model, overlay } = useContext(context);
   const lastUpdatedConnectionsRef = useRef(null);
   if (!enqueueSnackBar) {
     console.warn(
-      "[browser-extension-ways-to-earn] enqueueSnackBar not defined",
+      "[browser-extension-ways-to-earn] enqueueSnackBar not defined"
     );
   }
 
@@ -65,9 +66,11 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
   ];
 
   const { connectionsObs } = useMemo(() => {
-    const connectionsObs = model.connection.getConnectionsByMe().pipe(
-      Stream.op.map((connectionConnection) => connectionConnection?.nodes),
-    );
+    const connectionsObs = model.connection
+      .getConnectionsByMe()
+      .pipe(
+        Stream.op.map((connectionConnection) => connectionConnection?.nodes)
+      );
 
     return {
       connectionsObs,
@@ -86,7 +89,7 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
 
   const isConnectionsChanged = !Legacy._.isEqual(
     connections,
-    lastUpdatedConnectionsRef.current,
+    lastUpdatedConnectionsRef.current
   );
 
   useEffect(() => {
@@ -94,7 +97,7 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
       const updatedConnections = Legacy._.differenceBy(
         connections,
         lastUpdatedConnectionsRef?.current,
-        "id",
+        "id"
       );
 
       if (!Legacy._.isEmpty(updatedConnections)) {
@@ -151,53 +154,60 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
     Legacy._.find(connections, { sourceType: selectedSource });
   // we are currently only displaying discord, twitter, and twitch connections.
   // this filters out all of the other connections
-  const displayedConnections = connections?.filter(
-    (connection) =>
-      logos.map((logo) => logo.sourceType).includes(connection.sourceType),
+  const displayedConnections = connections?.filter((connection) =>
+    logos.map((logo) => logo.sourceType).includes(connection.sourceType)
   );
 
   return (
-    <div className="c-browser-extension-earn-xp">
-      <div className="connections">
-        {logos.filter((logo) => !hasConnection(logo.sourceType))
-          .filter((logo) => logo.sourceType !== "youtube") // bring this back when google approvess
-          .map((logo, idx) => (
-            <a
-              className="connection"
-              target={"_blank"}
-              key={idx}
-              href={oAuthUrlMap ? oAuthUrlMap[logo?.sourceType] : ""}
-              onClick={() => openOAuth(logo?.sourceType)}
-              rel="noreferrer"
-            >
-              <img
-                src={logo?.imgUrl ??
-                  model.image.getSrcByImageObj(logo?.imgFileObj)}
-              />
-            </a>
-          ))}
-      </div>
-      {displayedConnections?.length > 0 && <Component slug="divider" />}
-      <div className="connected-connections">
-        {logos.filter((logo) => hasConnection(logo.sourceType))
-          .map((logo, idx) => (
-            <div
-              className="connection"
-              style={`border: 1px solid ${logo.color};`}
-              key={idx}
-            >
-              <div className="left">
+    <ScopedStylesheet url={new URL("ways-to-earn.css", import.meta.url)}>
+      <div className="c-browser-extension-earn-xp">
+        <div className="connections">
+          {logos
+            .filter((logo) => !hasConnection(logo.sourceType))
+            .filter((logo) => logo.sourceType !== "youtube") // bring this back when google approvess
+            .map((logo, idx) => (
+              <a
+                className="connection"
+                target={"_blank"}
+                key={idx}
+                href={oAuthUrlMap ? oAuthUrlMap[logo?.sourceType] : ""}
+                onClick={() => openOAuth(logo?.sourceType)}
+                rel="noreferrer"
+              >
                 <img
-                  src={logo?.imgUrl ??
-                    model.image.getSrcByImageObj(logo?.imgFileObj)}
+                  src={
+                    logo?.imgUrl ??
+                    model.image.getSrcByImageObj(logo?.imgFileObj)
+                  }
                 />
-                <div className="name">{logo.data.title}</div>
-                <div className="connected">Connected</div>
+              </a>
+            ))}
+        </div>
+        {displayedConnections?.length > 0 && <Component slug="divider" />}
+        <div className="connected-connections">
+          {logos
+            .filter((logo) => hasConnection(logo.sourceType))
+            .map((logo, idx) => (
+              <div
+                className="connection"
+                style={`border: 1px solid ${logo.color};`}
+                key={idx}
+              >
+                <div className="left">
+                  <img
+                    src={
+                      logo?.imgUrl ??
+                      model.image.getSrcByImageObj(logo?.imgFileObj)
+                    }
+                  />
+                  <div className="name">{logo.data.title}</div>
+                  <div className="connected">Connected</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
-    </div>
+    </ScopedStylesheet>
   );
 }
 

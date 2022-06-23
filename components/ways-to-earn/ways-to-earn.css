@@ -1,29 +1,29 @@
-.c-browser-extension-earn-xp {
+:host .c-browser-extension-earn-xp {
   color: var(--bg-base-text);
   margin-bottom: 36px;
 }
 
-.c-browser-extension-earn-xp > .connections {
+:host .c-browser-extension-earn-xp > .connections {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   gap: 16px;
 }
 
-.c-browser-extension-earn-xp > .connections > .connection {
+:host .c-browser-extension-earn-xp > .connections > .connection {
   cursor: pointer;
 }
 
-.c-browser-extension-earn-xp > .connections > .connection img {
+:host .c-browser-extension-earn-xp > .connections > .connection img {
   width: 40px;
   border-radius: 4px;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection:not(:last-child) {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection:not(:last-child) {
   margin-bottom: 12px;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -39,7 +39,7 @@
   height: 40px;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection > .left {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection > .left {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -51,24 +51,24 @@
           justify-content: flex-start;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection > .left > img {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection > .left > img {
   width: 40px;
   border-radius: 4px;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection > .left > .name {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection > .left > .name {
   margin-left: 12px;
   font-size: 16px;
   font-weight: 700;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection > .left > .connected {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection > .left > .connected {
   margin-left: 20px;
   font-size: 12px;
   font-weight: 400;
   color: #38F155;
 }
 
-.c-browser-extension-earn-xp > .connected-connections > .connection > .right {
+:host .c-browser-extension-earn-xp > .connected-connections > .connection > .right {
   padding: 0 14px;
 }
