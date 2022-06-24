@@ -1,5 +1,5 @@
 import _ from "https://npm.tfl.dev/lodash?no-check";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
 
 import {
   createSubject,

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
 export default function ActionBannerContainer({ actionBannerObjSubject }) {

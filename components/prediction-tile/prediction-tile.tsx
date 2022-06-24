@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import { pad } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
@@ -84,7 +84,8 @@ export default function PredictionTile({
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">
           <span>Submissions closing in</span>
-          {/* <Component
+          {
+            /* <Component
             slug="timer"
             props={{
               timerMsSubject: pollMsLeftSubject,
@@ -102,7 +103,8 @@ export default function PredictionTile({
                 );
               },
             }}
-          /> */}
+          /> */
+          }
         </div>
       </div>
     );

@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext } from "https://npm.tfl.dev/react";
 
 export const TabIdContext = createContext();
 

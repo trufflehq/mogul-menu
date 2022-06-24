@@ -1,5 +1,5 @@
-import React from "react";
-import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
+import React from "https://npm.tfl.dev/react";
+import root from "https://npm.tfl.dev/react-shadow@19";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.jsx";
@@ -46,9 +46,11 @@ export default function Tile(props) {
         href={new URL("tile.css", import.meta.url).toString()}
       />
       <div
-        className={`c-tile ${className} ${classKebab({
-          clickable: !!onClick,
-        })}`}
+        className={`c-tile ${className} ${
+          classKebab({
+            clickable: !!onClick,
+          })
+        }`}
         onClick={onClick}
       >
         <Header />

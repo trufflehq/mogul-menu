@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "https://npm.tfl.dev/react";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
@@ -54,7 +54,7 @@ export default function HomeTab() {
         message="Finish setting up your account"
         buttonText="Sign up"
         onClick={() => removeActionBanner(actionBannerId)}
-      />
+      />,
     );
   };
 

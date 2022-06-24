@@ -1,5 +1,5 @@
-import React from "react";
-import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
+import React from "https://npm.tfl.dev/react";
+import root from "https://npm.tfl.dev/react-shadow@19";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
 
 export default function ActionBanner({

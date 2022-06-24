@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import { CROWN_ICON } from "../../util/icon/paths.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
@@ -43,13 +43,15 @@ export default function KothTile() {
             href={new URL("koth-tile.css", import.meta.url).toString()}
           />
           <div className="avatar">
-            {/* <Component
+            {
+              /* <Component
               slug="avatar"
               props={{
                 user: kingOrgUser?.user,
                 size: "56px",
               }}
-            /> */}
+            /> */
+            }
             Avatar
           </div>
           <div className="info">

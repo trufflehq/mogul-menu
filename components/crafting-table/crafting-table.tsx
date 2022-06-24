@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 
 import { Component } from "@spore/platform";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import SeasonPass from "../season-pass/season-pass.tsx";
 
 export default function SeasonPassTab() {
@@ -18,9 +18,9 @@ export default function SeasonPassTab() {
   return (
     <div className="c-mogul-pass-tab">
       <SeasonPass
-      // onViewCollection={onViewCollection}
-      // highlightButtonBg={highlightButtonBg}
-      // enqueueSnackBar={enqueueSnackBar}
+        // onViewCollection={onViewCollection}
+        // highlightButtonBg={highlightButtonBg}
+        // enqueueSnackBar={enqueueSnackBar}
       />
       <div className="title">Earn XP</div>
       <div className="description">
@@ -29,12 +29,14 @@ export default function SeasonPassTab() {
       <div className="learn-more" onClick={onHowToEarnClick}>
         How do I earn XP?
       </div>
-      {/* {org?.slug !== "faze" && (
+      {
+        /* {org?.slug !== "faze" && (
         <Component
           slug="browser-extension-ways-to-earn"
           props={{ enqueueSnackBar }}
         />
-      )} */}
+      )} */
+      }
     </div>
   );
 }

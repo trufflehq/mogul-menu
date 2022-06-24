@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext } from "https://npm.tfl.dev/react";
 import { Component, context, Legacy, useObservables } from "@spore/platform";
 
 export default function BrowserExtensionNotificationDialog(

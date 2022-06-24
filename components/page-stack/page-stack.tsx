@@ -1,5 +1,5 @@
-import React from "react";
-import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
+import React from "https://npm.tfl.dev/react";
+import root from "https://npm.tfl.dev/react-shadow@19";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
 export default function PageStack({
@@ -14,9 +14,7 @@ export default function PageStack({
 
   return (
     <>
-      {isPageStackEmpty ? (
-        <></>
-      ) : (
+      {isPageStackEmpty ? <></> : (
         <root.div>
           <link
             rel="stylesheet"

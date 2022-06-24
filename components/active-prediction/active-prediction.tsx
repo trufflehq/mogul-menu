@@ -1,4 +1,8 @@
-import React, { useContext, useMemo, useEffect } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+} from "https://npm.tfl.dev/react";
 
 const ONE_SECOND_MS = 1000;
 const ONE_MINUTE_MS = 60 * 1000;
@@ -29,41 +33,42 @@ export default function $activePrediction({ isForm }) {
         model.poll.getAllSmall({
           isStreamed: true,
         })
-      )
+      ),
     );
     const activePollObs = activePollConnectionObs.pipe(
       Stream.op.map((activePollConnection) => {
         return activePollConnection?.nodes?.[0];
-      })
+      }),
     );
 
-    const orgUserCounterTypeObs =
-      model.orgUserCounterType.getBySlug("channel-points");
+    const orgUserCounterTypeObs = model.orgUserCounterType.getBySlug(
+      "channel-points",
+    );
 
     const orgUserCounterObs = orgUserCounterTypeObs.pipe(
       Stream.op.switchMap((orgUserCounterType) => {
         return orgUserCounterType
           ? model.orgUserCounter.getMeByCounterTypeId(orgUserCounterType.id)
           : Stream.Obs.of({ count: 0 });
-      })
+      }),
     );
 
     const pollMsLeftStream = Stream.createStream(
       activePollObs.pipe(
         Stream.op.map(
           (activePoll) =>
-            new Date(activePoll?.endTime || Date.now()) - new Date()
-        )
-      )
+            new Date(activePoll?.endTime || Date.now()) - new Date(),
+        ),
+      ),
     );
 
     const msSinceStartStream = Stream.createStream(
       activePollObs.pipe(
         Stream.op.map(
           (activePoll) =>
-            (new Date(activePoll?.time ?? Date.now()) - new Date()) * -1
-        )
-      )
+            (new Date(activePoll?.time ?? Date.now()) - new Date()) * -1,
+        ),
+      ),
     );
 
     return {
@@ -75,10 +80,10 @@ export default function $activePrediction({ isForm }) {
       isPredictingStream: Stream.createStream(false),
       voteCountStream: Stream.createStream("0"),
       isExpiredObs: pollMsLeftStream.obs.pipe(
-        Stream.op.map((msLeft) => msLeft <= 0)
+        Stream.op.map((msLeft) => msLeft <= 0),
       ),
       myVoteStream: Stream.createStream(
-        activePollObs.pipe(Stream.op.map((poll) => poll?.myVote))
+        activePollObs.pipe(Stream.op.map((poll) => poll?.myVote)),
       ),
       hiddenPollIdsStream: Stream.createStream([]),
     };
@@ -151,7 +156,7 @@ export default function $activePrediction({ isForm }) {
           {isExpired && !isRefund && <div>Submissions closed</div>}
           {!isExpired && !isRefund && (
             <div>
-              <span>Submissions closing in </span>
+              <span>Submissions closing in</span>
               <Component
                 slug="timer"
                 props={{
@@ -197,12 +202,10 @@ export default function $activePrediction({ isForm }) {
                 className="current-amount"
                 title={Legacy.FormatService.number(orgUserCounter?.count)}
               >
-                of{" "}
-                {Legacy.FormatService.abbreviateNumber(
+                of {Legacy.FormatService.abbreviateNumber(
                   orgUserCounter?.count || 0,
-                  1
-                )}{" "}
-                channel points
+                  1,
+                )} channel points
               </div>
             </div>
           </div>
@@ -213,17 +216,18 @@ export default function $activePrediction({ isForm }) {
         <div className="options bmargin-24">
           {activePoll.options?.map((option, optionIndex) => {
             const count = option.count || 0;
-            const ratio =
-              count && totalVotes - count
-                ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
-                : 1;
+            const ratio = count && totalVotes - count
+              ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
+              : 1;
             const isWinner =
               activePoll?.data?.winningOptionIndex === optionIndex;
             return (
               <div
-                className={`option option${optionIndex + 1} ${classKebab({
-                  isWinner,
-                })}`}
+                className={`option option${optionIndex + 1} ${
+                  classKebab({
+                    isWinner,
+                  })
+                }`}
                 key={optionIndex}
               >
                 <div className="name">{option.text}</div>
@@ -232,8 +236,8 @@ export default function $activePrediction({ isForm }) {
                     <div>
                       {totalVotes
                         ? Legacy.FormatService.percentage(
-                            (option.count || 0) / totalVotes
-                          )
+                          (option.count || 0) / totalVotes,
+                        )
                         : "0%"}
                     </div>
                   </div>
@@ -255,8 +259,7 @@ export default function $activePrediction({ isForm }) {
                           style: "inherit",
                           isFullWidth: true,
                           text: voteCount,
-                          isDisabled:
-                            isPredicting ||
+                          isDisabled: isPredicting ||
                             !(voteCount > 0) ||
                             (hasVoted && votedOptionIndex !== optionIndex),
                           shouldHandleLoading: true,
@@ -311,57 +314,60 @@ export default function $activePrediction({ isForm }) {
           {hasVoted && hasWinner && !isWinner && (
             <div className="user-prediction-text">Better luck next time!</div>
           )}
-          {!hasWinner ? (
-            // before the winner is selected
-            <div className="status">
-              <TimeSince
-                msSinceStream={msSinceStartStream}
-                renderFn={(msSince) => {
-                  const minutesSince = Math.floor(msSince / ONE_MINUTE_MS);
-                  const secondsSince = Math.floor(msSince / ONE_SECOND_MS);
+          {!hasWinner
+            ? (
+              // before the winner is selected
+              <div className="status">
+                <TimeSince
+                  msSinceStream={msSinceStartStream}
+                  renderFn={(msSince) => {
+                    const minutesSince = Math.floor(msSince / ONE_MINUTE_MS);
+                    const secondsSince = Math.floor(msSince / ONE_SECOND_MS);
 
-                  let timeSince;
-                  if (minutesSince < 1) {
-                    if (secondsSince > 1)
-                      timeSince = `${secondsSince} seconds ago`;
-                    else timeSince = `${secondsSince} second ago`;
-                  } else {
-                    if (minutesSince > 1)
-                      timeSince = `${minutesSince} minutes ago`;
-                    else timeSince = `${minutesSince} minute ago`;
-                  }
+                    let timeSince;
+                    if (minutesSince < 1) {
+                      if (secondsSince > 1) {
+                        timeSince = `${secondsSince} seconds ago`;
+                      } else timeSince = `${secondsSince} second ago`;
+                    } else {
+                      if (minutesSince > 1) {
+                        timeSince = `${minutesSince} minutes ago`;
+                      } else timeSince = `${minutesSince} minute ago`;
+                    }
 
-                  return (
-                    <>Prediction started {timeSince}. Waiting for results</>
-                  );
-                }}
-              />
-            </div>
-          ) : // after the winner is selected
-          isWinner ? (
-            // if the user voted for the winner
-            <div className="status">
-              {Legacy.FormatService.number(totalVotes)}{" "}
-              <span>
-                <ChannelPoints />
-              </span>{" "}
-              go to you and{" "}
-              {activePoll?.options[activePoll?.data?.winningOptionIndex]
-                .unique - 1}{" "}
-              others
-            </div>
-          ) : (
-            // if the user voted for the loser
-            <div className="status">
-              {Legacy.FormatService.number(totalVotes)}{" "}
-              <span>
-                <ChannelPoints />
-              </span>{" "}
-              go to{" "}
-              {activePoll?.options[activePoll?.data?.winningOptionIndex].unique}{" "}
-              users
-            </div>
-          )}
+                    return (
+                      <>Prediction started {timeSince}. Waiting for results</>
+                    );
+                  }}
+                />
+              </div>
+            )
+            : // after the winner is selected
+              isWinner
+              ? (
+                // if the user voted for the winner
+                <div className="status">
+                  {Legacy.FormatService.number(totalVotes)}{" "}
+                  <span>
+                    <ChannelPoints />
+                  </span>{" "}
+                  go to you and{" "}
+                  {activePoll?.options[activePoll?.data?.winningOptionIndex]
+                    .unique - 1} others
+                </div>
+              )
+              : (
+                // if the user voted for the loser
+                <div className="status">
+                  {Legacy.FormatService.number(totalVotes)}{" "}
+                  <span>
+                    <ChannelPoints />
+                  </span>{" "}
+                  go to{" "}
+                  {activePoll?.options[activePoll?.data?.winningOptionIndex]
+                    .unique} users
+                </div>
+              )}
         </div>
       )}
       {hasVoted && isRefund && (

@@ -1,5 +1,5 @@
 import _ from "https://npm.tfl.dev/lodash?no-check";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
 
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
@@ -50,14 +50,16 @@ export default function SeasonPass(props) {
 
   const $$levelsRef = useRef(null);
   const $$levelRef = useRef(null);
-  const { seasonPassObs, focalIndexStream, selectedRewardStream } =
-    useMemo(() => {
+  const { seasonPassObs, focalIndexStream, selectedRewardStream } = useMemo(
+    () => {
       return {
         // seasonPassObs: getModel().seasonPass.getCurrent(),
         focalIndexStream: createSubject(0),
         selectedRewardStream: createSubject(),
       };
-    }, []);
+    },
+    [],
+  );
 
   const {
     // seasonPass,
@@ -91,37 +93,37 @@ export default function SeasonPass(props) {
 
   const { range, progress } = getXPBarBySeasonPassAndXp(
     seasonPass,
-    seasonPass?.xp
+    seasonPass?.xp,
   );
 
   // FIXME hack for faze
-  const isEligibleCryptoGiveawayKv =
-    meOrgUserWithKv?.keyValueConnection?.nodes?.find(
-      ({ key }) => key === "isEligibleCryptoGiveaway"
+  const isEligibleCryptoGiveawayKv = meOrgUserWithKv?.keyValueConnection?.nodes
+    ?.find(
+      ({ key }) => key === "isEligibleCryptoGiveaway",
     );
   const isEligibleCryptoGiveaway = isEligibleCryptoGiveawayKv?.value === "yes";
 
   // FIXME - hack for faze
   const tiers = !isEligibleCryptoGiveaway
     ? _.filter(
-        seasonPass?.data?.tiers,
-        (tier) => tier?.name !== "Crypto-eligible"
-      )
+      seasonPass?.data?.tiers,
+      (tier) => tier?.name !== "Crypto-eligible",
+    )
     : seasonPass?.data?.tiers;
 
   // FIXME - hack for faze
   const levels = !isEligibleCryptoGiveaway
     ? _.map(seasonPass.levels, (level) => {
-        const nonCryptoRewards = _.filter(
-          level.rewards,
-          (reward) => reward.tierNum < 1
-        );
+      const nonCryptoRewards = _.filter(
+        level.rewards,
+        (reward) => reward.tierNum < 1,
+      );
 
-        return {
-          ...level,
-          rewards: nonCryptoRewards,
-        };
-      })
+      return {
+        ...level,
+        rewards: nonCryptoRewards,
+      };
+    })
     : seasonPass.levels;
 
   const groupedLevels = _.keyBy(levels, "levelNum");
@@ -200,9 +202,9 @@ export default function SeasonPass(props) {
   let tierNums = _.reverse(
     _.uniqBy(
       _.flatten(
-        _.map(seasonPass.levels, (level) => _.map(level.rewards, "tierNum"))
-      )
-    )
+        _.map(seasonPass.levels, (level) => _.map(level.rewards, "tierNum")),
+      ),
+    ),
   );
 
   // FIXME: the reverse here is a hack for Faze
@@ -262,9 +264,11 @@ export default function SeasonPass(props) {
             {true && (
               <div className="pages">
                 <div
-                  className={`button left ${classKebab({
-                    isDisabled: isNotLeftClickable,
-                  })}`}
+                  className={`button left ${
+                    classKebab({
+                      isDisabled: isNotLeftClickable,
+                    })
+                  }`}
                   onClick={onLeftClick}
                 >
                   ◂
@@ -273,9 +277,11 @@ export default function SeasonPass(props) {
                   {`Ends in ${seasonPass?.daysRemaining} days`}
                 </div>
                 <div
-                  className={`button right ${classKebab({
-                    isDisabled: isNotRightClickable,
-                  })}`}
+                  className={`button right ${
+                    classKebab({
+                      isDisabled: isNotRightClickable,
+                    })
+                  }`}
                   onClick={onRightClick}
                 >
                   ▸
@@ -288,30 +294,32 @@ export default function SeasonPass(props) {
                 ref={$$levelsRef}
                 onTouchStart={(e) => e.stopPropagation()}
               >
-                {tiers?.length ? (
-                  <div className="tier-info">
-                    {
-                      // FIXME: the reverse here is a hack for Faze
-                      _.reverse(
-                        _.map(tiers, (tier) => {
-                          console.log("tier", tier);
-                          return (
-                            tier?.name && (
-                              <div
-                                className="tier"
-                                style={{
-                                  background: tier?.background,
-                                }}
-                              >
-                                {tier?.name}
-                              </div>
-                            )
-                          );
-                        })
-                      )
-                    }
-                  </div>
-                ) : null}
+                {tiers?.length
+                  ? (
+                    <div className="tier-info">
+                      {
+                        // FIXME: the reverse here is a hack for Faze
+                        _.reverse(
+                          _.map(tiers, (tier) => {
+                            console.log("tier", tier);
+                            return (
+                              tier?.name && (
+                                <div
+                                  className="tier"
+                                  style={{
+                                    background: tier?.background,
+                                  }}
+                                >
+                                  {tier?.name}
+                                </div>
+                              )
+                            );
+                          }),
+                        )
+                      }
+                    </div>
+                  )
+                  : null}
                 <div
                   className="levels"
                   style={{
@@ -661,11 +669,13 @@ export function $level(props) {
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${classKebab({
-              isFirstWithTierName:
-                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-              hasTierName: Boolean(tierName),
-            })}`}
+            className={`reward tier-${tierNum} ${
+              classKebab({
+                isFirstWithTierName: tierNum === tierNums?.length - 1 &&
+                  Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+                hasTierName: Boolean(tierName),
+              })
+            }`}
           >
             <Reward
               selectedRewardStream={selectedRewardStream}
@@ -703,8 +713,7 @@ export function Reward({
   let isRewardSelected;
 
   if (selectedReward?.level) {
-    isRewardSelected =
-      reward &&
+    isRewardSelected = reward &&
       selectedReward?.sourceId === reward.sourceId &&
       selectedReward?.level === level;
   } else {
@@ -721,12 +730,14 @@ export function Reward({
 
   return (
     <div
-      className={`c-reward ${rewardClassname} ${classKebab({
-        isSelected: isRewardSelected,
-        isFreeUnlocked,
-        isPaidUnlocked,
-        hasTooltip: Boolean(reward),
-      })}`}
+      className={`c-reward ${rewardClassname} ${
+        classKebab({
+          isSelected: isRewardSelected,
+          isFreeUnlocked,
+          isPaidUnlocked,
+          hasTooltip: Boolean(reward),
+        })
+      }`}
       ref={$$ref}
       onClick={(e) => {
         onClick(reward, $$ref, tierNum);
@@ -758,7 +769,7 @@ export function Reward({
           <div className="image">
             <img
               src={getModel().image.getSrcByImageObj(
-                reward?.source.fileRel.fileObj
+                reward?.source.fileRel.fileObj,
               )}
             />
           </div>
@@ -919,7 +930,8 @@ export function $rewardTooltip({
               height={24}
               isCentered={true}
             />
-            {/* <Component
+            {
+              /* <Component
               slug="image-by-aspect-ratio"
               props={{
                 imageUrl: getModel().image.getSrcByImageObj(imageFileObj),
@@ -927,7 +939,8 @@ export function $rewardTooltip({
                 heightPx: 24,
                 isCentered: true,
               }}
-            /> */}
+            /> */
+            }
           </div>
         )}
         <div className="name">{name}</div>

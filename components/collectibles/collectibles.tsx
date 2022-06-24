@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "https://npm.tfl.dev/react";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 

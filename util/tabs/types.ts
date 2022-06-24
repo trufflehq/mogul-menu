@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX } from "https://npm.tfl.dev/react";
 
 export interface TabProps {
   tabId: string;

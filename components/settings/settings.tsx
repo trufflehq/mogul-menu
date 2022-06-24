@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 
 export default function ChromeExtSettings({ nonce }) {

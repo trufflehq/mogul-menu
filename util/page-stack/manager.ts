@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo } from "https://npm.tfl.dev/react";
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 
 export function usePageStackManager() {

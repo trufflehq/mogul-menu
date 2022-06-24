@@ -1,7 +1,7 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
 import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import root from "https://npm.tfl.dev/react-shadow@19?deps=react@18&dev";
+import root from "https://npm.tfl.dev/react-shadow@19";
 
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
@@ -52,12 +52,12 @@ export default function HomeTab() {
 
   const channelPointsSrc = false
     ? // channelPointsImageObj
-      // ? getModel().image.getSrcByImageObj(channelPointsImageObj)
+    // ? getModel().image.getSrcByImageObj(channelPointsImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
   const xpSrc = false
     ? // xpImageObj
-      // ? getModel().image.getSrcByImageObj(xpImageObj)
+    // ? getModel().image.getSrcByImageObj(xpImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
@@ -168,8 +168,7 @@ export default function HomeTab() {
                   //   extensionInfo,
                   //   onBack: popPage,
                   // })
-                  pushPage(<SettingsPage />)
-                }
+                  pushPage(<SettingsPage />)}
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"
@@ -192,12 +191,12 @@ export default function HomeTab() {
             <>
               {canClaim && (
                 <IsLiveInfo
-                // secondsRemainingSubject={secondsRemainingSubject}
-                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-                // highlightButtonBg={highlightButtonBg}
-                // creatorName={creatorName}
-                // hasChannelPoints={hasChannelPoints}
-                // hasBattlePass={hasBattlePass}
+                  // secondsRemainingSubject={secondsRemainingSubject}
+                  // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
+                  // highlightButtonBg={highlightButtonBg}
+                  // creatorName={creatorName}
+                  // hasChannelPoints={hasChannelPoints}
+                  // hasBattlePass={hasBattlePass}
                 />
               )}
             </>
@@ -206,8 +205,8 @@ export default function HomeTab() {
             <>
               <LeaderboardTile />
               <PredictionTile
-              // channelPointsImageObj={channelPointsImageObj}
-              // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
+                // channelPointsImageObj={channelPointsImageObj}
+                // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
               />
               <KothTile />
             </>

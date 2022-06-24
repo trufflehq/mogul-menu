@@ -1,4 +1,4 @@
-import React from "react";
+import React from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { TROPHY_ICON } from "../../util/icon/paths.ts";
 import Tile from "../tile/tile.tsx";
@@ -77,13 +77,15 @@ export function LeaderboardTile() {
                   borderColor: ranks[idx].color,
                 }}
               >
-                {/* <Component
+                {
+                  /* <Component
                   slug="avatar"
                   props={{
                     user: contestant?.orgUser?.user,
                     size: "44px",
                   }}
-                /> */}
+                /> */
+                }
                 <div>Avatar</div>
                 <div className="username">
                   {contestant?.orgUser?.user?.name}

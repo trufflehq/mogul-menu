@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "https://npm.tfl.dev/react";
 
 const CHANNEL_POINTS_CLAIM_TRIGGER_ID = "41760be0-6f68-11ec-b706-956d4fcf75c0";
 const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";

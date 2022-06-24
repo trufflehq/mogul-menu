@@ -1,4 +1,4 @@
-import { JSX, useMemo } from "react";
+import { JSX, useMemo } from "https://npm.tfl.dev/react";
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import { uniqueId } from "../general.ts";
 

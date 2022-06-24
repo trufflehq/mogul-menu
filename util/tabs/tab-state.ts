@@ -1,4 +1,8 @@
-import { createContext, useContext, useReducer } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+} from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { TabDefinition, TabState, TabStateMap } from "./types.ts";
 import { uniqueId } from "../general.ts";

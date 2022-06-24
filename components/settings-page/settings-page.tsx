@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback, useMemo } from "https://npm.tfl.dev/react";
 
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
@@ -99,14 +99,16 @@ export default function SettingsPage() {
                 <Input label="Display name" valueSubject={nameSubject} />
               </div>
               <div className="color">
-                {/* <Component
+                {
+                  /* <Component
                 slug="input-color"
                 props={{
                   label: "Chat name color",
                   colorSubject: nameColorSubject,
                   isLabelVisible: true,
                 }}
-              /> */}
+              /> */
+                }
               </div>
             </>
           )}
@@ -116,7 +118,8 @@ export default function SettingsPage() {
             extensionInfo={{}}
             extensionIconPositionSubject={{}}
           />
-          {/* {isChanged && (
+          {
+            /* {isChanged && (
           <Component
             slug="unsaved-snackbar"
             props={{
@@ -124,11 +127,12 @@ export default function SettingsPage() {
               onCancel: reset,
             }}
           />
-        )} */}
+        )} */
+          }
         </div>
       </ScopedStylesheet>
     ),
-    []
+    [],
   );
 
   return (
@@ -154,13 +158,12 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
   }
 
   const minVersionForLayoutConfigSteps = "3.1.0";
-  const hasLayoutConfigSteps =
-    extensionInfo?.version &&
+  const hasLayoutConfigSteps = extensionInfo?.version &&
     extensionInfo.version.localeCompare(
-      minVersionForLayoutConfigSteps,
-      undefined,
-      { numeric: true, sensitivity: "base" }
-    ) !== -1 &&
+        minVersionForLayoutConfigSteps,
+        undefined,
+        { numeric: true, sensitivity: "base" },
+      ) !== -1 &&
     allowsThirdPartyCookies;
 
   const positions = getExtensionPositions({ extensionInfo });
@@ -185,8 +188,7 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
       {hasLayoutConfigSteps && (
         <>
           {positions.map((position) => {
-            const isSelected =
-              (extensionIconPosition || "stream-top-right") ===
+            const isSelected = (extensionIconPosition || "stream-top-right") ===
               position.positionSlug;
             return (
               <div
@@ -295,7 +297,7 @@ export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
 
 function getExtensionPositions({ extensionInfo }) {
   const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo
+    extensionInfo?.pageInfo,
   );
 
   const positions = twitchPageIdentifiers
