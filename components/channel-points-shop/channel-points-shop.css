@@ -1,0 +1,262 @@
+:host .c-channel-points-shop {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+:host .c-channel-points-shop > .header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+:host .c-channel-points-shop > .header > .channel-points {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #EBC564;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 6px 12px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:host .c-channel-points-shop > .header > .channel-points > .icon {
+  margin-right: 8px;
+}
+
+:host .c-channel-points-shop > .header > .title {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-family: 600;
+  color: #FFFFFF;
+}
+
+:host .c-channel-points-shop > .items {
+  display: -ms-grid;
+  display: grid;
+  gap: 12px;
+  -ms-grid-columns: (120px)[auto-fit];
+      grid-template-columns: repeat(auto-fit, 120px);
+}
+
+:host .c-channel-points-shop > .items > .item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0 6px;
+  position: relative;
+}
+
+:host .c-channel-points-shop > .items > .item.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+:host .c-channel-points-shop > .items > .item > .card {
+  width: 120px;
+  height: 140px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid var(--item-color);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 4px;
+}
+
+:host .c-channel-points-shop > .items > .item > .card > .image {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+:host .c-channel-points-shop > .items > .item > .card > .title {
+  margin-top: 12px;
+  text-align: center;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+:host .c-channel-points-shop > .items > .item > .card > .bottom {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 7px 0;
+  margin-top: 10px;
+  background-color: var(--tertiary-base);
+  border-radius: 4px;
+  border: 1px solid rgba(var(--bg-base-text-rgb-csv), 0.16);
+}
+
+:host .c-channel-points-shop > .items > .item > .card > .bottom > .amount {
+  color: #FFFFFF;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+:host .c-channel-points-shop > .how-to-earn {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-top: 44px;
+}
+
+:host .c-channel-points-shop > .how-to-earn > .title {
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+}
+
+:host .c-channel-points-shop > .how-to-earn > .description {
+  margin-top: 2px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+:host .c-channel-points-shop > .how-to-earn > .link {
+  margin-top: 2px;
+}
+
+:host .c-channel-points-shop > .how-to-earn > .link > button {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--secondary-base);
+  padding: 2px 0;
+  font-weight: 500;
+}
+
+:host .confirm-purchase-dialog .z-dialog > .dialog {
+  background-color: #161f2c !important;
+}
+
+:host .confirm-purchase-dialog .z-dialog > .dialog > .top {
+  border-bottom: none !important;
+}
+
+:host .confirm-purchase-dialog .z-dialog > .dialog > .top > .inner > .top-right {
+  margin-top: 12px;
+}
+
+:host .confirm-purchase-dialog .body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+}
+
+:host .confirm-purchase-dialog .body > .info > div {
+  margin-bottom: 2px;
+}
+
+:host .confirm-purchase-dialog .body > .info > .name {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+:host .confirm-purchase-dialog .body > .info > .cost {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 5px;
+}
+
+:host .confirm-purchase-dialog .body > .info > .cost > .value {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+:host .confirm-purchase-dialog .body > .info > .description {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--inherit-base-text);
+}
+
+:host .confirm-purchase-dialog .close-button {
+  margin-right: 16px;
+}
+
+:host .confirm-purchase-dialog .action {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+:host .confirm-purchase-dialog .action > button {
+  border-radius: 4px;
+}

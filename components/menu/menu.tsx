@@ -13,7 +13,13 @@ Services that the menu component should provide:
 - Interface for navigating between tabs
 */
 
-import React, { JSX, useEffect, useMemo, useRef, useState } from "https://npm.tfl.dev/react";
+import React, {
+  JSX,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import root from "https://npm.tfl.dev/react-shadow@19";
 
@@ -28,7 +34,11 @@ import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-for
 import cssVars from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
 import SnackBarProvider from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-provider/snack-bar-provider.jsx";
 
-import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import {
+  createSubject,
+  Obs,
+  op,
+} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
@@ -42,13 +52,18 @@ import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
 
 import { TabElement } from "../../util/tabs/types.ts";
-import { TabStateContext, TabStateManager, useTabStateManager } from "../../util/tabs/tab-state.ts";
+import {
+  TabStateContext,
+  TabStateManager,
+  useTabStateManager,
+} from "../../util/tabs/tab-state.ts";
 import { TabIdContext } from "../../util/tabs/tab-id.ts";
 import { PageStackContext } from "../../util/page-stack/page-stack.ts";
 import { usePageStackManager } from "../../util/page-stack/manager.ts";
 import { useActionBannerManager } from "../../util/action-banner/manager.ts";
 import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
 import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
+import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -70,12 +85,16 @@ export const isYoutubeSourceType = (sourceType) =>
   sourceType === "youtubeVideo";
 
 export const getYoutubePageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) => isYoutubeSourceType(identifier.sourceType));
+  pageInfoIdentifiers?.find((identifier) =>
+    isYoutubeSourceType(identifier.sourceType)
+  );
 
 export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
 export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) => isTwitchSourceType(identifier.sourceType));
+  pageInfoIdentifiers?.find((identifier) =>
+    isTwitchSourceType(identifier.sourceType)
+  );
 
 const SNACKBAR_ANIMATION_DURATION_MS = 5000;
 const STORAGE_POSITION_PREFIX = "extensionIconPosition";
@@ -90,20 +109,23 @@ const DEFAULT_TABS = [
   {
     text: "Collection",
     slug: "collection",
-    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/collection.svg",
+    imgUrl:
+      "https://cdn.bio/assets/images/features/browser_extension/collection.svg",
     $el: CollectionTab,
   },
   {
     text: "Battle Pass",
     slug: "battle-pass",
-    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
+    imgUrl:
+      "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
     $el: SeasonPassTab,
   },
   {
     text: "Shop",
     slug: "shop",
-    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/store.svg",
-    // $el: ChannelPointsShopTab
+    imgUrl:
+      "https://cdn.bio/assets/images/features/browser_extension/store.svg",
+    $el: ChannelPointsShopTab,
   },
 ];
 
@@ -113,8 +135,8 @@ export default function BrowserExtensionMenu(props) {
 
   // props
   const {
-    hasChannelPoints,
-    hasBattlePass,
+    // hasChannelPoints,
+    // hasBattlePass,
     iconImageObj,
     channelPointsImageObj,
     xpImageObj,
@@ -126,8 +148,8 @@ export default function BrowserExtensionMenu(props) {
 
   // fetched values
   // TODO: implement logic for fetching from backend
-  const { extensionIconPositionObs, hasViewedOnboardTooltipObs } = useMemo(
-    () => {
+  const { extensionIconPositionObs, hasViewedOnboardTooltipObs } =
+    useMemo(() => {
       const extensionIconPositionObs = Obs.from(
         jumper
           ?.call("storage.get", {
@@ -137,9 +159,10 @@ export default function BrowserExtensionMenu(props) {
           ?.then(async (value) => {
             try {
               if (!value) {
-                const legacyValue = (await jumper?.call("storage.get", {
-                  key: STORAGE_POSITION_PREFIX,
-                })) || window.localStorage.getItem("extensionIconPosition");
+                const legacyValue =
+                  (await jumper?.call("storage.get", {
+                    key: STORAGE_POSITION_PREFIX,
+                  })) || window.localStorage.getItem("extensionIconPosition");
                 await jumper.call("storage.set", {
                   key: getStorageKey(STORAGE_POSITION_PREFIX),
                   value: legacyValue,
@@ -154,7 +177,7 @@ export default function BrowserExtensionMenu(props) {
               }
             } catch {}
             return value;
-          }) || "",
+          }) || ""
       );
       // want this to always be true/false since it's async
       const hasViewedOnboardTooltipObs = Obs.from(
@@ -162,26 +185,25 @@ export default function BrowserExtensionMenu(props) {
           ?.call("storage.get", {
             key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
           })
-          ?.then((value) => value || false) || "",
+          ?.then((value) => value || false) || ""
       );
 
       return {
         extensionIconPositionObs,
         hasViewedOnboardTooltipObs,
       };
-    },
-    [],
-  );
+    }, []);
 
   const { extensionIconPosition, hasViewedOnboardTooltip } = useObservables(
     () => ({
       extensionIconPosition: extensionIconPositionObs,
       hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
-    }),
+    })
   );
 
   const isClaimable = false;
-
+  const hasChannelPoints = true;
+  const hasBattlePass = true;
   // references
   const $$extensionIconRef = useRef(null);
 
@@ -200,7 +222,8 @@ export default function BrowserExtensionMenu(props) {
     return true;
   });
 
-  const { pushPage, popPage, clearPageStack, pageStackSubject } = usePageStackManager();
+  const { pushPage, popPage, clearPageStack, pageStackSubject } =
+    usePageStackManager();
 
   // set up state for TabNameContext
   const tabStateManager: TabStateManager = useTabStateManager(visibleTabs);
@@ -209,8 +232,8 @@ export default function BrowserExtensionMenu(props) {
   const [activeTabId, setActiveTabId] = useState(tabIds[0]);
 
   const activeTabIndex = tabIds.indexOf(activeTabId);
-  const ActiveTab: TabElement = visibleTabs[activeTabIndex].$el ??
-    (() => <></>);
+  const ActiveTab: TabElement =
+    visibleTabs[activeTabIndex].$el ?? (() => <></>);
 
   useEffect(() => {
     const setTabState = (tabId: string, isActive: boolean) =>
@@ -236,18 +259,16 @@ export default function BrowserExtensionMenu(props) {
 
   const hasNotification = Object.values(tabStates).reduce(
     (acc, tabState) => acc || tabState.hasBadge,
-    false,
+    false
   );
 
   // action banners
   const { actionBannerObjSubject, displayActionBanner, removeActionBanner } =
     useActionBannerManager();
 
-  const className = `z-browser-extension-menu position-${extensionIconPosition} ${
-    classKebab(
-      { isOpen, hasNotification, isClaimable },
-    )
-  }`;
+  const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab(
+    { isOpen, hasNotification, isClaimable }
+  )}`;
 
   return (
     <root.div className={className}>
@@ -299,8 +320,7 @@ export default function BrowserExtensionMenu(props) {
               })}
             </div>
             {/* TODO: refactor channel points component */}
-            {
-              /*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
+            {/*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
               <ChannelPoints {...{
                 hasText: isOpen,
                 fontColor: '#FFFFFF',
@@ -345,18 +365,15 @@ export default function BrowserExtensionMenu(props) {
                   )
                 }
               }} />
-            </div> */
-            }
+            </div> */}
             <div className="extension-icon-placeholder"></div>
           </div>
           {/* TODO: put back account linking logic */}
-          {
-            /*shouldShowSignupBanner && <ActionBanner
+          {/*shouldShowSignupBanner && <ActionBanner
             message="Finish setting up your account"
             buttonText="Sign up"
             onClick={handleSignup}
-          />*/
-          }
+          />*/}
           {/*shouldShowTwitchBanner && getModel().user.isMember(me) && credentials?.sourceType === 'twitch' && !hasConnectedAccount && <TwitchSignupBanner /> */}
           {
             // TODO: move this to the actions page
@@ -388,11 +405,9 @@ export default function BrowserExtensionMenu(props) {
                   {visibleTabs.map(({ $el: TabComponent }, idx) => (
                     <TabIdContext.Provider key={idx} value={tabIds[idx]}>
                       <div
-                        className={`tab-component ${
-                          classKebab({
-                            isActive: idx === activeTabIndex,
-                          })
-                        }`}
+                        className={`tab-component ${classKebab({
+                          isActive: idx === activeTabIndex,
+                        })}`}
                       >
                         {TabComponent && <TabComponent />}
                       </div>
@@ -407,25 +422,21 @@ export default function BrowserExtensionMenu(props) {
       {/* TODO: refactor snackbar container component */}
 
       {/* TODO: refactor NewExtensionUserTooltip */}
-      {
-        /* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
+      {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip
           hasViewedOnboardTooltipSubject={hasViewedOnboardTooltipSubject}
           $$extensionIconRef={$$extensionIconRef}
         />
-      </Modal> */
-      }
+      </Modal> */}
       {/* TODO: wire up */}
-      {
-        /* <Modal isVisibleSubject={isSignupVisibleSubject}>
+      {/* <Modal isVisibleSubject={isSignupVisibleSubject}>
         <SignUpForm
           source='extension-sign-up'
           prefillName={me?.name}
           infoMessage='Create an account to secure your collection'
           onComplete={transferJwt}
         />
-      </Modal> */
-      }
+      </Modal> */}
     </root.div>
   );
 }
