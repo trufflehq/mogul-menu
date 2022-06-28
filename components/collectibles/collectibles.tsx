@@ -1,9 +1,11 @@
 import React, { useContext, useMemo } from "https://npm.tfl.dev/react";
+import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import Collectible from "../collectible/collectible.tsx";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 
@@ -18,6 +20,65 @@ export default function Collectibles(props) {
 
   const enqueueSnackBar = useSnackBar();
   const { pushPage, popPage } = usePageStack();
+
+  const [
+    {
+      data: collectibleConnectionData,
+      fetching: isFetchingCollectibles,
+      error: collectibleFetchError,
+    },
+  ] = useQuery({
+    query: gql`
+      query CollectibleGetAllByMe {
+        collectibleConnection(input: { type: "emote" }) {
+          totalCount
+          nodes {
+            id
+            slug
+            name
+            type
+            targetType
+            fileRel {
+              fileObj {
+                cdn
+                data
+                prefix
+                contentType
+                type
+                variations
+                ext
+              }
+            }
+            data {
+              category
+              redeemType
+              redeemButtonText
+              redeemData
+              description
+            }
+            ownedCollectible {
+              count
+            }
+          }
+        }
+      }
+    `,
+  });
+
+  const collectibleConnection =
+    collectibleConnectionData?.collectibleConnection;
+
+  const sortedCollectibles = _.orderBy(
+    collectibleConnection?.nodes,
+    (collectible) => collectible.ownedCollectible?.count
+  );
+  const groups = _.groupBy(sortedCollectibles, "type");
+  const groupedCollectibles = _.orderBy(
+    _.map(groups, (collectibles, type) => {
+      return { type, collectibles };
+    }),
+    ORDER_FN
+  );
 
   // const {
   //   isEmptyStream,
@@ -97,30 +158,30 @@ export default function Collectibles(props) {
     // ownedCollectibles: ownedCollectiblesObs,
   }));
 
-  const groupedCollectibles = [
-    {
-      type: "Redeemable",
-      collectibles: [
-        {
-          name: "Collectible",
-          type: "redeemable",
-          targetType: "user",
-          ownedCollectible: { count: 3 },
-        },
-      ],
-    },
-    {
-      type: "Emote",
-      collectibles: [
-        {
-          name: "Collectible",
-          type: "redeemable",
-          targetType: "user",
-          ownedCollectible: { count: 3 },
-        },
-      ],
-    },
-  ];
+  // const groupedCollectibles = [
+  //   {
+  //     type: "Redeemable",
+  //     collectibles: [
+  //       {
+  //         name: "Collectible",
+  //         type: "redeemable",
+  //         targetType: "user",
+  //         // ownedCollectible: { count: 3 },
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     type: "Emote",
+  //     collectibles: [
+  //       {
+  //         name: "Collectible",
+  //         type: "redeemable",
+  //         targetType: "user",
+  //         // ownedCollectible: { count: 3 },
+  //       },
+  //     ],
+  //   },
+  // ];
 
   if (isEmpty) return <$emptyState groupedCollectibles={groupedCollectibles} />;
   return (

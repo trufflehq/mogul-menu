@@ -2,6 +2,7 @@ import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import React, { useContext } from "https://npm.tfl.dev/react";
+import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 
 export default function Collctible(props) {
   const {
@@ -16,10 +17,11 @@ export default function Collctible(props) {
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
-  // const imageUrl = model.image.getSrcByImageObj(collectible?.fileRel?.fileObj);
-  const imageUrl =
-    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
-  const canRedeem = collectible.type === "redeemable" &&
+  const imageUrl = getModel().image.getSrcByImageObj(
+    collectible?.fileRel?.fileObj
+  );
+  const canRedeem =
+    collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
   const onRedeemHandler = () => {
@@ -53,22 +55,18 @@ export default function Collctible(props) {
         {collectible?.name && (
           <div className="info">
             <div className="name">{collectible?.name}</div>
-            {collectible?.ownedCollectible?.count
-              ? (
-                <div className="count">
-                  {`x${collectible?.ownedCollectible?.count}`}
-                </div>
-              )
-              : null}
+            {collectible?.ownedCollectible?.count ? (
+              <div className="count">
+                {`x${collectible?.ownedCollectible?.count}`}
+              </div>
+            ) : null}
           </div>
         )}
         {isOwned && canRedeem && (
           <div
-            className={`button ${
-              classKebab({
-                isActive: Boolean(activePowerup),
-              })
-            }`}
+            className={`button ${classKebab({
+              isActive: Boolean(activePowerup),
+            })}`}
           >
             <Button
               text={
