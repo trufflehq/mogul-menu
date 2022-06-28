@@ -150,7 +150,7 @@
           align-items: flex-end;
   height: 100%;
   margin-right: 4px;
-  color: var(--secondary-base);
+  color: var(--truffle-color-secondary);
 }
 
 .c-browser-extension-season-pass > .pages {
@@ -183,7 +183,7 @@
 }
 
 .c-browser-extension-season-pass > .pages > .button {
-  color: var(--inherit-base-text);
+  color: var(--truffle-color-text-bg-primary);
   padding: 10px 16px;
   cursor: pointer;
 }
@@ -226,11 +226,11 @@
 }
 
 .c-browser-extension-season-pass > .action-levels-wrapper > .levels-wrapper > .tier-info > .tier {
-  color: var(--bg-base);
+  color: var(--truffle-color-bg-primary);
   margin-bottom: calc(100px + 30px + 18px + 4px);
   font-weight: 600;
   text-transform: uppercase;
-  background: var(--bg-base-text-20);
+  background: var(--truffle-color-bg-primary);
   line-height: 28px;
   padding: 0 28px;
 }
@@ -312,7 +312,7 @@
 
 .c-browser-extension-season-pass .actions > .action {
   margin-right: 16px;
-  color: var(--secondary-base);
+  color: var(--truffle-color-secondary);
 }
 
 .c-browser-extension-season-pass .actions > .action:last-child {
@@ -355,7 +355,7 @@
   z-index: 2;
   border-radius: 8px;
   border: 1px solid #FFFFFF;
-  background: var(--bg-base-text);
+  background: var(--truffle-color-text-bg-primary);
   /* This renders in a portal w/o selected css vars */
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -371,7 +371,7 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 8px;
-  color: var(--bg-base);
+  color: var(--truffle-color-bg-primary);
   font-weight: 600;
   width: 100%;
   border-top-left-radius: 8px;
@@ -388,24 +388,24 @@
   padding: 12px 12px 16px 12px;
   font-weight: 500;
   font-size: 14px;
-  background: var(--bg-base-text);
+  background: var(--truffle-color-text-bg-primary);
   /* This renders in a portal w/o selected css vars */
   height: 100%;
-  color: var(--bg-base);
+  color: var(--truffle-color-bg-primary);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .c-rewards-dialog > .c-dialog > .dialog > .top {
   text-transform: uppercase;
-  background: var(--primary-base);
-  color: var(--primary-base-text);
+  background: var(--truffle-color-primary);
+  color: var(--truffle-color-text-bg-primary);
 }
 
 .c-rewards-dialog > .c-sheet > .sheet > .inner > .top {
   text-transform: uppercase;
-  background: var(--primary-base);
-  color: var(--primary-base-text);
+  background: var(--truffle-color-primary);
+  color: var(--truffle-color-text-bg-primary);
 }
 
 .c-rewards-dialog_content {
@@ -441,7 +441,7 @@
   display: -ms-flexbox;
   display: flex;
   font-size: 40px;
-  font-family: var(--header-font);
+  font-family: var(--truffle-font-family);
   line-height: 57px;
   padding: 32px 0;
   text-transform: uppercase;
@@ -469,13 +469,13 @@
 }
 
 .c-transaction-history-dialog > .c-dialog > .dialog > .top {
-  background: var(--primary-base);
-  color: var(--primary-base-text);
+  background: var(--truffle-color-primary);
+  color: var(--truffle-color-text-bg-primary);
 }
 
 .c-transaction-history-dialog > .c-sheet > .sheet > .inner > .top {
-  background: var(--primary-base);
-  color: var(--primary-base-text);
+  background: var(--truffle-color-primary);
+  color: var(--truffle-color-text-bg-primary);
 }
 
 .c-transaction-history_content {
@@ -518,7 +518,7 @@
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  border-bottom: 1px solid var(--bg-base-text-20);
+  border-bottom: 1px solid var(--truffle-color-text-bg-primary);
 }
 
 .c-transaction-history_content > .transaction > .action {
@@ -532,8 +532,8 @@
 }
 
 .c-transaction-history_content > .transaction > .action > .time {
-  font-family: var(--body-font);
-  color: var(--inherit-base-text-60);
+  font-family: var(--truffle-font-family);
+  color: var(--truffle-color-text-bg-primary);
   line-height: 1.23em;
   letter-spacing: 0.37px;
 }
@@ -548,7 +548,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  color: var(--primary-base);
+  color: var(--truffle-color-primary);
   padding-right: 8px;
 }
 
@@ -618,7 +618,7 @@
   right: 6px;
   top: 6px;
   z-index: 3;
-  background: var(--bg-base);
+  background: var(--truffle-color-bg-primary);
   padding: 4px;
   border-radius: 4px;
 }
@@ -632,12 +632,12 @@
 }
 
 .c-reward.free {
-  border: 1px solid var(--primary-base);
+  border: 1px solid var(--truffle-color-primary);
   background-color: transparent;
 }
 
 .c-reward.is-selected {
-  background: var(--bg-base);
+  background: var(--truffle-color-bg-primary);
 }
 
 .c-locked-reward-item-dialog .item-name {
@@ -651,7 +651,7 @@
 }
 
 .c-locked-reward-item-dialog .item-name > .status-icon {
-  background: var(--bg-base);
+  background: var(--truffle-color-bg-primary);
   padding: 4px;
   border-radius: 4px;
 }
@@ -679,17 +679,17 @@
 }
 
 .c-multiple-rewards-dialog .c-dialog > .dialog {
-  background-color: var(--bg-mod-inverse-5) !important;
+  background-color: var(--truffle-color-bg-secondary) !important;
 }
 
 .c-multiple-rewards-dialog .c-dialog > .dialog > .top {
   border-bottom: none !important;
-  background: var(--highlight-gradient);
+  background: var(--truffle-gradient);
 }
 
 .c-multiple-rewards-dialog .c-dialog > .dialog > .top > .inner > .title {
   font-weight: 600;
-  color: var(--bg-base);
+  color: var(--truffle-color-bg-primary);
 }
 
 .c-multiple-rewards-dialog .c-dialog > .dialog > .top > .inner > .top-right {
@@ -745,7 +745,7 @@
 }
 
 .c-multiple-rewards-dialog .body .reward .info .title > .icon {
-  background: var(--bg-base);
+  background: var(--truffle-color-bg-primary);
   padding: 4px;
   border-radius: 4px;
   margin-left: 8px;
@@ -764,7 +764,7 @@
 .c-multiple-rewards-dialog .body .reward .info .description {
   font-weight: 400;
   font-size: 14px;
-  color: var(--bg-base-text-80);
+  color: var(--truffle-color-text-bg-primary);
 }
 
 .c-multiple-rewards-dialog .body .reward .info .button {

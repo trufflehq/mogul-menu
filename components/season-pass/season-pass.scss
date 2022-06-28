@@ -1,4 +1,3 @@
-
 $rewardHeight: 100px;
 
 $levelNumberLineHeight: 24px;
@@ -13,7 +12,7 @@ $green: #75DB9E;
 $yellow: #EBC564;
 
 @mixin status-icon {
-  background: var(--bg-base);
+  background: var(--truffle-color-bg-primary);
   padding: 4px;
   border-radius: 4px;
 
@@ -32,12 +31,12 @@ $yellow: #EBC564;
   color: white;
   // padding: 16px;
 
-  > .top-info {
+  >.top-info {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
 
-    > .left {
+    >.left {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -47,14 +46,14 @@ $yellow: #EBC564;
       position: relative;
       width: 100%;
 
-      > .account {
+      >.account {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
       }
 
-      > .level-progress {
+      >.level-progress {
         display: flex;
         flex-direction: column;
         flex: 1;
@@ -64,7 +63,7 @@ $yellow: #EBC564;
         box-sizing: border-box;
         padding-left: 24px;
 
-        > .xp {
+        >.xp {
           display: flex;
           justify-content: space-between;
           padding-bottom: 4px;
@@ -72,18 +71,18 @@ $yellow: #EBC564;
           font-size: 12px;
         }
 
-        > .progress-bar {
+        >.progress-bar {
           width: 100%;
           height: 6px;
-          background-color: rgba(var(--primary-base-rgb-csv),0.21);
+          background-color: rgba(var(--primary-base-rgb-csv), 0.21);
 
-          > .filler {
+          >.filler {
             background-color: $green;
             height: 100%;
           }
         }
 
-        > .level {
+        >.level {
           display: flex;
           align-items: flex-end;
           margin-top: 6px;
@@ -96,13 +95,13 @@ $yellow: #EBC564;
       }
     }
 
-    > .right {
+    >.right {
       display: flex;
       flex-direction: column;
       flex: 3;
       width: 100%;
 
-      > .end-time {
+      >.end-time {
         display: flex;
         flex: 1;
         align-items: flex-end;
@@ -113,18 +112,18 @@ $yellow: #EBC564;
         letter-spacing: 0.1px;
         margin-bottom: 16px;
 
-        > .highlight {
+        >.highlight {
           display: flex;
           align-items: flex-end;
           height: 100%;
           margin-right: 4px;
-          color: var(--secondary-base);
+          color: var(--truffle-color-secondary);
         }
       }
     }
   }
 
-  > .pages {
+  >.pages {
     display: flex;
     margin-top: 28px;
     // background-color: var(--tertiary-base);
@@ -134,7 +133,7 @@ $yellow: #EBC564;
     align-items: center;
     margin-bottom: 12px;
 
-    > .days {
+    >.days {
       display: flex;
       justify-content: center;
       text-transform: uppercase;
@@ -144,8 +143,8 @@ $yellow: #EBC564;
       flex: 1;
     }
 
-    > .button {
-      color: var(--inherit-base-text);
+    >.button {
+      color: var(--truffle-color-text-bg-primary);
       padding: 10px 16px;
       cursor: pointer;
 
@@ -156,21 +155,21 @@ $yellow: #EBC564;
     }
   }
 
-  > .action-levels-wrapper {
+  >.action-levels-wrapper {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     background-color: transparent;
 
-    > .actions {
+    >.actions {
       margin-bottom: 20px;
     }
 
-    > .levels-wrapper {
+    >.levels-wrapper {
       justify-content: center;
       position: relative;
 
-      > .tier-info {
+      >.tier-info {
         position: absolute;
         pointer-events: none;
         left: -16px;
@@ -178,24 +177,24 @@ $yellow: #EBC564;
         // TODO: the math for these isn't great
         top: calc(#{$levelPaddingHeight} + 32px + #{$levelNumberMarginBottom});
 
-        > .tier {
-          color: var(--bg-base);
+        >.tier {
+          color: var(--truffle-color-bg-primary);
           margin-bottom: calc(#{$rewardHeight} + #{$rewardInnerGapName / 2} + #{$tierBottomMargin} + 4px);
           font-weight: 600;
           text-transform: uppercase;
-          background: var(--bg-base-text-20);
+          background: var(--truffle-color-bg-primary);
           line-height: $tierInfoHeight;
           padding: 0 28px;
         }
       }
 
-      > .levels {
+      >.levels {
         display: grid;
         grid-auto-flow: column;
         align-items: stretch;
         grid-gap: 8px;
 
-        > .level {
+        >.level {
           position: relative;
           z-index: 2;
           display: flex;
@@ -209,10 +208,10 @@ $yellow: #EBC564;
           }
 
           &.is-current-level {
-            background: rgba(255,255,255,0.10);
+            background: rgba(255, 255, 255, 0.10);
           }
 
-          > .number {
+          >.number {
             padding: 0 4px;
             font-weight: 600;
             font-size: 14px;
@@ -222,7 +221,7 @@ $yellow: #EBC564;
             text-transform: uppercase;
           }
 
-          > .reward {
+          >.reward {
             margin-bottom: $rewardInnerGap;
             flex: 1;
             width: 100%;
@@ -236,7 +235,7 @@ $yellow: #EBC564;
             &.has-tier-name {
               margin-bottom: 60px; // TODO break this into a var
             }
-            
+
             &:last-child {
               margin-bottom: 0;
             }
@@ -251,15 +250,15 @@ $yellow: #EBC564;
     position: relative;
     z-index: 1;
 
-    > .action {
+    >.action {
       margin-right: 16px;
-      color: var(--secondary-base);
+      color: var(--truffle-color-secondary);
 
       &:last-child {
         margin-right: 0;
       }
 
-      > .c-button {
+      >.c-button {
         font-size: 12px;
         border-radius: calc(4px * var(--border-radius-multiplier));
       }
@@ -267,7 +266,7 @@ $yellow: #EBC564;
       &.purchase-premium {
         color: var(--inherit-base);
 
-        > .c-button {
+        >.c-button {
           width: 100%;
           color: var(--inherit-base);
           box-sizing: border-box;
@@ -281,7 +280,7 @@ $yellow: #EBC564;
 }
 
 .c-positioned-overlay {
-  > .content {
+  >.content {
     border-radius: 8px;
   }
 }
@@ -295,34 +294,39 @@ $yellow: #EBC564;
   z-index: 2;
   border-radius: 8px;
   border: 1px solid #FFFFFF;
-  background: var(--bg-base-text); /* This renders in a portal w/o selected css vars */;
+  background: var(--truffle-color-text-bg-primary);
+  /* This renders in a portal w/o selected css vars */
+  ;
   box-sizing: border-box;
 
 
-  > .title {
+  >.title {
     display: flex;
     align-items: center;
     box-sizing: border-box;
     padding: 8px;
-    color: var(--bg-base);
+    color: var(--truffle-color-bg-primary);
     font-weight: 600;
     width: 100%;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 
-    > .thumbnail {
-      margin-right: 8px;;
+    >.thumbnail {
+      margin-right: 8px;
+      ;
     }
   }
 
-  > .description {
+  >.description {
     box-sizing: border-box;
     padding: 12px 12px 16px 12px;
     font-weight: 500;
     font-size: 14px;
-    background: var(--bg-base-text); /* This renders in a portal w/o selected css vars */;
+    background: var(--truffle-color-text-bg-primary);
+    /* This renders in a portal w/o selected css vars */
+    ;
     height: 100%;
-    color: var(--bg-base);
+    color: var(--truffle-color-bg-primary);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
   }
@@ -331,23 +335,23 @@ $yellow: #EBC564;
 
 
 .c-rewards-dialog {
-  > .c-dialog {
-    > .dialog {
-      > .top {
+  >.c-dialog {
+    >.dialog {
+      >.top {
         text-transform: uppercase;
-        background: var(--primary-base);
-        color: var(--primary-base-text);
+        background: var(--truffle-color-primary);
+        color: var(--truffle-color-text-bg-primary);
       }
     }
   }
 
-  > .c-sheet {
-    > .sheet {
-      > .inner {
-        > .top {
+  >.c-sheet {
+    >.sheet {
+      >.inner {
+        >.top {
           text-transform: uppercase;
-          background: var(--primary-base);
-          color: var(--primary-base-text);
+          background: var(--truffle-color-primary);
+          color: var(--truffle-color-text-bg-primary);
         }
       }
     }
@@ -360,31 +364,31 @@ $yellow: #EBC564;
   padding: 16px 0 72px 0;
   overflow: auto;
 
-  > .level-rewards {
+  >.level-rewards {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    > .level {
+    >.level {
       display: flex;
       font-size: 40px;
-      font-family: var(--header-font);
+      font-family: var(--truffle-font-family);
       line-height: 57px;
       padding: 32px 0;
       text-transform: uppercase;
 
-      > .level-number {
+      >.level-number {
         margin: 0 12px;
       }
     }
 
-    > .message {
+    >.message {
       text-transform: uppercase;
       margin-bottom: 32px;
     }
 
-    > .rewards {
+    >.rewards {
       display: grid;
       width: 100%;
       justify-content: center;
@@ -395,21 +399,21 @@ $yellow: #EBC564;
 }
 
 .c-transaction-history-dialog {
-  > .c-dialog {
-    > .dialog {
-      > .top {
-        background: var(--primary-base);
-        color: var(--primary-base-text);
+  >.c-dialog {
+    >.dialog {
+      >.top {
+        background: var(--truffle-color-primary);
+        color: var(--truffle-color-text-bg-primary);
       }
     }
   }
 
-  > .c-sheet {
-    > .sheet {
-      > .inner {
-        > .top {
-          background: var(--primary-base);
-          color: var(--primary-base-text);
+  >.c-sheet {
+    >.sheet {
+      >.inner {
+        >.top {
+          background: var(--truffle-color-primary);
+          color: var(--truffle-color-text-bg-primary);
         }
       }
     }
@@ -423,9 +427,9 @@ $yellow: #EBC564;
   display: flex;
   flex-direction: column;
 
-  > .empty {
+  >.empty {
     display: flex;
-    flex:1;
+    flex: 1;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -435,29 +439,29 @@ $yellow: #EBC564;
     font-weight: 700;
   }
 
-  > .transaction {
+  >.transaction {
     display: flex;
     padding: 16px 0;
     justify-content: space-between;
-    border-bottom: 1px solid var(--bg-base-text-20);
+    border-bottom: 1px solid var(--truffle-color-text-bg-primary);
 
-    > .action {
+    >.action {
       display: flex;
       flex-direction: column;
 
-      > .time {
-        font-family: var(--body-font);
-        color: var(--inherit-base-text-60);
+      >.time {
+        font-family: var(--truffle-font-family);
+        color: var(--truffle-color-text-bg-primary);
         line-height: 1.23em;
         letter-spacing: 0.37px;
       }
     }
 
-    > .xp {
+    >.xp {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: var(--primary-base);
+      color: var(--truffle-color-primary);
       padding-right: 8px;
     }
   }
@@ -482,16 +486,17 @@ $yellow: #EBC564;
   }
 
   &.has-tooltip:not(.is-selected):hover {
-    background-color: rgba(var(--secondary-base-rgb-csv),0.35);
+    background-color: rgba(var(--secondary-base-rgb-csv), 0.35);
   }
 
-  > .inner {
+  >.inner {
     position: relative;
     z-index: 2;
-    > .image {
+
+    >.image {
       margin-bottom: 8px;
 
-      > img {
+      >img {
         width: 56px;
         height: 56px;
         display: block;
@@ -499,7 +504,7 @@ $yellow: #EBC564;
       }
     }
 
-    > .name {
+    >.name {
       font-weight: 600;
       text-align: center;
       font-size: 10px;
@@ -521,33 +526,33 @@ $yellow: #EBC564;
   }
 
   &.free {
-    border: 1px solid var(--primary-base);
+    border: 1px solid var(--truffle-color-primary);
     background-color: transparent;
   }
 
   // &.paid {
-    // TODO - bring this back for multiple battle pass tiers
-    // &::before {
-    //   z-index: 1;
-    //   content: '';
-    //   position: absolute;
-    //   top: 0;
-    //   left: 0;
-    //   right: 0;
-    //   bottom: 0;
-    //   background: var(--bg-base);
-    //   border-radius: calc(14px * var(--border-radius-multiplier));
-    // }
-    // border-style: solid;
-    // border-width: 1px;
-    // border-color: transparent !important;
-    // background: linear-gradient(94.02deg, var(--secondary-base) 0%, var(--primary-base) 100%), var(--secondary-base) !important;
+  // TODO - bring this back for multiple battle pass tiers
+  // &::before {
+  //   z-index: 1;
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   background: var(--bg-base);
+  //   border-radius: calc(14px * var(--border-radius-multiplier));
+  // }
+  // border-style: solid;
+  // border-width: 1px;
+  // border-color: transparent !important;
+  // background: linear-gradient(94.02deg, var(--secondary-base) 0%, var(--primary-base) 100%), var(--secondary-base) !important;
   // }
 
   &.is-selected {
-    background: var(--bg-base);
+    background: var(--truffle-color-bg-primary);
   }
-}    
+}
 
 .c-locked-reward-item-dialog {
 
@@ -556,7 +561,7 @@ $yellow: #EBC564;
     align-items: center;
     gap: 8px;
 
-    > .status-icon {
+    >.status-icon {
       @include status-icon();
     }
   }
@@ -568,45 +573,46 @@ $yellow: #EBC564;
 }
 
 
-$dialogBg: var(--bg-mod-inverse-5);
+$dialogBg: var(--truffle-color-bg-secondary);
 
 .c-multiple-rewards-dialog {
 
   .c-dialog {
 
-    > .backdrop {
+    >.backdrop {
       opacity: 40% !important;
       backdrop-filter: none !important;
       background-color: #000000 !important;
     }
 
-    > .dialog {
-      background-color: $dialogBg !important;
+    >.dialog {
+      background-color: $dialogBg  !important;
 
-      > .top {
+      >.top {
         border-bottom: none !important;
-        background: var(--highlight-gradient);
-        > .inner {
-          > .title {
+        background: var(--truffle-gradient);
+
+        >.inner {
+          >.title {
             font-weight: 600;
-            color: var(--bg-base);
+            color: var(--truffle-color-bg-primary);
           }
 
-          > .top-right {
+          >.top-right {
             // margin-top: 12px;
             margin-right: 12px;
           }
         }
       }
 
-      > .content {
+      >.content {
         padding-bottom: 16px !important;
       }
 
-      > .actions {
+      >.actions {
         gap: 12px;
-        
-        > .button {
+
+        >.button {
           flex: 1;
         }
       }
@@ -614,7 +620,7 @@ $dialogBg: var(--bg-mod-inverse-5);
   }
 
   .body {
-    > .title {
+    >.title {
       font-size: 18px;
       font-weight: 600;
       text-transform: uppercase;
@@ -632,13 +638,14 @@ $dialogBg: var(--bg-mod-inverse-5);
         .title {
           display: flex;
           align-items: center;
-          > .name {
+
+          >.name {
             font-size: 16px;
             font-weight: 600px;
             line-height: 24px;
           }
 
-          > .icon {
+          >.icon {
             @include status-icon();
 
             margin-left: 8px;
@@ -651,12 +658,13 @@ $dialogBg: var(--bg-mod-inverse-5);
         .description {
           font-weight: 400;
           font-size: 14px;
-          color: var(--bg-base-text-80);
+          color: var(--truffle-color-text-bg-primary);
         }
 
         .button {
           margin-top: 12px;
-          > button {
+
+          >button {
             height: 32px;
             padding: 8px 12px;
             border-radius: 4px;
