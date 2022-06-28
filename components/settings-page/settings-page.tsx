@@ -243,12 +243,9 @@ function Signin() {
     const password = passwordSubject.getValue();
 
     console.log({ name, email, password });
-    // await getModel().auth.join(
-    //   { name, emailPhone: email, password },
-    //   { overlay: null, cookie: null }
-    // );
-    await join({ name, email, password });
-    console.log("joined");
+    const res = await join({ name, email, password });
+    console.log("join res", res);
+    getModel().auth.setAccessToken(res?.data?.userLoginEmailPhone?.accessToken);
   };
 
   const handleSignin = async () => {
@@ -256,8 +253,6 @@ function Signin() {
     const password = passwordSubject.getValue();
 
     console.log({ email, password });
-    // console.log(getModel());
-    // await getModel().auth.login({ emailPhone: email, password });
     const res = await login({ email, password });
     console.log("login res", res);
     getModel().auth.setAccessToken(res?.data?.userLoginEmailPhone?.accessToken);
