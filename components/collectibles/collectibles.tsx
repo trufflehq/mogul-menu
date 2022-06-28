@@ -1,4 +1,8 @@
-import React, { useContext, useMemo } from "https://npm.tfl.dev/react";
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+} from "https://npm.tfl.dev/react";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
@@ -30,7 +34,7 @@ export default function Collectibles(props) {
   ] = useQuery({
     query: gql`
       query CollectibleGetAllByMe {
-        collectibleConnection(input: { type: "emote" }) {
+        collectibleConnection {
           totalCount
           nodes {
             id
@@ -64,6 +68,10 @@ export default function Collectibles(props) {
       }
     `,
   });
+
+  useEffect(() => {
+    console.log({ collectibleConnectionData });
+  }, [collectibleConnectionData]);
 
   const collectibleConnection =
     collectibleConnectionData?.collectibleConnection;
