@@ -1,8 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useReducer,
-} from "https://npm.tfl.dev/react";
+import { createContext, useContext, useReducer } from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { TabDefinition, TabState, TabStateMap } from "./types.ts";
 import { uniqueId } from "../general.ts";
@@ -20,7 +16,7 @@ export function useTabStateManager(tabs: TabDefinition[]) {
   };
 
   const initTabStates = (tabs: TabDefinition[]) => {
-    const tabStates = {};
+    const tabStates: Record<string, TabState> = {};
     for (const tab of tabs) {
       tabStates[uniqueId()] = {
         text: tab.text,
@@ -50,7 +46,7 @@ export function useTabStateManager(tabs: TabDefinition[]) {
 }
 
 export function useTabState() {
-  const tabId = useTabId();
+  const tabId = useTabId() as string;
   const { tabStates, dispatch }: TabStateManager = useContext(TabStateContext);
   const currentTabState = tabStates[tabId];
 
@@ -59,11 +55,8 @@ export function useTabState() {
     icon: currentTabState?.icon,
     hasBadge: currentTabState?.hasBadge,
     isActive: currentTabState?.isActive,
-    setTabText: (value: string) =>
-      dispatch({ type: "text", payload: { tabId, value } }),
-    setTabIcon: (value: string) =>
-      dispatch({ type: "icon", payload: { tabId, value } }),
-    setTabBadge: (value: boolean) =>
-      dispatch({ type: "hasBadge", payload: { tabId, value } }),
+    setTabText: (value: string) => dispatch({ type: "text", payload: { tabId, value } }),
+    setTabIcon: (value: string) => dispatch({ type: "icon", payload: { tabId, value } }),
+    setTabBadge: (value: boolean) => dispatch({ type: "hasBadge", payload: { tabId, value } }),
   };
 }
