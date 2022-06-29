@@ -2,6 +2,9 @@ import React from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
 import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import root from "https://npm.tfl.dev/react-shadow@19";
+import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
 
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
@@ -18,33 +21,53 @@ import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings-page/settings-page.tsx";
 
+const USER_INFO_QUERY = gql`
+  query UserInfoQuery {
+    me {
+      id
+      name
+    }
+
+    org {
+      id
+      slug
+    }
+
+    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
+      orgUserCounter {
+        count
+      }
+    }
+
+    seasonPass {
+      xp: orgUserCounterType {
+        orgUserCounter {
+          count
+        }
+      }
+    }
+
+    activePowerupConnection {
+      nodes {
+        id
+        powerup {
+          id
+          name
+          slug
+        }
+      }
+    }
+  }
+`;
+
 export default function HomeTab() {
-  // const { activePowerupsObs } = useMemo(() => {
-  //   const orgUserActivePowerupConnectionObs =
-  //     getModel().orgUser.getMeActivePowerupsWithJsx();
-  //   const activePowerupsObs = orgUserActivePowerupConnectionObs.pipe(
-  //     op.map((orgUser) => {
-  //       return orgUser?.activePowerupConnection?.nodes ?? [];
-  //     })
-  //   );
-  //   return {
-  //     activePowerupsObs,
-  //   };
-  // }, []);
+  const [{ data: userInfoData }] = useQuery({ query: USER_INFO_QUERY });
 
-  // const { me, org, activePowerups, channelPoints, xp } = useObservables(() => ({
-  //   me: getModel().user.getMe(),
-  //   org: getModel().org.getMe(),
-  //   activePowerups: activePowerupsObs,
-  //   channelPoints: channelPointsOrgUserCounterObs,
-  //   xp: seasonPassObs.pipe(op.map((seasonPass) => seasonPass?.xp?.count)),
-  // }));
-
-  const me = { name: "Austin Fay" };
-  const org = { slug: "ludwig" };
-  const activePowerups: any[] = [];
-  const channelPoints = {};
-  const xp = {};
+  const me = userInfoData?.me;
+  const org = userInfoData?.org;
+  const activePowerups = userInfoData?.activePowerups?.nodes;
+  const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
+  const xp = userInfoData?.seasonPass?.xp?.orgUserCounter?.count;
   const canClaim = true;
   const hasChannelPoints = true;
 
