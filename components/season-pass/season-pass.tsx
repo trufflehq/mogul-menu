@@ -30,22 +30,56 @@ const router = { link: () => null, get: () => null };
 
 const SEASON_PASS_QUERY = gql`
   query {
-    seasonPassConnection {
-      nodes {
-        id
-        orgId
-        name
-        daysRemaining
-        orgUserCounterTypeId
-        levels {
+    seasonPass {
+      id
+      orgId
+      name
+      daysRemaining
+      orgUserCounterTypeId
+      levels {
+        levelNum
+        minXp
+        rewards {
+          sourceType
+          sourceId
+          tierNum
+          description
+          amountValue
+          source {
+            id
+            slug
+            fileRel {
+              fileObj {
+                cdn
+                prefix
+                data
+                variations
+                ext
+              }
+            }
+            name
+            type
+            targetType
+            ownedCollectible {
+              count
+            }
+            data {
+              description
+              redeemType
+              redeemData
+            }
+          }
+        }
+      }
+      data
+
+      seasonPassProgression {
+        tierNum
+        changesSinceLastViewed {
           levelNum
-          minXp
           rewards {
             sourceType
             sourceId
-            tierNum
-            description
-            amountValue
             source {
               id
               slug
@@ -70,44 +104,8 @@ const SEASON_PASS_QUERY = gql`
                 redeemData
               }
             }
-          }
-        }
-        data
-
-        seasonPassProgression {
-          tierNum
-          changesSinceLastViewed {
-            levelNum
-            rewards {
-              sourceType
-              sourceId
-              source {
-                id
-                slug
-                fileRel {
-                  fileObj {
-                    cdn
-                    prefix
-                    data
-                    variations
-                    ext
-                  }
-                }
-                name
-                type
-                targetType
-                ownedCollectible {
-                  count
-                }
-                data {
-                  description
-                  redeemType
-                  redeemData
-                }
-              }
-              tierNum
-              description
-            }
+            tierNum
+            description
           }
         }
       }
@@ -170,7 +168,7 @@ export default function SeasonPass(props) {
 
   const [
     {
-      data: seasonPassConnectionData,
+      data: seasonPassData,
       fetching: isFetchingSeasonPass,
       error: seasonPassFetchError,
     },
@@ -179,10 +177,10 @@ export default function SeasonPass(props) {
   });
 
   useEffect(() => {
-    console.log({ seasonPassConnectionData });
-  }, [seasonPassConnectionData]);
+    console.log({ seasonPassData });
+  }, [seasonPassData]);
 
-  const seasonPass = seasonPassConnectionData?.seasonPassConnection?.nodes?.[0];
+  const seasonPass = seasonPassData?.seasonPass;
 
   // if (!seasonPass) {
   //   return (
