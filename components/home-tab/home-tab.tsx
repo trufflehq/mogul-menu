@@ -1,4 +1,4 @@
-import React from "https://npm.tfl.dev/react";
+import React, { useEffect } from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
 import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import root from "https://npm.tfl.dev/react-shadow@19";
@@ -40,10 +40,8 @@ const USER_INFO_QUERY = gql`
     }
 
     seasonPass {
-      xp: orgUserCounterType {
-        orgUserCounter {
-          count
-        }
+      xp: orgUserCounter {
+        count
       }
     }
 
@@ -63,11 +61,15 @@ const USER_INFO_QUERY = gql`
 export default function HomeTab() {
   const [{ data: userInfoData }] = useQuery({ query: USER_INFO_QUERY });
 
+  useEffect(() => {
+    console.log({ userInfoData });
+  }, [userInfoData]);
+
   const me = userInfoData?.me;
   const org = userInfoData?.org;
   const activePowerups = userInfoData?.activePowerups?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
-  const xp = userInfoData?.seasonPass?.xp?.orgUserCounter?.count;
+  const xp = userInfoData?.seasonPass?.xp?.count;
   const canClaim = true;
   const hasChannelPoints = true;
 
