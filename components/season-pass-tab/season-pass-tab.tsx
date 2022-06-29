@@ -1,6 +1,6 @@
 import React from "https://npm.tfl.dev/react";
 import SeasonPass from "../season-pass/season-pass.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 
 export default function SeasonPassTab() {
   // const { org } = useObservables(() => ({

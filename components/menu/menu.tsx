@@ -23,16 +23,16 @@ import React, {
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import root from "https://npm.tfl.dev/react-shadow@19";
 
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
-// import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.jsx'
-import Modal from "https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.jsx";
-import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.jsx";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx";
-import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+// import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.js'
+import Modal from "https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.js";
+import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
+import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
-import SnackBarProvider from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-provider/snack-bar-provider.jsx";
+import SnackBarProvider from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-provider/snack-bar-provider.js";
 
 import {
   createSubject,

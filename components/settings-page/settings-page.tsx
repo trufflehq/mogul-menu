@@ -6,10 +6,10 @@ import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import { gql, useMutation } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
-import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.jsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.js";
 import Page from "../page/page.tsx";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 
 export default function SettingsPage() {
   const { popPage } = usePageStack();

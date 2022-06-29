@@ -11,14 +11,14 @@ import {
   Stream,
   useObservables,
 } from "@spore/platform";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 
 export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
   const { model, overlay } = useContext(context);
   const lastUpdatedConnectionsRef = useRef(null);
   if (!enqueueSnackBar) {
     console.warn(
-      "[browser-extension-ways-to-earn] enqueueSnackBar not defined",
+      "[browser-extension-ways-to-earn] enqueueSnackBar not defined"
     );
   }
 
@@ -74,7 +74,7 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
     const connectionsObs = model.connection
       .getConnectionsByMe()
       .pipe(
-        Stream.op.map((connectionConnection) => connectionConnection?.nodes),
+        Stream.op.map((connectionConnection) => connectionConnection?.nodes)
       );
 
     return {
@@ -94,7 +94,7 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
 
   const isConnectionsChanged = !Legacy._.isEqual(
     connections,
-    lastUpdatedConnectionsRef.current,
+    lastUpdatedConnectionsRef.current
   );
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
       const updatedConnections = Legacy._.differenceBy(
         connections,
         lastUpdatedConnectionsRef?.current,
-        "id",
+        "id"
       );
 
       if (!Legacy._.isEmpty(updatedConnections)) {
@@ -180,8 +180,10 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
                 rel="noreferrer"
               >
                 <img
-                  src={logo?.imgUrl ??
-                    model.image.getSrcByImageObj(logo?.imgFileObj)}
+                  src={
+                    logo?.imgUrl ??
+                    model.image.getSrcByImageObj(logo?.imgFileObj)
+                  }
                 />
               </a>
             ))}
@@ -198,8 +200,10 @@ export default function BrowserExtensionWaysToEarn({ enqueueSnackBar }) {
               >
                 <div className="left">
                   <img
-                    src={logo?.imgUrl ??
-                      model.image.getSrcByImageObj(logo?.imgFileObj)}
+                    src={
+                      logo?.imgUrl ??
+                      model.image.getSrcByImageObj(logo?.imgFileObj)
+                    }
                   />
                   <div className="name">{logo.data.title}</div>
                   <div className="connected">Connected</div>

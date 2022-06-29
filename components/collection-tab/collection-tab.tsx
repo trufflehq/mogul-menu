@@ -1,7 +1,7 @@
 import React, { useEffect } from "https://npm.tfl.dev/react";
 import { useTabId } from "../../util/tabs/tab-id.ts";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
-import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx";
+import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
 import Collectibles from "../collectibles/collectibles.tsx";
 
 export default function CollectionTab() {

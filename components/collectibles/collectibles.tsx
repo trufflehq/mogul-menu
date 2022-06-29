@@ -7,7 +7,7 @@ import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import Collectible from "../collectible/collectible.tsx";

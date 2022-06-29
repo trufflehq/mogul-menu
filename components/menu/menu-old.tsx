@@ -19,14 +19,14 @@ import {
 
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
-// import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.jsx'
-import Modal from "https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.jsx";
-import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.jsx";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx";
-import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+// import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.js'
+import Modal from "https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.js";
+import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
+import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
 
 import ChannelPoints from "../channel-points/channel-points.tsx";
@@ -66,14 +66,16 @@ const BASE_IFRAME_STYLES_IN_VIDEO = {
   // right: '20px',
   // top: '50px',
   // FAZEFIXME: rm faze styles
-  right: typeof document !== "undefined" &&
-      window.location?.hostname === "faze1.live"
-    ? "10px"
-    : "20px",
-  top: typeof document !== "undefined" &&
-      window.location?.hostname === "faze1.live"
-    ? "72px"
-    : "50px",
+  right:
+    typeof document !== "undefined" &&
+    window.location?.hostname === "faze1.live"
+      ? "10px"
+      : "20px",
+  top:
+    typeof document !== "undefined" &&
+    window.location?.hostname === "faze1.live"
+      ? "72px"
+      : "50px",
   "max-height": "calc(100% - 50px)",
 };
 
@@ -203,27 +205,19 @@ function getExtensionMappingId() {
   }
 }
 
-export const isYoutubeSourceType = (
-  sourceType,
-) =>
+export const isYoutubeSourceType = (sourceType) =>
   sourceType === "youtube" ||
   sourceType === "youtubeLive" ||
   sourceType === "youtubeVideo";
 
-export const getYoutubePageIdentifier = (
-  pageInfoIdentifiers,
-) =>
+export const getYoutubePageIdentifier = (pageInfoIdentifiers) =>
   pageInfoIdentifiers?.find((identifier) =>
     isYoutubeSourceType(identifier.sourceType)
   );
 
-export const isTwitchSourceType = (
-  sourceType,
-) => sourceType === "twitch";
+export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
-export const getTwitchPageIdentifier = (
-  pageInfoIdentifiers,
-) =>
+export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
   pageInfoIdentifiers?.find((identifier) =>
     isTwitchSourceType(identifier.sourceType)
   );
@@ -321,50 +315,52 @@ export default function $browserExtensionMenu(props) {
   } = useMemo(() => {
     try {
       const credentialsSubject = createSubject(null);
-      const channelPointsOrgUserCounterTypeObs = getModel().orgUserCounterType
-        .getBySlug("channel-points");
+      const channelPointsOrgUserCounterTypeObs =
+        getModel().orgUserCounterType.getBySlug("channel-points");
 
       let invalidateOrgUserCounterFn;
-      const channelPointsOrgUserCounterObs = channelPointsOrgUserCounterTypeObs
-        .pipe(
+      const channelPointsOrgUserCounterObs =
+        channelPointsOrgUserCounterTypeObs.pipe(
           op.switchMap((orgUserCounterType) => {
             if (orgUserCounterType) {
-              const { invalidateFn, obs } = getModel().orgUserCounter
-                .getMeByCounterTypeId(
+              const { invalidateFn, obs } =
+                getModel().orgUserCounter.getMeByCounterTypeId(
                   orgUserCounterType.id,
-                  { shouldReturnInvalidateFn: true },
+                  { shouldReturnInvalidateFn: true }
                 );
               invalidateOrgUserCounterFn = invalidateFn;
               return obs;
             } else {
               return Obs.of({ count: 0 });
             }
-          }),
+          })
         );
 
       const { invalidateFn: invalidateSeasonPassFn, obs: seasonPassObs } =
         getModel().seasonPass.getCurrent({ shouldReturnInvalidateFn: true });
 
-      const transactionsObs = getModel().economyTransaction.getAll({
-        limit: 50,
-        isSubjected: true,
-        // debounce - don't need to invalidate multiple times if we're streaming back and xp and a cp transaction
-        onNewData: _.debounce(
-          (update) => {
-            // can use update[0].newVal.amountValue for ui if we want
-            invalidateOrgUserCounterFn?.();
-            invalidateSeasonPassFn?.();
-          },
-          100,
-          { trailing: true },
-        ),
-      }).pipe(
-        op.map((economyTransactionConnection) => {
-          return economyTransactionConnection?.nodes
-            ? economyTransactionConnection.nodes
-            : [];
-        }),
-      );
+      const transactionsObs = getModel()
+        .economyTransaction.getAll({
+          limit: 50,
+          isSubjected: true,
+          // debounce - don't need to invalidate multiple times if we're streaming back and xp and a cp transaction
+          onNewData: _.debounce(
+            (update) => {
+              // can use update[0].newVal.amountValue for ui if we want
+              invalidateOrgUserCounterFn?.();
+              invalidateSeasonPassFn?.();
+            },
+            100,
+            { trailing: true }
+          ),
+        })
+        .pipe(
+          op.map((economyTransactionConnection) => {
+            return economyTransactionConnection?.nodes
+              ? economyTransactionConnection.nodes
+              : [];
+          })
+        );
       const activePollConnectionObs = getModel().poll.getAllSmall({
         isSubjected: true,
       });
@@ -373,73 +369,76 @@ export default function $browserExtensionMenu(props) {
       // by default, none of the tabs have badges;
       // the value of this stream is a Map of (tabSlug -> badgeIsVisible)
       const tabBadgeStatesSubject = createSubject(
-        new Map(DEFAULT_TABS.map((tab) => [tab.slug, false])),
+        new Map(DEFAULT_TABS.map((tab) => [tab.slug, false]))
       );
       // keeps track of whether or not the extension icon has a badge;
       // if at least one of the tabs has a visible badge, the extension will have a badge;
       // the value of this stream is a boolean
       const extensionIconBadgeStateObs = tabBadgeStatesSubject.obs.pipe(
         op.map((badges) =>
-          Array.from(badges.values()).reduce((acc, isVisible) =>
-            acc || isVisible
+          Array.from(badges.values()).reduce(
+            (acc, isVisible) => acc || isVisible
           )
-        ),
+        )
       );
 
       const snackBarQueueSubject = createSubject([]);
 
       const refreshSubject = createSubject("");
 
-      const sourcePromise = jumper?.call("context.getInfo")
+      const sourcePromise = jumper
+        ?.call("context.getInfo")
         ?.catch(() => null)
-        .then((extensionInfo) =>
-          extensionInfo?.pageInfo
-            ? pageInfoToSource(extensionInfo.pageInfo)
-            : { sourceType: "youtube" } // fallback for <= v3.0.9
+        .then(
+          (extensionInfo) =>
+            extensionInfo?.pageInfo
+              ? pageInfoToSource(extensionInfo.pageInfo)
+              : { sourceType: "youtube" } // fallback for <= v3.0.9
         );
       const sourceObs = Obs.from(sourcePromise || "");
 
       const refreshAndSourceObs = Obs.combineLatest(
         refreshSubject.obs,
-        sourceObs,
+        sourceObs
       );
 
       const isLiveObs = refreshAndSourceObs.pipe(
         op.distinctUntilChanged((a, b) => a[0] === b[0]),
         op.switchMap(([refresh, source]) => {
           return source
-            // only sourceType so zygote grabs by orgId instead of channel (for manual overrides)
-            ? getModel().channel.getBySource({
-              sourceType: source.sourceType,
-              ignoreCache: true,
-            })
+            ? // only sourceType so zygote grabs by orgId instead of channel (for manual overrides)
+              getModel().channel.getBySource({
+                sourceType: source.sourceType,
+                ignoreCache: true,
+              })
             : Obs.of(null);
         }),
         op.map((channel) => channel?.isLive || false),
         op.publishReplay(1),
-        op.refCount(),
+        op.refCount()
       );
 
       const sourceTypeConnectionObs = credentialsSubject.obs.pipe(
         op.switchMap((credentials) => {
           return getModel().connection.getConnectionByMeAndSource(
-            credentials?.sourceType,
+            credentials?.sourceType
           );
-        }),
+        })
       );
 
       const extensionIconPositionObs = Obs.from(
-        jumper?.call("storage.get", {
-          key: getStorageKey(STORAGE_POSITION_PREFIX),
-        })
+        jumper
+          ?.call("storage.get", {
+            key: getStorageKey(STORAGE_POSITION_PREFIX),
+          })
           // TODO: remove entire .then in mid-june 2022. legacy code to use old window.localStorage value
           ?.then(async (value) => {
             try {
               if (!value) {
-                const legacyValue = await jumper?.call("storage.get", {
-                  key: STORAGE_POSITION_PREFIX,
-                }) ||
-                  window.localStorage.getItem("extensionIconPosition");
+                const legacyValue =
+                  (await jumper?.call("storage.get", {
+                    key: STORAGE_POSITION_PREFIX,
+                  })) || window.localStorage.getItem("extensionIconPosition");
                 await jumper.call("storage.set", {
                   key: getStorageKey(STORAGE_POSITION_PREFIX),
                   value: legacyValue,
@@ -454,14 +453,15 @@ export default function $browserExtensionMenu(props) {
               }
             } catch {}
             return value;
-          }) || "",
+          }) || ""
       );
       // want this to always be true/false since it's async
       const hasViewedOnboardTooltipObs = Obs.from(
-        jumper?.call("storage.get", {
-          key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
-        })
-          ?.then((value) => value || false) || "",
+        jumper
+          ?.call("storage.get", {
+            key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
+          })
+          ?.then((value) => value || false) || ""
       );
 
       return {
@@ -487,7 +487,7 @@ export default function $browserExtensionMenu(props) {
         pageStackSubject: createSubject([]),
         extensionIconPositionSubject: createSubject(extensionIconPositionObs),
         hasViewedOnboardTooltipSubject: createSubject(
-          hasViewedOnboardTooltipObs,
+          hasViewedOnboardTooltipObs
         ),
         sourceObs,
       };
@@ -550,7 +550,8 @@ export default function $browserExtensionMenu(props) {
 
   // TODO: onboard tooltip doesn't work in chat area
   // === false is important, so we don't show while loading (undefined/null)
-  const shouldShowOnboardTooltip = hasViewedOnboardTooltip === false &&
+  const shouldShowOnboardTooltip =
+    hasViewedOnboardTooltip === false &&
     extensionIconPosition === "stream-top-right";
 
   sourceTypeConnectionRef.current = sourceTypeConnection;
@@ -595,7 +596,8 @@ export default function $browserExtensionMenu(props) {
   };
 
   const mostRecentPoll = activePollConnection?.nodes?.[0];
-  const isMostRecentPollOutdated = mostRecentPoll?.data?.hasWinner &&
+  const isMostRecentPollOutdated =
+    mostRecentPoll?.data?.hasWinner &&
     new Date(mostRecentPoll?.time).getTime() <
       Date.now() - POLL_VISIBLE_MAX_TIME_MS;
   const activePoll = isMostRecentPollOutdated ? null : mostRecentPoll;
@@ -633,9 +635,12 @@ export default function $browserExtensionMenu(props) {
   }, [hasConnectedAccount]);
 
   useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      refreshSubject.next(Math.random());
-    }, isLive ? REFRESH_TIME_WHEN_LIVE_MS : REFRESH_TIME_WHEN_OFFLINE_MS);
+    const refreshInterval = setInterval(
+      () => {
+        refreshSubject.next(Math.random());
+      },
+      isLive ? REFRESH_TIME_WHEN_LIVE_MS : REFRESH_TIME_WHEN_OFFLINE_MS
+    );
 
     return () => clearInterval(refreshInterval);
   }, [isLive]);
@@ -671,35 +676,31 @@ export default function $browserExtensionMenu(props) {
       if (activePoll?.data === null) {
         // set a badge on the predictions tab when a prediction is active
         setBadge("home", true);
-        enqueueSnackBar(
-          () => (
-            <ActivePredictionSnackBar
-              onLinkClick={() => {
-                if (!isOpen) {
-                  isOpenSubject.next(true);
-                }
-                pushPage(() => (
-                  <PredictionPage
-                    activePoll={activePoll}
-                    channelPointsImageObj={channelPointsImageObj}
-                    channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
-                    onBack={popPage}
-                  />
-                ));
-              }}
-            />
-          ),
-        );
+        enqueueSnackBar(() => (
+          <ActivePredictionSnackBar
+            onLinkClick={() => {
+              if (!isOpen) {
+                isOpenSubject.next(true);
+              }
+              pushPage(() => (
+                <PredictionPage
+                  activePoll={activePoll}
+                  channelPointsImageObj={channelPointsImageObj}
+                  channelPointsOrgUserCounterObs={
+                    channelPointsOrgUserCounterObs
+                  }
+                  onBack={popPage}
+                />
+              ));
+            }}
+          />
+        ));
       }
     }
   }, [activePoll?.id]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(
-        seasonPass?.seasonPassProgression?.changesSinceLastViewed,
-      )
-    ) {
+    if (!_.isEmpty(seasonPass?.seasonPassProgression?.changesSinceLastViewed)) {
       // set a badge on the battle pass tab when the user levels up
       setBadge("battle-pass", true);
       // notify the parent extension
@@ -720,22 +721,21 @@ export default function $browserExtensionMenu(props) {
     isOpenSubject.next(!isOpen);
   };
 
-  const visibleTabs = DEFAULT_TABS
-    .filter((tab) => {
-      if (!hasChannelPoints) {
-        return tab.slug !== "shop";
-      }
-      if (!hasBattlePass) {
-        return tab.slug !== "battle-pass";
-      }
-      return true;
-    });
+  const visibleTabs = DEFAULT_TABS.filter((tab) => {
+    if (!hasChannelPoints) {
+      return tab.slug !== "shop";
+    }
+    if (!hasBattlePass) {
+      return tab.slug !== "battle-pass";
+    }
+    return true;
+  });
 
   const onViewCollection = () => {
     // navigate to the profile page when the user
     // selects 'View collectibles' after purchasing a collectible
-    const collectibleTabIndex = visibleTabs.findIndex((tab) =>
-      tab.slug === "collection"
+    const collectibleTabIndex = visibleTabs.findIndex(
+      (tab) => tab.slug === "collection"
     );
     activeTabIndexSubject.next(collectibleTabIndex);
     overlay.close();
@@ -753,22 +753,24 @@ export default function $browserExtensionMenu(props) {
     isSignupVisibleSubject.next(true);
   };
 
-  const isNotFazeOrIsFazeEligible = !isFaze || (
-    orgUserWithKv?.keyValueConnection?.nodes?.find(({ key }) =>
-        key === "isEligibleMerchGiveaway"
-      )?.value === "yes" &&
-    extensionInfo?.version // make sure we're iframed by twitch/yt
-  );
+  const isNotFazeOrIsFazeEligible =
+    !isFaze ||
+    (orgUserWithKv?.keyValueConnection?.nodes?.find(
+      ({ key }) => key === "isEligibleMerchGiveaway"
+    )?.value === "yes" &&
+      extensionInfo?.version); // make sure we're iframed by twitch/yt
   const canClaim = isLive && isNotFazeOrIsFazeEligible;
 
   const shouldShowSignupBanner = !isFaze && !getModel().user.isMember(me);
-  const shouldShowTwitchBanner = !isFaze && getModel().user.isMember(me) &&
-    credentials?.sourceType === "twitch" && !hasConnectedAccount;
+  const shouldShowTwitchBanner =
+    !isFaze &&
+    getModel().user.isMember(me) &&
+    credentials?.sourceType === "twitch" &&
+    !hasConnectedAccount;
 
-  const className =
-    `c-browser-extension-menu position-${extensionIconPosition} ${
-      classKebab({ isOpen, hasNotification, isClaimable })
-    }`;
+  const className = `c-browser-extension-menu position-${extensionIconPosition} ${classKebab(
+    { isOpen, hasNotification, isClaimable }
+  )}`;
 
   return (
     <div className={className}>
@@ -857,26 +859,25 @@ export default function $browserExtensionMenu(props) {
                       isClaimableSubject.next(false);
 
                       // display a couple of snack bars to notify them of their rewards
-                      hasChannelPoints && enqueueSnackBar(
-                        () => (
+                      hasChannelPoints &&
+                        enqueueSnackBar(() => (
                           <ChannelPointsClaimSnackBar
                             channelPointsClaimed={channelPointsClaimed}
                             totalChannelPoints={channelPoints?.count}
                             channelPointsImageObj={channelPointsImageObj}
-                            darkChannelPointsImageObj={darkChannelPointsImageObj}
+                            darkChannelPointsImageObj={
+                              darkChannelPointsImageObj
+                            }
                           />
-                        ),
-                      );
-                      enqueueSnackBar(
-                        () => (
-                          <XpClaimSnackBar
-                            xpClaimed={xpClaimed}
-                            totalXp={parseInt(seasonPass?.xp?.count || 0)}
-                            xpImageObj={xpImageObj}
-                            darkXpImageObj={darkXpImageObj}
-                          />
-                        ),
-                      );
+                        ));
+                      enqueueSnackBar(() => (
+                        <XpClaimSnackBar
+                          xpClaimed={xpClaimed}
+                          totalXp={parseInt(seasonPass?.xp?.count || 0)}
+                          xpImageObj={xpImageObj}
+                          darkXpImageObj={darkXpImageObj}
+                        />
+                      ));
                     },
                   }}
                 />
@@ -891,10 +892,10 @@ export default function $browserExtensionMenu(props) {
               onClick={handleSignup}
             />
           )}
-          {shouldShowTwitchBanner && getModel().user.isMember(me) &&
-            credentials?.sourceType === "twitch" && !hasConnectedAccount && (
-            <TwitchSignupBanner />
-          )}
+          {shouldShowTwitchBanner &&
+            getModel().user.isMember(me) &&
+            credentials?.sourceType === "twitch" &&
+            !hasConnectedAccount && <TwitchSignupBanner />}
           {
             // TODO: update to mockup spec w/ timer, etc...
             // make separate component so we're only rerendering on timer tick in that component
@@ -910,55 +911,54 @@ export default function $browserExtensionMenu(props) {
                     channelPointsImageObj,
                     channelPointsOrgUserCounterObs,
                     onBack: popPage,
-                  })}
+                  })
+                }
               />
             )
           }
-          {!isPageStackEmpty
-            ? (
-              <div className="page-stack">
-                {<PageStackHead.Component {...PageStackHead.props} />}
-              </div>
-            )
-            : (
-              <div className="body">
-                {
-                  <$activeTabEl
-                    {...{
-                      handleSignup,
-                      org,
-                      extensionInfo,
-                      activePoll,
-                      credentialsSubject,
-                      seasonPassObs,
-                      channelPointsOrgUserCounterObs,
-                      channelPointsOrgUserCounterTypeObs,
-                      transactionsObs,
-                      channelPointsImageObj,
-                      darkChannelPointsImageObj,
-                      xpImageObj,
-                      darkXpImageObj,
-                      highlightButtonBg,
-                      onViewCollection,
-                      hasSupportChat,
-                      hasChannelPoints,
-                      hasBattlePass,
-                      isLive,
-                      canClaim,
-                      creatorName,
-                      timeWatchedSecondsSubject,
-                      secondsRemainingSubject,
-                      visibleTabs,
-                      enqueueSnackBar,
-                      activeTabIndexSubject,
-                      pushPage,
-                      popPage,
-                      extensionIconPositionSubject,
-                    }}
-                  />
-                }
-              </div>
-            )}
+          {!isPageStackEmpty ? (
+            <div className="page-stack">
+              {<PageStackHead.Component {...PageStackHead.props} />}
+            </div>
+          ) : (
+            <div className="body">
+              {
+                <$activeTabEl
+                  {...{
+                    handleSignup,
+                    org,
+                    extensionInfo,
+                    activePoll,
+                    credentialsSubject,
+                    seasonPassObs,
+                    channelPointsOrgUserCounterObs,
+                    channelPointsOrgUserCounterTypeObs,
+                    transactionsObs,
+                    channelPointsImageObj,
+                    darkChannelPointsImageObj,
+                    xpImageObj,
+                    darkXpImageObj,
+                    highlightButtonBg,
+                    onViewCollection,
+                    hasSupportChat,
+                    hasChannelPoints,
+                    hasBattlePass,
+                    isLive,
+                    canClaim,
+                    creatorName,
+                    timeWatchedSecondsSubject,
+                    secondsRemainingSubject,
+                    visibleTabs,
+                    enqueueSnackBar,
+                    activeTabIndexSubject,
+                    pushPage,
+                    popPage,
+                    extensionIconPositionSubject,
+                  }}
+                />
+              }
+            </div>
+          )}
         </div>
       </div>
       <SnackBarContainer
@@ -983,9 +983,12 @@ export default function $browserExtensionMenu(props) {
   );
 }
 
-function getMenuState(
-  { isOpen, isClaimable, snackBarQueue, shouldShowOnboardTooltip },
-) {
+function getMenuState({
+  isOpen,
+  isClaimable,
+  snackBarQueue,
+  shouldShowOnboardTooltip,
+}) {
   if (isOpen) {
     return "open";
   } else if (shouldShowOnboardTooltip) {
@@ -999,9 +1002,10 @@ function getMenuState(
   }
 }
 
-function NewExtensionUserTooltip(
-  { hasViewedOnboardTooltipSubject, $$extensionIconRef },
-) {
+function NewExtensionUserTooltip({
+  hasViewedOnboardTooltipSubject,
+  $$extensionIconRef,
+}) {
   const onClose = () => {
     jumper.call("storage.set", {
       key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
@@ -1049,20 +1053,23 @@ function NewExtensionUserTooltip(
 
 function getBaseStyles({ extensionIconPosition, extensionInfo }) {
   const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo,
+    extensionInfo?.pageInfo
   );
-  const baseStyles = extensionIconPosition === "chat"
-    ? twitchPageIdentifiers
-      ? BASE_TWITCH_IFRAME_STYLES_IN_CHAT
-      : BASE_IFRAME_STYLES_IN_CHAT
-    : BASE_IFRAME_STYLES_IN_VIDEO;
+  const baseStyles =
+    extensionIconPosition === "chat"
+      ? twitchPageIdentifiers
+        ? BASE_TWITCH_IFRAME_STYLES_IN_CHAT
+        : BASE_IFRAME_STYLES_IN_CHAT
+      : BASE_IFRAME_STYLES_IN_VIDEO;
 
   return baseStyles;
 }
 
-function getIframeStyles(
-  { state = "open", extensionIconPosition, extensionInfo },
-) {
+function getIframeStyles({
+  state = "open",
+  extensionIconPosition,
+  extensionInfo,
+}) {
   const baseStyles = getBaseStyles({ extensionIconPosition, extensionInfo });
   if (state === "open") {
     const stateStyles = { "clip-path": "inset(0% 0% 0% 0%)" };
@@ -1080,9 +1087,10 @@ function getIframeStyles(
 
   const { width, heightPx } = closedStates[state] || closedStates.closed;
 
-  const stateStyles = extensionIconPosition === "chat"
-    ? { "clip-path": `inset(calc(100% - ${heightPx}px) 0% 0% ${width})` }
-    : { "clip-path": `inset(0% 0% calc(100% - ${heightPx}px) ${width})` };
+  const stateStyles =
+    extensionIconPosition === "chat"
+      ? { "clip-path": `inset(calc(100% - ${heightPx}px) 0% 0% ${width})` }
+      : { "clip-path": `inset(0% 0% calc(100% - ${heightPx}px) ${width})` };
 
   return {
     ...baseStyles,
@@ -1090,9 +1098,12 @@ function getIframeStyles(
   };
 }
 
-function setMenuStyles(
-  { state, jumper, extensionIconPosition, extensionInfo },
-) {
+function setMenuStyles({
+  state,
+  jumper,
+  extensionIconPosition,
+  extensionInfo,
+}) {
   const style = getIframeStyles({
     state,
     extensionIconPosition,
@@ -1108,7 +1119,9 @@ function setMenuStyles(
   // DEPRECATED: applyLayoutConfigSteps replaces in 3.1.0. can rm in late 2022
   jumper.call("dom.setStyle", {
     querySelector: "#spore-chrome-extension-menu",
-    style: Object.entries(style).map(([k, v]) => `${k}:${v}`).join(";"),
+    style: Object.entries(style)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(";"),
   });
 }
 
@@ -1121,12 +1134,14 @@ function TwitchSignupBanner() {
     const openedWindow = window.open(twitchOAuthUrl);
 
     clearInterval(openedWindowInterval);
-    openedWindowInterval = openedWindow && setInterval(() => {
-      if (openedWindow.closed) {
-        clearInterval(openedWindowInterval);
-        getModel().graphqlClient.invalidateAll();
-      }
-    }, 500);
+    openedWindowInterval =
+      openedWindow &&
+      setInterval(() => {
+        if (openedWindow.closed) {
+          clearInterval(openedWindowInterval);
+          getModel().graphqlClient.invalidateAll();
+        }
+      }, 500);
   };
 
   let openedWindowInterval;
@@ -1150,9 +1165,7 @@ function TwitchSignupBanner() {
 function ActionBanner({ onClick, message, buttonText, classNamePostfix }) {
   return (
     <div className={`action-banner action-banner-style-${classNamePostfix}`}>
-      <div className="info">
-        {message}
-      </div>
+      <div className="info">{message}</div>
       <div className="signup">
         <Button text={buttonText} size="small" style="bg" onclick={onClick} />
       </div>
@@ -1167,18 +1180,20 @@ function SettingsPage({ extensionIconPositionSubject, extensionInfo, onBack }) {
 
     return {
       meObs,
-      nameSubject: createSubject(meObs.pipe(
-        op.map((user) => user?.name || ""),
-      )),
+      nameSubject: createSubject(
+        meObs.pipe(op.map((user) => user?.name || ""))
+      ),
       orgUserKVObs,
-      nameColorSubject: createSubject(orgUserKVObs.pipe(
-        op.map((orgUserKV) => {
-          const keyValues = orgUserKV?.keyValueConnection?.nodes;
-          const color = keyValues.find((kv) => kv.key === "nameColor")?.value ||
-            "";
-          return color;
-        }),
-      )),
+      nameColorSubject: createSubject(
+        orgUserKVObs.pipe(
+          op.map((orgUserKV) => {
+            const keyValues = orgUserKV?.keyValueConnection?.nodes;
+            const color =
+              keyValues.find((kv) => kv.key === "nameColor")?.value || "";
+            return color;
+          })
+        )
+      ),
     };
   }, []);
 
@@ -1196,12 +1211,13 @@ function SettingsPage({ extensionIconPositionSubject, extensionInfo, onBack }) {
   const isChanged = hasNameChanged || hasColorChanged;
 
   const minVersionForSporeUserSettings = "3.2.0";
-  const hasSporeUserSettings = extensionInfo?.version &&
+  const hasSporeUserSettings =
+    extensionInfo?.version &&
     extensionInfo.version.localeCompare(
-        minVersionForSporeUserSettings,
-        undefined,
-        { numeric: true, sensitivity: "base" },
-      ) !== -1;
+      minVersionForSporeUserSettings,
+      undefined,
+      { numeric: true, sensitivity: "base" }
+    ) !== -1;
 
   const reset = () => {
     nameColorSubject.reset();
@@ -1233,30 +1249,29 @@ function SettingsPage({ extensionIconPositionSubject, extensionInfo, onBack }) {
 
   const SettingsPageContent = () => (
     <div className="c-settings-page_content">
-      {hasSporeUserSettings &&
-        (
-          <>
-            <div className="name">
-              <Component
-                slug="input"
-                props={{
-                  label: "Display name",
-                  valueSubject: nameSubject,
-                }}
-              />
-            </div>
-            <div className="color">
-              <Component
-                slug="input-color"
-                props={{
-                  label: "Chat name color",
-                  colorSubject: nameColorSubject,
-                  isLabelVisible: true,
-                }}
-              />
-            </div>
-          </>
-        )}
+      {hasSporeUserSettings && (
+        <>
+          <div className="name">
+            <Component
+              slug="input"
+              props={{
+                label: "Display name",
+                valueSubject: nameSubject,
+              }}
+            />
+          </div>
+          <div className="color">
+            <Component
+              slug="input-color"
+              props={{
+                label: "Chat name color",
+                colorSubject: nameColorSubject,
+                isLabelVisible: true,
+              }}
+            />
+          </div>
+        </>
+      )}
       <PositionChooser
         extensionInfo={extensionInfo}
         extensionIconPositionSubject={extensionIconPositionSubject}
@@ -1274,17 +1289,13 @@ function SettingsPage({ extensionIconPositionSubject, extensionInfo, onBack }) {
   );
 
   return (
-    <Page
-      title="Settings"
-      content={<SettingsPageContent />}
-      onBack={onBack}
-    />
+    <Page title="Settings" content={<SettingsPageContent />} onBack={onBack} />
   );
 }
 
 function getExtensionPositions({ extensionInfo }) {
   const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo,
+    extensionInfo?.pageInfo
   );
 
   const positions = twitchPageIdentifiers
@@ -1312,20 +1323,21 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
   }
 
   const minVersionForLayoutConfigSteps = "3.1.0";
-  const hasLayoutConfigSteps = extensionInfo?.version &&
+  const hasLayoutConfigSteps =
+    extensionInfo?.version &&
     extensionInfo.version.localeCompare(
-        minVersionForLayoutConfigSteps,
-        undefined,
-        { numeric: true, sensitivity: "base" },
-      ) !== -1 &&
+      minVersionForLayoutConfigSteps,
+      undefined,
+      { numeric: true, sensitivity: "base" }
+    ) !== -1 &&
     allowsThirdPartyCookies;
 
   const positions = getExtensionPositions({ extensionInfo });
 
   const move = (position) => {
-    const layoutConfigSteps =
-      positions.find(({ positionSlug }) => positionSlug === position)
-        .layoutConfigSteps;
+    const layoutConfigSteps = positions.find(
+      ({ positionSlug }) => positionSlug === position
+    ).layoutConfigSteps;
     jumper.call("storage.set", {
       key: getStorageKey(STORAGE_POSITION_PREFIX),
       value: position,
@@ -1342,7 +1354,8 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
       {hasLayoutConfigSteps && (
         <>
           {positions.map((position) => {
-            const isSelected = (extensionIconPosition || "stream-top-right") ===
+            const isSelected =
+              (extensionIconPosition || "stream-top-right") ===
               position.positionSlug;
             return (
               <div
@@ -1563,12 +1576,12 @@ function HomeTab({
   extensionInfo,
 }) {
   const { activePowerupsObs } = useMemo(() => {
-    const orgUserActivePowerupConnectionObs = getModel().orgUser
-      .getMeActivePowerupsWithJsx();
+    const orgUserActivePowerupConnectionObs =
+      getModel().orgUser.getMeActivePowerupsWithJsx();
     const activePowerupsObs = orgUserActivePowerupConnectionObs.pipe(
       op.map((orgUser) => {
         return orgUser?.activePowerupConnection?.nodes ?? [];
-      }),
+      })
     );
     return {
       activePowerupsObs,
@@ -1580,9 +1593,7 @@ function HomeTab({
     org: getModel().org.getMe(),
     activePowerups: activePowerupsObs,
     channelPoints: channelPointsOrgUserCounterObs,
-    xp: seasonPassObs.pipe(
-      op.map((seasonPass) => seasonPass?.xp?.count),
-    ),
+    xp: seasonPassObs.pipe(op.map((seasonPass) => seasonPass?.xp?.count)),
   }));
 
   const channelPointsSrc = channelPointsImageObj
@@ -1639,9 +1650,7 @@ function HomeTab({
           <AccountAvatar />
           <div className="info">
             <div className="top">
-              <div className="name">
-                {me?.name}
-              </div>
+              <div className="name">{me?.name}</div>
               <ActivePowerups activePowerups={activePowerups} />
             </div>
             <div className="amounts">
@@ -1669,9 +1678,7 @@ function HomeTab({
                     height={24}
                   />
                 </div>
-                <div className="amount">
-                  {abbreviateNumber(xp || 0, 1)}
-                </div>
+                <div className="amount">{abbreviateNumber(xp || 0, 1)}</div>
               </div>
             </div>
           </div>
@@ -1695,7 +1702,8 @@ function HomeTab({
                   extensionIconPositionSubject,
                   extensionInfo,
                   onBack: popPage,
-                })}
+                })
+              }
               color={cssVars.$bgBaseText}
               hasRipple={true}
               size="24px"
@@ -1786,18 +1794,23 @@ function FazeGiveaway({ handleSignup }) {
     meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
   }));
 
-  const isEligibleCryptoGiveawayKv = meOrgUserWithKv?.keyValueConnection?.nodes
-    ?.find(({ key }) => key === "isEligibleCryptoGiveaway");
+  const isEligibleCryptoGiveawayKv =
+    meOrgUserWithKv?.keyValueConnection?.nodes?.find(
+      ({ key }) => key === "isEligibleCryptoGiveaway"
+    );
 
-  const isAlmostEligibleCryptoGiveawayKv = meOrgUserWithKv?.keyValueConnection
-    ?.nodes
-    ?.find(({ key }) => key === "isAlmostEligibleCryptoGiveaway");
+  const isAlmostEligibleCryptoGiveawayKv =
+    meOrgUserWithKv?.keyValueConnection?.nodes?.find(
+      ({ key }) => key === "isAlmostEligibleCryptoGiveaway"
+    );
 
-  const isEligibleMerchGiveawayKv = meOrgUserWithKv?.keyValueConnection?.nodes
-    ?.find(({ key }) => key === "isEligibleMerchGiveaway");
+  const isEligibleMerchGiveawayKv =
+    meOrgUserWithKv?.keyValueConnection?.nodes?.find(
+      ({ key }) => key === "isEligibleMerchGiveaway"
+    );
 
-  const hasFilledOutEligibility = isEligibleCryptoGiveawayKv ||
-    isEligibleMerchGiveawayKv;
+  const hasFilledOutEligibility =
+    isEligibleCryptoGiveawayKv || isEligibleMerchGiveawayKv;
   const isEligibleCryptoGiveaway = isEligibleCryptoGiveawayKv?.value === "yes";
   const isEligibleMerchGiveaway = isEligibleMerchGiveawayKv?.value === "yes";
   const isAlmostEligibleCryptoGiveaway =
@@ -1813,15 +1826,13 @@ function FazeGiveaway({ handleSignup }) {
       buttonText: "Enter now!",
     },
     eligibleBoth: {
-      text:
-        "You’re eligible for the MoonPay $185,000 Crypto and FaZe Merch Voucher Giveaways!",
+      text: "You’re eligible for the MoonPay $185,000 Crypto and FaZe Merch Voucher Giveaways!",
     },
     eligibleMerchGiveaway: {
       text: "You’re eligible for the FaZe Merch Voucher Giveaway!",
     },
     almostEligibleCryptoGiveaway: {
-      text:
-        "You’re eligible for the FaZe Merch Voucher Giveaway! You can still enter an ETH Wallet to become eligible for crypto giveaway",
+      text: "You’re eligible for the FaZe Merch Voucher Giveaway! You can still enter an ETH Wallet to become eligible for crypto giveaway",
       onclick: async () => {
         overlay.open(() => (
           <Component
@@ -1841,8 +1852,9 @@ function FazeGiveaway({ handleSignup }) {
     ? "needsEligibilityInfo"
     : isEligibleCryptoGiveaway && isEligibleMerchGiveaway
     ? "eligibleBoth"
-    : !isEligibleCryptoGiveaway && isEligibleMerchGiveaway &&
-        isAlmostEligibleCryptoGiveaway
+    : !isEligibleCryptoGiveaway &&
+      isEligibleMerchGiveaway &&
+      isAlmostEligibleCryptoGiveaway
     ? "almostEligibleCryptoGiveaway"
     : isEligibleMerchGiveaway
     ? "eligibleMerchGiveaway"
@@ -1854,14 +1866,14 @@ function FazeGiveaway({ handleSignup }) {
     <div className="c-faze-giveaway">
       <div className="header-image">
         <ImageByAspectRatio
-          imageUrl={"https://cdn.bio/assets/images/creators/faze/giveaway_header.png"}
+          imageUrl={
+            "https://cdn.bio/assets/images/creators/faze/giveaway_header.png"
+          }
           aspectRatio={568 / 36}
           isStretch={true}
         />
       </div>
-      <div className="text">
-        {config.text}
-      </div>
+      <div className="text">{config.text}</div>
       {config.onclick && (
         <Button
           text={config.buttonText}
@@ -1882,11 +1894,11 @@ function LeaderboardTile() {
       op.switchMap((seasonPass) =>
         seasonPass
           ? getModel().orgUserCounter.getAllByCounterTypeId(
-            seasonPass.orgUserCounterTypeId,
-            { limit: LEADERBOARD_LIMIT },
-          )
+              seasonPass.orgUserCounterTypeId,
+              { limit: LEADERBOARD_LIMIT }
+            )
           : Obs.of(null)
-      ),
+      )
     );
 
     return {
@@ -1972,14 +1984,13 @@ function KothTile() {
   const { kingOrgUserObs } = useMemo(() => {
     const orgConfigObs = getModel().orgConfig.getMeWithData();
     const kingOrgUserObs = orgConfigObs.pipe(
-      op.switchMap(
-        (orgConfig) =>
-          orgConfig?.data?.kingOfTheHill?.userId
-            ? getModel().orgUser.getByUserIdWithPowerups(
-              orgConfig?.data?.kingOfTheHill?.userId,
+      op.switchMap((orgConfig) =>
+        orgConfig?.data?.kingOfTheHill?.userId
+          ? getModel().orgUser.getByUserIdWithPowerups(
+              orgConfig?.data?.kingOfTheHill?.userId
             )
-            : Obs.of(null),
-      ),
+          : Obs.of(null)
+      )
     );
     return {
       kingOrgUserObs,
@@ -2023,9 +2034,12 @@ function KothTile() {
   );
 }
 
-function PredictionTile(
-  { pushPage, channelPointsImageObj, channelPointsOrgUserCounterObs, popPage },
-) {
+function PredictionTile({
+  pushPage,
+  channelPointsImageObj,
+  channelPointsOrgUserCounterObs,
+  popPage,
+}) {
   const { activePollConnectionObs, pollMsLeftSubject, isPredictionExpiredObs } =
     useMemo(() => {
       const activePollConnectionObs = getModel().poll.getAllSmall({
@@ -2037,16 +2051,16 @@ function PredictionTile(
       const activePollObs = activePollConnectionObs.pipe(
         op.map((activePollConnection) => {
           return activePollConnection?.nodes?.[0];
-        }),
+        })
       );
 
       const pollMsLeftSubject = createSubject(
         activePollObs.pipe(
           op.map(
             (activePoll) =>
-              new Date(activePoll?.endTime || Date.now()) - new Date(),
-          ),
-        ),
+              new Date(activePoll?.endTime || Date.now()) - new Date()
+          )
+        )
       );
 
       return {
@@ -2054,7 +2068,7 @@ function PredictionTile(
         activePollObs,
         pollMsLeftSubject,
         isPredictionExpiredObs: pollMsLeftSubject.obs.pipe(
-          op.map((msLeft) => msLeft <= 0),
+          op.map((msLeft) => msLeft <= 0)
         ),
       };
     }, []);
@@ -2075,18 +2089,14 @@ function PredictionTile(
     Content = () => (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
-        <div className="secondary-text">
-          The results are in!
-        </div>
+        <div className="secondary-text">The results are in!</div>
       </div>
     );
   } else if (isPredictionExpired) {
     Content = () => (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
-        <div className="secondary-text">
-          Submissions closed
-        </div>
+        <div className="secondary-text">Submissions closed</div>
       </div>
     );
   } else {
@@ -2132,7 +2142,8 @@ function PredictionTile(
           channelPointsImageObj,
           channelPointsOrgUserCounterObs,
           onBack: popPage,
-        })}
+        })
+      }
       content={Content}
     />
   );
@@ -2187,8 +2198,7 @@ function Tile(props) {
     >
       <Header />
       <Content />
-      {onClick &&
-        <Ripple color={color} />}
+      {onClick && <Ripple color={color} />}
     </div>
   );
 }
@@ -2260,7 +2270,7 @@ function IsLiveInfo(props) {
       <div className="info">
         <div className="message">
           {creatorName
-            ? (hasChannelPoints && hasBattlePass)
+            ? hasChannelPoints && hasBattlePass
               ? `Earn channel points and XP by watching ${creatorName} during the stream`
               : hasChannelPoints
               ? `Earn channel points by watching ${creatorName} during the stream`
@@ -2295,9 +2305,7 @@ function Timer({ timerSeconds, message }) {
               ? formatCountdown(timerSeconds, { shouldAlwaysShowHours: false })
               : ""}
           </div>
-          <div className="title">
-            {message}
-          </div>
+          <div className="title">{message}</div>
         </>
       }
     </div>
@@ -2338,14 +2346,12 @@ function AccountAvatar() {
   );
 }
 
-function ChannelPointsClaimSnackBar(
-  {
-    channelPointsClaimed = 20,
-    totalChannelPoints = 0,
-    channelPointsImageObj,
-    darkChannelPointsImageObj,
-  },
-) {
+function ChannelPointsClaimSnackBar({
+  channelPointsClaimed = 20,
+  totalChannelPoints = 0,
+  channelPointsImageObj,
+  darkChannelPointsImageObj,
+}) {
   // const channelPointsSrc = channelPointsImageObj ? getModel().image.getSrcByImageObj(channelPointsImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/channel-points.svg'
   const darkChannelPointsSrc = channelPointsImageObj
     ? getModel().image.getSrcByImageObj(darkChannelPointsImageObj)
@@ -2361,7 +2367,7 @@ function ChannelPointsClaimSnackBar(
             <div>
               {abbreviateNumber(
                 parseInt(totalChannelPoints) + parseInt(channelPointsClaimed),
-                1,
+                1
               )}
             </div>
             <ImageByAspectRatio
@@ -2377,9 +2383,12 @@ function ChannelPointsClaimSnackBar(
   );
 }
 
-function XpClaimSnackBar(
-  { xpClaimed = 1, totalXp = 0, xpImageObj, darkXpImageObj },
-) {
+function XpClaimSnackBar({
+  xpClaimed = 1,
+  totalXp = 0,
+  xpImageObj,
+  darkXpImageObj,
+}) {
   // const xpSrc = xpImageObj ? getModel().image.getSrcByImageObj(xpImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/xp.svg'
   const darkXpSrc = xpImageObj
     ? getModel().image.getSrcByImageObj(darkXpImageObj)
@@ -2464,27 +2473,25 @@ function ExtensionMenuCollectibleEmptyState(props) {
   const tickets = _.find(groupedCollectibles, { type: "ticket" });
   const isFaze = org?.slug === "faze";
   const stackEmotes = isFaze
-    ? _.map(
-      _.take(tickets?.collectibles, 2),
-      (ticket) => getModel().image.getSrcByImageObj(ticket?.fileRel?.fileObj),
-    )
-    : _.map(
-      _.take(emotes?.collectibles, 2),
-      (emote) => getModel().image.getSrcByImageObj(emote?.fileRel?.fileObj),
-    );
+    ? _.map(_.take(tickets?.collectibles, 2), (ticket) =>
+        getModel().image.getSrcByImageObj(ticket?.fileRel?.fileObj)
+      )
+    : _.map(_.take(emotes?.collectibles, 2), (emote) =>
+        getModel().image.getSrcByImageObj(emote?.fileRel?.fileObj)
+      );
 
   const onViewBattlePass = () => {
     // navigate to the battle pass tab when the user
-    const collectibleTabIndex = visibleTabs.findIndex((tab) =>
-      tab.slug === "battle-pass"
+    const collectibleTabIndex = visibleTabs.findIndex(
+      (tab) => tab.slug === "battle-pass"
     );
     activeTabIndexSubject.next(collectibleTabIndex);
   };
 
   const onViewShop = () => {
     // navigate to the shop tab when the user
-    const collectibleTabIndex = visibleTabs.findIndex((tab) =>
-      tab.slug === "shop"
+    const collectibleTabIndex = visibleTabs.findIndex(
+      (tab) => tab.slug === "shop"
     );
     activeTabIndexSubject.next(collectibleTabIndex);
   };
@@ -2521,28 +2528,23 @@ function ExtensionMenuCollectibleEmptyState(props) {
               />
             </div>
           </div>
-          <div className="message">
-            Nothing in your collection, yet!
-          </div>
+          <div className="message">Nothing in your collection, yet!</div>
         </div>
         {(hasBattlePass || hasChannelPoints) && (
           <div className="body">
-            <div className="title">
-              Start Earning
-            </div>
-            {hasBattlePass &&
-              (
-                <WayToEarnBlock
-                  description={`Earn XP to unlock rewards in the ${
-                    getSeasonPassName(org)
-                  }`}
-                  buttonText={`Go to ${getSeasonPassName(org)}`}
-                  iconSrc={xpSrc}
-                  onButtonClick={onViewBattlePass}
-                  onLinkClick={handleXpLink}
-                  linkText={"How do I earn XP?"}
-                />
-              )}
+            <div className="title">Start Earning</div>
+            {hasBattlePass && (
+              <WayToEarnBlock
+                description={`Earn XP to unlock rewards in the ${getSeasonPassName(
+                  org
+                )}`}
+                buttonText={`Go to ${getSeasonPassName(org)}`}
+                iconSrc={xpSrc}
+                onButtonClick={onViewBattlePass}
+                onLinkClick={handleXpLink}
+                linkText={"How do I earn XP?"}
+              />
+            )}
             {hasChannelPoints && (
               <WayToEarnBlock
                 description={"Earn channel points to buy items in the shop"}
@@ -2560,9 +2562,14 @@ function ExtensionMenuCollectibleEmptyState(props) {
   );
 }
 
-function WayToEarnBlock(
-  { description, iconSrc, linkText, onLinkClick, buttonText, onButtonClick },
-) {
+function WayToEarnBlock({
+  description,
+  iconSrc,
+  linkText,
+  onLinkClick,
+  buttonText,
+  onButtonClick,
+}) {
   return (
     <div className="way-to-earn">
       <div className="left">
@@ -2577,9 +2584,7 @@ function WayToEarnBlock(
       </div>
 
       <div className="right">
-        <div className="description">
-          {description}
-        </div>
+        <div className="description">{description}</div>
         <div className="button">
           <Button
             text={buttonText}
@@ -2598,16 +2603,15 @@ function WayToEarnBlock(
 
 function ChannelPointsActionsDialog({ channelPointsSrc }) {
   const { channelPointsEarnActionsObs } = useMemo(() => {
-    const channelPointsOrgUserCounterTypeObs = getModel().orgUserCounterType
-      .getBySlug("channel-points");
+    const channelPointsOrgUserCounterTypeObs =
+      getModel().orgUserCounterType.getBySlug("channel-points");
 
-    const economyActionsObs = getModel().economyAction.getByAmountType(
-      "orgUserCounterType",
-    );
+    const economyActionsObs =
+      getModel().economyAction.getByAmountType("orgUserCounterType");
 
     const channelPointsEarnActionsObs = Obs.combineLatest(
       channelPointsOrgUserCounterTypeObs,
-      economyActionsObs,
+      economyActionsObs
     ).pipe(
       op.map(([orgUserCounterType, economyActions]) => {
         return _.filter(economyActions?.nodes, {
@@ -2622,10 +2626,10 @@ function ChannelPointsActionsDialog({ channelPointsSrc }) {
       op.map((channelPointsActions) =>
         _.filter(
           channelPointsActions,
-          (action) => action?.name !== "Prediction refund",
+          (action) => action?.name !== "Prediction refund"
         )
       ),
-      op.map((channelPointsActions) => _.reverse(channelPointsActions)),
+      op.map((channelPointsActions) => _.reverse(channelPointsActions))
     );
     return {
       economyActionsObs,
@@ -2654,9 +2658,7 @@ function LearnMoreButton() {
 
   return (
     <div className="c-learn-more">
-      <div className="title">
-        Earn XP through linked accounts
-      </div>
+      <div className="title">Earn XP through linked accounts</div>
       <a href={getHost()} target="_blank" className="button" rel="noreferrer">
         <Button
           text="Learn more"
@@ -2685,9 +2687,9 @@ function XpActionsDialog({ xpSrc }) {
           seasonPass?.economyActions,
           (action) =>
             action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
-            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
+            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID
         );
-      }),
+      })
     );
     return {
       seasonPassWatchTimeActionsObs,
@@ -2712,9 +2714,12 @@ function XpActionsDialog({ xpSrc }) {
   );
 }
 
-function EconomyActionDialog(
-  { title, economyActions, orgUserCounterTypeSrc, $bottom },
-) {
+function EconomyActionDialog({
+  title,
+  economyActions,
+  orgUserCounterTypeSrc,
+  $bottom,
+}) {
   return (
     <div className="c-economy-action-dialog">
       <Component
@@ -2745,11 +2750,7 @@ function EconomyActionDialog(
                   />
                 );
               })}
-              {
-                <div className="bottom">
-                  {$bottom}
-                </div>
-              }
+              {<div className="bottom">{$bottom}</div>}
             </div>
           ),
         }}
@@ -2761,9 +2762,7 @@ function EconomyActionDialog(
 function EconomyAction({ economyAction, orgUserCounterTypeSrc }) {
   return (
     <div className="c-economy-action">
-      <div className="name">
-        {economyAction?.name}
-      </div>
+      <div className="name">{economyAction?.name}</div>
       <div className="reward">
         <div className="icon">
           <ImageByAspectRatio
@@ -2779,9 +2778,7 @@ function EconomyAction({ economyAction, orgUserCounterTypeSrc }) {
             : economyAction?.data?.amountDescription}
         </div>
       </div>
-      <div className="description">
-        {economyAction?.data?.description}
-      </div>
+      <div className="description">{economyAction?.data?.description}</div>
     </div>
   );
 }
@@ -2789,26 +2786,24 @@ function EconomyAction({ economyAction, orgUserCounterTypeSrc }) {
 function ActivePowerups({ activePowerups }) {
   return _.map(
     _.take(
-      _.filter(activePowerups, ({ powerup }) => powerup?.jsx),
-      1,
+      _.filter(activePowerups, ({ powerup }) => powerup?.js),
+      1
     ),
-    (activePowerup) => <Powerup powerup={activePowerup?.powerup} />,
+    (activePowerup) => <Powerup powerup={activePowerup?.powerup} />
   );
 }
 
 function Powerup({ powerup }) {
-  if (!powerup?.jsx) return;
+  if (!powerup?.js) return;
   return (
     <div className="powerup">
       {/* FIXME */}
-      {
-        /* <Components.RenderedJsByJsx
-      jsx={powerup.jsx}
+      {/* <Components.RenderedJsByJsx
+      jsx={powerup.js}
       components={_.map(powerup.componentRels, ({ component }) => {
         return getModel().component.getCachedComponentById(component.id)
       })}
-    /> */
-      }
+    /> */}
     </div>
   );
 }

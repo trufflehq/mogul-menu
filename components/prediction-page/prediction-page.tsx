@@ -1,5 +1,5 @@
 import React from "https://npm.tfl.dev/react";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import Page from "../page/page.tsx";
@@ -8,8 +8,8 @@ import {
   formatNumber,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 
 export default function PredictionPage() {
   // const { channelPoints } = useObservables(() => ({

@@ -6,7 +6,7 @@ import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observa
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.jsx";
+import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 import cssVars, {
   hexOpacity,
   rgb2rgba,
@@ -16,10 +16,10 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.jsx";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.jsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import { gql, useQuery } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 
 const GREEN = "#75DB9E";

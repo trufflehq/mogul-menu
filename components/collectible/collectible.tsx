@@ -1,5 +1,5 @@
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import React, { useContext } from "https://npm.tfl.dev/react";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";

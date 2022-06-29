@@ -1,6 +1,6 @@
 import React from "https://npm.tfl.dev/react";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 
 export default function Advert(props) {
   const {
