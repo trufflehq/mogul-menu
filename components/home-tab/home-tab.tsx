@@ -227,16 +227,12 @@ export default function HomeTab() {
               )}
             </>
           )}
-          {!["dev", "faze"].includes(org?.slug) && (
-            <>
-              <LeaderboardTile />
-              <PredictionTile
-              // channelPointsImageObj={channelPointsImageObj}
-              // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
-              />
-              <KothTile />
-            </>
-          )}
+          <LeaderboardTile />
+          <PredictionTile
+          // channelPointsImageObj={channelPointsImageObj}
+          // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
+          />
+          <KothTile />
           {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
         </div>
       </div>
