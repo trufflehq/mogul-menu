@@ -176,10 +176,6 @@ export default function SeasonPass(props) {
     query: SEASON_PASS_QUERY,
   });
 
-  useEffect(() => {
-    console.log({ seasonPassData });
-  }, [seasonPassData]);
-
   const seasonPass = seasonPassData?.seasonPass;
 
   // if (!seasonPass) {

@@ -102,7 +102,6 @@ export function LeaderboardTile() {
   userRanks = _.map(userRanks, (rank, i) => ({ ...rank, place: i }));
 
   const top3 = _.take(userRanks, 3);
-  console.log({ top3 });
   const ranks = [
     {
       text: "1st",

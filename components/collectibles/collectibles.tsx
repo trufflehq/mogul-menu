@@ -69,10 +69,6 @@ export default function Collectibles(props) {
     `,
   });
 
-  useEffect(() => {
-    console.log({ collectibleConnectionData });
-  }, [collectibleConnectionData]);
-
   const collectibleConnection =
     collectibleConnectionData?.collectibleConnection;
 
