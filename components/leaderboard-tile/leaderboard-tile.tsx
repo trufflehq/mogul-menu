@@ -78,7 +78,6 @@ export function LeaderboardTile() {
           orgUserCounterTypeId: data?.seasonPass?.orgUserCounterTypeId,
         })
       ),
-      op.tap(console.log),
       op.map(({ data }) => data?.orgUserCounterConnection)
     );
 
