@@ -61,10 +61,6 @@ const USER_INFO_QUERY = gql`
 export default function HomeTab() {
   const [{ data: userInfoData }] = useQuery({ query: USER_INFO_QUERY });
 
-  useEffect(() => {
-    console.log({ userInfoData });
-  }, [userInfoData]);
-
   const me = userInfoData?.me;
   const org = userInfoData?.org;
   const activePowerups = userInfoData?.activePowerups?.nodes;

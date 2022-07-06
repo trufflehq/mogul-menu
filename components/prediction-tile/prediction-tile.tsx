@@ -1,68 +1,67 @@
-import React from "https://npm.tfl.dev/react";
-import { pad } from "../../util/general.ts";
+import React, { useMemo } from "https://npm.tfl.dev/react";
+import {
+  gql,
+  usePollingQuery,
+} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
 
-const ONE_SECOND_MS = 1000;
-const ONE_MINUTE_MS = 60 * 1000;
-const ONE_HOUR_MS = 3600 * 1000;
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import Time from "../time/time.tsx";
 
-export default function PredictionTile({
-  channelPointsImageObj,
-  channelPointsOrgUserCounterObs,
-}) {
-  // const { activePollConnectionObs, pollMsLeftSubject, isPredictionExpiredObs } =
-  //   useMemo(() => {
-  //     const activePollConnectionObs = getModel().poll.getAllSmall({
-  //       isSubjected: true,
-  //       // TODO: fix bug: https://discord.com/channels/839188384752599071/845377383870890055/963515614771683338
-  //       // limit: 10
-  //     });
+const POLL_INTERVAL = ONE_SECOND_MS;
 
-  //     const activePollObs = activePollConnectionObs.pipe(
-  //       op.map((activePollConnection) => {
-  //         return activePollConnection?.nodes?.[0];
-  //       })
-  //     );
+const ACTIVE_POLL_QUERY = gql`
+  query PredictionPoll {
+    pollConnection(first: 1) {
+      nodes {
+        id
+        question
+        options {
+          index
+          text
+          count
+          unique
+        }
+        data
+        time
+        endTime
+        myVote {
+          optionIndex
+          count
+        }
+      }
+    }
+  }
+`;
 
-  //     const pollMsLeftSubject = createSubject(
-  //       activePollObs.pipe(
-  //         op.map(
-  //           (activePoll) =>
-  //             new Date(activePoll?.endTime || Date.now()) - new Date()
-  //         )
-  //       )
-  //     );
+export default function PredictionTile() {
+  const { pushPage } = usePageStack();
 
-  //     return {
-  //       activePollConnectionObs,
-  //       activePollObs,
-  //       pollMsLeftSubject,
-  //       isPredictionExpiredObs: pollMsLeftSubject.obs.pipe(
-  //         op.map((msLeft) => msLeft <= 0)
-  //       ),
-  //     };
-  //   }, []);
+  const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
+    query: ACTIVE_POLL_QUERY,
+  });
 
-  // const { activePollConnection, isPredictionExpired } = useObservables(() => ({
-  //   activePollConnection: activePollConnectionObs,
-  //   isPredictionExpired: isPredictionExpiredObs,
-  // }));
+  const activePoll = useMemo(
+    () => activePollData?.pollConnection?.nodes?.[0],
+    [activePollData]
+  );
+  const pollMsLeft = useMemo(
+    () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
+    [activePoll]
+  );
+  const isPredictionExpired = useMemo(() => pollMsLeft <= 0, [pollMsLeft]);
 
-  const { pushPage, popPage } = usePageStack();
+  const hasWinner = useMemo(
+    () => activePoll?.data?.winningOptionIndex !== undefined,
+    [activePoll]
+  );
 
-  const activePollConnection = { nodes: [{ question: "Who will win?" }] };
-  const isPredictionExpired = true;
-
-  const activePoll = activePollConnection?.nodes?.[0];
-  const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
-
-  if (!activePoll) return;
-
-  let Content;
+  let Content: Function;
 
   if (isPredictionExpired && hasWinner) {
     Content = () => (
@@ -83,32 +82,15 @@ export default function PredictionTile({
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">
-          <span>Submissions closing in</span>
-          {
-            /* <Component
-            slug="timer"
-            props={{
-              timerMsSubject: pollMsLeftSubject,
-              renderFn: (timerMs) => {
-                const hours = Math.floor(timerMs / ONE_HOUR_MS);
-                timerMs = timerMs % ONE_HOUR_MS;
-                const minutes = Math.floor(timerMs / ONE_MINUTE_MS);
-                timerMs = timerMs % ONE_MINUTE_MS;
-                const seconds = Math.floor(timerMs / ONE_SECOND_MS);
-
-                return (
-                  <span className="timer">
-                    {pad(hours)}:{pad(minutes)}:{pad(seconds)}
-                  </span>
-                );
-              },
-            }}
-          /> */
-          }
+          <span>
+            Submissions closing in <Time ms={pollMsLeft} />
+          </span>
         </div>
       </div>
     );
   }
+
+  if (!activePoll) return;
 
   return (
     <Tile
@@ -117,23 +99,11 @@ export default function PredictionTile({
       iconViewBox={CRYSTAL_BALL_ICON_VIEWBOX}
       headerText="Prediction"
       color="#AB8FE9"
-      onClick={
-        () => pushPage(<PredictionPage />)
-        // pushPage(PredictionPage, {
-        //   activePoll,
-        //   channelPointsImageObj,
-        //   channelPointsOrgUserCounterObs,
-        //   onBack: popPage,
-        // })
-      }
+      onClick={() => pushPage(<PredictionPage />)}
       content={() => (
-        <>
-          <link
-            rel="stylesheet"
-            href={new URL("prediction-tile.css", import.meta.url).toString()}
-          />
+        <ScopedStylesheet url={new URL("prediction-tile.css", import.meta.url)}>
           <Content />
-        </>
+        </ScopedStylesheet>
       )}
     />
   );

@@ -1,8 +1,8 @@
-.z-active-prediction {
+:host .c-active-prediction {
   color: white;
 }
 
-.z-active-prediction .form {
+:host .c-active-prediction .form {
   padding: 16px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -18,7 +18,7 @@
   margin-bottom: 20px;
 }
 
-.z-active-prediction .form > .amount {
+:host .c-active-prediction .form > .amount {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -31,7 +31,7 @@
           align-items: end;
 }
 
-.z-active-prediction .form > .amount > .value {
+:host .c-active-prediction .form > .amount > .value {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -41,19 +41,19 @@
   margin-top: 6px;
 }
 
-.z-active-prediction .form > .amount > .value > .input {
+:host .c-active-prediction .form > .amount > .value > .input {
   position: relative;
   max-width: 140px;
   margin-right: 12px;
 }
 
-.z-active-prediction .form > .amount > .value > .input > .z-channel-points-icon {
+:host .c-active-prediction .form > .amount > .value > .input > .z-channel-points-icon {
   position: absolute;
   right: 13px;
   height: 100%;
 }
 
-.z-active-prediction .form > .amount > .value > .input > .z-input > .input-wrapper > input.input {
+:host .c-active-prediction .form > .amount > .value > .input > .z-input > .input-wrapper > input.input {
   text-align: right;
   background: #FFFFFF14;
   border: none;
@@ -61,36 +61,36 @@
   padding-top: 12px;
 }
 
-.z-active-prediction .form > .amount > .value > .current-amount {
+:host .c-active-prediction .form > .amount > .value > .current-amount {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.z-active-prediction .form > .error {
+:host .c-active-prediction .form > .error {
   margin: 12px 0;
   color: red;
   font-weight: 700;
 }
 
-.z-active-prediction .question-banner {
+:host .c-active-prediction .question-banner {
   text-align: center;
   padding: 16px 0;
 }
 
-.z-active-prediction .question-banner .question {
+:host .c-active-prediction .question-banner .question {
   font-weight: 600;
   font-size: 20px;
   line-height: 30px;
   margin-bottom: 2px;
 }
 
-.z-active-prediction .question-banner .status {
+:host .c-active-prediction .question-banner .status {
   font-weight: 400;
   font-size: 14px;
   line-height: 21px;
 }
 
-.z-active-prediction > .options {
+:host .c-active-prediction > .options {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: (1fr)[2];
@@ -100,7 +100,7 @@
           align-items: stretch;
 }
 
-.z-active-prediction > .options > .option {
+:host .c-active-prediction > .options > .option {
   min-width: 0;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -111,41 +111,41 @@
           flex-direction: column;
 }
 
-.z-active-prediction > .options > .option.option1 {
+:host .c-active-prediction > .options > .option.option1 {
   margin-left: 26px;
   margin-right: 6px;
 }
 
-.z-active-prediction > .options > .option.option1 > .name {
+:host .c-active-prediction > .options > .option.option1 > .name {
   color: #419BEE;
 }
 
-.z-active-prediction > .options > .option.option1 > .stats {
+:host .c-active-prediction > .options > .option.option1 > .stats {
   border: 1px solid #419BEE;
 }
 
-.z-active-prediction > .options > .option.option1 > .stats > .label {
+:host .c-active-prediction > .options > .option.option1 > .stats > .label {
   color: #419BEE;
 }
 
-.z-active-prediction > .options > .option.option2 {
+:host .c-active-prediction > .options > .option.option2 {
   margin-left: 6px;
   margin-right: 26px;
 }
 
-.z-active-prediction > .options > .option.option2 > .name {
+:host .c-active-prediction > .options > .option.option2 > .name {
   color: #EE416B;
 }
 
-.z-active-prediction > .options > .option.option2 > .stats {
+:host .c-active-prediction > .options > .option.option2 > .stats {
   border: 1px solid #EE416B;
 }
 
-.z-active-prediction > .options > .option.option2 > .stats > .label {
+:host .c-active-prediction > .options > .option.option2 > .stats > .label {
   color: #EE416B;
 }
 
-.z-active-prediction > .options > .option > .name {
+:host .c-active-prediction > .options > .option > .name {
   font-weight: 600;
   font-size: 18px;
   line-height: 27px;
@@ -155,7 +155,7 @@
   text-overflow: ellipsis;
 }
 
-.z-active-prediction > .options > .option > .stats {
+:host .c-active-prediction > .options > .option > .stats {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: auto 1fr;
@@ -168,7 +168,7 @@
           flex-grow: 1;
 }
 
-.z-active-prediction > .options > .option > .stats > .percentage {
+:host .c-active-prediction > .options > .option > .stats > .percentage {
   -ms-grid-column: 1;
   -ms-grid-column-span: 2;
   grid-column: 1 / span 2;
@@ -180,7 +180,7 @@
   text-align: center;
 }
 
-.z-active-prediction > .options > .option > .stats > .label {
+:host .c-active-prediction > .options > .option > .stats > .label {
   -ms-grid-column-align: end;
       justify-self: end;
   font-weight: 600;
@@ -189,31 +189,31 @@
   text-align: right;
 }
 
-.z-active-prediction > .options > .option > .stats > .value {
+:host .c-active-prediction > .options > .option > .stats > .value {
   font-weight: 600;
   font-size: 12px;
   line-height: 18px;
 }
 
-.z-active-prediction > .options > .option > .stats > .label:not(:last-child) {
+:host .c-active-prediction > .options > .option > .stats > .label:not(:last-child) {
   margin-bottom: 12px;
 }
 
-.z-active-prediction > .options > .option > .stats > .vote {
+:host .c-active-prediction > .options > .option > .stats > .vote {
   -ms-grid-column: 1;
   -ms-grid-column-span: 2;
   grid-column: 1 / span 2;
 }
 
-.z-active-prediction > .options > .option > .stats > .vote > .z-button {
+:host .c-active-prediction > .options > .option > .stats > .vote > .z-button {
   border-radius: 4px;
 }
 
-.z-active-prediction > .options > .option > .winner-container {
+:host .c-active-prediction > .options > .option > .winner-container {
   padding: 8px;
 }
 
-.z-active-prediction .z-winner {
+:host .c-active-prediction .z-winner {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -229,11 +229,11 @@
   font-weight: 500;
 }
 
-.z-active-prediction .z-winner:not(.is-visible) {
+:host .c-active-prediction .z-winner:not(.is-visible) {
   visibility: hidden;
 }
 
-.z-active-prediction .z-button.style-primary {
+:host .c-active-prediction .z-button.style-primary {
   font-size: 14px;
   font-weight: 600;
   border-radius: 4px;
@@ -241,26 +241,26 @@
   letter-spacing: initial;
 }
 
-.z-active-prediction > .summary-info {
+:host .c-active-prediction > .summary-info {
   text-align: center;
 }
 
-.z-active-prediction > .summary-info > .user-prediction-text {
+:host .c-active-prediction > .summary-info > .user-prediction-text {
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   margin-bottom: 6px;
 }
 
-.z-active-prediction > .summary-info > .user-prediction-text .option1 {
+:host .c-active-prediction > .summary-info > .user-prediction-text .option1 {
   color: #419BEE;
 }
 
-.z-active-prediction > .summary-info > .user-prediction-text .option2 {
+:host .c-active-prediction > .summary-info > .user-prediction-text .option2 {
   color: #EE416B;
 }
 
-.z-active-prediction > .summary-info > .channel-point-count {
+:host .c-active-prediction > .summary-info > .channel-point-count {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -277,24 +277,24 @@
   margin-bottom: 4px;
 }
 
-.z-active-prediction > .summary-info > .channel-point-count > .text {
+:host .c-active-prediction > .summary-info > .channel-point-count > .text {
   margin-top: 2px;
 }
 
-.z-active-prediction > .summary-info > .status {
+:host .c-active-prediction > .summary-info > .status {
   font-weight: 400;
   font-size: 14px;
   line-height: 21px;
 }
 
-.z-active-prediction .bmargin-24 {
+:host .c-active-prediction .bmargin-24 {
   margin-bottom: 24px;
 }
 
-span > .z-channel-points-icon {
+:host span > .z-channel-points-icon {
   display: inline-block;
 }
 
-span > .z-channel-points-icon > div {
+:host span > .z-channel-points-icon > div {
   display: inline-block;
 }

@@ -8,3 +8,7 @@ export function pad(num: number, size = 2) {
   while (_num.length < size) _num = `0${num}`;
   return _num;
 }
+
+export const ONE_SECOND_MS = 1000;
+export const ONE_MINUTE_MS = 60 * 1000;
+export const ONE_HOUR_MS = 3600 * 1000;

@@ -1,11 +1,12 @@
-.c-prediction-tile {
+:host {
 
-  >.content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 16px;
+
+  .content {
 
     >.primary-text {
       font-weight: 600;

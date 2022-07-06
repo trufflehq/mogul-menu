@@ -5,6 +5,15 @@ import ThemeComponent from "https://tfl.dev/@truffle/ui@0.0.1/components/theme/t
 export default function MenuPage() {
   return (
     <>
+      <style>
+        {/* TODO: figure out a better place for this hack */}
+        {`
+          body,
+          html {
+            height: 100%;
+          }
+        `}
+      </style>
       <ThemeComponent />
       <Menu />
     </>

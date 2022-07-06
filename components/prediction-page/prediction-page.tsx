@@ -7,14 +7,33 @@ import {
   abbreviateNumber,
   formatNumber,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
+import {
+  gql,
+  usePollingQuery,
+} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ActivePrediction from "../active-prediction/active-prediction.tsx";
+
+const CHANNEL_POINTS_QUERY = gql`
+  query ChannelPointsQuery {
+    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
+      orgUserCounter {
+        count
+      }
+    }
+  }
+`;
+
+const POLL_INTERVAL = 1000;
 
 export default function PredictionPage() {
-  // const { channelPoints } = useObservables(() => ({
-  //   channelPoints: channelPointsOrgUserCounterObs,
-  // }));
+  const { data: channelPointsData } = usePollingQuery(POLL_INTERVAL, {
+    query: CHANNEL_POINTS_QUERY,
+  });
+
+  const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
 
   // const channelPointsSrc = channelPointsImageObj
   //   ? getModel().image.getSrcByImageObj(channelPointsImageObj)
@@ -22,7 +41,7 @@ export default function PredictionPage() {
 
   const { popPage } = usePageStack();
 
-  const channelPoints = { count: 100 };
+  // const channelPoints = { count: 100 };
   const channelPointsSrc =
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
@@ -44,15 +63,7 @@ export default function PredictionPage() {
       </div>
     );
   } else {
-    pageContent = (
-      <div>Prediction component</div>
-      // <Component
-      //   slug="active-prediction"
-      //   props={{
-      //     isForm: true,
-      //   }}
-      // />
-    );
+    pageContent = <ActivePrediction isForm={true} />;
   }
 
   return (
