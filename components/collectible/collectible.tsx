@@ -31,19 +31,6 @@ export default function Collctible(props) {
 
   const onRedeemHandler = () => {
     setDialogHidden(false);
-    // overlay.open(() => (
-    //   <Component
-    //     slug="redeemable-dialog"
-    //     props={{
-    //       primaryText: collectible.name,
-    //       redeemableCollectible: { source: collectible },
-    //       onViewCollection: onViewCollection,
-    //       enqueueSnackBar,
-    //       pushPage,
-    //       popPage,
-    //     }}
-    //   />
-    // ));
   };
 
   return (
@@ -54,6 +41,7 @@ export default function Collctible(props) {
             primaryText={collectible.name}
             redeemableCollectible={{ source: collectible }}
             onViewCollection={onViewCollection}
+            onExit={() => setDialogHidden(true)}
           />
         </Dialog>
         <div

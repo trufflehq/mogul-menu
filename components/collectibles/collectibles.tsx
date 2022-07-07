@@ -13,11 +13,52 @@ import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import Collectible from "../collectible/collectible.tsx";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 
+const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
+  query CollectibleGetAllByMe {
+    # TODO: fix this hardcoded paging and possibly
+    # convert this query to an "ownedCollectibleConnection"
+    # query instead of "collectibleConnection" so that we're
+    # not grabbing collectibles that the user doesn't own.
+    collectibleConnection(first: 100) {
+      totalCount
+      nodes {
+        id
+        slug
+        name
+        type
+        targetType
+        fileRel {
+          fileObj {
+            cdn
+            data
+            prefix
+            contentType
+            type
+            variations
+            ext
+          }
+        }
+        data {
+          category
+          redeemType
+          redeemButtonText
+          redeemData
+          description
+        }
+        ownedCollectible {
+          count
+        }
+      }
+    }
+  }
+`;
+
 const TYPE_ORDER = ["redeemable", "emote"];
 const ORDER_FN = ({ type }) => {
   const order = TYPE_ORDER.indexOf(type);
   return order === -1 ? 9999 : order;
 };
+
 export default function Collectibles(props) {
   const { $emptyState, onViewCollection } = props;
   // const { model } = useContext(context);
@@ -32,41 +73,7 @@ export default function Collectibles(props) {
       error: collectibleFetchError,
     },
   ] = useQuery({
-    query: gql`
-      query CollectibleGetAllByMe {
-        collectibleConnection {
-          totalCount
-          nodes {
-            id
-            slug
-            name
-            type
-            targetType
-            fileRel {
-              fileObj {
-                cdn
-                data
-                prefix
-                contentType
-                type
-                variations
-                ext
-              }
-            }
-            data {
-              category
-              redeemType
-              redeemButtonText
-              redeemData
-              description
-            }
-            ownedCollectible {
-              count
-            }
-          }
-        }
-      }
-    `,
+    query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
   });
 
   const collectibleConnection =

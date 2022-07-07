@@ -64,7 +64,6 @@ export default function ItemDialog({
   }));
   const onExitHandler = () => {
     onExit?.();
-    // overlay.close();
   };
 
   const actions = (

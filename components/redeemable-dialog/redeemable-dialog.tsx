@@ -7,11 +7,19 @@ import {
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import {
+  useMutation,
+  queryObservable,
+  gql,
+} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
 import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
+import { fromNow } from "../../util/general.ts";
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -20,6 +28,32 @@ const MESSAGE = {
 const CIRCLE_ICON_PATH = `M 0, 12
  a 12,12 0 1,1 24,0 
  a 12,12 0 1,1 -24,0`;
+
+const REDEEM_COLLECTIBLE_MUTATION = gql`
+  mutation OwnedCollectibleRedeem($collectibleId: ID!, $additionalData: JSON) {
+    ownedCollectibleRedeem(
+      input: { collectibleId: $collectibleId, additionalData: $additionalData }
+    ) {
+      redeemResponse
+      redeemError
+    }
+  }
+`;
+
+const ACTIVE_POWERUPS_QUERY = gql`
+  query ActivePowerupsQuery {
+    activePowerupConnection {
+      nodes {
+        id
+        creationDate
+        powerup {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
 
 export default function RedeemableDialog(props) {
   const {
@@ -31,6 +65,7 @@ export default function RedeemableDialog(props) {
     primaryText,
     secondaryText,
     highlightBg,
+    onExit,
   } = props;
 
   const redeemablePowerupId =
@@ -38,14 +73,13 @@ export default function RedeemableDialog(props) {
 
   const { activePowerupObs, activePowerupsObs, collectiblesObs } =
     useMemo(() => {
-      const orgUserActivePowerupConnectionObs = Obs.from([
-        { activePowerupConnection: { nodes: [] } },
-      ]);
-      // model.orgUser.getMeActivePowerups();
+      const orgUserActivePowerupConnectionObs = queryObservable(
+        ACTIVE_POWERUPS_QUERY
+      );
 
       const activePowerupsObs = orgUserActivePowerupConnectionObs.pipe(
-        op.map((orgUser) => {
-          return orgUser.activePowerupConnection.nodes ?? [];
+        op.map(({ data }: any) => {
+          return data?.activePowerupConnection?.nodes ?? [];
         })
       );
       return {
@@ -123,6 +157,7 @@ export default function RedeemableDialog(props) {
       primaryText={primaryText}
       secondaryText={secondaryText}
       $children={$children}
+      onExit={onExit}
     />
   );
 }
@@ -134,6 +169,7 @@ export function ActiveRedeemableDialog({
   activePowerup,
   org,
   highlightBg,
+  onExit,
 }) {
   const durationSeconds =
     redeemableCollectible.source?.data?.redeemData?.durationSeconds;
@@ -143,8 +179,8 @@ export function ActiveRedeemableDialog({
     creationDate.getTime() + durationSeconds * 1000
   );
   // TODO: fixme
-  // const timeRemaining = Legacy.DateService.fromNow(expirationDate);
-  const timeRemaining = "4h";
+  const timeRemaining = fromNow(expirationDate);
+  // const timeRemaining = "4h";
 
   const deleteActivePowerup = async () => {
     // if (confirm(lang.get("general.areYouSure"))) {
@@ -174,7 +210,7 @@ export function ActiveRedeemableDialog({
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
           {
             text: "Delete",
@@ -187,7 +223,7 @@ export function ActiveRedeemableDialog({
             onClick: deleteActivePowerup,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );
@@ -198,6 +234,7 @@ export function RedeemedCollectibleDialog({
   headerText,
   redeemableCollectible,
   highlightBg,
+  onExit,
 }) {
   return (
     <div className="z-unlocked-emote-reward-dialog use-css-vars-creator">
@@ -217,10 +254,10 @@ export function RedeemedCollectibleDialog({
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );
@@ -240,6 +277,13 @@ function ColorDropdown(props) {
 
   return (
     <div className="c-color-dropdown">
+      <Dropdown
+        valueSubject={selectedColorStream}
+        options={colors.map((option: any) => ({
+          value: option.name,
+          name: option.name,
+        }))}
+      />
       {/* <Component
         slug="dropdown"
         props={{
@@ -306,6 +350,13 @@ function UsernameGradientDropdown(props) {
 
   return (
     <div className="c-gradient-dropdown">
+      <Dropdown
+        valueSubject={selectedGradientStream}
+        options={gradients.map((option: any) => ({
+          value: option.name,
+          name: option.name,
+        }))}
+      />
       {/* <Component
         slug="dropdown"
         props={{
@@ -374,7 +425,7 @@ export function RedeemDialogSelectable(props) {
     secondaryText,
     highlightBg,
     $title,
-    enqueueSnackBar,
+    onExit,
   } = props;
 
   const { org } = useObservables(() => ({
@@ -383,26 +434,38 @@ export function RedeemDialogSelectable(props) {
   }));
 
   const collectible = redeemableCollectible?.source;
+  const enqueueSnackBar = useSnackBar();
+  const [_redeemResult, executeRedeemMutation] = useMutation(
+    REDEEM_COLLECTIBLE_MUTATION
+  );
 
   const redeemHandler = async () => {
     try {
       const additionalData = getAdditionalData();
 
-      await null;
-      // const { redeemResponse, redeemError } =
-      //   await model.ownedCollectible.redeemByCollectibleId(collectible.id, {
-      //     additionalData,
-      //   });
-      // if (redeemError) {
-      //   errorStream.next(
-      //     `There was an error redeeming ${redeemError?.message}`
-      //   );
-      // } else {
-      //   overlay.close();
-      //   enqueueSnackBar(() => (
-      //     <PowerupActivatedSnackBar collectible={collectible} />
-      //   ));
-      // }
+      const { data: result, error } = await executeRedeemMutation({
+        collectibleId: collectible.id,
+        additionalData,
+      });
+
+      const { redeemResponse } = result.ownedCollectibleRedeem;
+      const { redeemError } = result.ownedCollectibleRedeem;
+
+      if (error) {
+        errorStream.next(
+          "There was an internal error while redeeming; check the logs"
+        );
+        console.error("Error while redeeming:", error);
+      } else if (redeemError) {
+        errorStream.next(
+          `There was an error redeeming ${redeemError?.message}`
+        );
+      } else {
+        onExit?.();
+        enqueueSnackBar(() => (
+          <PowerupActivatedSnackBar collectible={collectible} />
+        ));
+      }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
       // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
@@ -439,7 +502,7 @@ export function RedeemDialogSelectable(props) {
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
           {
             text: "Activate",
@@ -452,7 +515,7 @@ export function RedeemDialogSelectable(props) {
             isDisabledStream: isActiveButtonDisabledStream,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );
@@ -466,7 +529,7 @@ export function ChatHighlightDialog(props) {
     secondaryText,
     highlightBg,
     $title,
-    enqueueSnackBar,
+    onExit,
   } = props;
 
   const { selectedColorStream, colorsStream } = useMemo(() => {
@@ -486,6 +549,7 @@ export function ChatHighlightDialog(props) {
   return (
     <RedeemDialogSelectable
       redeemableCollectible={redeemableCollectible}
+      onExit={onExit}
       $dropdown={
         <ColorDropdown
           selectedColorStream={selectedColorStream}
@@ -508,7 +572,6 @@ export function ChatHighlightDialog(props) {
       secondaryText={secondaryText}
       highlightBg={highlightBg}
       $title={$title}
-      enqueueSnackBar={enqueueSnackBar}
       isActiveButtonDisabledStream={createSubject(
         selectedColorStream.obs.pipe(op.map((selectedColor) => !selectedColor))
       )}
@@ -524,7 +587,7 @@ export function UserNameGradientDialog(props) {
     secondaryText,
     highlightBg,
     $title,
-    enqueueSnackBar,
+    onExit,
   } = props;
 
   const { selectedGradientStream, gradientStream } = useMemo(() => {
@@ -544,6 +607,7 @@ export function UserNameGradientDialog(props) {
   return (
     <RedeemDialogSelectable
       redeemableCollectible={redeemableCollectible}
+      onExit={onExit}
       $dropdown={
         <UsernameGradientDropdown
           selectedGradientStream={selectedGradientStream}
@@ -566,7 +630,6 @@ export function UserNameGradientDialog(props) {
       secondaryText={secondaryText}
       highlightBg={highlightBg}
       $title={$title}
-      enqueueSnackBar={enqueueSnackBar}
       isActiveButtonDisabledStream={createSubject(
         selectedGradientStream.obs.pipe(
           op.map((selectedGradient) => !selectedGradient)
@@ -587,9 +650,10 @@ export function UnlockedRedeemableDialog(props) {
     secondaryText,
     highlightBg,
     $title,
-    enqueueSnackBar,
+    onExit,
   } = props;
 
+  // rm this if we're not invalidating cache using jumper
   const { org } = useObservables(() => ({
     // org: model.org.getMe(),
     org: Obs.from([{}]),
@@ -598,6 +662,10 @@ export function UnlockedRedeemableDialog(props) {
   const isCollectiblePack =
     redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
   const collectible = redeemableCollectible?.source;
+  const enqueueSnackBar = useSnackBar();
+  const [_redeemResult, executeRedeemMutation] = useMutation(
+    REDEEM_COLLECTIBLE_MUTATION
+  );
 
   const redeemHandler = async () => {
     try {
@@ -609,26 +677,35 @@ export function UnlockedRedeemableDialog(props) {
           return;
         }
       }
-      await null;
-      // const { redeemResponse, redeemError } =
-      //   await model.ownedCollectible.redeemByCollectibleId(collectible.id, {
-      //     additionalData,
-      //   });
-      // if (redeemError) {
-      //   alert("There was an error redeeming: " + redeemError?.message);
-      // } else if (redeemResponse.type === "collectiblePack") {
-      //   overlay.close();
-      //   overlay.open(CollectibleItemDialog, {
-      //     ...redeemResponse,
-      //     collectiblesObs,
-      //     onViewCollection,
-      //   });
-      // } else {
-      //   overlay.close();
-      //   enqueueSnackBar(() => (
-      //     <PowerupActivatedSnackBar collectible={collectible} />
-      //   ));
-      // }
+
+      const { data: result, error } = await executeRedeemMutation({
+        collectibleId: collectible.id,
+        additionalData,
+      });
+
+      const { redeemResponse } = result.ownedCollectibleRedeem;
+      const { redeemError } = result.ownedCollectibleRedeem;
+
+      if (error) {
+        alert("There was an internal error while redeeming; check the logs");
+        console.error("Error while redeeming:", error);
+      } else if (redeemError) {
+        alert("There was an error redeeming: " + redeemError?.message);
+      } else if (redeemResponse.type === "collectiblePack") {
+        onExit?.();
+        // TODO: figure out a better solution for dialogs
+        // before adding this back in
+        // overlay.open(CollectibleItemDialog, {
+        //   ...redeemResponse,
+        //   collectiblesObs,
+        //   onViewCollection,
+        // });
+      } else {
+        onExit?.();
+        enqueueSnackBar(() => (
+          <PowerupActivatedSnackBar collectible={collectible} />
+        ));
+      }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
       // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
@@ -661,7 +738,7 @@ export function UnlockedRedeemableDialog(props) {
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
           {
             text: isCollectiblePack ? "Open" : "Activate",
@@ -673,7 +750,7 @@ export function UnlockedRedeemableDialog(props) {
             onClick: redeemHandler,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );
@@ -683,6 +760,7 @@ function CollectibleItemDialog({
   collectibleIds,
   collectiblesObs,
   onViewCollection,
+  onExit,
 }) {
   const { packCollectibles } = useObservables(() => ({
     packCollectibles: collectiblesObs.pipe(
@@ -712,7 +790,7 @@ function CollectibleItemDialog({
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
           {
             text: "View collection",
@@ -721,7 +799,7 @@ function CollectibleItemDialog({
             onClick: onViewCollection,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );
@@ -763,10 +841,8 @@ export function RecipeDialog(props) {
     secondaryText,
     highlightBg,
     $title,
-    pushPage,
-    popPage,
     onViewCollection,
-    enqueueSnackBar,
+    onExit,
   } = props;
 
   const { errorStream } = useMemo(() => {
@@ -817,7 +893,7 @@ export function RecipeDialog(props) {
             borderRadius: "4px",
             bg: "var(--truffle-color-bg-tertiary)",
             textColor: "var(--truffle-color-text-bg-tertiary)",
-            onClick: () => null,
+            onClick: onExit,
           },
           {
             text: "Craft an emote",
@@ -829,7 +905,7 @@ export function RecipeDialog(props) {
             onClick: openCraftTable,
           },
         ]}
-        onExit={() => null}
+        onExit={onExit}
       />
     </div>
   );

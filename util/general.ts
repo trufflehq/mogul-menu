@@ -1,3 +1,12 @@
+export const ONE_MINUTE_S = 60;
+export const ONE_HOUR_S = 3600;
+export const ONE_DAY_S = 3600 * 24;
+export const ONE_WEEK_S = 3600 * 24 * 7;
+
+export const ONE_SECOND_MS = 1000;
+export const ONE_MINUTE_MS = 60 * 1000;
+export const ONE_HOUR_MS = 3600 * 1000;
+
 // this function is only safe for generating
 // small numbers of ids; don't trust this to
 // be globally unique
@@ -9,6 +18,28 @@ export function pad(num: number, size = 2) {
   return _num;
 }
 
-export const ONE_SECOND_MS = 1000;
-export const ONE_MINUTE_MS = 60 * 1000;
-export const ONE_HOUR_MS = 3600 * 1000;
+export function fromNowSeconds(seconds: number, suffix = "") {
+  if (isNaN(seconds)) {
+    return "...";
+  } else if (seconds < 30) {
+    return "<30s";
+  } else if (seconds < ONE_MINUTE_S) {
+    return Math.round(seconds) + "s" + suffix;
+  } else if (seconds < ONE_HOUR_S) {
+    return Math.round(seconds / ONE_MINUTE_S) + "min" + suffix;
+  } else if (seconds <= ONE_DAY_S) {
+    return Math.round(seconds / ONE_HOUR_S) + "h" + suffix;
+  } else if (seconds <= ONE_WEEK_S) {
+    return Math.round(seconds / ONE_DAY_S) + "d" + suffix;
+  } else {
+    return Math.round(seconds / ONE_WEEK_S) + "w" + suffix;
+  }
+}
+
+export function fromNow(date: Date, suffix = "") {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+  const seconds = Math.abs((Date.now() - date.getTime()) / 1000);
+  return fromNowSeconds(seconds, suffix);
+}
