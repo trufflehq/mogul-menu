@@ -55,6 +55,16 @@ const ACTIVE_POWERUPS_QUERY = gql`
   }
 `;
 
+const DELETE_ACTIVE_POWERUP_MUTATION = gql`
+  mutation DeleteActivePowerupById($powerupId: ID!) {
+    activePowerupDeleteById(input: { id: $powerupId }) {
+      activePowerup {
+        id
+      }
+    }
+  }
+`;
+
 export default function RedeemableDialog(props) {
   const {
     redeemableCollectible,
@@ -171,6 +181,10 @@ export function ActiveRedeemableDialog({
   highlightBg,
   onExit,
 }) {
+  const [_deleteResult, executeDeleteActivePowerupMutation] = useMutation(
+    DELETE_ACTIVE_POWERUP_MUTATION
+  );
+
   const durationSeconds =
     redeemableCollectible.source?.data?.redeemData?.durationSeconds;
 
@@ -180,15 +194,12 @@ export function ActiveRedeemableDialog({
   );
   // TODO: fixme
   const timeRemaining = fromNow(expirationDate);
-  // const timeRemaining = "4h";
 
   const deleteActivePowerup = async () => {
     // if (confirm(lang.get("general.areYouSure"))) {
     if (confirm("Are you sure?")) {
-      // TODO: kill and replace
-      await null;
-      // await model.activePowerup.deleteById(activePowerup.id);
-      // overlay.close();
+      await executeDeleteActivePowerupMutation({ powerupId: activePowerup.id });
+      onExit?.();
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
       // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
     }
