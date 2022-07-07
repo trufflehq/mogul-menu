@@ -1,8 +1,11 @@
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import React, { useState } from "https://npm.tfl.dev/react";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import React, { useContext } from "https://npm.tfl.dev/react";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import Dialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
+import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
 
 export default function Collctible(props) {
   const {
@@ -24,7 +27,10 @@ export default function Collctible(props) {
     collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
+  const [isDialogHidden, setDialogHidden] = useState(true);
+
   const onRedeemHandler = () => {
+    setDialogHidden(false);
     // overlay.open(() => (
     //   <Component
     //     slug="redeemable-dialog"
@@ -43,6 +49,13 @@ export default function Collctible(props) {
   return (
     <ScopedStylesheet url={new URL("collectible.css", import.meta.url)}>
       <div className={`c-collectible ${classKebab({ isOwned })}`}>
+        <Dialog hidden={isDialogHidden}>
+          <RedeemableDialog
+            primaryText={collectible.name}
+            redeemableCollectible={{ source: collectible }}
+            onViewCollection={onViewCollection}
+          />
+        </Dialog>
         <div
           className="image"
           style={{
