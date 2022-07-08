@@ -1,4 +1,4 @@
-import React, { useMemo } from "https://npm.tfl.dev/react";
+import React, { useEffect, useMemo, useState } from "https://npm.tfl.dev/react";
 import {
   createSubject,
   Obs,
@@ -13,13 +13,13 @@ import {
   gql,
 } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
+import { fromNow } from "../../util/general.ts";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
 import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
-import { fromNow } from "../../util/general.ts";
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -65,6 +65,46 @@ const DELETE_ACTIVE_POWERUP_MUTATION = gql`
   }
 `;
 
+const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
+  query CollectibleGetAllByMe {
+    # TODO: fix this hardcoded paging and possibly
+    # convert this query to an "ownedCollectibleConnection"
+    # query instead of "collectibleConnection" so that we're
+    # not grabbing collectibles that the user doesn't own.
+    collectibleConnection(first: 100) {
+      totalCount
+      nodes {
+        id
+        slug
+        name
+        type
+        targetType
+        fileRel {
+          fileObj {
+            cdn
+            data
+            prefix
+            contentType
+            type
+            variations
+            ext
+          }
+        }
+        data {
+          category
+          redeemType
+          redeemButtonText
+          redeemData
+          description
+        }
+        ownedCollectible {
+          count
+        }
+      }
+    }
+  }
+`;
+
 export default function RedeemableDialog(props) {
   const {
     redeemableCollectible,
@@ -95,9 +135,9 @@ export default function RedeemableDialog(props) {
       return {
         activePowerupsObs,
         // model.collectible.getAllByMe()
-        collectiblesObs: Obs.from([{ nodes: [] }]).pipe(
-          op.map((collectibleConnection) => {
-            return collectibleConnection?.nodes;
+        collectiblesObs: queryObservable(COLLECTIBLE_GET_ALL_BY_ME_QUERY).pipe(
+          op.map(({ data }: any) => {
+            return data?.collectibleConnection?.nodes;
           })
         ),
         activePowerupObs: activePowerupsObs.pipe(
@@ -192,7 +232,6 @@ export function ActiveRedeemableDialog({
   const expirationDate = new Date(
     creationDate.getTime() + durationSeconds * 1000
   );
-  // TODO: fixme
   const timeRemaining = fromNow(expirationDate);
 
   const deleteActivePowerup = async () => {
@@ -665,9 +704,10 @@ export function UnlockedRedeemableDialog(props) {
   } = props;
 
   // rm this if we're not invalidating cache using jumper
-  const { org } = useObservables(() => ({
+  const { org, collectibles } = useObservables(() => ({
     // org: model.org.getMe(),
     org: Obs.from([{}]),
+    collectibles: collectiblesObs,
   }));
 
   const isCollectiblePack =
@@ -703,14 +743,15 @@ export function UnlockedRedeemableDialog(props) {
       } else if (redeemError) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else if (redeemResponse.type === "collectiblePack") {
+        const collectibleIds = redeemResponse?.collectibleIds;
+        const packCollectible = _.find(collectibles, (collectible) =>
+          collectibleIds.includes(collectible?.id)
+        );
+        console.log({ collectibleIds, packCollectible, collectibles });
+        alert(
+          `You opened a ${packCollectible?.name} emote. Try using the emote in chat!`
+        );
         onExit?.();
-        // TODO: figure out a better solution for dialogs
-        // before adding this back in
-        // overlay.open(CollectibleItemDialog, {
-        //   ...redeemResponse,
-        //   collectiblesObs,
-        //   onViewCollection,
-        // });
       } else {
         onExit?.();
         enqueueSnackBar(() => (
