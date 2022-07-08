@@ -1,4 +1,9 @@
-import React, { useContext, useMemo, useRef } from "https://npm.tfl.dev/react";
+import React, {
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "https://npm.tfl.dev/react";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import {
   abbreviateNumber,
@@ -10,9 +15,14 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+import TruffleDialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
-import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import {
+  useQuery,
+  gql,
+  useMutation,
+} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
@@ -40,6 +50,21 @@ const CHANNEL_POINTS_QUERY = gql`
     channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
       orgUserCounter {
         count
+      }
+    }
+  }
+`;
+
+const CHANNEL_POINTS_SHOP_PURCHASE_MUTATION = gql`
+  mutation ChannelPointsShopPurchase($productId: String!) {
+    economyTransactionCreate(
+      input: {
+        economyTriggerSlug: "channel-points-store-purchase"
+        amountSourceId: $productId
+      }
+    ) {
+      economyTransaction {
+        id
       }
     }
   }
@@ -94,29 +119,6 @@ export default function ChannelPointsShop() {
   // } = props;
   // const { model } = useContext(context);
 
-  // const { storeCollectibleItemsObs } = useMemo(() => {
-  //   return {
-  //     storeCollectibleItemsObs: model.product
-  //       .getAll({
-  //         sourceType: "collectible",
-  //       })
-  //       .pipe(
-  //         Stream.op.map(({ nodes }) => {
-  //           const sorted = ._.sortBy(nodes, (node) => {
-  //             return node?.productVariants?.nodes?.[0]?.amountValue;
-  //           });
-
-  //           return sorted;
-  //         })
-  //       ),
-  //   };
-  // }, []);
-
-  // const { channelPoints, storeCollectibleItems } = useObservables(() => ({
-  //   channelPoints: channelPointsOrgUserCounterObs,
-  //   storeCollectibleItems: storeCollectibleItemsObs,
-  // }));
-
   // shop items
   const [{ data: storeItemsData }] = useQuery({
     query: CHANNEL_POINTS_SHOP_QUERY,
@@ -133,21 +135,6 @@ export default function ChannelPointsShop() {
     query: CHANNEL_POINTS_QUERY,
   });
   const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
-  // const storeCollectibleItems: any[] = [
-  //   {
-  //     source: {
-  //       name: "Cool thing",
-  //       fileRel: { fileObj: testImg },
-  //     },
-  //     productVariants: {
-  //       nodes: [
-  //         {
-  //           amountValue: 1000,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // ];
 
   const onViewCollection = () => null;
   const onHowToEarnClick = () => null;
@@ -238,8 +225,11 @@ function CollectibleItem(props) {
   const channelPointsSrc =
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
+  const [isConfirmDialogHidden, setConfirmDialogHiddenState] = useState(true);
+
   const onPurchaseRequestHandler = () => {
     // open confirmation dialog
+    setConfirmDialogHiddenState(false);
     // overlay.open(ConfirmPurchaseDialog, {
     //   collectibleItem,
     //   channelPointsImageObj,
@@ -257,6 +247,14 @@ function CollectibleItem(props) {
       ref={$$itemRef}
     >
       <div className="overlay" />
+      <TruffleDialog hidden={isConfirmDialogHidden}>
+        <ConfirmPurchaseDialog
+          collectibleItem={collectibleItem}
+          channelPointsImageObj={channelPointsImageObj}
+          onViewCollection={() => setConfirmDialogHiddenState(true)}
+          buttonBg="var(--truffle-gradient)"
+        />
+      </TruffleDialog>
       <div className="card">
         <div className="image">
           <ImageByAspectRatio
@@ -283,126 +281,95 @@ function CollectibleItem(props) {
   );
 }
 
-// function ConfirmPurchaseDialog({
-//   collectibleItem,
-//   channelPointsImageObj,
-//   onViewCollection,
-//   buttonBg,
-//   enqueueSnackBar,
-// }) {
-//   const { model, cssVars, overlay, browserComms } = useContext(context);
+function ConfirmPurchaseDialog({
+  collectibleItem,
+  channelPointsImageObj,
+  onViewCollection,
+  buttonBg,
+  enqueueSnackBar,
+}) {
+  // const { org } = useStream(() => ({
+  //   org: model.org.getMe(),
+  // }));
 
-//   const { org } = useStream(() => ({
-//     org: model.org.getMe(),
-//   }));
+  const file = collectibleItem?.source?.fileRel;
+  const amount = collectibleItem.productVariants.nodes[0].amountValue;
 
-//   const file = collectibleItem?.source?.fileRel;
-//   const amount = collectibleItem.productVariants.nodes[0].amountValue;
+  const [_purchaseResult, executePurchaseMutation] = useMutation(
+    CHANNEL_POINTS_SHOP_PURCHASE_MUTATION
+  );
 
-//   // const channelPointsSrc =
-//   //   model.image.getSrcByImageObj(channelPointsImageObj) ??
-//   //   "https://cdn.bio/assets/images/features/chrome_extension/channel-points.svg";
-//   const channelPointsSrc =
-//     "https://cdn.bio/assets/images/features/chrome_extension/channel-points.svg";
+  // const channelPointsSrc =
+  //   model.image.getSrcByImageObj(channelPointsImageObj) ??
+  //   "https://cdn.bio/assets/images/features/chrome_extension/channel-points.svg";
+  const channelPointsSrc =
+    "https://cdn.bio/assets/images/features/chrome_extension/channel-points.svg";
 
-//   const onPurchaseHandler = async () => {
-//     // await model.economyTransaction.create({
-//     //   economyTriggerSlug: "channel-points-store-purchase",
-//     //   amountSourceId: collectibleItem.id,
-//     // });
+  const onPurchaseHandler = async () => {
+    await executePurchaseMutation({ productId: collectibleItem.id });
+    alert(`You purchased a ${collectibleItem.source.name}!`);
+    onViewCollection?.();
+    // await model.economyTransaction.create({
+    //   economyTriggerSlug: "channel-points-store-purchase",
+    //   amountSourceId: collectibleItem.id,
+    // });
+    // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
+    // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
+    // // close confirmation dialog
+    // overlay.close();
+    // // open purchase notification dialog
+    // overlay.open(NotifyPurchaseDialog, {
+    //   onViewCollection,
+    //   collectibleItem,
+    //   buttonBg,
+    //   enqueueSnackBar,
+    // });
+  };
 
-//     // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
-//     // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
-
-//     // // close confirmation dialog
-//     // overlay.close();
-//     // // open purchase notification dialog
-//     // overlay.open(NotifyPurchaseDialog, {
-//     //   onViewCollection,
-//     //   collectibleItem,
-//     //   buttonBg,
-//     //   enqueueSnackBar,
-//     // });
-//   };
-
-//   return (
-//     <div className="confirm-purchase-dialog">
-//       <Component
-//         slug="dialog"
-//         props={{
-//           $content: (
-//             <div className="body">
-//               <div className="image">
-//                 <Component
-//                   slug="image-by-aspect-ratio"
-//                   props={{
-//                     imageUrl: model.image.getSrcByImageObj(file?.fileObj),
-//                     aspectRatio: file?.fileObj?.data?.aspectRatio,
-//                     heightPx: 56,
-//                     widthPx: 56,
-//                   }}
-//                 />
-//               </div>
-//               <div className="info">
-//                 <div className="name">
-//                   {collectibleItem?.source?.name ?? ""}
-//                 </div>
-//                 <div className="cost">
-//                   <div className="value">
-//                     {Legacy.FormatService.number(amount)}
-//                   </div>
-//                   <Component
-//                     slug="image-by-aspect-ratio"
-//                     props={{
-//                       imageUrl: channelPointsSrc,
-//                       aspectRatio: 1,
-//                       widthPx: 15,
-//                       height: 15,
-//                     }}
-//                   />
-//                 </div>
-//                 {(collectibleItem?.source?.data?.description && (
-//                   <div className="description">
-//                     {collectibleItem?.source?.data?.description}
-//                   </div>
-//                 )) || (
-//                   <div className="description">
-//                     Add {collectibleItem?.source?.name ?? ""} to your collection
-//                   </div>
-//                 )}
-//               </div>
-//             </div>
-//           ),
-//           $actions: (
-//             <div className="action">
-//               <Component
-//                 slug="button"
-//                 props={{
-//                   text: `Buy ${collectibleItem?.source?.name ?? ""}`,
-//                   bg: buttonBg,
-//                   isFullWidth: true,
-//                   onclick: onPurchaseHandler,
-//                 }}
-//               />
-//             </div>
-//           ),
-//           $topRightButton: (
-//             <div className="close-button">
-//               <Component
-//                 slug="icon"
-//                 props={{
-//                   icon: "close",
-//                   color: cssVars.$bgBaseText,
-//                   onclick: () => overlay.close(),
-//                 }}
-//               />
-//             </div>
-//           ),
-//         }}
-//       />
-//     </div>
-//   );
-// }
+  return (
+    <div className="confirm-purchase-dialog">
+      <div className="body">
+        <div className="image">
+          <ImageByAspectRatio
+            imageUrl={getModel().image.getSrcByImageObj(file?.fileObj)}
+            aspectRatio={file?.fileObj?.data?.aspectRatio}
+            heightPx={56}
+            widthPx={56}
+          />
+        </div>
+        <div className="info">
+          <div className="name">{collectibleItem?.source?.name ?? ""}</div>
+          <div className="cost">
+            <div className="value">{formatNumber(amount)}</div>
+            <ImageByAspectRatio
+              imageUrl={channelPointsSrc}
+              aspectRatio={1}
+              widthPx={15}
+              height={15}
+            />
+          </div>
+          {(collectibleItem?.source?.data?.description && (
+            <div className="description">
+              {collectibleItem?.source?.data?.description}
+            </div>
+          )) || (
+            <div className="description">
+              Add {collectibleItem?.source?.name ?? ""} to your collection
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="action">
+        <Button
+          text={`Buy ${collectibleItem?.source?.name ?? ""}`}
+          bg={buttonBg}
+          isFullWidth={true}
+          onClick={onPurchaseHandler}
+        />
+      </div>
+    </div>
+  );
+}
 
 // function NotifyPurchaseDialog({
 //   onViewCollection,
