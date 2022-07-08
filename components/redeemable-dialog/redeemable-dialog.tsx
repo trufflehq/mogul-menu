@@ -747,7 +747,6 @@ export function UnlockedRedeemableDialog(props) {
         const packCollectible = _.find(collectibles, (collectible) =>
           collectibleIds.includes(collectible?.id)
         );
-        console.log({ collectibleIds, packCollectible, collectibles });
         alert(
           `You opened a ${packCollectible?.name} emote. Try using the emote in chat!`
         );
