@@ -12,9 +12,38 @@ import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
+
+const CHANNEL_POINTS_SHOP_QUERY = gql`
+  query ChannelPointsShopQuery {
+    productConnection(input: { sourceType: "collectible" }) {
+      nodes {
+        id
+        source
+        productVariants {
+          nodes {
+            amountType
+            amountId
+            amountValue
+          }
+        }
+      }
+    }
+  }
+`;
+
+const CHANNEL_POINTS_QUERY = gql`
+  query ChannelPointsQuery {
+    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
+      orgUserCounter {
+        count
+      }
+    }
+  }
+`;
 
 const testImg = {
   cdn: "cdn.bio",
@@ -53,6 +82,8 @@ const MESSAGE = {
 };
 
 export default function ChannelPointsShop() {
+  const channelPointsImageObj = undefined;
+
   // const {
   //   channelPointsOrgUserCounterObs,
   //   channelPointsImageObj,
@@ -86,23 +117,37 @@ export default function ChannelPointsShop() {
   //   storeCollectibleItems: storeCollectibleItemsObs,
   // }));
 
-  const channelPointsImageObj = undefined;
-  const channelPoints = { count: 1000 };
-  const storeCollectibleItems: any[] = [
-    {
-      source: {
-        name: "Cool thing",
-        fileRel: { fileObj: testImg },
-      },
-      productVariants: {
-        nodes: [
-          {
-            amountValue: 1000,
-          },
-        ],
-      },
-    },
-  ];
+  // shop items
+  const [{ data: storeItemsData }] = useQuery({
+    query: CHANNEL_POINTS_SHOP_QUERY,
+  });
+  const storeCollectibleItems = _.sortBy(
+    storeItemsData?.productConnection?.nodes ?? [],
+    (node) => {
+      return node?.productVariants?.nodes?.[0]?.amountValue;
+    }
+  );
+
+  // channel points
+  const [{ data: channelPointsData }] = useQuery({
+    query: CHANNEL_POINTS_QUERY,
+  });
+  const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
+  // const storeCollectibleItems: any[] = [
+  //   {
+  //     source: {
+  //       name: "Cool thing",
+  //       fileRel: { fileObj: testImg },
+  //     },
+  //     productVariants: {
+  //       nodes: [
+  //         {
+  //           amountValue: 1000,
+  //         },
+  //       ],
+  //     },
+  //   },
+  // ];
 
   const onViewCollection = () => null;
   const onHowToEarnClick = () => null;
