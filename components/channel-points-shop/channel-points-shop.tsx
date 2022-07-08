@@ -306,7 +306,10 @@ function ConfirmPurchaseDialog({
     "https://cdn.bio/assets/images/features/chrome_extension/channel-points.svg";
 
   const onPurchaseHandler = async () => {
-    await executePurchaseMutation({ productId: collectibleItem.id });
+    await executePurchaseMutation(
+      { productId: collectibleItem.id },
+      { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
+    );
     alert(`You purchased a ${collectibleItem.source.name}!`);
     onViewCollection?.();
     // await model.economyTransaction.create({

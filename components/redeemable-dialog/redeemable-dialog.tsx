@@ -9,8 +9,8 @@ import _ from "https://npm.tfl.dev/lodash?no-check";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import {
   useMutation,
-  queryObservable,
   gql,
+  useQuery,
 } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import { fromNow } from "../../util/general.ts";
@@ -121,44 +121,24 @@ export default function RedeemableDialog(props) {
   const redeemablePowerupId =
     redeemableCollectible?.source?.data?.redeemData?.powerupId;
 
-  const { activePowerupObs, activePowerupsObs, collectiblesObs } =
-    useMemo(() => {
-      const orgUserActivePowerupConnectionObs = queryObservable(
-        ACTIVE_POWERUPS_QUERY
-      );
+  // active powerups
+  const [{ data: activePowerupsData }] = useQuery({
+    query: ACTIVE_POWERUPS_QUERY,
+    // TODO: figure out why adding additionalTypes causes an infinite loop
+    // context: { additionalTypenames: ["ActivePowerup"] },
+  });
+  const activePowerups = activePowerupsData?.activePowerupConnection?.nodes;
+  const activePowerup = _.find(activePowerups ?? [], {
+    powerup: { id: redeemablePowerupId },
+  });
 
-      const activePowerupsObs = orgUserActivePowerupConnectionObs.pipe(
-        op.map(({ data }: any) => {
-          return data?.activePowerupConnection?.nodes ?? [];
-        })
-      );
-      return {
-        activePowerupsObs,
-        // model.collectible.getAllByMe()
-        collectiblesObs: queryObservable(COLLECTIBLE_GET_ALL_BY_ME_QUERY).pipe(
-          op.map(({ data }: any) => {
-            return data?.collectibleConnection?.nodes;
-          })
-        ),
-        activePowerupObs: activePowerupsObs.pipe(
-          op.map((activePowerups) =>
-            _.find(activePowerups, {
-              powerup: { id: redeemablePowerupId },
-            })
-          )
-        ),
-      };
-    }, []);
-
-  const { collectibles, activePowerup, activePowerups, org } = useObservables(
-    () => ({
-      collectibles: collectiblesObs,
-      activePowerups: activePowerupsObs,
-      activePowerup: activePowerupObs,
-      // org: model.org.getMe(),
-      org: Obs.from([{}]),
-    })
-  );
+  // collectibles
+  const [{ data: collectiblesData }] = useQuery({
+    query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
+    // TODO: figure out why adding additionalTypes causes an infinite loop
+    // context: { additionalTypenames: "OwnedCollectible" },
+  });
+  const collectibles = collectiblesData?.collectibleConnection?.nodes;
 
   const isCollectiblePack =
     redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
@@ -200,9 +180,8 @@ export default function RedeemableDialog(props) {
       headerText={headerText}
       highlightBg={highlightBg}
       redeemableCollectible={redeemableCollectible}
-      collectiblesObs={collectiblesObs}
+      collectibles={collectibles}
       activePowerup={activePowerup}
-      org={org}
       onViewCollection={onViewCollection}
       primaryText={primaryText}
       secondaryText={secondaryText}
@@ -237,7 +216,10 @@ export function ActiveRedeemableDialog({
   const deleteActivePowerup = async () => {
     // if (confirm(lang.get("general.areYouSure"))) {
     if (confirm("Are you sure?")) {
-      await executeDeleteActivePowerupMutation({ powerupId: activePowerup.id });
+      await executeDeleteActivePowerupMutation(
+        { powerupId: activePowerup.id },
+        { additionalTypenames: ["ActivePowerup"] }
+      );
       onExit?.();
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
       // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
@@ -493,10 +475,13 @@ export function RedeemDialogSelectable(props) {
     try {
       const additionalData = getAdditionalData();
 
-      const { data: result, error } = await executeRedeemMutation({
-        collectibleId: collectible.id,
-        additionalData,
-      });
+      const { data: result, error } = await executeRedeemMutation(
+        {
+          collectibleId: collectible.id,
+          additionalData,
+        },
+        { additionalTypenames: ["OwnedCollectible", "ActivePowerup"] }
+      );
 
       const { redeemResponse } = result.ownedCollectibleRedeem;
       const { redeemError } = result.ownedCollectibleRedeem;
@@ -693,7 +678,7 @@ export function UnlockedRedeemableDialog(props) {
   const {
     redeemableCollectible,
     $children,
-    collectiblesObs,
+    collectibles,
     onViewCollection,
     headerText,
     primaryText,
@@ -704,10 +689,9 @@ export function UnlockedRedeemableDialog(props) {
   } = props;
 
   // rm this if we're not invalidating cache using jumper
-  const { org, collectibles } = useObservables(() => ({
+  const { org } = useObservables(() => ({
     // org: model.org.getMe(),
     org: Obs.from([{}]),
-    collectibles: collectiblesObs,
   }));
 
   const isCollectiblePack =
@@ -729,10 +713,15 @@ export function UnlockedRedeemableDialog(props) {
         }
       }
 
-      const { data: result, error } = await executeRedeemMutation({
-        collectibleId: collectible.id,
-        additionalData,
-      });
+      const { data: result, error } = await executeRedeemMutation(
+        {
+          collectibleId: collectible.id,
+          additionalData,
+        },
+        {
+          additionalTypenames: ["OwnedCollectible", "ActivePowerup"],
+        }
+      );
 
       const { redeemResponse } = result.ownedCollectibleRedeem;
       const { redeemError } = result.ownedCollectibleRedeem;
