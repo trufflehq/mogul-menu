@@ -53,6 +53,20 @@ const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
   }
 `;
 
+const ACTIVE_POWERUPS_QUERY = gql`
+  query ActivePowerupsQuery {
+    activePowerupConnection {
+      nodes {
+        id
+        powerup {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
 const TYPE_ORDER = ["redeemable", "emote"];
 const ORDER_FN = ({ type }) => {
   const order = TYPE_ORDER.indexOf(type);
@@ -61,11 +75,11 @@ const ORDER_FN = ({ type }) => {
 
 export default function Collectibles(props) {
   const { $emptyState, onViewCollection } = props;
-  // const { model } = useContext(context);
 
   const enqueueSnackBar = useSnackBar();
   const { pushPage, popPage } = usePageStack();
 
+  // collectibles
   const [
     {
       data: collectibleConnectionData,
@@ -90,111 +104,18 @@ export default function Collectibles(props) {
     }),
     ORDER_FN
   );
+  const isEmpty = _.isEmpty(collectibleConnection?.nodes);
 
-  // const {
-  //   isEmptyStream,
-  //   orgUserActivePowerupConnectionObs,
-  //   activePowerupsObs,
-  //   groupedCollectiblesObs,
-  //   ownedCollectiblesObs,
-  // } = useMemo(() => {
-  //   const isEmptyStream = Stream.createStream(false);
-  //   const collectibleConnectionStream = Stream.createStream();
-  //   const collectibleConnectionObs = collectibleConnectionStream.obs.pipe(
-  //     Stream.op.switchMap(() => model.collectible.getAllByMe())
-  //   );
+  // active powerups
+  const [{ data: activePowerupData }] = useQuery({
+    query: ACTIVE_POWERUPS_QUERY,
+  });
 
-  //   const groupedCollectiblesObs = collectibleConnectionObs.pipe(
-  //     Stream.op.map((collectibleConnection) => {
-  //       const sortedCollectibles = Legacy._.orderBy(
-  //         collectibleConnection.nodes,
-  //         (collectible) => collectible.ownedCollectible?.count
-  //       );
-  //       const groups = Legacy._.groupBy(sortedCollectibles, "type");
-  //       const groupedCollectibles = Legacy._.orderBy(
-  //         Legacy._.map(groups, (collectibles, type) => {
-  //           return { type, collectibles };
-  //         }),
-  //         ORDER_FN
-  //       );
+  const activePowerups =
+    activePowerupData?.activePowerupConnection?.nodes ?? [];
 
-  //       return groupedCollectibles;
-  //     })
-  //   );
+  if (isEmpty) return "Looks like you don't have any collectibles!";
 
-  //   const ownedCollectiblesObs = collectibleConnectionObs.pipe(
-  //     Stream.op.map((collectibleConnection) => {
-  //       return collectibleConnection?.nodes
-  //         ? Legacy._.filter(
-  //             collectibleConnection.nodes,
-  //             (collectible) => collectible.ownedCollectible?.count > 0
-  //           )
-  //         : [];
-  //     }),
-  //     Stream.op.tap((ownedCollectibles) => {
-  //       if (Legacy._.isEmpty(ownedCollectibles)) {
-  //         isEmptyStream.next(true);
-  //       }
-  //     })
-  //   );
-  //   const orgUserActivePowerupConnectionObs =
-  //     model.orgUser.getMeActivePowerups();
-
-  //   const activePowerupsObs = orgUserActivePowerupConnectionObs.pipe(
-  //     Stream.op.map((orgUser) => {
-  //       return orgUser.activePowerupConnection.nodes ?? [];
-  //     })
-  //   );
-
-  //   return {
-  //     orgUserActivePowerupConnectionObs,
-  //     activePowerupsObs,
-  //     isEmptyStream,
-  //     groupedCollectiblesObs,
-  //     ownedCollectiblesObs,
-  //   };
-  // }, []);
-
-  const {
-    isEmpty,
-    orgUser,
-    // groupedCollectibles,
-    activePowerups,
-    ownedCollectibles,
-  } = useObservables(() => ({
-    // isEmpty: isEmptyStream.obs,
-    // orgUser: orgUserActivePowerupConnectionObs,
-    // groupedCollectibles: groupedCollectiblesObs,
-    // activePowerups: activePowerupsObs,
-    // ownedCollectibles: ownedCollectiblesObs,
-  }));
-
-  // const groupedCollectibles = [
-  //   {
-  //     type: "Redeemable",
-  //     collectibles: [
-  //       {
-  //         name: "Collectible",
-  //         type: "redeemable",
-  //         targetType: "user",
-  //         // ownedCollectible: { count: 3 },
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     type: "Emote",
-  //     collectibles: [
-  //       {
-  //         name: "Collectible",
-  //         type: "redeemable",
-  //         targetType: "user",
-  //         // ownedCollectible: { count: 3 },
-  //       },
-  //     ],
-  //   },
-  // ];
-
-  if (isEmpty) return <$emptyState groupedCollectibles={groupedCollectibles} />;
   return (
     <ScopedStylesheet url={new URL("collectibles.css", import.meta.url)}>
       <div className="c-collectibles">
