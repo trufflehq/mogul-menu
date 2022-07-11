@@ -1,5 +1,8 @@
 :host {
   grid-column: span 2;
+}
+
+:host .live-info {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -14,7 +17,7 @@
   margin-bottom: 24px;
 }
 
-:host > .header {
+:host .live-info > .header {
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
@@ -27,13 +30,13 @@
   border-top-right-radius: 8px;
 }
 
-:host > .info {
+:host .live-info > .info {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 16px;
 }
 
-:host > .info > .message {
+:host .live-info > .info > .message {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 8px 0;
@@ -42,7 +45,7 @@
   line-height: 21px;
 }
 
-:host > .info > .grid {
+:host .live-info > .info > .grid {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr 1fr;
@@ -52,7 +55,7 @@
   padding-bottom: 4px;
 }
 
-:host > .info > .grid > .timer {
+:host .live-info > .info > .grid > .timer {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -65,15 +68,15 @@
           align-items: center;
 }
 
-:host > .info > .grid > .timer > .time {
+:host .live-info > .info > .grid > .timer > .time {
   min-height: 36px;
-  color: var(--truffle-color-primary);
+  color: var(--tfl-color-primary-fill);
   font-size: 24px;
   line-height: 36px;
   font-weight: 600;
 }
 
-:host > .info > .grid > .timer > .title {
+:host .live-info > .info > .grid > .timer > .title {
   font-size: 14px;
   line-height: 21px;
   font-weight: 400;
