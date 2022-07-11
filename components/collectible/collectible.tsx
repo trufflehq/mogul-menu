@@ -6,17 +6,10 @@ import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scope
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 import Dialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
 import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
+import { useDialog } from "../dialog-container/dialog-service.ts";
 
 export default function Collctible(props) {
-  const {
-    collectible,
-    activePowerup,
-    sizePx = 60,
-    onViewCollection,
-    enqueueSnackBar,
-    pushPage,
-    popPage,
-  } = props;
+  const { collectible, activePowerup, sizePx = 60, onViewCollection } = props;
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
@@ -27,23 +20,22 @@ export default function Collctible(props) {
     collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
-  const [isDialogHidden, setDialogHidden] = useState(true);
+  const { pushDialog, popDialog } = useDialog();
 
   const onRedeemHandler = () => {
-    setDialogHidden(false);
+    pushDialog(
+      <RedeemableDialog
+        primaryText={collectible.name}
+        redeemableCollectible={{ source: collectible }}
+        onViewCollection={onViewCollection}
+        onExit={popDialog}
+      />
+    );
   };
 
   return (
     <ScopedStylesheet url={new URL("collectible.css", import.meta.url)}>
       <div className={`c-collectible ${classKebab({ isOwned })}`}>
-        <Dialog hidden={isDialogHidden}>
-          <RedeemableDialog
-            primaryText={collectible.name}
-            redeemableCollectible={{ source: collectible }}
-            onViewCollection={onViewCollection}
-            onExit={() => setDialogHidden(true)}
-          />
-        </Dialog>
         <div
           className="image"
           style={{

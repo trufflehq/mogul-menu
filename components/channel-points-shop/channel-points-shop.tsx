@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "https://npm.tfl.dev/react";
+import React, { useRef, useState } from "https://npm.tfl.dev/react";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import {
   abbreviateNumber,
@@ -15,14 +10,19 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import TruffleDialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 import {
   useQuery,
   gql,
   useMutation,
 } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { useDialog } from "../dialog-container/dialog-service.ts";
+import Dialog from "../dialog/dialog.tsx";
+import ItemDialog from "../item-dialog/item-dialog.tsx";
+import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
+import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
 
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
@@ -211,6 +211,9 @@ function CollectibleItem(props) {
     onViewCollection,
     buttonBg,
   } = props;
+
+  const { pushDialog, popDialog } = useDialog();
+
   const $$itemRef = useRef();
 
   const file = collectibleItem?.source?.fileRel;
@@ -229,14 +232,14 @@ function CollectibleItem(props) {
 
   const onPurchaseRequestHandler = () => {
     // open confirmation dialog
-    setConfirmDialogHiddenState(false);
-    // overlay.open(ConfirmPurchaseDialog, {
-    //   collectibleItem,
-    //   channelPointsImageObj,
-    //   onViewCollection,
-    //   buttonBg,
-    //   enqueueSnackBar,
-    // });
+    pushDialog(
+      <ConfirmPurchaseDialog
+        collectibleItem={collectibleItem}
+        channelPointsImageObj={channelPointsImageObj}
+        onViewCollection={popDialog}
+        buttonBg="var(--truffle-gradient)"
+      />
+    );
   };
 
   return (
@@ -247,14 +250,6 @@ function CollectibleItem(props) {
       ref={$$itemRef}
     >
       <div className="overlay" />
-      <TruffleDialog hidden={isConfirmDialogHidden}>
-        <ConfirmPurchaseDialog
-          collectibleItem={collectibleItem}
-          channelPointsImageObj={channelPointsImageObj}
-          onViewCollection={() => setConfirmDialogHiddenState(true)}
-          buttonBg="var(--truffle-gradient)"
-        />
-      </TruffleDialog>
       <div className="card">
         <div className="image">
           <ImageByAspectRatio
@@ -286,11 +281,12 @@ function ConfirmPurchaseDialog({
   channelPointsImageObj,
   onViewCollection,
   buttonBg,
-  enqueueSnackBar,
 }) {
   // const { org } = useStream(() => ({
   //   org: model.org.getMe(),
   // }));
+
+  const { pushDialog, popDialog } = useDialog();
 
   const file = collectibleItem?.source?.fileRel;
   const amount = collectibleItem.productVariants.nodes[0].amountValue;
@@ -310,8 +306,8 @@ function ConfirmPurchaseDialog({
       { productId: collectibleItem.id },
       { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
     );
-    alert(`You purchased a ${collectibleItem.source.name}!`);
-    onViewCollection?.();
+    // alert(`You purchased a ${collectibleItem.source.name}!`);
+    // onViewCollection?.();
     // await model.economyTransaction.create({
     //   economyTriggerSlug: "channel-points-store-purchase",
     //   amountSourceId: collectibleItem.id,
@@ -327,115 +323,123 @@ function ConfirmPurchaseDialog({
     //   buttonBg,
     //   enqueueSnackBar,
     // });
+    popDialog();
+    pushDialog(
+      <NotifyPurchaseDialog
+        onViewCollection={onViewCollection}
+        collectibleItem={collectibleItem}
+        buttonBg={buttonBg}
+      />
+    );
   };
 
   return (
     <div className="confirm-purchase-dialog">
-      <div className="body">
-        <div className="image">
-          <ImageByAspectRatio
-            imageUrl={getModel().image.getSrcByImageObj(file?.fileObj)}
-            aspectRatio={file?.fileObj?.data?.aspectRatio}
-            heightPx={56}
-            widthPx={56}
-          />
-        </div>
-        <div className="info">
-          <div className="name">{collectibleItem?.source?.name ?? ""}</div>
-          <div className="cost">
-            <div className="value">{formatNumber(amount)}</div>
-            <ImageByAspectRatio
-              imageUrl={channelPointsSrc}
-              aspectRatio={1}
-              widthPx={15}
-              height={15}
+      <Dialog
+        $content={
+          <div className="body">
+            <div className="image">
+              <ImageByAspectRatio
+                imageUrl={getModel().image.getSrcByImageObj(file?.fileObj)}
+                aspectRatio={file?.fileObj?.data?.aspectRatio}
+                heightPx={56}
+                widthPx={56}
+              />
+            </div>
+            <div className="info">
+              <div className="name">{collectibleItem?.source?.name ?? ""}</div>
+              <div className="cost">
+                <div className="value">{formatNumber(amount)}</div>
+                <ImageByAspectRatio
+                  imageUrl={channelPointsSrc}
+                  aspectRatio={1}
+                  widthPx={15}
+                  height={15}
+                />
+              </div>
+              {(collectibleItem?.source?.data?.description && (
+                <div className="description">
+                  {collectibleItem?.source?.data?.description}
+                </div>
+              )) || (
+                <div className="description">
+                  Add {collectibleItem?.source?.name ?? ""} to your collection
+                </div>
+              )}
+            </div>
+          </div>
+        }
+        $actions={
+          <div className="action">
+            <Button
+              text={`Buy ${collectibleItem?.source?.name ?? ""}`}
+              bg={buttonBg}
+              isFullWidth={true}
+              onClick={onPurchaseHandler}
             />
           </div>
-          {(collectibleItem?.source?.data?.description && (
-            <div className="description">
-              {collectibleItem?.source?.data?.description}
-            </div>
-          )) || (
-            <div className="description">
-              Add {collectibleItem?.source?.name ?? ""} to your collection
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="action">
-        <Button
-          text={`Buy ${collectibleItem?.source?.name ?? ""}`}
-          bg={buttonBg}
-          isFullWidth={true}
-          onClick={onPurchaseHandler}
-        />
-      </div>
+        }
+        $topRightButton={
+          <div className="close-button">
+            <Icon
+              icon="close"
+              color="var(--tfl-color-on-bg-fill)"
+              onclick={popDialog}
+            />
+          </div>
+        }
+      />
     </div>
   );
 }
 
-// function NotifyPurchaseDialog({
-//   onViewCollection,
-//   collectibleItem,
-//   buttonBg,
-//   enqueueSnackBar,
-// }) {
-//   const { overlay } = useContext(context);
+function NotifyPurchaseDialog({ onViewCollection, collectibleItem, buttonBg }) {
+  const { popDialog } = useDialog();
 
-//   const onViewCollectionHandler = () => {
-//     overlay.close();
-//     onViewCollection?.();
-//   };
+  const onViewCollectionHandler = () => {
+    popDialog();
+    onViewCollection?.();
+  };
 
-//   const file = collectibleItem?.source?.fileRel;
-//   const actionMessage =
-//     collectibleItem?.source?.data?.category === "flair"
-//       ? "Redeem in Profile Tab"
-//       : "View collection";
-//   const isEmote = collectibleItem?.source?.type === "emote";
-//   const isRedeemable = collectibleItem?.source?.type === "redeemable";
+  const file = collectibleItem?.source?.fileRel;
+  const actionMessage =
+    collectibleItem?.source?.data?.category === "flair"
+      ? "Redeem in Profile Tab"
+      : "View collection";
+  const isEmote = collectibleItem?.source?.type === "emote";
+  const isRedeemable = collectibleItem?.source?.type === "redeemable";
 
-//   return (
-//     <>
-//       {isEmote ? (
-//         <Component
-//           slug="unlocked-emote-dialog"
-//           props={{
-//             reward: collectibleItem,
-//             onViewCollection: onViewCollection,
-//           }}
-//         />
-//       ) : isRedeemable ? (
-//         <Component
-//           slug="redeemable-dialog"
-//           props={{
-//             redeemableCollectible: collectibleItem,
-//             onViewCollection: onViewCollection,
-//             enqueueSnackBar,
-//           }}
-//         />
-//       ) : (
-//         <Component
-//           slug="browser-extension-item-dialog"
-//           props={{
-//             imgRel: file,
-//             onExit: () => overlay.close(),
-//             primaryText: (
-//               <div>
-//                 <strong>{collectibleItem?.source?.name ?? ""}</strong> added to
-//                 your collection!
-//               </div>
-//             ),
-//             buttons: [
-//               {
-//                 text: actionMessage,
-//                 bg: buttonBg,
-//                 onClick: onViewCollectionHandler,
-//               },
-//             ],
-//           }}
-//         />
-//       )}
-//     </>
-//   );
-// }
+  return (
+    <>
+      {isEmote ? (
+        <UnlockedEmoteDialog
+          reward={collectibleItem}
+          onViewCollection={onViewCollection}
+        />
+      ) : isRedeemable ? (
+        <RedeemableDialog
+          redeemableCollectible={collectibleItem}
+          onViewCollection={onViewCollection}
+        />
+      ) : (
+        <ItemDialog
+          imgRel={file}
+          onExit={popDialog}
+          primaryText={
+            <div>
+              <strong>{collectibleItem?.source?.name ?? ""}</strong> added to
+              your collection!
+            </div>
+          }
+          buttons={[
+            {
+              text: actionMessage,
+              bg: buttonBg,
+              onClick: onViewCollectionHandler,
+            },
+          ]}
+        />
+      )}
+    </>
+  );
+}

@@ -13,8 +13,8 @@ export default function DialogContainer() {
 
   if (topDialog === null) return <></>;
 
-  const handleBgClick = () => {
-    if (!topDialog?.isModal) {
+  const handleBgClick = (e: Event) => {
+    if (!topDialog?.isModal && e.target === e.currentTarget) {
       dialogService.popDialog();
     }
   };

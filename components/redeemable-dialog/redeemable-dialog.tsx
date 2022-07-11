@@ -20,6 +20,7 @@ import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/sna
 import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
+import { useDialog } from "../dialog-container/dialog-service.ts";
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -115,8 +116,9 @@ export default function RedeemableDialog(props) {
     primaryText,
     secondaryText,
     highlightBg,
-    onExit,
   } = props;
+
+  const { popDialog: onExit } = useDialog();
 
   const redeemablePowerupId =
     redeemableCollectible?.source?.data?.redeemData?.powerupId;

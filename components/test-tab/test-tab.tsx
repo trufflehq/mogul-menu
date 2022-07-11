@@ -1,8 +1,9 @@
 import React, { useState } from "https://npm.tfl.dev/react";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.jsx";
-import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.jsx";
+import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
+import Dialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
 
 import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
@@ -11,7 +12,8 @@ import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 
 import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
-import DialogDemo from "https://tfl.dev/@truffle/ui@0.0.1/components/dialog/dialog.jsx";
+import { useDialog } from "../dialog-container/dialog-service.ts";
+// import DialogDemo from "./radix-test.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -22,6 +24,7 @@ export default function HomeTab() {
   const tabState = useTabState();
 
   const { pushPage, popPage } = usePageStack();
+  const { pushDialog, popDialog } = useDialog();
 
   const { displayActionBanner, removeActionBanner } = useActionBanner();
 
@@ -54,7 +57,17 @@ export default function HomeTab() {
         message="Finish setting up your account"
         buttonText="Sign up"
         onClick={() => removeActionBanner(actionBannerId)}
-      />,
+      />
+    );
+  };
+
+  // this uses the truffle UI dialog
+  // const [isDialogHidden, setDialogHidden] = useState(true);
+  // const toggleDialogHandler = () => setDialogHidden((prev: boolean) => !prev);
+  // this uses the mogul-menu dialog service
+  const toggleDialogHandler = () => {
+    pushDialog(
+      <div style={{ background: "white", color: "black" }}>I'm a dialog</div>
     );
   };
 
@@ -78,10 +91,14 @@ export default function HomeTab() {
         <Button onClick={tabNameHandler} text="Set tab name" />
         <Button onClick={pushPageHandler} text="Push page" />
         <Button onClick={actionBannerHandler} text="Show action banner" />
+        <Button onClick={toggleDialogHandler} text="Show dialog" />
       </div>
-      <div>
+      {/* <div>
         <DialogDemo />
-      </div>
+      </div> */}
+      {/* <Dialog hidden={isDialogHidden}>
+        <Button onClick={toggleDialogHandler} text="Toggle dialog" />
+      </Dialog> */}
     </div>
   );
 }
