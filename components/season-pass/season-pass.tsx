@@ -16,6 +16,12 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
+import { useDialog } from "../dialog-container/dialog-service.ts";
+
+import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
+import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
+import ItemDialog from "../item-dialog/item-dialog.js";
+
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
@@ -365,26 +371,21 @@ export default function SeasonPass(props) {
               >
                 {tiers?.length ? (
                   <div className="tier-info">
-                    {
-                      // FIXME: the reverse here is a hack for Faze
-                      _.reverse(
-                        _.map(tiers, (tier) => {
-                          console.log("tier", tier);
-                          return (
-                            tier?.name && (
-                              <div
-                                className="tier"
-                                style={{
-                                  background: tier?.background,
-                                }}
-                              >
-                                {tier?.name}
-                              </div>
-                            )
-                          );
-                        })
-                      )
-                    }
+                    {_.map(tiers, (tier) => {
+                      console.log("tier", tier);
+                      return (
+                        tier?.name && (
+                          <div
+                            className="tier"
+                            style={{
+                              background: tier?.background,
+                            }}
+                          >
+                            {tier?.name}
+                          </div>
+                        )
+                      );
+                    })}
                   </div>
                 ) : null}
                 <div
@@ -642,79 +643,70 @@ export function $level(props) {
   } = props;
 
   const isCurrentLevel = currentLevelNum === level.levelNum;
+  const { pushDialog, popDialog } = useDialog();
 
   const onRewardClick = (reward, $$rewardRef, tierNum) => {
-    // if (reward) {
-    //   const isUnlocked = reward && currentLevelNum >= level.levelNum;
-    //   const isEmote = reward?.source?.type === "emote";
-    //   const isRedeemable = reward?.source?.type === "redeemable";
-    //   const minXp = level.minXp;
-    //   selectedRewardStream.next({ sourceId: reward?.sourceId, level });
-    //   // this series of if statements categorize different rewards
-    //   // and displays the appropriate dialog for each
-    //   // if the user hasn't unlocked the item yet
-    //   if (!isUnlocked) {
-    //     overlay.open(() => (
-    //       <LockedRewardDialog
-    //         reward={reward}
-    //         xpImgSrc={xpImgSrc}
-    //         minXp={minXp}
-    //         xp={xp}
-    //       />
-    //     ));
-    //     // if the user clicked on an emote
-    //   } else if (isEmote) {
-    //     overlay.open(() => (
-    //       <Component
-    //         slug="unlocked-emote-dialog"
-    //         props={{
-    //           reward,
-    //           onViewCollection,
-    //         }}
-    //       />
-    //     ));
-    //     // if the user clicked on a redeemable
-    //   } else if (isRedeemable) {
-    //     overlay.open(() => (
-    //       <Component
-    //         slug="redeemable-dialog"
-    //         props={{
-    //           enqueueSnackBar,
-    //           redeemableCollectible: reward,
-    //           onViewCollection,
-    //         }}
-    //       />
-    //     ));
-    //   } else {
-    //     overlay.open(() => (
-    //       <Component
-    //         slug="browser-extension-item-dialog"
-    //         props={{
-    //           displayMode: "center",
-    //           imgRel: reward?.source?.fileRel,
-    //           primaryText: `You unlocked a ${reward?.source?.name}`,
-    //           secondaryText: "",
-    //           buttons: [
-    //             {
-    //               text: "Close",
-    //               borderRadius: "4px",
-    //               bg: cssVars.$tertiaryBase,
-    //               textColor: cssVars.$tertiaryBaseText,
-    //               onClick: () => overlay.close(),
-    //             },
-    //             {
-    //               text: "View collection",
-    //               borderRadius: "4px",
-    //               style: "primary",
-    //               onClick: onViewCollection,
-    //             },
-    //           ],
-    //           onExit: () => overlay.close(),
-    //         }}
-    //       />
-    //     ));
-    //   }
-    // }
+    if (reward) {
+      const isUnlocked = reward && currentLevelNum >= level.levelNum;
+      const isEmote = reward?.source?.type === "emote";
+      const isRedeemable = reward?.source?.type === "redeemable";
+      const minXp = level.minXp;
+      selectedRewardStream.next({ sourceId: reward?.sourceId, level });
+      // this series of if statements categorize different rewards
+      // and displays the appropriate dialog for each
+      // if the user hasn't unlocked the item yet
+      if (!isUnlocked) {
+        pushDialog(
+          <LockedRewardDialog
+            reward={reward}
+            xpImgSrc={xpImgSrc}
+            minXp={minXp}
+            xp={xp}
+          />
+        );
+        // if the user clicked on an emote
+      } else if (isEmote) {
+        pushDialog(
+          <UnlockedEmoteDialog
+            reward={reward}
+            onViewCollection={onViewCollection}
+          />
+        );
+        // if the user clicked on a redeemable
+      } else if (isRedeemable) {
+        pushDialog(
+          <RedeemableDialog
+            redeemableCollectible={reward}
+            onViewCollection={onViewCollection}
+          />
+        );
+      } else {
+        pushDialog(
+          <ItemDialog
+            displayMode="center"
+            imgRel={reward?.source?.fileRel}
+            primaryText={`You unlocked a ${reward?.source?.name}`}
+            secondaryText=""
+            buttons={[
+              {
+                text: "Close",
+                borderRadius: "4px",
+                bg: cssVars.$tertiaryBase,
+                textColor: cssVars.$tertiaryBaseText,
+                onClick: popDialog,
+              },
+              {
+                text: "View collection",
+                borderRadius: "4px",
+                style: "primary",
+                onClick: onViewCollection,
+              },
+            ]}
+            onExit={popDialog}
+          />
+        );
+      }
+    }
   };
 
   return (
@@ -848,86 +840,80 @@ export function Reward({
   );
 }
 
-// function NoItemLevelUpDialog({
-//   $title,
-//   $children,
-//   onViewCollection,
-//   headerText,
-//   highlightBg,
-// }) {
-//   return (
-//     <div className="c-unlocked-emote-reward-dialog use-css-vars-creator">
-//       <Component
-//         slug="browser-extension-item-dialog"
-//         props={{
-//           displayMode: "center",
-//           $title,
-//           $children,
-//           headerText,
-//           highlightBg,
-//           primaryText: "No item for this level",
-//           buttons: [
-//             {
-//               text: "Close",
-//               borderRadius: "4px",
-//               bg: cssVars.$tertiaryBase,
-//               textColor: cssVars.$tertiaryBaseText,
-//               onClick: () => overlay.close(),
-//             },
-//           ],
-//           onExit: () => overlay.close(),
-//         }}
-//       />
-//     </div>
-//   );
-// }
+function NoItemLevelUpDialog({
+  $title,
+  $children,
+  onViewCollection,
+  headerText,
+  highlightBg,
+}) {
+  const { popDialog } = useDialog();
 
-// export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
-//   return (
-//     <div className="c-locked-reward-item-dialog">
-//       <Component
-//         slug="browser-extension-item-dialog"
-//         props={{
-//           displayMode: "left",
-//           imgRel: reward?.source?.fileRel,
-//           primaryText: (
-//             <div className="item-name">
-//               <div className="text">{reward?.source?.name}</div>
-//               <$lockIcon />
-//             </div>
-//           ),
-//           valueText: (
-//             <div className="value-container">
-//               <Component
-//                 slug="image-by-aspect-ratio"
-//                 props={{
-//                   imageUrl: xpImgSrc,
-//                   aspectRatio: 1,
-//                   widthPx: 18,
-//                   height: 18,
-//                 }}
-//               />
-//               <div>
-//                 {xp}/{minXp}
-//               </div>
-//             </div>
-//           ),
-//           secondaryText: reward?.description,
-//           buttons: [
-//             {
-//               text: "Close",
-//               bg: cssVars.$tertiaryBase,
-//               borderRadius: "4px",
-//               textColor: cssVars.$tertiaryBaseText,
-//               onClick: () => overlay.close(),
-//             },
-//           ],
-//           onExit: () => overlay.close(),
-//         }}
-//       />
-//     </div>
-//   );
-// }
+  return (
+    <div className="c-unlocked-emote-reward-dialog use-css-vars-creator">
+      <ItemDialog
+        displayMode="center"
+        $title={$title}
+        $children={$children}
+        headerText={headerText}
+        highlightBg={highlightBg}
+        primaryText="No item for this level"
+        buttons={[
+          {
+            text: "Close",
+            borderRadius: "4px",
+            bg: cssVars.$tertiaryBase,
+            textColor: cssVars.$tertiaryBaseText,
+            onClick: popDialog,
+          },
+        ]}
+        onExit={popDialog}
+      />
+    </div>
+  );
+}
+
+export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
+  const { popDialog } = useDialog();
+  return (
+    <div className="c-locked-reward-item-dialog">
+      <ItemDialog
+        displayMode="left"
+        imgRel={reward?.source?.fileRel}
+        primaryText={
+          <div className="item-name">
+            <div className="text">{reward?.source?.name}</div>
+            <$lockIcon />
+          </div>
+        }
+        valueText={
+          <div className="value-container">
+            <ImageByAspectRatio
+              imageUrl={xpImgSrc}
+              aspectRatio={1}
+              widthPx={18}
+              height={18}
+            />
+            <div>
+              {xp}/{minXp}
+            </div>
+          </div>
+        }
+        secondaryText={reward?.description}
+        buttons={[
+          {
+            text: "Close",
+            bg: cssVars.$tertiaryBase,
+            borderRadius: "4px",
+            textColor: cssVars.$tertiaryBaseText,
+            onClick: popDialog,
+          },
+        ]}
+        onExit={popDialog}
+      />
+    </div>
+  );
+}
 
 export function $rewardTooltip({
   name,
