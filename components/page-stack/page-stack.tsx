@@ -4,7 +4,7 @@ import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observa
 
 export default function PageStack({
   pageStackSubject,
-  background = "var(--truffle-color-bg-primary)",
+  background = "var(--tfl-color-bg-fill)",
 }) {
   const { pageStack } = useObservables(() => ({
     pageStack: pageStackSubject.obs,
@@ -14,7 +14,9 @@ export default function PageStack({
 
   return (
     <>
-      {isPageStackEmpty ? <></> : (
+      {isPageStackEmpty ? (
+        <></>
+      ) : (
         <root.div>
           <link
             rel="stylesheet"

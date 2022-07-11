@@ -37,7 +37,7 @@ export default function Advert(props) {
               textColor={buttonTextColor}
               href={buttonHref}
               onClick={buttonOnClick}
-              outlineHover="1px solid var(--truffle-color-text-bg-primary)"
+              outlineHover="1px solid var(--tfl-color-on-bg-fill)"
             />
           </div>
         </div>

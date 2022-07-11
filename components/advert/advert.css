@@ -3,7 +3,7 @@
 }
 
 :host .c-advert {
-  border: 1px solid var(--truffle-color-secondary);
+  border: 1px solid var(--tfl-color-secondary-fill);
   border-radius: 6px;
   overflow: hidden;
   -webkit-box-sizing: border-box;
@@ -50,7 +50,7 @@
   font-size: 14px;
   line-height: 21px;
   letter-spacing: 0.0025em;
-  color: var(--truffle-color-text-bg-primary);
+  color: var(--tfl-color-on-bg-fill);
 }
 
 :host .c-advert > .content > .text > .tagline {

@@ -27,7 +27,7 @@ import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 // import Components from 'https://tfl.dev/@truffle/ui@0.0.1/components/components/components.js'
 import Modal from "https://tfl.dev/@truffle/ui@0.0.1/components/modal/modal.js";
 import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 import Stylesheet from "https://tfl.dev/@truffle/ui@0.0.3/components/stylesheet/stylesheet.tag.js";
@@ -284,7 +284,7 @@ export default function BrowserExtensionMenu(props) {
         ref={$$extensionIconRef}
         onClick={toggleIsOpen}
       >
-        <Ripple color="var(--truffle-color-text-bg-primary)" />
+        <Ripple color="var(--tfl-color-on-bg-fill)" />
       </div>
       <div className="menu">
         <div className="inner">
@@ -312,7 +312,7 @@ export default function BrowserExtensionMenu(props) {
                     </div>
                     {/* TODO: add a way for tabs to set the tab name */}
                     <div className="title truffle-text-body-2">{tabText}</div>
-                    <Ripple color="var(--truffle-color-text-bg-primary)" />
+                    <Ripple color="var(--tfl-color-on-bg-fill)" />
                   </div>
                 );
               })}

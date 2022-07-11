@@ -17,7 +17,7 @@ import {
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import { gql, useQuery } from "https://tfl.dev/@truffle/api@0.0.1/client.js";

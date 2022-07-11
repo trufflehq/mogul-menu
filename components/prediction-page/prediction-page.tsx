@@ -1,5 +1,5 @@
 import React from "https://npm.tfl.dev/react";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import Page from "../page/page.tsx";
@@ -54,7 +54,7 @@ export default function PredictionPage() {
         <div>
           <Icon
             icon={CRYSTAL_BALL_ICON}
-            color="var(--truffle-color-text-bg-primary)"
+            color="var(--tfl-color-on-bg-fill)"
             size="40px"
             viewBox={CRYSTAL_BALL_ICON_VIEWBOX}
           />

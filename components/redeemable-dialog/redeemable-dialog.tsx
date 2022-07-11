@@ -240,17 +240,16 @@ export function ActiveRedeemableDialog({
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill)",
+            textColor: "var(--tfl-color-on-surface-fill)",
             onClick: onExit,
           },
           {
             text: "Delete",
             borderRadius: "4px",
             style: "primary",
-            bg: "#ED6565",
-            bgColor: "#ED6565",
-            textColor: "var(--truffle-color-bg-primary)",
+            bg: "var(--tfl-color-critical-text)",
+            textColor: "var(--tfl-color-bg-fill)",
             shouldHandleLoading: true,
             onClick: deleteActivePowerup,
           },
@@ -284,8 +283,8 @@ export function RedeemedCollectibleDialog({
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill-pressed)",
+            textColor: "var(--tfl-color-on-bg-fill)",
             onClick: onExit,
           },
         ]}
@@ -305,7 +304,7 @@ function ColorDropdown(props) {
 
   const selectedColorRgba =
     _.find(colors, { name: selectedColor })?.rgba ||
-    "var(--truffle-color-bg-primary)";
+    "var(--tfl-color-surface-fill)";
 
   return (
     <div className="c-color-dropdown">
@@ -344,7 +343,7 @@ function ColorDropdown(props) {
                   slug="icon"
                   props={{
                     icon: "chevronDown",
-                    color: "var(--truffle-color-text-bg-primary)",
+                    color: "var(--tfl-color-on-bg-fill)",
                   }}
                 />
               </div>
@@ -378,7 +377,7 @@ function UsernameGradientDropdown(props) {
 
   const selectedGradientBg =
     _.find(gradients, { name: selectedGradient })?.value ||
-    "var(--truffle-color-bg-primary)";
+    "var(--tfl-color-surface-fill)";
 
   return (
     <div className="c-gradient-dropdown">
@@ -418,7 +417,7 @@ function UsernameGradientDropdown(props) {
                   slug="icon"
                   props={{
                     icon: "chevronDown",
-                    color: "var(--truffle-color-text-bg-primary)",
+                    color: "var(--tfl-color-on-bg-fill)",
                   }}
                 />
               </div>
@@ -535,17 +534,17 @@ export function RedeemDialogSelectable(props) {
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill-pressed)",
+            textColor: "var(--tfl-color-on-bg-fill)",
             onClick: onExit,
           },
           {
             text: "Activate",
             borderRadius: "4px",
             style: "primary",
-            bg: highlightBg ?? "var(--truffle-color-primary)",
-            bgColor: highlightBg ?? "var(--truffle-color-primary)",
-            textColor: "var(--truffle-color-bg-primary)",
+            bg: highlightBg ?? "var(--tfl-color-primary-fill)",
+            bgColor: highlightBg ?? "var(--tfl-color-primary-fill)",
+            textColor: "var(--tfl-color-surface-fill)",
             onClick: redeemHandler,
             isDisabledStream: isActiveButtonDisabledStream,
           },
@@ -594,7 +593,7 @@ export function ChatHighlightDialog(props) {
       getAdditionalData={() => {
         const selectedColorRgba =
           _.find(colors, { name: selectedColor })?.rgba ||
-          "var(--truffle-color-bg-primary)";
+          "var(--tfl-color-surface-fill)";
 
         const additionalData = {
           rgba: selectedColorRgba,
@@ -652,7 +651,7 @@ export function UserNameGradientDialog(props) {
       getAdditionalData={() => {
         const selectedGradientValue =
           _.find(gradients, { name: selectedGradient })?.value ||
-          "var(--truffle-color-bg-primary)";
+          "var(--tfl-color-surface-fill)";
 
         const additionalData = {
           value: selectedGradientValue,
@@ -776,17 +775,17 @@ export function UnlockedRedeemableDialog(props) {
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill-pressed)",
+            textColor: "var(--tfl-color-on-bg-fill)",
             onClick: onExit,
           },
           {
             text: isCollectiblePack ? "Open" : "Activate",
             borderRadius: "4px",
             style: "primary",
-            bg: highlightBg ?? "var(--truffle-color-primary)",
-            bgColor: highlightBg ?? "var(--truffle-color-primary)",
-            textColor: "var(--truffle-color-text-primary)",
+            bg: highlightBg ?? "var(--tfl-color-primary-fill)",
+            bgColor: highlightBg ?? "var(--tfl-color-primary-fill)",
+            textColor: "var(--tfl-color-on-primary-fill)",
             onClick: redeemHandler,
           },
         ]}
@@ -828,8 +827,8 @@ function CollectibleItemDialog({
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill-pressed)",
+            textColor: "var(--tfl-color-on-bg-fill)",
             onClick: onExit,
           },
           {
@@ -931,17 +930,17 @@ export function RecipeDialog(props) {
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--truffle-color-bg-tertiary)",
-            textColor: "var(--truffle-color-text-bg-tertiary)",
+            bg: "var(--tfl-color-surface-fill-pressed)",
+            textColor: "var(--tfl-color-on-bg-fill)",
             onClick: onExit,
           },
           {
             text: "Craft an emote",
             borderRadius: "4px",
             style: "primary",
-            bg: highlightBg ?? "var(--truffle-color-primary)",
-            bgColor: highlightBg ?? "var(--truffle-color-primary)",
-            textColor: "var(--truffle-color-text-primary)",
+            bg: highlightBg ?? "var(--tfl-color-primary-fill)",
+            bgColor: highlightBg ?? "var(--tfl-color-primary-fill)",
+            textColor: "var(--tfl-color-on-primary-fill)",
             onClick: openCraftTable,
           },
         ]}

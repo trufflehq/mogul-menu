@@ -1,7 +1,7 @@
 :host {
   .c-tile {
     $border-radius: 6px;
-    $tile-bg: var(--truffle-color-bg-secondary);
+    $tile-bg: var(--tfl-color-surface-fill);
     min-width: 0;
 
     border-radius: $border-radius;
@@ -9,7 +9,7 @@
     flex-direction: column;
     min-height: 157px;
     background-color: $tile-bg;
-    border: 1px solid var(--truffle-color-bg-tertiary);
+    border: 1px solid var(--tfl-color-surface-border);
     transition: filter linear 100ms;
     position: relative;
 
@@ -30,7 +30,7 @@
       margin-bottom: 20px;
 
       >.icon {
-        background-color: $tile-bg;
+        background-color: var(--tfl-color-bg-fill);
         border-radius: 100%;
         width: 40px;
         height: 40px;

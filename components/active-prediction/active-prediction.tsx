@@ -19,7 +19,7 @@ import {
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.js";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 

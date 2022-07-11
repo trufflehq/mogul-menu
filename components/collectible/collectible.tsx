@@ -78,8 +78,8 @@ export default function Collctible(props) {
               }
               onClick={onRedeemHandler}
               shouldHandleLoading={true}
-              bg="var(--truffle-color-bg-tertiary)"
-              textColor="var(--truffle-color-text-bg-tertiary)"
+              bg="var(--tfl-color-surface-fill-pressed)"
+              textColor="var(--tfl-color-on-bg-fill)"
               borderRadius="4px"
             />
           </div>

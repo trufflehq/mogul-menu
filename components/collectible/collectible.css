@@ -29,7 +29,7 @@
 
 :host .c-collectible > .info > .count {
   font-size: 10px;
-  color: var(--truffle-color-primary);
+  color: var(--tfl-color-primary-fill);
 }
 
 :host .c-collectible > .button {

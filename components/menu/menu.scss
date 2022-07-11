@@ -97,6 +97,8 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
 
+  // TODO: rm this when we either include it in the design system or have it as a component prop
+  --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
   >.extension-icon {
     cursor: pointer;
@@ -143,9 +145,9 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     width: calc(100% - #{$extension-right-offset});
     border-radius: 2px;
     box-sizing: border-box;
-    background: var(--truffle-color-bg-primary);
-    color: var(--truffle-color-text-bg-primary);
-    font-family: var(--truffle-font-family);
+    background: var(--tfl-color-bg-fill);
+    color: var(--tfl-color-on-bg-fill);
+    font-family: var(--tfl-font-family-body-sans);
     border: 1px solid rgba(60, 58, 65, 1);
 
     >.inner {
@@ -258,11 +260,11 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
             padding: 0px 12px;
 
             &:hover {
-              background-color: var(--truffle-color-bg-secondary);
+              background-color: var(--tfl-color-surface-fill-hovered);
             }
 
             &.is-active {
-              background-color: var(--truffle-color-bg-tertiary);
+              background-color: var(--tfl-color-surface-fill-pressed);
             }
 
             &.has-badge>.icon {

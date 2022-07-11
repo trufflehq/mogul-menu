@@ -7,7 +7,7 @@ import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
 
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
@@ -114,9 +114,9 @@ export default function HomeTab() {
       buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
       // buttonOnClick,
       buttonText: "Learn more",
-      buttonBgColor: "var(--truffle-color-secondary)",
-      buttonBgColorHover: "var(--truffle-color-secondary)",
-      buttonTextColor: "var(--truffle-color-text-secondary)",
+      buttonBgColor: "var(--tfl-color-secondary-fill)",
+      buttonBgColorHover: "var(--tfl-color-secondary-fill)",
+      buttonTextColor: "var(--tfl-color-on-secondary-fill)",
     },
   };
 

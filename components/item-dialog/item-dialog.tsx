@@ -8,7 +8,7 @@ import {
 } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
+import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 
 /**
@@ -178,7 +178,7 @@ export default function ItemDialog({
         {`
         .z-browser-extension-item-dialog {
           --highlight-gradient: ${
-            highlightBg ?? "var(--truffle-color-primary)"
+            highlightBg ?? "var(--tfl-color-primary-fill)"
           };
         }
       `}
@@ -249,7 +249,7 @@ function CloseButton({ onExitHandler }) {
     <div className="close-button">
       <Icon
         icon="close"
-        color="var(--truffle-color-text-bg-primary)"
+        color="var(--tfl-color-on-bg-fill)"
         onclick={onExitHandler}
       />
     </div>

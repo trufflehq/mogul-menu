@@ -4,6 +4,7 @@
   position: relative;
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
+  --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 }
 
 :host > .extension-icon {
@@ -54,9 +55,9 @@
   border-radius: 2px;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  background: var(--truffle-color-bg-primary);
-  color: var(--truffle-color-text-bg-primary);
-  font-family: var(--truffle-font-family);
+  background: var(--tfl-color-bg-fill);
+  color: var(--tfl-color-on-bg-fill);
+  font-family: var(--tfl-font-family-body-sans);
   border: 1px solid #3c3a41;
 }
 
@@ -199,11 +200,11 @@
 }
 
 :host > .menu > .inner > .bottom > .tabs > .tab:hover {
-  background-color: var(--truffle-color-bg-secondary);
+  background-color: var(--tfl-color-surface-fill-hovered);
 }
 
 :host > .menu > .inner > .bottom > .tabs > .tab.is-active {
-  background-color: var(--truffle-color-bg-tertiary);
+  background-color: var(--tfl-color-surface-fill-pressed);
 }
 
 :host > .menu > .inner > .bottom > .tabs > .tab.has-badge > .icon {
