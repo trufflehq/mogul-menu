@@ -45,7 +45,7 @@ export default function KothTile() {
           ? queryObservable(KOTH_USER_QUERY, {
               userId: orgConfig?.data?.kingOfTheHill?.userId,
             })
-          : Obs.of(null)
+          : Obs.of({})
       ),
       op.map(({ data }: any) => data?.orgUser)
     );
