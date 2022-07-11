@@ -20,6 +20,8 @@ import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings-page/settings-page.tsx";
+import BrowserExtensionNotificationDialog from "../notification-dialog/notification-dialog.tsx";
+import { useDialog } from "../dialog-container/dialog-service.ts";
 
 const USER_INFO_QUERY = gql`
   query UserInfoQuery {
@@ -70,6 +72,7 @@ export default function HomeTab() {
   const hasChannelPoints = true;
 
   const { pushPage, popPage } = usePageStack();
+  const { pushDialog, popDialog } = useDialog();
 
   const channelPointsSrc = false
     ? // channelPointsImageObj
@@ -83,18 +86,7 @@ export default function HomeTab() {
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const handleOpenNotificationDialog = () => {
-    console.log("opening notification dialog");
-    // overlay.open(() => (
-    //   <Component
-    //     slug="browser-extension-notification-dialog"
-    //     props={{
-    //       transactionsObs,
-    //       channelPointsImageObj,
-    //       seasonPassObs,
-    //       xpImageObj,
-    //     }}
-    //   />
-    // ));
+    pushDialog(<BrowserExtensionNotificationDialog />);
   };
 
   const handleOpenSupportChat = () => {
