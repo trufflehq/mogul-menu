@@ -51,6 +51,7 @@ import HomeTab from "../home-tab/home-tab.tsx";
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
+import DialogContainer from "../dialog-container/dialog-container.tsx";
 
 import { TabElement } from "../../util/tabs/types.ts";
 import {
@@ -388,6 +389,7 @@ export default function BrowserExtensionMenu(props) {
             />*/
           }
           <div className="body">
+            <DialogContainer />
             <ActionBannerContext.Provider
               value={{ displayActionBanner, removeActionBanner }}
             >
