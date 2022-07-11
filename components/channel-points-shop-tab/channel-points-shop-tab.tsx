@@ -1,3 +1,4 @@
+import React from "https://npm.tfl.dev/react";
 import ChannelPointsShop from "../channel-points-shop/channel-points-shop.tsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 

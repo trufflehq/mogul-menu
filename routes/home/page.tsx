@@ -1,21 +1,10 @@
 import React from "https://npm.tfl.dev/react";
-import Menu from "../../components/menu/menu.tsx";
-import ThemeComponent from "https://tfl.dev/@truffle/ui@0.0.1/components/theme/theme-component.js";
+import { toDist } from "https://tfl.dev/@truffle/distribute@1.0.0/format/wc/index.js";
 
-export default function MenuPage() {
-  return (
-    <>
-      <style>
-        {/* TODO: figure out a better place for this hack */}
-        {`
-          body,
-          html {
-            height: 100%;
-          }
-        `}
-      </style>
-      <ThemeComponent />
-      <Menu />
-    </>
-  );
+import Menu from "../../components/menu/menu.tsx";
+
+function HomePage() {
+  return <Menu />;
 }
+
+export default toDist("react", HomePage, import.meta.url);

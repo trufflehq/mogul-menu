@@ -30,6 +30,7 @@ import Ripple from "https://tfl.dev/@truffle/ui@0.0.1/components/ripple/ripple.j
 import Icon from "https://tfl.dev/@truffle/ui@0.0.1/components/icon/icon.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
+import Stylesheet from "https://tfl.dev/@truffle/ui@0.0.3/components/stylesheet/stylesheet.tag.js";
 import SignUpForm from "https://tfl.dev/@truffle/ui@0.0.1/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
 import SnackBarProvider from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar-provider/snack-bar-provider.js";
@@ -272,10 +273,7 @@ export default function BrowserExtensionMenu(props) {
 
   return (
     <root.div className={className}>
-      <link
-        rel="stylesheet"
-        href={new URL("menu.css", import.meta.url).toString()}
-      />
+      <Stylesheet url={new URL("menu.css", import.meta.url)} />
       <div
         className="extension-icon"
         style={{
