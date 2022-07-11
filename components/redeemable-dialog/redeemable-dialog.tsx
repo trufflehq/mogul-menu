@@ -689,6 +689,8 @@ export function UnlockedRedeemableDialog(props) {
     onExit,
   } = props;
 
+  const { pushDialog, popDialog } = useDialog();
+
   // rm this if we're not invalidating cache using jumper
   const { org } = useObservables(() => ({
     // org: model.org.getMe(),
@@ -737,10 +739,14 @@ export function UnlockedRedeemableDialog(props) {
         const packCollectible = _.find(collectibles, (collectible) =>
           collectibleIds.includes(collectible?.id)
         );
-        alert(
-          `You opened a ${packCollectible?.name} emote. Try using the emote in chat!`
+        popDialog();
+        pushDialog(
+          <CollectibleItemDialog
+            packCollectible={packCollectible}
+            onExit={popDialog}
+          />
         );
-        onExit?.();
+        // onExit?.();
       } else {
         onExit?.();
         enqueueSnackBar(() => (
@@ -797,33 +803,16 @@ export function UnlockedRedeemableDialog(props) {
   );
 }
 
-function CollectibleItemDialog({
-  collectibleIds,
-  collectiblesObs,
-  onViewCollection,
-  onExit,
-}) {
-  const { packCollectibles } = useObservables(() => ({
-    packCollectibles: collectiblesObs.pipe(
-      op.map((collectibles) =>
-        _.filter(collectibles, (collectible) =>
-          collectibleIds.includes(collectible?.id)
-        )
-      )
-    ),
-  }));
-
-  const redeemedCollectible = packCollectibles?.[0];
-
-  if (!redeemedCollectible) {
+function CollectibleItemDialog({ packCollectible, onViewCollection, onExit }) {
+  if (!packCollectible) {
     return <></>;
   }
   return (
     <div className="z-collectible-pack-dialog">
       <ItemDialog
         displayMode="center"
-        imgRel={redeemedCollectible?.fileRel}
-        primaryText={`You opened a ${redeemedCollectible?.name} emote`}
+        imgRel={packCollectible?.fileRel}
+        primaryText={`You opened a ${packCollectible?.name} emote`}
         secondaryText="Try using the emote in chat!"
         buttons={[
           {
