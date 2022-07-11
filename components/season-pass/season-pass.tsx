@@ -35,7 +35,9 @@ const SEASON_PASS_QUERY = gql`
       orgId
       name
       daysRemaining
-      orgUserCounterTypeId
+      xp: orgUserCounter {
+        count
+      }
       levels {
         levelNum
         minXp
@@ -113,6 +115,17 @@ const SEASON_PASS_QUERY = gql`
   }
 `;
 
+const ME_QUERY = gql`
+  query MeQuery {
+    me {
+      id
+      name
+      email
+      phone
+    }
+  }
+`;
+
 function Component() {
   return "";
 }
@@ -132,29 +145,21 @@ export default function SeasonPass(props) {
     enqueueSnackBar,
   } = props;
 
-  const isEligibleCryptoGiveaway = false;
+  const [{ data: meData }] = useQuery({ query: ME_QUERY });
+  const me = meData?.me;
 
   const onViewCollection = () => null;
 
   const $$levelsRef = useRef(null);
   const $$levelRef = useRef(null);
-  const { seasonPassObs, focalIndexStream, selectedRewardStream } =
-    useMemo(() => {
-      return {
-        // seasonPassObs: getModel().seasonPass?.getCurrent(),
-        focalIndexStream: createSubject(0),
-        selectedRewardStream: createSubject(),
-      };
-    }, []);
+  const { focalIndexStream, selectedRewardStream } = useMemo(() => {
+    return {
+      focalIndexStream: createSubject(0),
+      selectedRewardStream: createSubject(),
+    };
+  }, []);
 
-  const {
-    // seasonPass,
-    me,
-    meOrgUserWithKv,
-    focalIndex,
-  } = useObservables(() => ({
-    // seasonPass: seasonPassObs,
-    me: getModel().user.getMe(),
+  const { meOrgUserWithKv, focalIndex } = useObservables(() => ({
     org: getModel().org.getMe(),
     focalIndex: focalIndexStream.obs,
     meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
@@ -186,39 +191,21 @@ export default function SeasonPass(props) {
   //   );
   // }
 
-  // const currentLevelNum =
-  //   getLevelBySeasonPassAndXp(seasonPass, seasonPass?.xp)?.levelNum || 0;
+  const currentLevelNum = seasonPass
+    ? getLevelBySeasonPassAndXp(seasonPass, seasonPass?.xp)?.levelNum || 0
+    : 0;
 
-  const currentLevelNum = 0;
+  const { range, progress } = seasonPass
+    ? getXPBarBySeasonPassAndXp(seasonPass, seasonPass?.xp)
+    : { range: 0, progress: 0 };
 
-  // const { range, progress } = getXPBarBySeasonPassAndXp(
-  //   seasonPass,
-  //   seasonPass?.xp
-  // );
+  // console.log({ range, progress, xp: seasonPass?.xp });
 
-  const tiers = !isEligibleCryptoGiveaway
-    ? _.filter(
-        seasonPass?.data?.tiers,
-        (tier) => tier?.name !== "Crypto-eligible"
-      )
-    : seasonPass?.data?.tiers;
+  const tiers = seasonPass?.data?.tiers;
 
-  // FIXME - hack for faze
-  const levels = !isEligibleCryptoGiveaway
-    ? _.map(seasonPass?.levels, (level) => {
-        const nonCryptoRewards = _.filter(
-          level.rewards,
-          (reward) => reward.tierNum < 1
-        );
+  const levels = seasonPass?.levels;
 
-        return {
-          ...level,
-          rewards: nonCryptoRewards,
-        };
-      })
-    : seasonPass?.levels;
-
-  const { range, progress } = { range: 0, progress: 0 };
+  // const { range, progress } = { range: 0, progress: 0 };
 
   const groupedLevels = _.keyBy(seasonPass?.levels, "levelNum");
 
@@ -292,19 +279,11 @@ export default function SeasonPass(props) {
 
   const visibleLevels = _.slice(levelRange, focalIndex, focalIndex + numTiles);
 
-  // FIXME: the reverse here is a hack for Faze
-  let tierNums = _.reverse(
-    _.uniqBy(
-      _.flatten(
-        _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
-      )
+  const tierNums = _.uniqBy(
+    _.flatten(
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
     )
   );
-
-  // FIXME: the reverse here is a hack for Faze
-  tierNums = !isEligibleCryptoGiveaway
-    ? _.filter(tierNums, (num) => num < 1)
-    : tierNums;
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
   const xpSrc = xpImageObj
