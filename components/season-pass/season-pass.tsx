@@ -280,7 +280,7 @@ export default function SeasonPass(props) {
   // check to see if we are at a right boundary
   const isNotRightClickable = focalIndex + numTiles >= levelRange?.length;
 
-  const isMember = false; // FIXME getModel().user.isMember(me);
+  const isMember = me?.phone || me?.email;
 
   const visibleLevels = _.slice(levelRange, focalIndex, focalIndex + numTiles);
 
