@@ -2,7 +2,7 @@ import React, { useEffect } from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
 import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import root from "https://npm.tfl.dev/react-shadow@19";
-import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
 
@@ -76,12 +76,12 @@ export default function HomeTab() {
 
   const channelPointsSrc = false
     ? // channelPointsImageObj
-      // ? getModel().image.getSrcByImageObj(channelPointsImageObj)
+    // ? getSrcByImageObj(channelPointsImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
   const xpSrc = false
     ? // xpImageObj
-      // ? getModel().image.getSrcByImageObj(xpImageObj)
+    // ? getSrcByImageObj(xpImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
@@ -99,8 +99,7 @@ export default function HomeTab() {
   const adverts = {
     ludwig: {
       className: "base-ad-tile",
-      imageSrc:
-        "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
+      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
       hashtag: "#announcement",
       tagline: "Ludwig Mondays featuring Fortnite",
       buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
@@ -181,8 +180,7 @@ export default function HomeTab() {
                   //   extensionInfo,
                   //   onBack: popPage,
                   // })
-                  pushPage(<SettingsPage />)
-                }
+                  pushPage(<SettingsPage />)}
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"
@@ -205,20 +203,20 @@ export default function HomeTab() {
             <>
               {canClaim && (
                 <IsLiveInfo
-                // secondsRemainingSubject={secondsRemainingSubject}
-                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-                // highlightButtonBg={highlightButtonBg}
-                // creatorName={creatorName}
-                // hasChannelPoints={hasChannelPoints}
-                // hasBattlePass={hasBattlePass}
+                  // secondsRemainingSubject={secondsRemainingSubject}
+                  // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
+                  // highlightButtonBg={highlightButtonBg}
+                  // creatorName={creatorName}
+                  // hasChannelPoints={hasChannelPoints}
+                  // hasBattlePass={hasBattlePass}
                 />
               )}
             </>
           )}
           <LeaderboardTile />
           <PredictionTile
-          // channelPointsImageObj={channelPointsImageObj}
-          // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
+            // channelPointsImageObj={channelPointsImageObj}
+            // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
           />
           <KothTile />
           {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}

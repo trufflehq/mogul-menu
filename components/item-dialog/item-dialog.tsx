@@ -1,11 +1,7 @@
 import React from "https://npm.tfl.dev/react";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
-import {
-  createSubject,
-  Obs,
-  op,
-} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
@@ -56,10 +52,12 @@ export default function ItemDialog({
   secondaryTextStyle,
   buttons,
 }) {
-  if (!onExit)
+  if (!onExit) {
     console.warn("[browser-extension-item-dialog] onExit not defined");
-  if (!imgRel)
+  }
+  if (!imgRel) {
     console.warn("[browser-extension-item-dialog] fileRel not defined");
+  }
 
   const { error } = useObservables(() => ({
     error: errorStream?.obs,
@@ -71,10 +69,11 @@ export default function ItemDialog({
   const actions = (
     <>
       {buttons?.map((button, idx) => {
-        if (!button.onClick)
+        if (!button.onClick) {
           console.warn(
-            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`
+            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`,
           );
+        }
 
         const { isDisabled } = useObservables(() => ({
           isDisabled: button.isDisabledStream?.obs ?? createSubject(false).obs,
@@ -122,8 +121,8 @@ export default function ItemDialog({
               <div className="body">
                 <div className="image">
                   <ImageByAspectRatio
-                    imageUrl={getModel().image.getSrcByImageObj(
-                      imgRel?.fileObj
+                    imageUrl={getSrcByImageObj(
+                      imgRel?.fileObj,
                     )}
                     aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
                     heightPx={56}
@@ -145,7 +144,8 @@ export default function ItemDialog({
               </div>
             }
           />
-          {/* <Component
+          {
+            /* <Component
           slug="dialog"
           props={{
             $title,
@@ -184,7 +184,8 @@ export default function ItemDialog({
               </div>
             ),
           }}
-        /> */}
+        /> */
+          }
         </div>
       </ScopedStylesheet>
     );
@@ -196,18 +197,14 @@ export default function ItemDialog({
         <style>
           {`
         .z-browser-extension-item-dialog {
-          --highlight-gradient: ${
-            highlightBg ?? "var(--tfl-color-primary-fill)"
-          };
+          --highlight-gradient: ${highlightBg ?? "var(--tfl-color-primary-fill)"};
         }
       `}
         </style>
         <Dialog
           $title={$title}
           onCancel={onExitHandler}
-          $topRightButton={
-            $title ? <CloseButton onExitHandler={onExitHandler} /> : null
-          }
+          $topRightButton={$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
           $content={
             <div className="body">
               {!$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
@@ -215,8 +212,8 @@ export default function ItemDialog({
               <div className="children">
                 {$children || (
                   <ImageByAspectRatio
-                    imageUrl={getModel().image.getSrcByImageObj(
-                      imgRel?.fileObj
+                    imageUrl={getSrcByImageObj(
+                      imgRel?.fileObj,
                     )}
                     aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
                     heightPx={72}

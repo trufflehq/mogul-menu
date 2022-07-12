@@ -5,12 +5,9 @@ import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
-import cssVars, {
-  hexOpacity,
-  rgb2rgba,
-} from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
+import cssVars, { hexOpacity, rgb2rgba } from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
 
 import {
   getLevelBySeasonPassAndXp,
@@ -26,7 +23,7 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 
 const GREEN = "#75DB9E";
 const YELLOW = "#EBC564";
@@ -166,9 +163,9 @@ export default function SeasonPass(props) {
   }, []);
 
   const { meOrgUserWithKv, focalIndex } = useObservables(() => ({
-    org: getModel().org.getMe(),
+    // org: getModel().org.getMe(),
     focalIndex: focalIndexStream.obs,
-    meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
+    // meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
   }));
 
   // const seasonPass = {
@@ -281,19 +278,19 @@ export default function SeasonPass(props) {
   // check to see if we are at a right boundary
   const isNotRightClickable = focalIndex + numTiles >= levelRange?.length;
 
-  const isMember = getModel().user.isMember(me);
+  const isMember = false; // FIXME getModel().user.isMember(me);
 
   const visibleLevels = _.slice(levelRange, focalIndex, focalIndex + numTiles);
 
   const tierNums = _.uniqBy(
     _.flatten(
-      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
-    )
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum")),
+    ),
   );
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
   const xpSrc = xpImageObj
-    ? getModel().image.getSrcByImageObj(xpImageObj)
+    ? getSrcByImageObj(xpImageObj)
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   return (
@@ -343,9 +340,11 @@ export default function SeasonPass(props) {
             {true && (
               <div className="pages">
                 <div
-                  className={`button left ${classKebab({
-                    isDisabled: isNotLeftClickable,
-                  })}`}
+                  className={`button left ${
+                    classKebab({
+                      isDisabled: isNotLeftClickable,
+                    })
+                  }`}
                   onClick={onLeftClick}
                 >
                   ◂
@@ -354,9 +353,11 @@ export default function SeasonPass(props) {
                   {`Ends in ${seasonPass?.daysRemaining} days`}
                 </div>
                 <div
-                  className={`button right ${classKebab({
-                    isDisabled: isNotRightClickable,
-                  })}`}
+                  className={`button right ${
+                    classKebab({
+                      isDisabled: isNotRightClickable,
+                    })
+                  }`}
                   onClick={onRightClick}
                 >
                   ▸
@@ -369,25 +370,27 @@ export default function SeasonPass(props) {
                 ref={$$levelsRef}
                 onTouchStart={(e) => e.stopPropagation()}
               >
-                {tiers?.length ? (
-                  <div className="tier-info">
-                    {_.map(tiers, (tier) => {
-                      console.log("tier", tier);
-                      return (
-                        tier?.name && (
-                          <div
-                            className="tier"
-                            style={{
-                              background: tier?.background,
-                            }}
-                          >
-                            {tier?.name}
-                          </div>
-                        )
-                      );
-                    })}
-                  </div>
-                ) : null}
+                {tiers?.length
+                  ? (
+                    <div className="tier-info">
+                      {_.map(tiers, (tier) => {
+                        console.log("tier", tier);
+                        return (
+                          tier?.name && (
+                            <div
+                              className="tier"
+                              style={{
+                                background: tier?.background,
+                              }}
+                            >
+                              {tier?.name}
+                            </div>
+                          )
+                        );
+                      })}
+                    </div>
+                  )
+                  : null}
                 <div
                   className="levels"
                   style={{
@@ -568,7 +571,7 @@ export default function SeasonPass(props) {
 //                       <Component
 //                         slug="image-by-aspect-ratio"
 //                         props={{
-//                           imageUrl: getModel().image.getSrcByImageObj(
+//                           imageUrl: getSrcByImageObj(
 //                             imgRel?.fileObj
 //                           ),
 //                           aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
@@ -662,7 +665,7 @@ export function $level(props) {
             xpImgSrc={xpImgSrc}
             minXp={minXp}
             xp={xp}
-          />
+          />,
         );
         // if the user clicked on an emote
       } else if (isEmote) {
@@ -670,7 +673,7 @@ export function $level(props) {
           <UnlockedEmoteDialog
             reward={reward}
             onViewCollection={onViewCollection}
-          />
+          />,
         );
         // if the user clicked on a redeemable
       } else if (isRedeemable) {
@@ -678,7 +681,7 @@ export function $level(props) {
           <RedeemableDialog
             redeemableCollectible={reward}
             onViewCollection={onViewCollection}
-          />
+          />,
         );
       } else {
         pushDialog(
@@ -703,7 +706,7 @@ export function $level(props) {
               },
             ]}
             onExit={popDialog}
-          />
+          />,
         );
       }
     }
@@ -712,10 +715,7 @@ export function $level(props) {
   return (
     <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
-        Level{" "}
-        {shouldUseLevelsZeroPrefix
-          ? zeroPrefix(level.levelNum)
-          : level.levelNum}
+        Level {shouldUseLevelsZeroPrefix ? zeroPrefix(level.levelNum) : level.levelNum}
       </div>
       {_.map(tierNums, (tierNum) => {
         const reward = _.find(level.rewards, { tierNum });
@@ -728,11 +728,12 @@ export function $level(props) {
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${classKebab({
-              isFirstWithTierName:
-                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-              hasTierName: Boolean(tierName),
-            })}`}
+            className={`reward tier-${tierNum} ${
+              classKebab({
+                isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+                hasTierName: Boolean(tierName),
+              })
+            }`}
           >
             <Reward
               selectedRewardStream={selectedRewardStream}
@@ -770,8 +771,7 @@ export function Reward({
   let isRewardSelected;
 
   if (selectedReward?.level) {
-    isRewardSelected =
-      reward &&
+    isRewardSelected = reward &&
       selectedReward?.sourceId === reward.sourceId &&
       selectedReward?.level === level;
   } else {
@@ -788,12 +788,14 @@ export function Reward({
 
   return (
     <div
-      className={`c-reward ${rewardClassname} ${classKebab({
-        isSelected: isRewardSelected,
-        isFreeUnlocked,
-        isPaidUnlocked,
-        hasTooltip: Boolean(reward),
-      })}`}
+      className={`c-reward ${rewardClassname} ${
+        classKebab({
+          isSelected: isRewardSelected,
+          isFreeUnlocked,
+          isPaidUnlocked,
+          hasTooltip: Boolean(reward),
+        })
+      }`}
       ref={$$ref}
       onClick={(e) => {
         onClick(reward, $$ref, tierNum);
@@ -824,8 +826,8 @@ export function Reward({
         {reward?.source?.fileRel?.fileObj && (
           <div className="image">
             <img
-              src={getModel().image.getSrcByImageObj(
-                reward?.source.fileRel.fileObj
+              src={getSrcByImageObj(
+                reward?.source.fileRel.fileObj,
               )}
             />
           </div>
@@ -927,8 +929,7 @@ export function $rewardTooltip({
 
   const breakpoint = "desktop";
 
-  const imageUrl =
-    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
+  const imageUrl = "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
 
   const isMobile = breakpoint === "mobile";
   return (
@@ -980,15 +981,17 @@ export function $rewardTooltip({
               height={24}
               isCentered={true}
             />
-            {/* <Component
+            {
+              /* <Component
               slug="image-by-aspect-ratio"
               props={{
-                imageUrl: getModel().image.getSrcByImageObj(imageFileObj),
+                imageUrl: getSrcByImageObj(imageFileObj),
                 aspectRatio: imageFileObj.data.aspectRatio,
                 heightPx: 24,
                 isCentered: true,
               }}
-            /> */}
+            /> */
+            }
           </div>
         )}
         <div className="name">{name}</div>

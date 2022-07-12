@@ -1,12 +1,9 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
-import {
-  gql,
-  queryObservable,
-} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
-import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
 
 import Tile from "../tile/tile.tsx";
 
@@ -70,7 +67,7 @@ export function LeaderboardTile() {
 
   const { leaderboardCountersObs } = useMemo(() => {
     const leaderboardCountersObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY
+      ORG_USER_COUNTER_TYPE_QUERY,
     ).pipe(
       op.switchMap(({ data }: any) =>
         queryObservable(LEADERBOARD_COUNTER_QUERY, {
@@ -78,7 +75,7 @@ export function LeaderboardTile() {
           orgUserCounterTypeId: data?.seasonPass?.orgUserCounterTypeId,
         })
       ),
-      op.map(({ data }) => data?.orgUserCounterConnection)
+      op.map(({ data }) => data?.orgUserCounterConnection),
     );
 
     return {

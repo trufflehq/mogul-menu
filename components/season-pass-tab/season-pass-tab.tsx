@@ -8,10 +8,9 @@ export default function SeasonPassTab() {
   // }));
 
   // const xpSrc = props?.xpImageObj
-  //   ? getModel().image.getSrcByImageObj(props.xpImageObj)
+  //   ? getSrcByImageObj(props.xpImageObj)
   //   : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
-  const xpSrc =
-    "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const onHowToEarnClick = () => {
     // overlay.open(() => <XpActionsDialog xpSrc={xpSrc} />);
@@ -20,9 +19,9 @@ export default function SeasonPassTab() {
     <ScopedStylesheet url={new URL("season-pass-tab.css", import.meta.url)}>
       <div className="c-season-pass-tab">
         <SeasonPass
-        // onViewCollection={onViewCollection}
-        // highlightButtonBg={highlightButtonBg}
-        // enqueueSnackBar={enqueueSnackBar}
+          // onViewCollection={onViewCollection}
+          // highlightButtonBg={highlightButtonBg}
+          // enqueueSnackBar={enqueueSnackBar}
         />
         <div className="title">Earn XP</div>
         <div className="description">
@@ -31,12 +30,14 @@ export default function SeasonPassTab() {
         <div className="learn-more" onClick={onHowToEarnClick}>
           How do I earn XP?
         </div>
-        {/* {org?.slug !== "faze" && (
+        {
+          /* {org?.slug !== "faze" && (
           <Component
             slug="browser-extension-ways-to-earn"
             props={{ enqueueSnackBar }}
           />
-        )} */}
+        )} */
+        }
       </div>
     </ScopedStylesheet>
   );

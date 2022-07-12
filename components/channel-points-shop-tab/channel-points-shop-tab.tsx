@@ -4,7 +4,7 @@ import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scope
 
 export default function ChannelPointsShopTab(props) {
   // const channelPointsSrc = channelPointsImageObj
-  //   ? getModel().image.getSrcByImageObj(channelPointsImageObj)
+  //   ? getSrcByImageObj(channelPointsImageObj)
   //   : "https://cdn.bio/assets/images/features/browser_extension/channel-points.svg";
   const channelPointsSrc =
     "https://cdn.bio/assets/images/features/browser_extension/channel-points.svg";

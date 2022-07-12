@@ -1,6 +1,6 @@
 import React, { useState } from "https://npm.tfl.dev/react";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
@@ -13,11 +13,10 @@ export default function Collctible(props) {
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
-  const imageUrl = getModel().image.getSrcByImageObj(
-    collectible?.fileRel?.fileObj
+  const imageUrl = getSrcByImageObj(
+    collectible?.fileRel?.fileObj,
   );
-  const canRedeem =
-    collectible.type === "redeemable" &&
+  const canRedeem = collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
   const { pushDialog, popDialog } = useDialog();
@@ -29,7 +28,7 @@ export default function Collctible(props) {
         redeemableCollectible={{ source: collectible }}
         onViewCollection={onViewCollection}
         onExit={popDialog}
-      />
+      />,
     );
   };
 
@@ -48,24 +47,26 @@ export default function Collctible(props) {
         {collectible?.name && (
           <div className="info">
             <div className="name">{collectible?.name}</div>
-            {collectible?.ownedCollectible?.count ? (
-              <div className="count">
-                {`x${collectible?.ownedCollectible?.count}`}
-              </div>
-            ) : null}
+            {collectible?.ownedCollectible?.count
+              ? (
+                <div className="count">
+                  {`x${collectible?.ownedCollectible?.count}`}
+                </div>
+              )
+              : null}
           </div>
         )}
         {isOwned && canRedeem && (
           <div
-            className={`button ${classKebab({
-              isActive: Boolean(activePowerup),
-            })}`}
+            className={`button ${
+              classKebab({
+                isActive: Boolean(activePowerup),
+              })
+            }`}
           >
             <Button
               text={
-                activePowerup
-                  ? "Active"
-                  : collectible?.data?.redeemButtonText ?? "Redeem"
+                activePowerup ? "Active" : collectible?.data?.redeemButtonText ?? "Redeem"
                 // lang.get("collectible.redeem"),
               }
               onClick={onRedeemHandler}

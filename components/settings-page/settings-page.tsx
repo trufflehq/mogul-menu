@@ -1,15 +1,16 @@
-import React, { useCallback, useMemo } from "https://npm.tfl.dev/react";
+import React, { useCallback, useMemo, useState } from "https://npm.tfl.dev/react";
 
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
-import { gql, useMutation } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
+import { gql, useMutation } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.js";
 import Page from "../page/page.tsx";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import Button from "https://tfl.dev/@truffle/ui@^0.0.3/components/button/button.tag.js";
+import AuthDialog from "https://tfl.dev/@truffle/ui@~0.0.3/components/auth-dialog/auth-dialog.tag.js";
 
 export default function SettingsPage() {
   const { popPage } = usePageStack();
@@ -102,14 +103,16 @@ export default function SettingsPage() {
                 <Input label="Display name" valueSubject={nameSubject} />
               </div>
               <div className="color">
-                {/* <Component
+                {
+                  /* <Component
                 slug="input-color"
                 props={{
                   label: "Chat name color",
                   colorSubject: nameColorSubject,
                   isLabelVisible: true,
                 }}
-              /> */}
+              /> */
+                }
               </div>
             </>
           )}
@@ -119,7 +122,8 @@ export default function SettingsPage() {
             extensionInfo={{}}
             extensionIconPositionSubject={{}}
           />
-          {/* {isChanged && (
+          {
+            /* {isChanged && (
           <Component
             slug="unsaved-snackbar"
             props={{
@@ -127,16 +131,33 @@ export default function SettingsPage() {
               onCancel: reset,
             }}
           />
-        )} */}
-          <Signin />
+        )} */
+          }
+          {!name && <LoginButton />}
         </div>
       </ScopedStylesheet>
     ),
-    []
+    [],
   );
 
+  return <Page title="Settings" content={<SettingsPageContent />} onBack={popPage} />;
+}
+
+function LoginButton() {
+  const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
+
   return (
-    <Page title="Settings" content={<SettingsPageContent />} onBack={popPage} />
+    <>
+      <Button onClick={() => setIsAuthDialogHidden(false)}>Login</Button>
+      {!isAuthDialogHidden && (
+        <AuthDialog
+          hidden={isAuthDialogHidden}
+          onclose={() => {
+            setIsAuthDialogHidden(true);
+          }}
+        />
+      )}
+    </>
   );
 }
 
@@ -158,13 +179,12 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
   }
 
   const minVersionForLayoutConfigSteps = "3.1.0";
-  const hasLayoutConfigSteps =
-    extensionInfo?.version &&
+  const hasLayoutConfigSteps = extensionInfo?.version &&
     extensionInfo.version.localeCompare(
-      minVersionForLayoutConfigSteps,
-      undefined,
-      { numeric: true, sensitivity: "base" }
-    ) !== -1 &&
+        minVersionForLayoutConfigSteps,
+        undefined,
+        { numeric: true, sensitivity: "base" },
+      ) !== -1 &&
     allowsThirdPartyCookies;
 
   const positions = getExtensionPositions({ extensionInfo });
@@ -189,8 +209,7 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
       {hasLayoutConfigSteps && (
         <>
           {positions.map((position) => {
-            const isSelected =
-              (extensionIconPosition || "stream-top-right") ===
+            const isSelected = (extensionIconPosition || "stream-top-right") ===
               position.positionSlug;
             return (
               <div
@@ -204,67 +223,6 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
           })}
         </>
       )}
-    </div>
-  );
-}
-
-// TODO: remove this when we have the actual signin dialog
-function Signin() {
-  const { emailSubject, passwordSubject, nameSubject } = useMemo(
-    () => ({
-      nameSubject: createSubject(""),
-      emailSubject: createSubject(""),
-      passwordSubject: createSubject(""),
-    }),
-    []
-  );
-
-  const [joinResult, join] = useMutation(gql`
-    mutation UserJoin($email: String, $password: String, $name: String) {
-      userJoin(
-        input: { emailPhone: $email, password: $password, name: $name }
-      ) {
-        accessToken
-      }
-    }
-  `);
-
-  const [loginResult, login] = useMutation(gql`
-    mutation UserLogin($email: String!, $password: String!) {
-      userLoginEmailPhone(input: { email: $email, password: $password }) {
-        accessToken
-      }
-    }
-  `);
-
-  const handleJoin = async () => {
-    const name = nameSubject.getValue();
-    const email = emailSubject.getValue();
-    const password = passwordSubject.getValue();
-
-    console.log({ name, email, password });
-    const res = await join({ name, email, password });
-    console.log("join res", res);
-    getModel().auth.setAccessToken(res?.data?.userLoginEmailPhone?.accessToken);
-  };
-
-  const handleSignin = async () => {
-    const email = emailSubject.getValue();
-    const password = passwordSubject.getValue();
-
-    console.log({ email, password });
-    const res = await login({ email, password });
-    console.log("login res", res);
-    getModel().auth.setAccessToken(res?.data?.userLoginEmailPhone?.accessToken);
-  };
-
-  return (
-    <div>
-      <Input label="Name" valueSubject={nameSubject} />
-      <Input label="Email" valueSubject={emailSubject} />
-      <Input label="Password" type="password" valueSubject={passwordSubject} />
-      <Button text="Login" onClick={handleSignin} />
-      <Button text="Join" onClick={handleJoin} />
     </div>
   );
 }
@@ -354,18 +312,14 @@ const YOUTUBE_ICON_POSITIONS = [
 export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
 export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) =>
-    isTwitchSourceType(identifier.sourceType)
-  );
+  pageInfoIdentifiers?.find((identifier) => isTwitchSourceType(identifier.sourceType));
 
 function getExtensionPositions({ extensionInfo }) {
   const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo
+    extensionInfo?.pageInfo,
   );
 
-  const positions = twitchPageIdentifiers
-    ? TWITCH_ICON_POSITIONS
-    : YOUTUBE_ICON_POSITIONS;
+  const positions = twitchPageIdentifiers ? TWITCH_ICON_POSITIONS : YOUTUBE_ICON_POSITIONS;
 
   return positions;
 }
