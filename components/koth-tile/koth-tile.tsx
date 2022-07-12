@@ -1,10 +1,7 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
-import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
-import { op, Obs } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import {
-  gql,
-  queryObservable,
-} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
+import { Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
 import { CROWN_ICON } from "../../util/icon/paths.ts";
@@ -43,11 +40,11 @@ export default function KothTile() {
       op.switchMap((orgConfig: any) =>
         orgConfig?.data?.kingOfTheHill?.userId
           ? queryObservable(KOTH_USER_QUERY, {
-              userId: orgConfig?.data?.kingOfTheHill?.userId,
-            })
+            userId: orgConfig?.data?.kingOfTheHill?.userId,
+          })
           : Obs.of({})
       ),
-      op.map(({ data }: any) => data?.orgUser)
+      op.map(({ data }: any) => data?.orgUser),
     );
     return {
       kingOrgUserObs,

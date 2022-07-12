@@ -5,7 +5,7 @@ import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
 import cssVars, {
   hexOpacity,
@@ -26,7 +26,8 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { setActiveTab } from "../../util/tabs/active-tab.js";
 
 const GREEN = "#75DB9E";
 const YELLOW = "#EBC564";
@@ -154,8 +155,6 @@ export default function SeasonPass(props) {
   const [{ data: meData }] = useQuery({ query: ME_QUERY });
   const me = meData?.me;
 
-  const onViewCollection = () => null;
-
   const $$levelsRef = useRef(null);
   const $$levelRef = useRef(null);
   const { focalIndexStream, selectedRewardStream } = useMemo(() => {
@@ -166,9 +165,9 @@ export default function SeasonPass(props) {
   }, []);
 
   const { meOrgUserWithKv, focalIndex } = useObservables(() => ({
-    org: getModel().org.getMe(),
+    // org: getModel().org.getMe(),
     focalIndex: focalIndexStream.obs,
-    meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
+    // meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
   }));
 
   // const seasonPass = {
@@ -281,7 +280,7 @@ export default function SeasonPass(props) {
   // check to see if we are at a right boundary
   const isNotRightClickable = focalIndex + numTiles >= levelRange?.length;
 
-  const isMember = getModel().user.isMember(me);
+  const isMember = false; // FIXME getModel().user.isMember(me);
 
   const visibleLevels = _.slice(levelRange, focalIndex, focalIndex + numTiles);
 
@@ -293,7 +292,7 @@ export default function SeasonPass(props) {
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
   const xpSrc = xpImageObj
-    ? getModel().image.getSrcByImageObj(xpImageObj)
+    ? getSrcByImageObj(xpImageObj)
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   return (
@@ -415,7 +414,6 @@ export default function SeasonPass(props) {
                         xpImgSrc={xpSrc}
                         // enqueueSnackBar={enqueueSnackBar}
                         xp={seasonPass?.xp?.count ?? 0}
-                        onViewCollection={onViewCollection}
                       />
                     );
                   })}
@@ -568,7 +566,7 @@ export default function SeasonPass(props) {
 //                       <Component
 //                         slug="image-by-aspect-ratio"
 //                         props={{
-//                           imageUrl: getModel().image.getSrcByImageObj(
+//                           imageUrl: getSrcByImageObj(
 //                             imgRel?.fileObj
 //                           ),
 //                           aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
@@ -638,7 +636,6 @@ export function $level(props) {
     currentLevelNum,
     xp,
     xpImgSrc,
-    onViewCollection,
     enqueueSnackBar,
   } = props;
 
@@ -666,20 +663,10 @@ export function $level(props) {
         );
         // if the user clicked on an emote
       } else if (isEmote) {
-        pushDialog(
-          <UnlockedEmoteDialog
-            reward={reward}
-            onViewCollection={onViewCollection}
-          />
-        );
+        pushDialog(<UnlockedEmoteDialog reward={reward} />);
         // if the user clicked on a redeemable
       } else if (isRedeemable) {
-        pushDialog(
-          <RedeemableDialog
-            redeemableCollectible={reward}
-            onViewCollection={onViewCollection}
-          />
-        );
+        pushDialog(<RedeemableDialog redeemableCollectible={reward} />);
       } else {
         pushDialog(
           <ItemDialog
@@ -699,7 +686,10 @@ export function $level(props) {
                 text: "View collection",
                 borderRadius: "4px",
                 style: "primary",
-                onClick: onViewCollection,
+                onClick: () => {
+                  popDialog();
+                  setActiveTab("collection");
+                },
               },
             ]}
             onExit={popDialog}
@@ -823,11 +813,7 @@ export function Reward({
       <div className="inner">
         {reward?.source?.fileRel?.fileObj && (
           <div className="image">
-            <img
-              src={getModel().image.getSrcByImageObj(
-                reward?.source.fileRel.fileObj
-              )}
-            />
+            <img src={getSrcByImageObj(reward?.source.fileRel.fileObj)} />
           </div>
         )}
         <div className="name">
@@ -983,7 +969,7 @@ export function $rewardTooltip({
             {/* <Component
               slug="image-by-aspect-ratio"
               props={{
-                imageUrl: getModel().image.getSrcByImageObj(imageFileObj),
+                imageUrl: getSrcByImageObj(imageFileObj),
                 aspectRatio: imageFileObj.data.aspectRatio,
                 heightPx: 24,
                 isCentered: true,

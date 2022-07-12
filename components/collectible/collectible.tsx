@@ -1,6 +1,6 @@
 import React, { useState } from "https://npm.tfl.dev/react";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
@@ -9,13 +9,11 @@ import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 
 export default function Collctible(props) {
-  const { collectible, activePowerup, sizePx = 60, onViewCollection } = props;
+  const { collectible, activePowerup, sizePx = 60 } = props;
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
-  const imageUrl = getModel().image.getSrcByImageObj(
-    collectible?.fileRel?.fileObj
-  );
+  const imageUrl = getSrcByImageObj(collectible?.fileRel?.fileObj);
   const canRedeem =
     collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
@@ -27,7 +25,6 @@ export default function Collctible(props) {
       <RedeemableDialog
         primaryText={collectible.name}
         redeemableCollectible={{ source: collectible }}
-        onViewCollection={onViewCollection}
         onExit={popDialog}
       />
     );

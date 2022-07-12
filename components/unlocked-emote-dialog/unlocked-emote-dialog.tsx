@@ -1,4 +1,5 @@
 import React, { useContext } from "https://npm.tfl.dev/react";
+import { setActiveTab } from "../../util/tabs/active-tab.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 
@@ -6,7 +7,6 @@ export default function UnlockedEmoteDialog({
   reward,
   $title,
   $children,
-  onViewCollection,
   headerText,
   highlightBg,
 }) {
@@ -36,7 +36,10 @@ export default function UnlockedEmoteDialog({
             borderRadius: "4px",
             bg: highlightBg ?? "var(--tfl-color-surface-fill)",
             textColor: "var(--tfl-color-on-surface-fill)",
-            onClick: onViewCollection,
+            onClick: () => {
+              popDialog();
+              setActiveTab("collection");
+            },
           },
         ]}
         onExit={popDialog}

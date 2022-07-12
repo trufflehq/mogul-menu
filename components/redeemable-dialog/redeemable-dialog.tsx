@@ -4,23 +4,24 @@ import {
   Obs,
   op,
 } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import {
-  useMutation,
   gql,
+  useMutation,
   useQuery,
-} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+} from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import { fromNow } from "../../util/general.ts";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
-import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
 import { useDialog } from "../dialog-container/dialog-service.ts";
+import { setActiveTab } from "../../util/tabs/active-tab.ts";
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -111,7 +112,6 @@ export default function RedeemableDialog(props) {
     redeemableCollectible,
     $children,
     $title,
-    onViewCollection,
     headerText,
     primaryText,
     secondaryText,
@@ -184,7 +184,6 @@ export default function RedeemableDialog(props) {
       redeemableCollectible={redeemableCollectible}
       collectibles={collectibles}
       activePowerup={activePowerup}
-      onViewCollection={onViewCollection}
       primaryText={primaryText}
       secondaryText={secondaryText}
       $children={$children}
@@ -680,7 +679,6 @@ export function UnlockedRedeemableDialog(props) {
     redeemableCollectible,
     $children,
     collectibles,
-    onViewCollection,
     headerText,
     primaryText,
     secondaryText,
@@ -803,10 +801,13 @@ export function UnlockedRedeemableDialog(props) {
   );
 }
 
-function CollectibleItemDialog({ packCollectible, onViewCollection, onExit }) {
+function CollectibleItemDialog({ packCollectible, onExit }) {
+  const { popDialog } = useDialog();
+
   if (!packCollectible) {
     return <></>;
   }
+
   return (
     <div className="z-collectible-pack-dialog">
       <ItemDialog
@@ -826,7 +827,10 @@ function CollectibleItemDialog({ packCollectible, onViewCollection, onExit }) {
             text: "View collection",
             borderRadius: "4px",
             style: "primary",
-            onClick: onViewCollection,
+            onClick: () => {
+              popDialog();
+              setActiveTab("collection");
+            },
           },
         ]}
         onExit={onExit}
@@ -840,9 +844,7 @@ function PowerupActivatedSnackBar({ collectible }) {
     // me: model.user.getMe(),
     me: Obs.of([{}]),
   }));
-  const powerupSrc = getModel().image.getSrcByImageObj(
-    collectible?.fileRel?.fileObj
-  );
+  const powerupSrc = getSrcByImageObj(collectible?.fileRel?.fileObj);
 
   return (
     <SnackBar
@@ -871,7 +873,6 @@ export function RecipeDialog(props) {
     secondaryText,
     highlightBg,
     $title,
-    onViewCollection,
     onExit,
   } = props;
 

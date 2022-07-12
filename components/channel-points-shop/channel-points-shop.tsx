@@ -12,13 +12,14 @@ import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.j
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import {
-  useQuery,
   gql,
   useMutation,
-} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+  useQuery,
+} from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { useDialog } from "../dialog-container/dialog-service.ts";
+import { setActiveTab } from "../../util/tabs/active-tab.ts";
 import Dialog from "../dialog/dialog.tsx";
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
@@ -136,7 +137,6 @@ export default function ChannelPointsShop() {
   });
   const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
 
-  const onViewCollection = () => null;
   const onHowToEarnClick = () => null;
 
   // const channelPointsSrc =
@@ -176,7 +176,6 @@ export default function ChannelPointsShop() {
                       channelPointsImageObj={channelPointsImageObj}
                       channelPoints={channelPoints}
                       collectibleItem={storeCollectibleItem}
-                      onViewCollection={onViewCollection}
                     />
                   );
                 })}
@@ -204,13 +203,8 @@ export default function ChannelPointsShop() {
 }
 
 function CollectibleItem(props) {
-  const {
-    channelPoints,
-    collectibleItem,
-    channelPointsImageObj,
-    onViewCollection,
-    buttonBg,
-  } = props;
+  const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } =
+    props;
 
   const { pushDialog, popDialog } = useDialog();
 
@@ -228,15 +222,12 @@ function CollectibleItem(props) {
   const channelPointsSrc =
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
-  const [isConfirmDialogHidden, setConfirmDialogHiddenState] = useState(true);
-
   const onPurchaseRequestHandler = () => {
     // open confirmation dialog
     pushDialog(
       <ConfirmPurchaseDialog
         collectibleItem={collectibleItem}
         channelPointsImageObj={channelPointsImageObj}
-        onViewCollection={popDialog}
         buttonBg="var(--truffle-gradient)"
       />
     );
@@ -253,7 +244,7 @@ function CollectibleItem(props) {
       <div className="card">
         <div className="image">
           <ImageByAspectRatio
-            imageUrl={getModel().image.getSrcByImageObj(file?.fileObj)}
+            imageUrl={getSrcByImageObj(file?.fileObj)}
             aspectRatio={file?.fileObj?.data?.aspectRatio}
             height={64}
             width={64}
@@ -279,7 +270,6 @@ function CollectibleItem(props) {
 function ConfirmPurchaseDialog({
   collectibleItem,
   channelPointsImageObj,
-  onViewCollection,
   buttonBg,
 }) {
   // const { org } = useStream(() => ({
@@ -326,7 +316,6 @@ function ConfirmPurchaseDialog({
     popDialog();
     pushDialog(
       <NotifyPurchaseDialog
-        onViewCollection={onViewCollection}
         collectibleItem={collectibleItem}
         buttonBg={buttonBg}
       />
@@ -340,7 +329,7 @@ function ConfirmPurchaseDialog({
           <div className="body">
             <div className="image">
               <ImageByAspectRatio
-                imageUrl={getModel().image.getSrcByImageObj(file?.fileObj)}
+                imageUrl={getSrcByImageObj(file?.fileObj)}
                 aspectRatio={file?.fileObj?.data?.aspectRatio}
                 heightPx={56}
                 widthPx={56}
@@ -393,12 +382,12 @@ function ConfirmPurchaseDialog({
   );
 }
 
-function NotifyPurchaseDialog({ onViewCollection, collectibleItem, buttonBg }) {
+function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
   const { popDialog } = useDialog();
 
   const onViewCollectionHandler = () => {
     popDialog();
-    onViewCollection?.();
+    setActiveTab("collection");
   };
 
   const file = collectibleItem?.source?.fileRel;
@@ -412,15 +401,9 @@ function NotifyPurchaseDialog({ onViewCollection, collectibleItem, buttonBg }) {
   return (
     <>
       {isEmote ? (
-        <UnlockedEmoteDialog
-          reward={collectibleItem}
-          onViewCollection={onViewCollection}
-        />
+        <UnlockedEmoteDialog reward={collectibleItem} />
       ) : isRedeemable ? (
-        <RedeemableDialog
-          redeemableCollectible={collectibleItem}
-          onViewCollection={onViewCollection}
-        />
+        <RedeemableDialog redeemableCollectible={collectibleItem} />
       ) : (
         <ItemDialog
           imgRel={file}

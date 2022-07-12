@@ -1,8 +1,5 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
-import {
-  gql,
-  usePollingQuery,
-} from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
@@ -48,17 +45,17 @@ export default function PredictionTile() {
 
   const activePoll = useMemo(
     () => activePollData?.pollConnection?.nodes?.[0],
-    [activePollData]
+    [activePollData],
   );
   const pollMsLeft = useMemo(
     () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
-    [activePoll]
+    [activePoll],
   );
   const isPredictionExpired = useMemo(() => pollMsLeft <= 0, [pollMsLeft]);
 
   const hasWinner = useMemo(
     () => activePoll?.data?.winningOptionIndex !== undefined,
-    [activePoll]
+    [activePoll],
   );
 
   let Content: Function;

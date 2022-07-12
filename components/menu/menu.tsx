@@ -42,7 +42,7 @@ import {
 } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
+import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 
@@ -66,6 +66,7 @@ import { useActionBannerManager } from "../../util/action-banner/manager.ts";
 import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
 import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
+import { activeTabSubject as nextTabSubject } from "../../util/tabs/active-tab.ts";
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -445,10 +446,10 @@ export default function BrowserExtensionMenu(props) {
   // set up state for TabNameContext
   const tabStateManager: TabStateManager = useTabStateManager(visibleTabs);
   const { tabStates } = tabStateManager;
-  const tabIds = Object.keys(tabStates);
-  const [activeTabId, setActiveTabId] = useState(tabIds[0]);
+  const tabSlugs = Object.keys(tabStates);
+  const [activeTabSlug, setActiveTabId] = useState(tabSlugs[0]);
 
-  const activeTabIndex = tabIds.indexOf(activeTabId);
+  const activeTabIndex = tabSlugs.indexOf(activeTabSlug);
   const ActiveTab: TabElement =
     visibleTabs[activeTabIndex].$el ?? (() => <></>);
 
@@ -463,21 +464,38 @@ export default function BrowserExtensionMenu(props) {
       });
 
     // set the current tab state to active
-    setTabState(activeTabId, true);
+    setTabState(activeTabSlug, true);
 
     const onNavigateAway = () => {
       // set the tab to inactive when the user
       // navigates to a different tab
-      setTabState(activeTabId, false);
+      setTabState(activeTabSlug, false);
     };
 
     return onNavigateAway;
-  }, [activeTabId]);
+  }, [activeTabSlug]);
 
   const hasNotification = Object.values(tabStates).reduce(
     (acc, tabState) => acc || tabState.hasBadge,
     false
   );
+
+  const { nextTabSlugFromExternal } = useObservables(() => ({
+    nextTabSlugFromExternal: nextTabSubject.obs,
+  }));
+
+  useEffect(() => {
+    if (tabSlugs.includes(nextTabSlugFromExternal)) {
+      clearPageStack();
+      // set the tab that was clicked to the current tab
+      setActiveTabId(nextTabSlugFromExternal);
+      // this effect doesn't get called unless the next value
+      // is different from the previous one; we set the next
+      // value of nextTabSubject to null so that consecutive
+      // calls to setActiveTab for a particular tab slug work
+      nextTabSubject.next(null);
+    }
+  }, [nextTabSlugFromExternal]);
 
   // action banners
   const { actionBannerObjSubject, displayActionBanner, removeActionBanner } =
@@ -512,7 +530,7 @@ export default function BrowserExtensionMenu(props) {
         className="extension-icon"
         style={{
           backgroundImage: iconImageObj
-            ? `url(${getModel().image.getSrcByImageObj(iconImageObj)})`
+            ? `url(${getSrcByImageObj(iconImageObj)})`
             : undefined,
         }}
         ref={$$extensionIconRef}
@@ -636,7 +654,7 @@ export default function BrowserExtensionMenu(props) {
                     actionBannerObjSubject={actionBannerObjSubject}
                   />
                   {visibleTabs.map(({ $el: TabComponent }, idx) => (
-                    <TabIdContext.Provider key={idx} value={tabIds[idx]}>
+                    <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
                       <div
                         className={`tab-component ${classKebab({
                           isActive: idx === activeTabIndex,

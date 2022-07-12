@@ -1,7 +1,7 @@
 import React from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
-import Avatar from "https://tfl.dev/@truffle/ui@0.0.1/components/avatar/avatar.js";
-import { useQuery, gql } from "https://tfl.dev/@truffle/api@0.0.1/client.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 
 const ME_QUERY = gql`
   query {

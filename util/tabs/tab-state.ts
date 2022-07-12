@@ -18,7 +18,7 @@ export function useTabStateManager(tabs: TabDefinition[]) {
   const initTabStates = (tabs: TabDefinition[]) => {
     const tabStates: Record<string, TabState> = {};
     for (const tab of tabs) {
-      tabStates[uniqueId()] = {
+      tabStates[tab.slug] = {
         text: tab.text,
         icon: tab.imgUrl,
         hasBadge: false,
