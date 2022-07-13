@@ -1,5 +1,5 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
-import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";

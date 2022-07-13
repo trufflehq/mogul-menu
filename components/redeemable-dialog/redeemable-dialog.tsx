@@ -1,23 +1,15 @@
 import React, { useEffect, useMemo, useState } from "https://npm.tfl.dev/react";
-import {
-  createSubject,
-  Obs,
-  op,
-} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import {
-  gql,
-  useMutation,
-  useQuery,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, useMutation, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import { fromNow } from "../../util/general.ts";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
-import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
 import { useDialog } from "../dialog-container/dialog-service.ts";
@@ -120,8 +112,7 @@ export default function RedeemableDialog(props) {
 
   const { popDialog: onExit } = useDialog();
 
-  const redeemablePowerupId =
-    redeemableCollectible?.source?.data?.redeemData?.powerupId;
+  const redeemablePowerupId = redeemableCollectible?.source?.data?.redeemData?.powerupId;
 
   // active powerups
   const [{ data: activePowerupsData }] = useQuery({
@@ -142,17 +133,13 @@ export default function RedeemableDialog(props) {
   });
   const collectibles = collectiblesData?.collectibleConnection?.nodes;
 
-  const isCollectiblePack =
-    redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
-  const isOpenedCollectiblePack =
-    isCollectiblePack &&
+  const isCollectiblePack = redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
+  const isOpenedCollectiblePack = isCollectiblePack &&
     _.find(collectibles, { id: redeemableCollectible.sourceId })
-      ?.ownedCollectible?.count < 1;
-  const isChatHighlightPowerup =
-    redeemableCollectible?.source?.data?.redeemData?.category ===
+        ?.ownedCollectible?.count < 1;
+  const isChatHighlightPowerup = redeemableCollectible?.source?.data?.redeemData?.category ===
     "chatMessageHighlight";
-  const isUsernameGradientPowerup =
-    redeemableCollectible?.source?.data?.redeemData?.category ===
+  const isUsernameGradientPowerup = redeemableCollectible?.source?.data?.redeemData?.category ===
     "chatUsernameGradient";
   const isRecipe = redeemableCollectible?.source?.data?.redeemType === "recipe";
   const isRedeemed = redeemableCollectible?.source?.ownedCollectible?.count < 1;
@@ -202,15 +189,14 @@ export function ActiveRedeemableDialog({
   onExit,
 }) {
   const [_deleteResult, executeDeleteActivePowerupMutation] = useMutation(
-    DELETE_ACTIVE_POWERUP_MUTATION
+    DELETE_ACTIVE_POWERUP_MUTATION,
   );
 
-  const durationSeconds =
-    redeemableCollectible.source?.data?.redeemData?.durationSeconds;
+  const durationSeconds = redeemableCollectible.source?.data?.redeemData?.durationSeconds;
 
   const creationDate = new Date(activePowerup.creationDate);
   const expirationDate = new Date(
-    creationDate.getTime() + durationSeconds * 1000
+    creationDate.getTime() + durationSeconds * 1000,
   );
   const timeRemaining = fromNow(expirationDate);
 
@@ -219,7 +205,7 @@ export function ActiveRedeemableDialog({
     if (confirm("Are you sure?")) {
       await executeDeleteActivePowerupMutation(
         { powerupId: activePowerup.id },
-        { additionalTypenames: ["ActivePowerup"] }
+        { additionalTypenames: ["ActivePowerup"] },
       );
       onExit?.();
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
@@ -276,9 +262,7 @@ export function RedeemedCollectibleDialog({
         $title={$title}
         highlightBg={highlightBg}
         headerText={headerText}
-        primaryText={`${
-          redeemableCollectible?.source?.name ?? ""
-        } has already been redeemed`}
+        primaryText={`${redeemableCollectible?.source?.name ?? ""} has already been redeemed`}
         secondaryTextStyle=""
         buttons={[
           {
@@ -303,8 +287,7 @@ function ColorDropdown(props) {
     colors: colorsStream.obs,
   }));
 
-  const selectedColorRgba =
-    _.find(colors, { name: selectedColor })?.rgba ||
+  const selectedColorRgba = _.find(colors, { name: selectedColor })?.rgba ||
     "var(--tfl-color-surface-fill)";
 
   return (
@@ -316,7 +299,8 @@ function ColorDropdown(props) {
           name: option.name,
         }))}
       />
-      {/* <Component
+      {
+        /* <Component
         slug="dropdown"
         props={{
           isFullWidth: true,
@@ -361,7 +345,8 @@ function ColorDropdown(props) {
             },
           })),
         }}
-      /> */}
+      /> */
+      }
     </div>
   );
 }
@@ -376,8 +361,7 @@ function UsernameGradientDropdown(props) {
     user: Obs.from([{}]),
   }));
 
-  const selectedGradientBg =
-    _.find(gradients, { name: selectedGradient })?.value ||
+  const selectedGradientBg = _.find(gradients, { name: selectedGradient })?.value ||
     "var(--tfl-color-surface-fill)";
 
   return (
@@ -389,7 +373,8 @@ function UsernameGradientDropdown(props) {
           name: option.name,
         }))}
       />
-      {/* <Component
+      {
+        /* <Component
         slug="dropdown"
         props={{
           isFullWidth: true,
@@ -440,7 +425,8 @@ function UsernameGradientDropdown(props) {
             },
           })),
         }}
-      /> */}
+      /> */
+      }
     </div>
   );
 }
@@ -468,7 +454,7 @@ export function RedeemDialogSelectable(props) {
   const collectible = redeemableCollectible?.source;
   const enqueueSnackBar = useSnackBar();
   const [_redeemResult, executeRedeemMutation] = useMutation(
-    REDEEM_COLLECTIBLE_MUTATION
+    REDEEM_COLLECTIBLE_MUTATION,
   );
 
   const redeemHandler = async () => {
@@ -480,7 +466,7 @@ export function RedeemDialogSelectable(props) {
           collectibleId: collectible.id,
           additionalData,
         },
-        { additionalTypenames: ["OwnedCollectible", "ActivePowerup"] }
+        { additionalTypenames: ["OwnedCollectible", "ActivePowerup"] },
       );
 
       const { redeemResponse } = result.ownedCollectibleRedeem;
@@ -488,18 +474,16 @@ export function RedeemDialogSelectable(props) {
 
       if (error) {
         errorStream.next(
-          "There was an internal error while redeeming; check the logs"
+          "There was an internal error while redeeming; check the logs",
         );
         console.error("Error while redeeming:", error);
       } else if (redeemError) {
         errorStream.next(
-          `There was an error redeeming ${redeemError?.message}`
+          `There was an error redeeming ${redeemError?.message}`,
         );
       } else {
         onExit?.();
-        enqueueSnackBar(() => (
-          <PowerupActivatedSnackBar collectible={collectible} />
-        ));
+        enqueueSnackBar(() => <PowerupActivatedSnackBar collectible={collectible} />);
       }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
@@ -508,7 +492,7 @@ export function RedeemDialogSelectable(props) {
       console.log("err", err);
       alert("There was an error redeeming: " + err?.info || err?.message);
       errorStream.next(
-        `There was an error redeeming ${err?.info || err?.message}`
+        `There was an error redeeming ${err?.info || err?.message}`,
       );
     }
   };
@@ -523,14 +507,10 @@ export function RedeemDialogSelectable(props) {
         $title={$title}
         highlightBg={highlightBg}
         errorStream={errorStream}
-        primaryText={
-          primaryText ?? `${redeemableCollectible?.source?.name} unlocked`
-        }
-        secondaryText={
-          secondaryText ??
+        primaryText={primaryText ?? `${redeemableCollectible?.source?.name} unlocked`}
+        secondaryText={secondaryText ??
           redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+          redeemableCollectible?.source?.data?.description}
         buttons={[
           {
             text: "Close",
@@ -571,7 +551,7 @@ export function ChatHighlightDialog(props) {
     return {
       selectedColorStream: createSubject(null),
       colorsStream: createSubject(
-        redeemableCollectible.source?.data?.redeemData?.colors
+        redeemableCollectible.source?.data?.redeemData?.colors,
       ),
     };
   }, []);
@@ -592,8 +572,7 @@ export function ChatHighlightDialog(props) {
         />
       }
       getAdditionalData={() => {
-        const selectedColorRgba =
-          _.find(colors, { name: selectedColor })?.rgba ||
+        const selectedColorRgba = _.find(colors, { name: selectedColor })?.rgba ||
           "var(--tfl-color-surface-fill)";
 
         const additionalData = {
@@ -608,7 +587,7 @@ export function ChatHighlightDialog(props) {
       highlightBg={highlightBg}
       $title={$title}
       isActiveButtonDisabledStream={createSubject(
-        selectedColorStream.obs.pipe(op.map((selectedColor) => !selectedColor))
+        selectedColorStream.obs.pipe(op.map((selectedColor) => !selectedColor)),
       )}
     />
   );
@@ -629,7 +608,7 @@ export function UserNameGradientDialog(props) {
     return {
       selectedGradientStream: createSubject(null),
       gradientStream: createSubject(
-        redeemableCollectible.source?.data?.redeemData?.colors
+        redeemableCollectible.source?.data?.redeemData?.colors,
       ),
     };
   }, []);
@@ -650,8 +629,7 @@ export function UserNameGradientDialog(props) {
         />
       }
       getAdditionalData={() => {
-        const selectedGradientValue =
-          _.find(gradients, { name: selectedGradient })?.value ||
+        const selectedGradientValue = _.find(gradients, { name: selectedGradient })?.value ||
           "var(--tfl-color-surface-fill)";
 
         const additionalData = {
@@ -667,8 +645,8 @@ export function UserNameGradientDialog(props) {
       $title={$title}
       isActiveButtonDisabledStream={createSubject(
         selectedGradientStream.obs.pipe(
-          op.map((selectedGradient) => !selectedGradient)
-        )
+          op.map((selectedGradient) => !selectedGradient),
+        ),
       )}
     />
   );
@@ -695,12 +673,11 @@ export function UnlockedRedeemableDialog(props) {
     org: Obs.from([{}]),
   }));
 
-  const isCollectiblePack =
-    redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
+  const isCollectiblePack = redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
   const collectible = redeemableCollectible?.source;
   const enqueueSnackBar = useSnackBar();
   const [_redeemResult, executeRedeemMutation] = useMutation(
-    REDEEM_COLLECTIBLE_MUTATION
+    REDEEM_COLLECTIBLE_MUTATION,
   );
 
   const redeemHandler = async () => {
@@ -721,7 +698,7 @@ export function UnlockedRedeemableDialog(props) {
         },
         {
           additionalTypenames: ["OwnedCollectible", "ActivePowerup"],
-        }
+        },
       );
 
       const { redeemResponse } = result.ownedCollectibleRedeem;
@@ -734,22 +711,21 @@ export function UnlockedRedeemableDialog(props) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else if (redeemResponse.type === "collectiblePack") {
         const collectibleIds = redeemResponse?.collectibleIds;
-        const packCollectible = _.find(collectibles, (collectible) =>
-          collectibleIds.includes(collectible?.id)
+        const packCollectible = _.find(
+          collectibles,
+          (collectible) => collectibleIds.includes(collectible?.id),
         );
         popDialog();
         pushDialog(
           <CollectibleItemDialog
             packCollectible={packCollectible}
             onExit={popDialog}
-          />
+          />,
         );
         // onExit?.();
       } else {
         onExit?.();
-        enqueueSnackBar(() => (
-          <PowerupActivatedSnackBar collectible={collectible} />
-        ));
+        enqueueSnackBar(() => <PowerupActivatedSnackBar collectible={collectible} />);
       }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
@@ -769,14 +745,10 @@ export function UnlockedRedeemableDialog(props) {
         headerText={headerText}
         $title={$title}
         highlightBg={highlightBg}
-        primaryText={
-          primaryText ?? `${redeemableCollectible?.source?.name} unlocked`
-        }
-        secondaryText={
-          secondaryText ??
+        primaryText={primaryText ?? `${redeemableCollectible?.source?.name} unlocked`}
+        secondaryText={secondaryText ??
           redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+          redeemableCollectible?.source?.data?.description}
         buttons={[
           {
             text: "Close",
@@ -880,7 +852,7 @@ export function RecipeDialog(props) {
     return {
       selectedColorStream: createSubject(null),
       colorsStream: createSubject(
-        redeemableCollectible.source?.data?.redeemData?.colors
+        redeemableCollectible.source?.data?.redeemData?.colors,
       ),
       errorStream: createSubject(""),
     };
@@ -910,14 +882,10 @@ export function RecipeDialog(props) {
         $title={$title}
         highlightBg={highlightBg}
         errorStream={errorStream}
-        primaryText={
-          primaryText ?? `${redeemableCollectible?.source?.name} unlocked`
-        }
-        secondaryText={
-          secondaryText ??
+        primaryText={primaryText ?? `${redeemableCollectible?.source?.name} unlocked`}
+        secondaryText={secondaryText ??
           redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+          redeemableCollectible?.source?.data?.description}
         buttons={[
           {
             text: "Close",

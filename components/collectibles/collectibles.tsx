@@ -1,8 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-} from "https://npm.tfl.dev/react";
+import React, { useContext, useEffect, useMemo } from "https://npm.tfl.dev/react";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
@@ -90,19 +86,18 @@ export default function Collectibles(props) {
     query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
   });
 
-  const collectibleConnection =
-    collectibleConnectionData?.collectibleConnection;
+  const collectibleConnection = collectibleConnectionData?.collectibleConnection;
 
   const sortedCollectibles = _.orderBy(
     collectibleConnection?.nodes,
-    (collectible) => collectible.ownedCollectible?.count
+    (collectible) => collectible.ownedCollectible?.count,
   );
   const groups = _.groupBy(sortedCollectibles, "type");
   const groupedCollectibles = _.orderBy(
     _.map(groups, (collectibles, type) => {
       return { type, collectibles };
     }),
-    ORDER_FN
+    ORDER_FN,
   );
   const isEmpty = _.isEmpty(collectibleConnection?.nodes);
 
@@ -111,8 +106,7 @@ export default function Collectibles(props) {
     query: ACTIVE_POWERUPS_QUERY,
   });
 
-  const activePowerups =
-    activePowerupData?.activePowerupConnection?.nodes ?? [];
+  const activePowerups = activePowerupData?.activePowerupConnection?.nodes ?? [];
 
   if (isEmpty) return "Looks like you don't have any collectibles!";
 

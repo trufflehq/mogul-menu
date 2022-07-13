@@ -1,9 +1,9 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
-import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
-import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.js";
+import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.tsx";
 
 import Tile from "../tile/tile.tsx";
 

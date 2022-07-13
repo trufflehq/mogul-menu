@@ -3,7 +3,7 @@ import {
   gql,
   pollingQueryObservable,
   useMutation,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";

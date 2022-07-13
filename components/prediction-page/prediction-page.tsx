@@ -7,7 +7,7 @@ import {
   abbreviateNumber,
   formatNumber,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";

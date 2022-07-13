@@ -8,7 +8,7 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/ima
 import Dialog from "../dialog/dialog.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import { fromNow } from "../../util/general.ts";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 
 const TRANSACTIONS_QUERY = gql`
   query EconomyTransactionsQuery {

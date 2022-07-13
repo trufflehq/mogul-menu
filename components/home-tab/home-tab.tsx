@@ -2,7 +2,7 @@ import React, { useEffect } from "https://npm.tfl.dev/react";
 import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
 import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import root from "https://npm.tfl.dev/react-shadow@19";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
 
