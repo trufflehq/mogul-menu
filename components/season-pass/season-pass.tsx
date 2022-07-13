@@ -24,7 +24,7 @@ import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/legacy/icon/icon.
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
 import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
-import { setActiveTab } from "../../util/tabs/active-tab.js";
+import { setActiveTab } from "../../util/tabs/active-tab.ts";
 
 const GREEN = "#75DB9E";
 const YELLOW = "#EBC564";
