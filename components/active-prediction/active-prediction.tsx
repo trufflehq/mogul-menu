@@ -13,11 +13,11 @@ import {
   formatPercentage,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 
-import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
-import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.js";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
+import Input from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/input/input.tsx";
+import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
 
 import { COIN_ICON_PATH, TROPHY_ICON } from "../../util/icon/paths.ts";
 import { ONE_MINUTE_MS, ONE_SECOND_MS } from "../../util/general.ts";

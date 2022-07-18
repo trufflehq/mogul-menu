@@ -6,11 +6,11 @@ import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import { gql, useMutation } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
-import Input from "https://tfl.dev/@truffle/ui@0.0.1/components/input/input.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import Input from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/input/input.tsx";
 import Page from "../page/page.tsx";
-import Button from "https://tfl.dev/@truffle/ui@^0.0.3/components/button/button.tag.ts";
-import AuthDialog from "https://tfl.dev/@truffle/ui@~0.0.3/components/auth-dialog/auth-dialog.tag.js";
+import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/button/button.tag.ts";
+import AuthDialog from "https://tfl.dev/@truffle/ui@~0.1.0/components/auth-dialog/auth-dialog.tag.ts";
 
 export default function SettingsPage() {
   const { popPage } = usePageStack();

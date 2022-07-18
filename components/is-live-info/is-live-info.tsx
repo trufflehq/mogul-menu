@@ -1,5 +1,5 @@
 import React from "https://npm.tfl.dev/react";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 
 import Timer from "../timer/timer.tsx";
 

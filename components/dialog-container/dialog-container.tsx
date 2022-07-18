@@ -1,15 +1,14 @@
 import React from "https://npm.tfl.dev/react";
 import { dialogService } from "./dialog-service.ts";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 
 export default function DialogContainer() {
   const { dialogStack } = useObservables(() => ({
     dialogStack: dialogService.dialogStackSubject.obs,
   }));
 
-  const topDialog =
-    dialogStack.length > 0 ? dialogStack[dialogStack.length - 1] : null;
+  const topDialog = dialogStack.length > 0 ? dialogStack[dialogStack.length - 1] : null;
 
   if (topDialog === null) return <></>;
 

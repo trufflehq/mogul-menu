@@ -4,14 +4,14 @@ import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/i
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { gql, useMutation, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
-import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
+import { useSnackBar } from "https://tfl.dev/@truffle/ui@~0.1.0/utils/snack-bar.ts";
 import { fromNow } from "../../util/general.ts";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
-import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
-import Avatar from "https://tfl.dev/@truffle/ui@^0.0.3/components/legacy/avatar/avatar.tsx";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Dropdown from "https://tfl.dev/@truffle/ui@0.0.2/components/dropdown/dropdown.js";
+import SnackBar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/snack-bar/snack-bar.tsx";
+import Avatar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+import Dropdown from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/dropdown/dropdown.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
 

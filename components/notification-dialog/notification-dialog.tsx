@@ -3,8 +3,8 @@ import _ from "https://npm.tfl.dev/lodash?no-check";
 
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
+import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../dialog/dialog.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import { fromNow } from "../../util/general.ts";

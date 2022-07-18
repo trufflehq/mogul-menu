@@ -6,8 +6,11 @@ import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observa
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
-import cssVars, { hexOpacity, rgb2rgba } from "https://tfl.dev/@truffle/ui@0.0.1/util/css-vars.js";
+import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
+import cssVars, {
+  hexOpacity,
+  rgb2rgba,
+} from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 
 import {
   getLevelBySeasonPassAndXp,
@@ -19,10 +22,10 @@ import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.
 import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
 import ItemDialog from "../item-dialog/item-dialog.js";
 
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/legacy/icon/icon.tsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
 

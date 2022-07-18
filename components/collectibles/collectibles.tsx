@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useMemo } from "https://npm.tfl.dev/react";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
-import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
+import { useSnackBar } from "https://tfl.dev/@truffle/ui@~0.1.0/utils/snack-bar.ts";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import Collectible from "../collectible/collectible.tsx";

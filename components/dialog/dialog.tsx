@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "https://npm.tfl.dev/react";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import { useDialog } from "../dialog-container/dialog-service.ts";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 
 const CLOSE_DELAY_MS = 450; // 0.45s for animation
 
@@ -53,11 +53,13 @@ export default function Dialog(props) {
     <ScopedStylesheet url={new URL("dialog.css", import.meta.url)}>
       <div
         ref={$$ref}
-        className={`c-dialog use-css-vars-creator ${className} ${classKebab({
-          hasPadding,
-          isWide,
-          isBlurredBg,
-        })}`}
+        className={`c-dialog use-css-vars-creator ${className} ${
+          classKebab({
+            hasPadding,
+            isWide,
+            isBlurredBg,
+          })
+        }`}
       >
         <div className="backdrop" onClick={!shouldPreventClose && close} />
         <div
@@ -67,13 +69,9 @@ export default function Dialog(props) {
           {hasTop && (
             <div className="top">
               <div className="inner">
-                {$topLeftButton && (
-                  <div className="top-left">{$topLeftButton}</div>
-                )}
+                {$topLeftButton && <div className="top-left">{$topLeftButton}</div>}
                 {$title && <div className="title">{$title}</div>}
-                {$topRightButton && (
-                  <div className="top-right">{$topRightButton}</div>
-                )}
+                {$topRightButton && <div className="top-right">{$topRightButton}</div>}
               </div>
             </div>
           )}

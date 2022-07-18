@@ -6,12 +6,12 @@ import {
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
+import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
 import { gql, useMutation, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
 import { useDialog } from "../dialog-container/dialog-service.ts";

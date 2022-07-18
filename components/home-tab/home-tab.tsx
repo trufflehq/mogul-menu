@@ -6,9 +6,9 @@ import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
 
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@0.0.1/components/image-by-aspect-ratio/image-by-aspect-ratio.js";
-import Icon from "https://tfl.dev/@truffle/ui@0.0.3/components/icon/icon.js";
-import Spinner from "https://tfl.dev/@truffle/ui@0.0.1/components/spinner/spinner.js";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
+import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
 
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 

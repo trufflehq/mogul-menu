@@ -7,7 +7,7 @@ import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
 
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@0.0.1/components/scoped-stylesheet/scoped-stylesheet.js";
+import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
 import Time from "../time/time.tsx";
 
 const POLL_INTERVAL = ONE_SECOND_MS;

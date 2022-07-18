@@ -1,9 +1,9 @@
 import React, { useState } from "https://npm.tfl.dev/react";
-import { useSnackBar } from "https://tfl.dev/@truffle/ui@0.0.1/util/snack-bar.js";
+import { useSnackBar } from "https://tfl.dev/@truffle/ui@~0.1.0/utils/snack-bar.ts";
 
-import Button from "https://tfl.dev/@truffle/ui@0.0.1/components/button/button.js";
-import SnackBar from "https://tfl.dev/@truffle/ui@0.0.1/components/snack-bar/snack-bar.js";
-import Dialog from "https://tfl.dev/@truffle/ui@0.0.2/components/dialog/dialog.entry.js";
+import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import SnackBar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/snack-bar/snack-bar.tsx";
+import Dialog from "https://tfl.dev/@truffle/ui@~0.1.0/components/dialog/dialog.entry.js";
 
 import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
@@ -57,7 +57,7 @@ export default function HomeTab() {
         message="Finish setting up your account"
         buttonText="Sign up"
         onClick={() => removeActionBanner(actionBannerId)}
-      />
+      />,
     );
   };
 
@@ -67,7 +67,7 @@ export default function HomeTab() {
   // this uses the mogul-menu dialog service
   const toggleDialogHandler = () => {
     pushDialog(
-      <div style={{ background: "white", color: "black" }}>I'm a dialog</div>
+      <div style={{ background: "white", color: "black" }}>I'm a dialog</div>,
     );
   };
 
@@ -93,12 +93,16 @@ export default function HomeTab() {
         <Button onClick={actionBannerHandler} text="Show action banner" />
         <Button onClick={toggleDialogHandler} text="Show dialog" />
       </div>
-      {/* <div>
+      {
+        /* <div>
         <DialogDemo />
-      </div> */}
-      {/* <Dialog hidden={isDialogHidden}>
+      </div> */
+      }
+      {
+        /* <Dialog hidden={isDialogHidden}>
         <Button onClick={toggleDialogHandler} text="Toggle dialog" />
-      </Dialog> */}
+      </Dialog> */
+      }
     </div>
   );
 }
