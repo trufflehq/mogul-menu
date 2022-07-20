@@ -1,9 +1,5 @@
-import {
-  ONE_HOUR_MS,
-  ONE_MINUTE_MS,
-  ONE_SECOND_MS,
-  pad,
-} from "../../util/general.ts";
+import React from "https://npm.tfl.dev/react";
+import { ONE_HOUR_MS, ONE_MINUTE_MS, ONE_SECOND_MS, pad } from "../../util/general.ts";
 
 export default function Time({ ms }: { ms: number }) {
   const hours = Math.floor(ms / ONE_HOUR_MS);
