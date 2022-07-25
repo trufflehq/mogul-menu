@@ -9,8 +9,8 @@
       -ms-flex-direction: column;
           flex-direction: column;
   min-height: 157px;
-  background-color: var(--tfl-color-surface-fill);
-  border: 1px solid var(--tfl-color-surface-border);
+  background-color: var(--mm-color-bg-secondary);
+  border: 1px solid var(--mm-color-bg-tertiary);
   -webkit-transition: -webkit-filter linear 100ms;
   transition: -webkit-filter linear 100ms;
   transition: filter linear 100ms;
@@ -42,7 +42,7 @@
 }
 
 :host .c-tile > .header > .icon {
-  background-color: var(--tfl-color-bg-fill);
+  background-color: var(--mm-color-bg-primary);
   border-radius: 100%;
   width: 40px;
   height: 40px;

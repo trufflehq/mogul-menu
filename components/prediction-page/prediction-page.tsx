@@ -7,10 +7,13 @@ import {
   abbreviateNumber,
   formatNumber,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import { gql, usePollingQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+import {
+  gql,
+  usePollingQuery,
+} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import ActivePrediction from "../active-prediction/active-prediction.tsx";
 
 const CHANNEL_POINTS_QUERY = gql`
@@ -51,7 +54,7 @@ export default function PredictionPage() {
         <div>
           <Icon
             icon={CRYSTAL_BALL_ICON}
-            color="var(--tfl-color-on-bg-fill)"
+            color="var(--mm-color-text-bg-primary)"
             size="40px"
             viewBox={CRYSTAL_BALL_ICON_VIEWBOX}
           />

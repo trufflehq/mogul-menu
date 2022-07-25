@@ -12,7 +12,7 @@ $green: #75DB9E;
 $yellow: #EBC564;
 
 @mixin status-icon {
-  background: var(--tfl-color-surface-fill);
+  background: var(--mm-color-bg-secondary);
   padding: 4px;
   border-radius: 4px;
 
@@ -117,7 +117,7 @@ $yellow: #EBC564;
           align-items: flex-end;
           height: 100%;
           margin-right: 4px;
-          color: var(--tfl-color-secondary-fill);
+          color: var(--mm-color-secondary);
         }
       }
     }
@@ -144,7 +144,7 @@ $yellow: #EBC564;
     }
 
     >.button {
-      color: var(--tfl-color-on-bg-fill);
+      color: var(--mm-color-text-bg-primary);
       padding: 10px 16px;
       cursor: pointer;
 
@@ -178,11 +178,11 @@ $yellow: #EBC564;
         top: calc(#{$levelPaddingHeight} + 32px + #{$levelNumberMarginBottom});
 
         >.tier {
-          color: var(--tfl-color-surface-fill);
+          color: var(--mm-color-bg-secondary);
           margin-bottom: calc(#{$rewardHeight} + #{$rewardInnerGapName / 2} + #{$tierBottomMargin} + 4px);
           font-weight: 600;
           text-transform: uppercase;
-          background: var(--tfl-color-surface-fill);
+          background: var(--mm-color-bg-secondary);
           line-height: $tierInfoHeight;
           padding: 0 28px;
         }
@@ -252,7 +252,7 @@ $yellow: #EBC564;
 
     >.action {
       margin-right: 16px;
-      color: var(--tfl-color-secondary-fill);
+      color: var(--mm-color-secondary);
 
       &:last-child {
         margin-right: 0;
@@ -294,7 +294,7 @@ $yellow: #EBC564;
   z-index: 2;
   border-radius: 8px;
   border: 1px solid #FFFFFF;
-  background: var(--tfl-color-on-bg-fill);
+  background: var(--mm-color-text-bg-primary);
   /* This renders in a portal w/o selected css vars */
   ;
   box-sizing: border-box;
@@ -305,7 +305,7 @@ $yellow: #EBC564;
     align-items: center;
     box-sizing: border-box;
     padding: 8px;
-    color: var(--tfl-color-surface-fill);
+    color: var(--mm-color-bg-secondary);
     font-weight: 600;
     width: 100%;
     border-top-left-radius: 8px;
@@ -322,11 +322,11 @@ $yellow: #EBC564;
     padding: 12px 12px 16px 12px;
     font-weight: 500;
     font-size: 14px;
-    background: var(--tfl-color-on-bg-fill);
+    background: var(--mm-color-text-bg-primary);
     /* This renders in a portal w/o selected css vars */
     ;
     height: 100%;
-    color: var(--tfl-color-surface-fill);
+    color: var(--mm-color-bg-secondary);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
   }
@@ -339,8 +339,8 @@ $yellow: #EBC564;
     >.dialog {
       >.top {
         text-transform: uppercase;
-        background: var(--tfl-color-primary-fill);
-        color: var(--tfl-color-on-bg-fill);
+        background: var(--mm-color-primary);
+        color: var(--mm-color-text-bg-primary);
       }
     }
   }
@@ -350,8 +350,8 @@ $yellow: #EBC564;
       >.inner {
         >.top {
           text-transform: uppercase;
-          background: var(--tfl-color-primary-fill);
-          color: var(--tfl-color-on-bg-fill);
+          background: var(--mm-color-primary);
+          color: var(--mm-color-text-bg-primary);
         }
       }
     }
@@ -373,7 +373,7 @@ $yellow: #EBC564;
     >.level {
       display: flex;
       font-size: 40px;
-      font-family: var(--tfl-font-family-body-sans);
+      font-family: var(--mm-font-family);
       line-height: 57px;
       padding: 32px 0;
       text-transform: uppercase;
@@ -402,8 +402,8 @@ $yellow: #EBC564;
   >.c-dialog {
     >.dialog {
       >.top {
-        background: var(--tfl-color-primary-fill);
-        color: var(--tfl-color-on-bg-fill);
+        background: var(--mm-color-primary);
+        color: var(--mm-color-text-bg-primary);
       }
     }
   }
@@ -412,8 +412,8 @@ $yellow: #EBC564;
     >.sheet {
       >.inner {
         >.top {
-          background: var(--tfl-color-primary-fill);
-          color: var(--tfl-color-on-bg-fill);
+          background: var(--mm-color-primary);
+          color: var(--mm-color-text-bg-primary);
         }
       }
     }
@@ -443,15 +443,15 @@ $yellow: #EBC564;
     display: flex;
     padding: 16px 0;
     justify-content: space-between;
-    border-bottom: 1px solid var(--tfl-color-on-bg-fill);
+    border-bottom: 1px solid var(--mm-color-text-bg-primary);
 
     >.action {
       display: flex;
       flex-direction: column;
 
       >.time {
-        font-family: var(--tfl-font-family-body-sans);
-        color: var(--tfl-color-on-bg-fill);
+        font-family: var(--mm-font-family);
+        color: var(--mm-color-text-bg-primary);
         line-height: 1.23em;
         letter-spacing: 0.37px;
       }
@@ -461,7 +461,7 @@ $yellow: #EBC564;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: var(--tfl-color-primary-fill);
+      color: var(--mm-color-primary);
       padding-right: 8px;
     }
   }
@@ -526,7 +526,7 @@ $yellow: #EBC564;
   }
 
   &.free {
-    border: 1px solid var(--tfl-color-primary-fill);
+    border: 1px solid var(--mm-color-primary);
     background-color: transparent;
   }
 
@@ -550,7 +550,7 @@ $yellow: #EBC564;
   // }
 
   &.is-selected {
-    background: var(--tfl-color-surface-fill);
+    background: var(--mm-color-bg-secondary);
   }
 }
 
@@ -573,7 +573,7 @@ $yellow: #EBC564;
 }
 
 
-$dialogBg: var(--tfl-color-surface-fill-hovered);
+$dialogBg: var(--mm-color-bg-tertiary);
 
 .c-multiple-rewards-dialog {
 
@@ -595,7 +595,7 @@ $dialogBg: var(--tfl-color-surface-fill-hovered);
         >.inner {
           >.title {
             font-weight: 600;
-            color: var(--tfl-color-surface-fill);
+            color: var(--mm-color-bg-secondary);
           }
 
           >.top-right {
@@ -658,7 +658,7 @@ $dialogBg: var(--tfl-color-surface-fill-hovered);
         .description {
           font-weight: 400;
           font-size: 14px;
-          color: var(--tfl-color-on-bg-fill);
+          color: var(--mm-color-text-bg-primary);
         }
 
         .button {

@@ -66,8 +66,8 @@
       opacity: 0%;
       transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       pointer-events: all;
-      background: var(--tfl-color-bg-fill);
-      color: var(--tfl-color-on-bg-fill);
+      background: var(--mm-color-bg-primary);
+      color: var(--mm-color-text-bg-primary);
 
       border-radius: calc(12px * var(--border-radius-multiplier));
 

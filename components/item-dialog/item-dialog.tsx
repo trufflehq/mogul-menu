@@ -1,13 +1,17 @@
 import React from "https://npm.tfl.dev/react";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
-import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { getSrcByImageObj } from "../../deps.ts";
+import {
+  createSubject,
+  Obs,
+  op,
+} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 
 import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../dialog/dialog.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 
 /**
  * @callback onExit
@@ -71,7 +75,7 @@ export default function ItemDialog({
       {buttons?.map((button, idx) => {
         if (!button.onClick) {
           console.warn(
-            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`,
+            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`
           );
         }
 
@@ -121,9 +125,7 @@ export default function ItemDialog({
               <div className="body">
                 <div className="image">
                   <ImageByAspectRatio
-                    imageUrl={getSrcByImageObj(
-                      imgRel?.fileObj,
-                    )}
+                    imageUrl={getSrcByImageObj(imgRel?.fileObj)}
                     aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
                     heightPx={56}
                     widthPx={56}
@@ -144,8 +146,7 @@ export default function ItemDialog({
               </div>
             }
           />
-          {
-            /* <Component
+          {/* <Component
           slug="dialog"
           props={{
             $title,
@@ -184,8 +185,7 @@ export default function ItemDialog({
               </div>
             ),
           }}
-        /> */
-          }
+        /> */}
         </div>
       </ScopedStylesheet>
     );
@@ -197,14 +197,16 @@ export default function ItemDialog({
         <style>
           {`
         .z-browser-extension-item-dialog {
-          --highlight-gradient: ${highlightBg ?? "var(--tfl-color-primary-fill)"};
+          --highlight-gradient: ${highlightBg ?? "var(--mm-color-primary)"};
         }
       `}
         </style>
         <Dialog
           $title={$title}
           onCancel={onExitHandler}
-          $topRightButton={$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
+          $topRightButton={
+            $title ? <CloseButton onExitHandler={onExitHandler} /> : null
+          }
           $content={
             <div className="body">
               {!$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
@@ -212,9 +214,7 @@ export default function ItemDialog({
               <div className="children">
                 {$children || (
                   <ImageByAspectRatio
-                    imageUrl={getSrcByImageObj(
-                      imgRel?.fileObj,
-                    )}
+                    imageUrl={getSrcByImageObj(imgRel?.fileObj)}
                     aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
                     heightPx={72}
                     widthPx={72}
@@ -241,7 +241,7 @@ function CloseButton({ onExitHandler }) {
     <div className="close-button">
       <Icon
         icon="close"
-        color="var(--tfl-color-on-bg-fill)"
+        color="var(--mm-color-text-bg-primary)"
         onclick={onExitHandler}
       />
     </div>

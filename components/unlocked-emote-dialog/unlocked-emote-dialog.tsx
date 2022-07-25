@@ -27,15 +27,15 @@ export default function UnlockedEmoteDialog({
           {
             text: "Close",
             borderRadius: "4px",
-            bg: "var(--tfl-color-surface-fill)",
-            textColor: "var(--tfl-color-on-surface-fill)",
+            bg: "var(--mm-color-bg-secondary)",
+            textColor: "var(--mm-color-text-bg-tertiary)",
             onClick: popDialog,
           },
           {
             text: "View collection",
             borderRadius: "4px",
-            bg: highlightBg ?? "var(--tfl-color-surface-fill)",
-            textColor: "var(--tfl-color-on-surface-fill)",
+            bg: highlightBg ?? "var(--mm-color-bg-secondary)",
+            textColor: "var(--mm-color-text-bg-tertiary)",
             onClick: () => {
               popDialog();
               setActiveTab("collection");

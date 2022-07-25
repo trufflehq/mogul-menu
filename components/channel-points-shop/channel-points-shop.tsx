@@ -10,10 +10,9 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/le
 import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
 import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
-import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
-import { gql, useMutation, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import { getSrcByImageObj, gql, useMutation, useQuery } from "../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
 import Dialog from "../dialog/dialog.tsx";
@@ -124,7 +123,7 @@ export default function ChannelPointsShop() {
     storeItemsData?.productConnection?.nodes ?? [],
     (node) => {
       return node?.productVariants?.nodes?.[0]?.amountValue;
-    },
+    }
   );
 
   // channel points
@@ -199,7 +198,8 @@ export default function ChannelPointsShop() {
 }
 
 function CollectibleItem(props) {
-  const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } = props;
+  const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } =
+    props;
 
   const { pushDialog, popDialog } = useDialog();
 
@@ -224,17 +224,15 @@ function CollectibleItem(props) {
         collectibleItem={collectibleItem}
         channelPointsImageObj={channelPointsImageObj}
         buttonBg="var(--truffle-gradient)"
-      />,
+      />
     );
   };
 
   return (
     <div
-      className={`item ${
-        classKebab({
-          isDisabled: !hasSufficientFunds,
-        })
-      }`}
+      className={`item ${classKebab({
+        isDisabled: !hasSufficientFunds,
+      })}`}
       ref={$$itemRef}
     >
       <div className="overlay" />
@@ -279,7 +277,7 @@ function ConfirmPurchaseDialog({
   const amount = collectibleItem.productVariants.nodes[0].amountValue;
 
   const [_purchaseResult, executePurchaseMutation] = useMutation(
-    CHANNEL_POINTS_SHOP_PURCHASE_MUTATION,
+    CHANNEL_POINTS_SHOP_PURCHASE_MUTATION
   );
 
   // const channelPointsSrc =
@@ -291,7 +289,7 @@ function ConfirmPurchaseDialog({
   const onPurchaseHandler = async () => {
     await executePurchaseMutation(
       { productId: collectibleItem.id },
-      { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] },
+      { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
     );
     // alert(`You purchased a ${collectibleItem.source.name}!`);
     // onViewCollection?.();
@@ -315,7 +313,7 @@ function ConfirmPurchaseDialog({
       <NotifyPurchaseDialog
         collectibleItem={collectibleItem}
         buttonBg={buttonBg}
-      />,
+      />
     );
   };
 
@@ -369,7 +367,7 @@ function ConfirmPurchaseDialog({
           <div className="close-button">
             <Icon
               icon="close"
-              color="var(--tfl-color-on-bg-fill)"
+              color="var(--mm-color-text-bg-primary)"
               onclick={popDialog}
             />
           </div>
@@ -388,36 +386,38 @@ function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
   };
 
   const file = collectibleItem?.source?.fileRel;
-  const actionMessage = collectibleItem?.source?.data?.category === "flair"
-    ? "Redeem in Profile Tab"
-    : "View collection";
+  const actionMessage =
+    collectibleItem?.source?.data?.category === "flair"
+      ? "Redeem in Profile Tab"
+      : "View collection";
   const isEmote = collectibleItem?.source?.type === "emote";
   const isRedeemable = collectibleItem?.source?.type === "redeemable";
 
   return (
     <>
-      {isEmote
-        ? <UnlockedEmoteDialog reward={collectibleItem} />
-        : isRedeemable
-        ? <RedeemableDialog redeemableCollectible={collectibleItem} />
-        : (
-          <ItemDialog
-            imgRel={file}
-            onExit={popDialog}
-            primaryText={
-              <div>
-                <strong>{collectibleItem?.source?.name ?? ""}</strong> added to your collection!
-              </div>
-            }
-            buttons={[
-              {
-                text: actionMessage,
-                bg: buttonBg,
-                onClick: onViewCollectionHandler,
-              },
-            ]}
-          />
-        )}
+      {isEmote ? (
+        <UnlockedEmoteDialog reward={collectibleItem} />
+      ) : isRedeemable ? (
+        <RedeemableDialog redeemableCollectible={collectibleItem} />
+      ) : (
+        <ItemDialog
+          imgRel={file}
+          onExit={popDialog}
+          primaryText={
+            <div>
+              <strong>{collectibleItem?.source?.name ?? ""}</strong> added to
+              your collection!
+            </div>
+          }
+          buttons={[
+            {
+              text: actionMessage,
+              bg: buttonBg,
+              onClick: onViewCollectionHandler,
+            },
+          ]}
+        />
+      )}
     </>
   );
 }

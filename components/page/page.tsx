@@ -1,7 +1,7 @@
 import React from "https://npm.tfl.dev/react";
 
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 
 export default function Page({ title, headerTopRight, onBack, content }) {
   return (
@@ -12,7 +12,7 @@ export default function Page({ title, headerTopRight, onBack, content }) {
             <div className="back-icon">
               <Icon
                 icon="back"
-                color="var(--tfl-color-on-bg-fill)"
+                color="var(--mm-color-text-bg-primary)"
                 onclick={onBack}
               />
             </div>

@@ -76,12 +76,12 @@ export default function HomeTab() {
 
   const channelPointsSrc = false
     ? // channelPointsImageObj
-    // ? getSrcByImageObj(channelPointsImageObj)
+      // ? getSrcByImageObj(channelPointsImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
   const xpSrc = false
     ? // xpImageObj
-    // ? getSrcByImageObj(xpImageObj)
+      // ? getSrcByImageObj(xpImageObj)
       ""
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
@@ -99,15 +99,16 @@ export default function HomeTab() {
   const adverts = {
     ludwig: {
       className: "base-ad-tile",
-      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
+      imageSrc:
+        "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
       hashtag: "#announcement",
       tagline: "Ludwig Mondays featuring Fortnite",
       buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
       // buttonOnClick,
       buttonText: "Learn more",
-      buttonBgColor: "var(--tfl-color-secondary-fill)",
-      buttonBgColorHover: "var(--tfl-color-secondary-fill)",
-      buttonTextColor: "var(--tfl-color-on-secondary-fill)",
+      buttonBgColor: "var(--mm-color-secondary)",
+      buttonBgColorHover: "var(--mm-color-secondary)",
+      buttonTextColor: "var(--mm-color-text-secondary)",
     },
   };
 
@@ -180,7 +181,8 @@ export default function HomeTab() {
                   //   extensionInfo,
                   //   onBack: popPage,
                   // })
-                  pushPage(<SettingsPage />)}
+                  pushPage(<SettingsPage />)
+                }
                 hasRipple={true}
                 size="24px"
                 iconViewBox="24px"
@@ -203,21 +205,21 @@ export default function HomeTab() {
             <>
               {canClaim && (
                 <IsLiveInfo
-                  // secondsRemainingSubject={secondsRemainingSubject}
-                  // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-                  // highlightButtonBg={highlightButtonBg}
-                  // creatorName={creatorName}
-                  // hasChannelPoints={hasChannelPoints}
-                  // hasBattlePass={hasBattlePass}
+                // secondsRemainingSubject={secondsRemainingSubject}
+                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
+                // highlightButtonBg={highlightButtonBg}
+                // creatorName={creatorName}
+                // hasChannelPoints={hasChannelPoints}
+                // hasBattlePass={hasBattlePass}
                 />
               )}
             </>
           )}
           <LeaderboardTile />
-          <PredictionTile
+          {/* <PredictionTile
             // channelPointsImageObj={channelPointsImageObj}
             // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
-          />
+          /> */}
           <KothTile />
           {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
         </div>

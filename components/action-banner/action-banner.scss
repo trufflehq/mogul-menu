@@ -2,7 +2,7 @@
   .action-banner {
     display: flex;
     align-items: center;
-    background-color: var(--tfl-color-secondary-fill);
+    background-color: var(--mm-color-secondary);
     box-sizing: border-box;
     padding: 2px 16px;
 
@@ -10,7 +10,7 @@
       font-size: 14px;
       line-height: 21px;
       font-weight: 600;
-      color: var(--tfl-color-on-secondary-fill);
+      color: var(--mm-color-text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

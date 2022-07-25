@@ -5,7 +5,7 @@ import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
+import { getSrcByImageObj } from "../../deps.ts";
 import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
 import cssVars, {
   hexOpacity,
@@ -25,8 +25,8 @@ import ItemDialog from "../item-dialog/item-dialog.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.js";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
+import { gql, useQuery } from "../../deps.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
 
 const GREEN = "#75DB9E";
@@ -286,8 +286,8 @@ export default function SeasonPass(props) {
 
   const tierNums = _.uniqBy(
     _.flatten(
-      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum")),
-    ),
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
+    )
   );
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
@@ -342,11 +342,9 @@ export default function SeasonPass(props) {
             {true && (
               <div className="pages">
                 <div
-                  className={`button left ${
-                    classKebab({
-                      isDisabled: isNotLeftClickable,
-                    })
-                  }`}
+                  className={`button left ${classKebab({
+                    isDisabled: isNotLeftClickable,
+                  })}`}
                   onClick={onLeftClick}
                 >
                   ◂
@@ -355,11 +353,9 @@ export default function SeasonPass(props) {
                   {`Ends in ${seasonPass?.daysRemaining} days`}
                 </div>
                 <div
-                  className={`button right ${
-                    classKebab({
-                      isDisabled: isNotRightClickable,
-                    })
-                  }`}
+                  className={`button right ${classKebab({
+                    isDisabled: isNotRightClickable,
+                  })}`}
                   onClick={onRightClick}
                 >
                   ▸
@@ -372,27 +368,25 @@ export default function SeasonPass(props) {
                 ref={$$levelsRef}
                 onTouchStart={(e) => e.stopPropagation()}
               >
-                {tiers?.length
-                  ? (
-                    <div className="tier-info">
-                      {_.map(tiers, (tier) => {
-                        console.log("tier", tier);
-                        return (
-                          tier?.name && (
-                            <div
-                              className="tier"
-                              style={{
-                                background: tier?.background,
-                              }}
-                            >
-                              {tier?.name}
-                            </div>
-                          )
-                        );
-                      })}
-                    </div>
-                  )
-                  : null}
+                {tiers?.length ? (
+                  <div className="tier-info">
+                    {_.map(tiers, (tier) => {
+                      console.log("tier", tier);
+                      return (
+                        tier?.name && (
+                          <div
+                            className="tier"
+                            style={{
+                              background: tier?.background,
+                            }}
+                          >
+                            {tier?.name}
+                          </div>
+                        )
+                      );
+                    })}
+                  </div>
+                ) : null}
                 <div
                   className="levels"
                   style={{
@@ -665,7 +659,7 @@ export function $level(props) {
             xpImgSrc={xpImgSrc}
             minXp={minXp}
             xp={xp}
-          />,
+          />
         );
         // if the user clicked on an emote
       } else if (isEmote) {
@@ -699,7 +693,7 @@ export function $level(props) {
               },
             ]}
             onExit={popDialog}
-          />,
+          />
         );
       }
     }
@@ -708,7 +702,10 @@ export function $level(props) {
   return (
     <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
-        Level {shouldUseLevelsZeroPrefix ? zeroPrefix(level.levelNum) : level.levelNum}
+        Level{" "}
+        {shouldUseLevelsZeroPrefix
+          ? zeroPrefix(level.levelNum)
+          : level.levelNum}
       </div>
       {_.map(tierNums, (tierNum) => {
         const reward = _.find(level.rewards, { tierNum });
@@ -721,12 +718,11 @@ export function $level(props) {
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${
-              classKebab({
-                isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-                hasTierName: Boolean(tierName),
-              })
-            }`}
+            className={`reward tier-${tierNum} ${classKebab({
+              isFirstWithTierName:
+                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+              hasTierName: Boolean(tierName),
+            })}`}
           >
             <Reward
               selectedRewardStream={selectedRewardStream}
@@ -764,7 +760,8 @@ export function Reward({
   let isRewardSelected;
 
   if (selectedReward?.level) {
-    isRewardSelected = reward &&
+    isRewardSelected =
+      reward &&
       selectedReward?.sourceId === reward.sourceId &&
       selectedReward?.level === level;
   } else {
@@ -781,14 +778,12 @@ export function Reward({
 
   return (
     <div
-      className={`c-reward ${rewardClassname} ${
-        classKebab({
-          isSelected: isRewardSelected,
-          isFreeUnlocked,
-          isPaidUnlocked,
-          hasTooltip: Boolean(reward),
-        })
-      }`}
+      className={`c-reward ${rewardClassname} ${classKebab({
+        isSelected: isRewardSelected,
+        isFreeUnlocked,
+        isPaidUnlocked,
+        hasTooltip: Boolean(reward),
+      })}`}
       ref={$$ref}
       onClick={(e) => {
         onClick(reward, $$ref, tierNum);
@@ -918,7 +913,8 @@ export function $rewardTooltip({
 
   const breakpoint = "desktop";
 
-  const imageUrl = "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
+  const imageUrl =
+    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
 
   const isMobile = breakpoint === "mobile";
   return (
@@ -970,8 +966,7 @@ export function $rewardTooltip({
               height={24}
               isCentered={true}
             />
-            {
-              /* <Component
+            {/* <Component
               slug="image-by-aspect-ratio"
               props={{
                 imageUrl: getSrcByImageObj(imageFileObj),
@@ -979,8 +974,7 @@ export function $rewardTooltip({
                 heightPx: 24,
                 isCentered: true,
               }}
-            /> */
-            }
+            /> */}
           </div>
         )}
         <div className="name">{name}</div>

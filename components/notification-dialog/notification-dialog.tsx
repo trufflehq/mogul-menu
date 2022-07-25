@@ -1,7 +1,7 @@
 import React from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
-import { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.js";
+import { getSrcByImageObj } from "../../deps.ts";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
@@ -32,7 +32,8 @@ export default function BrowserExtensionNotificationDialog({
   const { popDialog } = useDialog();
 
   const [{ data: transactionsData }] = useQuery({ query: TRANSACTIONS_QUERY });
-  const transactions = transactionsData?.economyTransactionConnection?.nodes ?? [];
+  const transactions =
+    transactionsData?.economyTransactionConnection?.nodes ?? [];
 
   const channelPointsSrc = channelPointsImageObj
     ? getSrcByImageObj(channelPointsImageObj)
@@ -55,7 +56,7 @@ export default function BrowserExtensionNotificationDialog({
         $topRightButton={
           <Button
             icon="close"
-            color="var(--tfl-color-on-bg-fill)"
+            color="var(--mm-color-text-bg-primary)"
             isTouchTarget={true}
             onClick={popDialog}
           />
@@ -83,12 +84,22 @@ export default function BrowserExtensionNotificationDialog({
                       {transaction?.amount?.slug && (
                         <ImageByAspectRatio
                           // FIXME, this is a hack since we need to pull the active season pass slug
-                          imageUrl={ORG_USER_COUNTER_TYPE_IMG_MAP[
-                            transaction?.amount?.slug
-                          ] ?? xpSrc}
+                          imageUrl={
+                            ORG_USER_COUNTER_TYPE_IMG_MAP[
+                              transaction?.amount?.slug
+                            ] ?? xpSrc
+                          }
                           aspectRatio={1}
-                          widthPx={transaction?.amount?.slug === "channel-points" ? 20 : 24}
-                          height={transaction?.amount?.slug === "channel-points" ? 20 : 24}
+                          widthPx={
+                            transaction?.amount?.slug === "channel-points"
+                              ? 20
+                              : 24
+                          }
+                          height={
+                            transaction?.amount?.slug === "channel-points"
+                              ? 20
+                              : 24
+                          }
                         />
                       )}
                     </div>

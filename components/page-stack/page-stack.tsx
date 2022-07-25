@@ -4,7 +4,7 @@ import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observa
 
 export default function PageStack({
   pageStackSubject,
-  background = "var(--tfl-color-bg-fill)",
+  background = "var(--mm-color-bg-primary)",
 }) {
   const { pageStack } = useObservables(() => ({
     pageStack: pageStackSubject.obs,

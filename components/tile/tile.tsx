@@ -16,7 +16,7 @@ export default function Tile(props) {
   } = props;
 
   let { textColor } = props;
-  if (!textColor) textColor = "var(--tfl-color-on-bg-fill)";
+  if (!textColor) textColor = "var(--mm-color-text-bg-primary)";
 
   const Header = () => {
     return (
@@ -46,11 +46,9 @@ export default function Tile(props) {
         href={new URL("tile.css", import.meta.url).toString()}
       />
       <div
-        className={`c-tile ${className} ${
-          classKebab({
-            clickable: !!onClick,
-          })
-        }`}
+        className={`c-tile ${className} ${classKebab({
+          clickable: !!onClick,
+        })}`}
         onClick={onClick}
       >
         <Header />

@@ -1,6 +1,6 @@
 import React from "https://npm.tfl.dev/react";
 import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
-import ScopedStylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/scoped-stylesheet/scoped-stylesheet.tsx";
+import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 
 export default function Advert(props) {
   const {
@@ -37,7 +37,7 @@ export default function Advert(props) {
               textColor={buttonTextColor}
               href={buttonHref}
               onClick={buttonOnClick}
-              outlineHover="1px solid var(--tfl-color-on-bg-fill)"
+              outlineHover="1px solid var(--mm-color-text-bg-primary)"
             />
           </div>
         </div>
