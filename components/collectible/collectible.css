@@ -18,6 +18,10 @@
   opacity: 100%;
 }
 
+:host .c-collectible > .info {
+  margin-bottom: 10px;
+}
+
 :host .c-collectible > .info > .name {
   font-size: 10px;
   margin-top: 10px;
@@ -30,26 +34,4 @@
 :host .c-collectible > .info > .count {
   font-size: 10px;
   color: var(--mm-color-primary);
-}
-
-:host .c-collectible > .button {
-  margin-top: 10px;
-}
-
-:host .c-collectible > .button > button {
-  font-size: 12px;
-  font-weight: 500;
-  border: 1px solid rgba(var(--bg-base-text-rgb-csv), 0.16) !important;
-}
-
-:host .c-collectible > .button > button:hover {
-  border: 1px solid var(--primary-base) !important;
-}
-
-:host .c-collectible > .button.is-active > button {
-  color: var(--positive-feedback) !important;
-}
-
-:host .c-collectible > .button.is-active > button:hover {
-  border: 1px solid var(--primary-base) !important;
 }

@@ -1,6 +1,6 @@
 import { React } from "../../../deps.ts";
 
-export default function Stylesheet({
+export default function StyleSheet({
   url,
   children,
 }: {

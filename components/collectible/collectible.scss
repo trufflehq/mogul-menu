@@ -12,6 +12,8 @@
     }
 
     >.info {
+      margin-bottom: 10px;
+
       >.name {
         font-size: 10px;
         margin-top: 10px;
@@ -27,28 +29,5 @@
       }
     }
 
-    >.button {
-      margin-top: 10px;
-
-      >button {
-        font-size: 12px;
-        font-weight: 500;
-        border: 1px solid rgba(var(--bg-base-text-rgb-csv), 0.16) !important;
-
-        &:hover {
-          border: 1px solid var(--primary-base) !important;
-        }
-      }
-
-      &.is-active {
-        >button {
-          color: var(--positive-feedback) !important;
-
-          &:hover {
-            border: 1px solid var(--primary-base) !important;
-          }
-        }
-      }
-    }
   }
 }

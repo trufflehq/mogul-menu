@@ -3,7 +3,7 @@ import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.
 import { getSrcByImageObj } from "../../deps.ts";
 
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import Button from "../base/button/button.tsx";
 import Dialog from "https://tfl.dev/@truffle/ui@~0.1.0/components/dialog/dialog.entry.js";
 import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
@@ -59,18 +59,19 @@ export default function Collctible(props) {
             })}`}
           >
             <Button
-              text={
-                activePowerup
-                  ? "Active"
-                  : collectible?.data?.redeemButtonText ?? "Redeem"
-                // lang.get("collectible.redeem"),
-              }
               onClick={onRedeemHandler}
               shouldHandleLoading={true}
-              bg="var(--mm-color-bg-tertiary)"
-              textColor="var(--mm-color-text-bg-primary)"
-              borderRadius="4px"
-            />
+              border={true}
+              size="small"
+            >
+              {activePowerup ? (
+                <span style={{ color: "var(--mm-color-positive)" }}>
+                  Active
+                </span>
+              ) : (
+                collectible?.data?.redeemButtonText ?? "Redeem"
+              )}
+            </Button>
           </div>
         )}
       </div>
