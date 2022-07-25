@@ -1,7 +1,7 @@
 :host {
-  grid-column: span 2;
 
   .live-info {
+    grid-column: span 2;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;

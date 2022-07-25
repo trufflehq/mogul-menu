@@ -1,8 +1,5 @@
-:host {
-  grid-column: span 2;
-}
-
 :host .live-info {
+  grid-column: span 2;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
