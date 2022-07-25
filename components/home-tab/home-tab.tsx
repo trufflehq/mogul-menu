@@ -216,10 +216,7 @@ export default function HomeTab() {
             </>
           )}
           <LeaderboardTile />
-          {/* <PredictionTile
-            // channelPointsImageObj={channelPointsImageObj}
-            // channelPointsOrgUserCounterObs={channelPointsOrgUserCounterObs}
-          /> */}
+          <PredictionTile />
           <KothTile />
           {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
         </div>
