@@ -17,9 +17,19 @@ const buttonStyles = {
     "--text-color": "var(--mm-color-text-gradient)",
     "--border-color": "transparent",
   },
-  gray: {
+  "bg-primary": {
+    "--background": "var(--mm-color-bg-primary)",
+    "--text-color": "var(--mm-color-text-bg-primary)",
+    "--border-color": "transparent",
+  },
+  "bg-secondary": {
     "--background": "var(--mm-color-bg-secondary)",
     "--text-color": "var(--mm-color-text-bg-secondary)",
+    "--border-color": "transparent",
+  },
+  "bg-tertiary": {
+    "--background": "var(--mm-color-bg-tertiary)",
+    "--text-color": "var(--mm-color-text-bg-tertiary)",
     "--border-color": "transparent",
   },
 };
@@ -39,8 +49,8 @@ const sizeStyles = {
 
 export default function Button({
   children = "Click me",
-  shouldHandleLoading = true,
-  style = "gray",
+  shouldHandleLoading = false,
+  style = "bg-secondary",
   border = false,
   isDisabled = false,
   onClick = () => null,
@@ -51,7 +61,7 @@ export default function Button({
   style?: keyof typeof buttonStyles;
   border?: boolean;
   isDisabled?: boolean;
-  onClick?: (...args: any) => any;
+  onClick?: () => any;
   size?: keyof typeof sizeStyles;
 }) {
   const [isLoading, setIsLoading] = useState(false);

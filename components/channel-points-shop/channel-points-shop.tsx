@@ -8,14 +8,13 @@ import _ from "https://npm.tfl.dev/lodash?no-check";
 
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import Button from "../base/button/button.tsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
-import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
+import StyleSheet from "../base/stylesheet/stylesheet.tsx";
 import { getSrcByImageObj, gql, useMutation, useQuery } from "../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
-import Dialog from "../dialog/dialog.tsx";
+import Dialog from "../base/dialog/dialog.tsx";
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
 import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
@@ -142,7 +141,7 @@ export default function ChannelPointsShop() {
   const isLoading = !storeCollectibleItems;
 
   return (
-    <ScopedStylesheet url={new URL("channel-points-shop.css", import.meta.url)}>
+    <StyleSheet url={new URL("channel-points-shop.css", import.meta.url)}>
       <div className="c-channel-points-shop">
         <div className="header">
           <div className="title">Shop Items</div>
@@ -193,7 +192,7 @@ export default function ChannelPointsShop() {
           </>
         )}
       </div>
-    </ScopedStylesheet>
+    </StyleSheet>
   );
 }
 
@@ -320,59 +319,44 @@ function ConfirmPurchaseDialog({
   return (
     <div className="confirm-purchase-dialog">
       <Dialog
-        $content={
-          <div className="body">
-            <div className="image">
+        actions={[
+          <Button onClick={onPurchaseHandler} style="primary">{`Buy ${
+            collectibleItem?.source?.name ?? ""
+          }`}</Button>,
+        ]}
+      >
+        <div className="body">
+          <div className="image">
+            <ImageByAspectRatio
+              imageUrl={getSrcByImageObj(file?.fileObj)}
+              aspectRatio={file?.fileObj?.data?.aspectRatio}
+              heightPx={56}
+              widthPx={56}
+            />
+          </div>
+          <div className="info">
+            <div className="name">{collectibleItem?.source?.name ?? ""}</div>
+            <div className="cost">
+              <div className="value">{formatNumber(amount)}</div>
               <ImageByAspectRatio
-                imageUrl={getSrcByImageObj(file?.fileObj)}
-                aspectRatio={file?.fileObj?.data?.aspectRatio}
-                heightPx={56}
-                widthPx={56}
+                imageUrl={channelPointsSrc}
+                aspectRatio={1}
+                widthPx={15}
+                height={15}
               />
             </div>
-            <div className="info">
-              <div className="name">{collectibleItem?.source?.name ?? ""}</div>
-              <div className="cost">
-                <div className="value">{formatNumber(amount)}</div>
-                <ImageByAspectRatio
-                  imageUrl={channelPointsSrc}
-                  aspectRatio={1}
-                  widthPx={15}
-                  height={15}
-                />
+            {(collectibleItem?.source?.data?.description && (
+              <div className="description">
+                {collectibleItem?.source?.data?.description}
               </div>
-              {(collectibleItem?.source?.data?.description && (
-                <div className="description">
-                  {collectibleItem?.source?.data?.description}
-                </div>
-              )) || (
-                <div className="description">
-                  Add {collectibleItem?.source?.name ?? ""} to your collection
-                </div>
-              )}
-            </div>
+            )) || (
+              <div className="description">
+                Add {collectibleItem?.source?.name ?? ""} to your collection
+              </div>
+            )}
           </div>
-        }
-        $actions={
-          <div className="action">
-            <Button
-              text={`Buy ${collectibleItem?.source?.name ?? ""}`}
-              bg={buttonBg}
-              isFullWidth={true}
-              onClick={onPurchaseHandler}
-            />
-          </div>
-        }
-        $topRightButton={
-          <div className="close-button">
-            <Icon
-              icon="close"
-              color="var(--mm-color-text-bg-primary)"
-              onclick={popDialog}
-            />
-          </div>
-        }
-      />
+        </div>
+      </Dialog>
     </div>
   );
 }

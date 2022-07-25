@@ -5,11 +5,11 @@ export default function StyleSheet({
   children,
 }: {
   url: URL;
-  children: any;
+  children?: any;
 }) {
   return (
     <>
-      <link rel="stylesheet" href={url} />
+      {url && <link rel="stylesheet" href={url} />}
       {children}
     </>
   );

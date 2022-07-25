@@ -7,11 +7,11 @@ import {
   op,
 } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import Button from "../base/button/button.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
-import Dialog from "../dialog/dialog.tsx";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
+import Dialog from "../base/dialog/dialog.tsx";
+import StyleSheet from "../base/stylesheet/stylesheet.tsx";
 
 /**
  * @callback onExit
@@ -70,45 +70,29 @@ export default function ItemDialog({
     onExit?.();
   };
 
-  const actions = (
-    <>
-      {buttons?.map((button, idx) => {
-        if (!button.onClick) {
-          console.warn(
-            `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`
-          );
-        }
+  const actions = buttons?.map((button, idx) => {
+    if (!button.onClick) {
+      console.warn(
+        `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`
+      );
+    }
 
-        const { isDisabled } = useObservables(() => ({
-          isDisabled: button.isDisabledStream?.obs ?? createSubject(false).obs,
-        }));
-
-        return (
-          <div key={idx} className="button">
-            <Button
-              key={idx}
-              text={button.text}
-              isFullWidth={true}
-              bg={button.bg}
-              borderRadius={button.borderRadius}
-              bgColor={button.bgColor}
-              style={button.style}
-              textColor={button.textColor}
-              isDisabled={isDisabled}
-              shouldHandleLoading={true}
-              onClick={() => {
-                return button.onClick?.();
-              }}
-            />
-          </div>
-        );
-      })}
-    </>
-  );
+    return (
+      <Button
+        key={idx}
+        shouldHandleLoading={true}
+        onClick={() => {
+          return button.onClick?.();
+        }}
+      >
+        {button.text}
+      </Button>
+    );
+  });
 
   if (displayMode === "left") {
     return (
-      <ScopedStylesheet url={new URL("item-dialog.css", import.meta.url)}>
+      <StyleSheet url={new URL("item-dialog.css", import.meta.url)}>
         <div className="c-browser-extension-item-dialog left use-css-vars-creator">
           <style>
             {`
@@ -118,132 +102,63 @@ export default function ItemDialog({
         `}
           </style>
 
-          <div className="actions">{actions}</div>
-          <Dialog
-            $title={$title}
-            $content={
-              <div className="body">
-                <div className="image">
-                  <ImageByAspectRatio
-                    imageUrl={getSrcByImageObj(imgRel?.fileObj)}
-                    aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
-                    heightPx={56}
-                    widthPx={56}
-                  />
-                </div>
-                <div className="info">
-                  <div className="primary-text">{primaryText}</div>
-                  <div className="value-text">{valueText}</div>
-                  <div className="secondary-text">{secondaryText}</div>
-                </div>
-                {error && <div className="error">{error}</div>}
-              </div>
-            }
-            $actions={actions}
-            $topRightButton={
-              <div className="close-button">
-                <Icon icon="close" onclick={onExitHandler} />
-              </div>
-            }
-          />
-          {/* <Component
-          slug="dialog"
-          props={{
-            $title,
-            $content: (
-              <div className="body">
-                <div className="image">
-                  <Component
-                    slug="image-by-aspect-ratio"
-                    props={{
-                      imageUrl: model.image.getSrcByImageObj(imgRel?.fileObj),
-                      aspectRatio: imgRel?.fileObj?.data?.aspectRatio,
-                      heightPx: 56,
-                      widthPx: 56,
-                    }}
-                  />
-                </div>
-                <div className="info">
-                  <div className="primary-text">{primaryText}</div>
-                  <div className="value-text">{valueText}</div>
-                  <div className="secondary-text">{secondaryText}</div>
-                </div>
-                {error && <div className="error">{error}</div>}
-              </div>
-            ),
-            $actions: actions,
-            $topRightButton: (
-              <div className="close-button">
-                <Component
-                  slug="icon"
-                  props={{
-                    icon: "close",
-                    color: cssVars.$bgBaseText,
-                    onclick: onExitHandler,
-                  }}
+          <Dialog actions={actions}>
+            <div className="body">
+              <div className="image">
+                <ImageByAspectRatio
+                  imageUrl={getSrcByImageObj(imgRel?.fileObj)}
+                  aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
+                  heightPx={56}
+                  widthPx={56}
                 />
               </div>
-            ),
-          }}
-        /> */}
+              <div className="info">
+                <div className="primary-text">{primaryText}</div>
+                <div className="value-text">{valueText}</div>
+                <div className="secondary-text">{secondaryText}</div>
+              </div>
+              {error && <div className="error">{error}</div>}
+            </div>
+          </Dialog>
         </div>
-      </ScopedStylesheet>
+      </StyleSheet>
     );
   }
 
   return (
-    <ScopedStylesheet url={new URL("item-dialog.css", import.meta.url)}>
+    <StyleSheet url={new URL("item-dialog.css", import.meta.url)}>
       <div className="c-browser-extension-item-dialog center use-css-vars-creator">
         <style>
           {`
         .z-browser-extension-item-dialog {
-          --highlight-gradient: ${highlightBg ?? "var(--mm-color-primary)"};
+          --highlight-gradient: ${
+            highlightBg ?? "var(--tfl-color-primary-fill)"
+          };
         }
       `}
         </style>
-        <Dialog
-          $title={$title}
-          onCancel={onExitHandler}
-          $topRightButton={
-            $title ? <CloseButton onExitHandler={onExitHandler} /> : null
-          }
-          $content={
-            <div className="body">
-              {!$title ? <CloseButton onExitHandler={onExitHandler} /> : null}
-              {headerText && <div className="header-text">{headerText}</div>}
-              <div className="children">
-                {$children || (
-                  <ImageByAspectRatio
-                    imageUrl={getSrcByImageObj(imgRel?.fileObj)}
-                    aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
-                    heightPx={72}
-                    widthPx={72}
-                  />
-                )}
-              </div>
-              <div className="primary-text">{primaryText}</div>
-              <div className={`secondary-text ${secondaryTextStyle}`}>
-                {secondaryText}
-              </div>
-              {error && <div className="error">{error}</div>}
-              {$controls && <div className="controls">{$controls}</div>}
+        <Dialog actions={actions}>
+          <div className="body">
+            {headerText && <div className="header-text">{headerText}</div>}
+            <div className="children">
+              {$children || (
+                <ImageByAspectRatio
+                  imageUrl={getSrcByImageObj(imgRel?.fileObj)}
+                  aspectRatio={imgRel?.fileObj?.data?.aspectRatio}
+                  heightPx={72}
+                  widthPx={72}
+                />
+              )}
             </div>
-          }
-          $actions={actions}
-        />
+            <div className="primary-text">{primaryText}</div>
+            <div className={`secondary-text ${secondaryTextStyle}`}>
+              {secondaryText}
+            </div>
+            {error && <div className="error">{error}</div>}
+            {$controls && <div className="controls">{$controls}</div>}
+          </div>
+        </Dialog>
       </div>
-    </ScopedStylesheet>
-  );
-}
-
-function CloseButton({ onExitHandler }) {
-  return (
-    <div className="close-button">
-      <Icon
-        icon="close"
-        color="var(--mm-color-text-bg-primary)"
-        onclick={onExitHandler}
-      />
-    </div>
+    </StyleSheet>
   );
 }

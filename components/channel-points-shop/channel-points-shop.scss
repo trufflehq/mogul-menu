@@ -149,22 +149,6 @@
   }
 
   .confirm-purchase-dialog {
-    .z-dialog {
-      >.dialog {
-        // TODO add a background secondary css var
-        background-color: rgba(22, 31, 44, 1) !important;
-
-        >.top {
-          border-bottom: none !important;
-
-          >.inner {
-            >.top-right {
-              margin-top: 12px;
-            }
-          }
-        }
-      }
-    }
 
     .body {
       display: flex;

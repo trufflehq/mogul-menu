@@ -47,7 +47,7 @@ import { getSrcByImageObj } from "../../deps.ts";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 
 import HomeTab from "../home-tab/home-tab.tsx";
-// import HomeTab from "../test-tab/test-tab.tsx";
+import TestTab from "../test-tab/test-tab.tsx";
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
@@ -103,6 +103,12 @@ const SNACKBAR_ANIMATION_DURATION_MS = 5000;
 const STORAGE_POSITION_PREFIX = "extensionIconPosition";
 const STORAGE_TOOLTIP_PREFIX = "hasViewedOnboardTooltip";
 const DEFAULT_TABS = [
+  {
+    text: "Test",
+    slug: "test",
+    imgUrl: "",
+    $el: TestTab,
+  },
   {
     text: "Home",
     slug: "home",

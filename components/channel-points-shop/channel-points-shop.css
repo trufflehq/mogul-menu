@@ -198,18 +198,6 @@
   font-weight: 500;
 }
 
-:host .confirm-purchase-dialog .z-dialog > .dialog {
-  background-color: #161f2c !important;
-}
-
-:host .confirm-purchase-dialog .z-dialog > .dialog > .top {
-  border-bottom: none !important;
-}
-
-:host .confirm-purchase-dialog .z-dialog > .dialog > .top > .inner > .top-right {
-  margin-top: 12px;
-}
-
 :host .confirm-purchase-dialog .body {
   display: -webkit-box;
   display: -ms-flexbox;

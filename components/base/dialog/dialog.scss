@@ -1,0 +1,46 @@
+.c-dialog {
+  width: 424px;
+  background: var(--mm-color-bg-secondary);
+  color: var(--mm-color-text-bg-secondary);
+  border-radius: 4px;
+  position: relative;
+
+  >.flex {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    >.content {
+      flex: 1;
+    }
+
+    >.top-actions {
+      display: flex;
+      justify-content: space-between;
+
+      >div {
+        padding: 20px;
+      }
+    }
+
+    >.bottom-actions {
+      display: flex;
+      gap: 12px;
+      padding: 24px;
+
+      &.fill {
+        >* {
+          flex: 1;
+        }
+      }
+
+      &.left {
+        justify-content: flex-start;
+      }
+
+      &.right {
+        justify-content: flex-end;
+      }
+    }
+  }
+}

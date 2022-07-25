@@ -1,9 +1,9 @@
-import React, { useState } from "https://npm.tfl.dev/react";
+import { React, useState } from "../../deps.ts";
 import { useSnackBar } from "https://tfl.dev/@truffle/ui@~0.1.0/utils/snack-bar.ts";
 
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import Button from "../base/button/button.tsx";
 import SnackBar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/snack-bar/snack-bar.tsx";
-import Dialog from "https://tfl.dev/@truffle/ui@~0.1.0/components/dialog/dialog.entry.js";
+import Dialog from "../base/dialog/dialog.tsx";
 
 import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
@@ -13,7 +13,6 @@ import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../dialog-container/dialog-service.ts";
-// import DialogDemo from "./radix-test.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -57,17 +56,25 @@ export default function HomeTab() {
         message="Finish setting up your account"
         buttonText="Sign up"
         onClick={() => removeActionBanner(actionBannerId)}
-      />,
+      />
     );
   };
 
   // this uses the truffle UI dialog
   // const [isDialogHidden, setDialogHidden] = useState(true);
   // const toggleDialogHandler = () => setDialogHidden((prev: boolean) => !prev);
+
   // this uses the mogul-menu dialog service
   const toggleDialogHandler = () => {
     pushDialog(
-      <div style={{ background: "white", color: "black" }}>I'm a dialog</div>,
+      <Dialog
+        actions={[
+          <Button style="bg-tertiary">Close</Button>,
+          <Button style="primary">Accept</Button>,
+        ]}
+      >
+        Some content
+      </Dialog>
     );
   };
 
@@ -79,30 +86,12 @@ export default function HomeTab() {
         Tab isActive: {String(tabState.isActive)}
       </div>
       <div>
-        <Button
-          onClick={snackBarHandler}
-          isSelected={isSelected}
-          text="Enqueue snackbar"
-          transformHover="scale(103%)"
-          backgroundSelected="var(--truffle-gradient)"
-          transformSelected="scale(103%)"
-          icon="https://cdn.bio/assets/images/features/browser_extension/gamepad.svg"
-        />
-        <Button onClick={tabNameHandler} text="Set tab name" />
-        <Button onClick={pushPageHandler} text="Push page" />
-        <Button onClick={actionBannerHandler} text="Show action banner" />
-        <Button onClick={toggleDialogHandler} text="Show dialog" />
+        <Button onClick={snackBarHandler}>Enqueue snackbar</Button>
+        <Button onClick={tabNameHandler}>Set tab name</Button>
+        <Button onClick={pushPageHandler}>Push page</Button>
+        <Button onClick={actionBannerHandler}>Show action banner</Button>
+        <Button onClick={toggleDialogHandler}>Show dialog</Button>
       </div>
-      {
-        /* <div>
-        <DialogDemo />
-      </div> */
-      }
-      {
-        /* <Dialog hidden={isDialogHidden}>
-        <Button onClick={toggleDialogHandler} text="Toggle dialog" />
-      </Dialog> */
-      }
     </div>
   );
 }
