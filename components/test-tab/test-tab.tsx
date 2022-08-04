@@ -1,8 +1,8 @@
 import { React, useState } from "../../deps.ts";
-import { useSnackBar } from "https://tfl.dev/@truffle/ui@~0.1.0/utils/snack-bar.ts";
+import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 
 import Button from "../base/button/button.tsx";
-import SnackBar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/snack-bar/snack-bar.tsx";
+import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import Dialog from "../base/dialog/dialog.tsx";
 
 import { useTabState } from "../../util/tabs/tab-state.ts";
@@ -30,10 +30,7 @@ export default function HomeTab() {
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(() => (
-      <SnackBar
-        message={`Congrats! You won. ${count}`}
-        messageBgColor="lightblue"
-      />
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
     ));
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);

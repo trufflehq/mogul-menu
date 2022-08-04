@@ -33,7 +33,7 @@ import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinne
 import Stylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/stylesheet/stylesheet.tag.ts";
 import SignUpForm from "https://tfl.dev/@truffle/ui@~0.1.0/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
-import SnackBarProvider from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/snack-bar-provider/snack-bar-provider.tsx";
+import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 
 import {
   createSubject,

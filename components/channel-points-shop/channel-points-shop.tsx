@@ -181,12 +181,9 @@ export default function ChannelPointsShop() {
                 Start earning channel points to spend in the shop
               </div>
               <div className="link">
-                <Button
-                  text={"How do I earn channel points?"}
-                  size={"small"}
-                  style={"link"}
-                  onclick={onHowToEarnClick}
-                />
+                <Button size={"small"} onClick={onHowToEarnClick}>
+                  How do I earn channel points?
+                </Button>
               </div>
             </div>
           </>
