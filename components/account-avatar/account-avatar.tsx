@@ -1,7 +1,4 @@
-import React from "https://npm.tfl.dev/react";
-import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
-import Avatar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+import { React, Avatar, getHost, gql, useQuery } from "../../deps.ts";
 
 const ME_QUERY = gql`
   query {
@@ -22,12 +19,7 @@ const ME_QUERY = gql`
   }
 `;
 
-export default function AccountAvatar() {
-  // const { me, org } = useObservables(() => ({
-  //   me: getModel().user.getMe(),
-  //   org: getModel().org.getMe(),
-  // }));
-
+export default function AccountAvatar({ size = "24px" }: { size?: string }) {
   const [{ data: meData, fetching }] = useQuery({
     query: ME_QUERY,
   });
@@ -39,7 +31,7 @@ export default function AccountAvatar() {
   return (
     <div className="c-account-avatar">
       <a href={`${getHost()}/edit-profile`} target="_blank" rel="noreferrer">
-        <Avatar user={me} size="72px" />
+        <Avatar user={me} size={size} />
       </a>
     </div>
   );

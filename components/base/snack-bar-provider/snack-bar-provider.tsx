@@ -1,16 +1,14 @@
-import React, {
+import {
+  React,
   createContext,
   useContext,
   useEffect,
-} from "https://npm.tfl.dev/react";
-import root from "https://npm.tfl.dev/react-shadow@19";
-
-import {
   createSubject,
   op,
-} from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
-import Stylesheet from "../stylesheet/stylesheet.tsx";
+  useObservables,
+  useStyleSheet,
+} from "../../../deps.ts";
+import styleSheet from "./snack-bar-provider.scss.js";
 
 class SnackBarSerivce {
   _queueSubject;
@@ -37,6 +35,7 @@ export default function SnackBarProvider({
   children,
   visibilityDuration = DEFAULT_VISIBILITY_DURATION_MS,
 }) {
+  useStyleSheet(styleSheet);
   const snackBarService = useContext(snackBarContext);
   const snackBarQueueSubject = snackBarService.queueSubject;
 
@@ -53,7 +52,6 @@ export default function SnackBarProvider({
 
   useEffect(() => {
     let cancel = false;
-    console.log("snackbarQueue", snackBarQueue);
 
     if (snackBarQueue.length > 0) {
       setTimeout(() => {
@@ -74,11 +72,11 @@ export default function SnackBarProvider({
   }, [snackBarQueue]);
 
   return (
-    <Stylesheet url={new URL("snack-bar-provider.css", import.meta.url)}>
+    <>
       <div className="c-snack-bar-container">
         {shouldRenderSnackBar && <$currentSnackBar />}
       </div>
       {children}
-    </Stylesheet>
+    </>
   );
 }

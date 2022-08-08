@@ -1,14 +1,16 @@
-import React, { useEffect } from "https://npm.tfl.dev/react";
-import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
-import { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import root from "https://npm.tfl.dev/react-shadow@19";
-import { gql, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import globalContext from "https://tfl.dev/@truffle/global-context@1.0.0/index.js";
+import {
+  React,
+  getHost,
+  abbreviateNumber,
+  gql,
+  useQuery,
+  ImageByAspectRatio,
+  Icon,
+  Spinner,
+  useStyleSheet,
+} from "../../deps.ts";
 
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
-import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
-import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
+import styleSheet from "./home-tab.scss.js";
 
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 
@@ -20,8 +22,8 @@ import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings-page/settings-page.tsx";
-import BrowserExtensionNotificationDialog from "../notification-dialog/notification-dialog.tsx";
-import { useDialog } from "../dialog-container/dialog-service.ts";
+import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 const USER_INFO_QUERY = gql`
   query UserInfoQuery {
@@ -61,6 +63,7 @@ const USER_INFO_QUERY = gql`
 `;
 
 export default function HomeTab() {
+  useStyleSheet(styleSheet);
   const [{ data: userInfoData }] = useQuery({ query: USER_INFO_QUERY });
 
   const me = userInfoData?.me;
@@ -118,109 +121,103 @@ export default function HomeTab() {
   const isLoading = isLive == null;
 
   return (
-    <root.div>
-      <link
-        rel="stylesheet"
-        href={new URL("home-tab.css", import.meta.url).toString()}
-      />
-      <div className="c-home-tab">
-        <div className="header">
-          <div className="user">
-            <AccountAvatar />
-            <div className="info">
-              <div className="top">
-                <div className="name">{me?.name}</div>
-                <ActivePowerups activePowerups={activePowerups} />
-              </div>
-              <div className="amounts">
-                {hasChannelPoints && (
-                  <div className="amount">
-                    <div className="icon">
-                      <ImageByAspectRatio
-                        imageUrl={channelPointsSrc}
-                        aspectRatio={1}
-                        width={20}
-                        height={20}
-                      />
-                    </div>
-                    <div className="amount">
-                      {abbreviateNumber(channelPoints?.count || 0, 1)}
-                    </div>
-                  </div>
-                )}
+    <div className="c-home-tab">
+      <div className="header">
+        <div className="user">
+          <AccountAvatar size="72px" />
+          <div className="info">
+            <div className="top">
+              <div className="name">{me?.name}</div>
+              <ActivePowerups activePowerups={activePowerups} />
+            </div>
+            <div className="amounts">
+              {hasChannelPoints && (
                 <div className="amount">
                   <div className="icon">
                     <ImageByAspectRatio
-                      imageUrl={xpSrc}
+                      imageUrl={channelPointsSrc}
                       aspectRatio={1}
-                      width={24}
-                      height={24}
+                      width={20}
+                      height={20}
                     />
                   </div>
-                  <div className="amount">{abbreviateNumber(xp || 0, 1)}</div>
+                  <div className="amount">
+                    {abbreviateNumber(channelPoints?.count || 0, 1)}
+                  </div>
                 </div>
+              )}
+              <div className="amount">
+                <div className="icon">
+                  <ImageByAspectRatio
+                    imageUrl={xpSrc}
+                    aspectRatio={1}
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <div className="amount">{abbreviateNumber(xp || 0, 1)}</div>
               </div>
             </div>
           </div>
-          <div className="actions">
-            <div className="icon">
-              <Icon
-                icon="help"
-                onclick={handleOpenSupportChat}
-                hasRipple={true}
-                size="24px"
-                iconViewBox="24px"
-              />
-            </div>
-            <div className="icon">
-              <Icon
-                icon="settings"
-                onclick={() =>
-                  // pushPage(SettingsPage, {
-                  //   extensionIconPositionSubject,
-                  //   extensionInfo,
-                  //   onBack: popPage,
-                  // })
-                  pushPage(<SettingsPage />)
-                }
-                hasRipple={true}
-                size="24px"
-                iconViewBox="24px"
-              />
-            </div>
-            <div className="icon">
-              <Icon
-                icon="bell"
-                onclick={handleOpenNotificationDialog}
-                hasRipple={true}
-                size="24px"
-                iconViewBox="24px"
-              />
-            </div>
+        </div>
+        <div className="actions">
+          <div className="icon">
+            <Icon
+              icon="help"
+              onclick={handleOpenSupportChat}
+              hasRipple={true}
+              size="24px"
+              iconViewBox="24px"
+            />
+          </div>
+          <div className="icon">
+            <Icon
+              icon="settings"
+              onclick={() =>
+                // pushPage(SettingsPage, {
+                //   extensionIconPositionSubject,
+                //   extensionInfo,
+                //   onBack: popPage,
+                // })
+                pushPage(<SettingsPage />)
+              }
+              hasRipple={true}
+              size="24px"
+              iconViewBox="24px"
+            />
+          </div>
+          <div className="icon">
+            <Icon
+              icon="bell"
+              onclick={handleOpenNotificationDialog}
+              hasRipple={true}
+              size="24px"
+              iconViewBox="24px"
+            />
           </div>
         </div>
-        <div className="tile-grid">
-          {isLoading && <Spinner />}
-          {!isLoading && (
-            <>
-              {canClaim && (
-                <IsLiveInfo
-                // secondsRemainingSubject={secondsRemainingSubject}
-                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-                // highlightButtonBg={highlightButtonBg}
-                // creatorName={creatorName}
-                // hasChannelPoints={hasChannelPoints}
-                // hasBattlePass={hasBattlePass}
-                />
-              )}
-            </>
-          )}
-          <LeaderboardTile />
-          <PredictionTile />
-          <KothTile />
-          {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
-        </div>
       </div>
-    </root.div>
+      <div className="tile-grid">
+        {isLoading && <Spinner />}
+        {!isLoading && (
+          <>
+            {canClaim && (
+              <IsLiveInfo
+              // secondsRemainingSubject={secondsRemainingSubject}
+              // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
+              // highlightButtonBg={highlightButtonBg}
+              // creatorName={creatorName}
+              // hasChannelPoints={hasChannelPoints}
+              // hasBattlePass={hasBattlePass}
+              />
+            )}
+          </>
+        )}
+        <LeaderboardTile />
+        {/* <PredictionTile /> */}
+        <KothTile />
+        {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
+      </div>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
-import { React, useState } from "../../../deps.ts";
-import StyleSheet from "../stylesheet/stylesheet.tsx";
+import { React, useState, useStyleSheet } from "../../../deps.ts";
+import styleSheet from "./button.scss.js";
 
 const buttonStyles = {
   primary: {
@@ -15,6 +15,16 @@ const buttonStyles = {
   gradient: {
     "--background": "var(--mm-gradient)",
     "--text-color": "var(--mm-color-text-gradient)",
+    "--border-color": "transparent",
+  },
+  error: {
+    "--background": "var(--mm-color-error)",
+    "--text-color": "var(--mm-color-text-error)",
+    "--border-color": "transparent",
+  },
+  positive: {
+    "--background": "var(--mm-color-positive)",
+    "--text-color": "var(--mm-color-text-positive)",
     "--border-color": "transparent",
   },
   "bg-primary": {
@@ -64,6 +74,7 @@ export default function Button({
   onClick?: () => any;
   size?: keyof typeof sizeStyles;
 }) {
+  useStyleSheet(styleSheet);
   const [isLoading, setIsLoading] = useState(false);
   const _isDisabled = isDisabled || (shouldHandleLoading && isLoading);
 
@@ -89,15 +100,13 @@ export default function Button({
   if (border) styles["--border-color"] = "rgb(255, 255, 255, 0.16)";
 
   return (
-    <StyleSheet url={new URL("./button.css", import.meta.url)}>
-      <button
-        disabled={_isDisabled}
-        className="c-button"
-        onClick={clickHandler}
-        style={styles}
-      >
-        {isLoading ? "Loading" : children}
-      </button>
-    </StyleSheet>
+    <button
+      disabled={_isDisabled}
+      className="c-button"
+      onClick={clickHandler}
+      style={styles}
+    >
+      {isLoading ? "Loading" : children}
+    </button>
   );
 }

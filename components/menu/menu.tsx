@@ -13,19 +13,17 @@ Services that the menu component should provide:
 - Interface for navigating between tabs
 */
 
-import React, {
-  JSX,
+import {
+  React,
   useEffect,
   useMemo,
   useRef,
   useState,
-} from "https://npm.tfl.dev/react";
-import _ from "https://npm.tfl.dev/lodash?no-check";
-import root from "https://npm.tfl.dev/react-shadow@19";
+  _,
+  useStyleSheet,
+} from "../../deps.ts";
+import styleSheet from "./menu.scss.js";
 
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
-// import Components from 'https://tfl.dev/@truffle/ui@~0.1.0/components/components/components.js'
-import Modal from "https://tfl.dev/@truffle/ui@~0.1.0/components/modal/modal.js";
 import Ripple from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/ripple/ripple.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
@@ -51,7 +49,7 @@ import TestTab from "../test-tab/test-tab.tsx";
 import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
-import DialogContainer from "../dialog-container/dialog-container.tsx";
+import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 
 import { TabElement } from "../../util/tabs/types.ts";
 import {
@@ -354,6 +352,7 @@ function setMenuStyles({
 }
 
 export default function BrowserExtensionMenu(props) {
+  useStyleSheet(styleSheet);
   // make sure we don't render this on the server
   if (typeof document === "undefined") return <></>;
 

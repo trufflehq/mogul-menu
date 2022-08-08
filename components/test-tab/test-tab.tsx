@@ -12,7 +12,8 @@ import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 
 import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
-import { useDialog } from "../dialog-container/dialog-service.ts";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
+import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -70,7 +71,11 @@ export default function HomeTab() {
           <Button style="primary">Accept</Button>,
         ]}
       >
-        Some content
+        <DefaultDialogContentFragment
+          imageUrl="https://cdn.bio/ugc/collectible/d57969e0-c675-11ec-8e89-9f132b527070.svg"
+          primaryText="Hello"
+          secondaryText="How are you?"
+        />
       </Dialog>
     );
   };

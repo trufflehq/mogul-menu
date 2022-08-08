@@ -5,8 +5,8 @@ import { getSrcByImageObj } from "../../deps.ts";
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import Button from "../base/button/button.tsx";
 import Dialog from "https://tfl.dev/@truffle/ui@~0.1.0/components/dialog/dialog.entry.js";
-import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
-import { useDialog } from "../dialog-container/dialog-service.ts";
+import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 export default function Collctible(props) {
   const { collectible, activePowerup, sizePx = 60 } = props;

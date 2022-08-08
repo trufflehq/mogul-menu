@@ -1,11 +1,11 @@
-import React from "https://npm.tfl.dev/react";
-import root from "https://npm.tfl.dev/react-shadow@19";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import { React, useObservables, useStyleSheet } from "../../deps.ts";
+import styleSheet from "./page-stack.scss.js";
 
 export default function PageStack({
   pageStackSubject,
   background = "var(--mm-color-bg-primary)",
 }) {
+  useStyleSheet(styleSheet);
   const { pageStack } = useObservables(() => ({
     pageStack: pageStackSubject.obs,
   }));
@@ -17,21 +17,15 @@ export default function PageStack({
       {isPageStackEmpty ? (
         <></>
       ) : (
-        <root.div>
-          <link
-            rel="stylesheet"
-            href={new URL("page-stack.css", import.meta.url).toString()}
-          />
-          <div className="c-page-stack" style={{ "--background": background }}>
-            <div className="container">
-              {pageStack.map((Component, idx) => (
-                <div key={idx} className="page">
-                  {typeof Component === "function" ? <Component /> : Component}
-                </div>
-              ))}
-            </div>
+        <div className="c-page-stack" style={{ "--background": background }}>
+          <div className="container">
+            {pageStack.map((Component, idx) => (
+              <div key={idx} className="page">
+                {typeof Component === "function" ? <Component /> : Component}
+              </div>
+            ))}
           </div>
-        </root.div>
+        </div>
       )}
     </>
   );

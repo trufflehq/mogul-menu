@@ -1,7 +1,7 @@
 import React, { useContext } from "https://npm.tfl.dev/react";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
-import { useDialog } from "../dialog-container/dialog-service.ts";
-import ItemDialog from "../item-dialog/item-dialog.tsx";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
+import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 
 export default function UnlockedEmoteDialog({
   reward,

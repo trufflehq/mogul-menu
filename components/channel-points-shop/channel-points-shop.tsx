@@ -12,11 +12,11 @@ import Button from "../base/button/button.tsx";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 import StyleSheet from "../base/stylesheet/stylesheet.tsx";
 import { getSrcByImageObj, gql, useMutation, useQuery } from "../../deps.ts";
-import { useDialog } from "../dialog-container/dialog-service.ts";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
 import Dialog from "../base/dialog/dialog.tsx";
-import ItemDialog from "../item-dialog/item-dialog.tsx";
-import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
+import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
+import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
 
 // TODO pull from EconomyTrigger model once we set that up

@@ -16,11 +16,11 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
-import { useDialog } from "../dialog-container/dialog-service.ts";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
-import RedeemableDialog from "../redeemable-dialog/redeemable-dialog.tsx";
-import ItemDialog from "../item-dialog/item-dialog.tsx";
+import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
+import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
