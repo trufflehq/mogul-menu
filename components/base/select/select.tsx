@@ -1,4 +1,4 @@
-import { React, useState, useStyleSheet } from "../../../deps.ts";
+import { Icon, React, useState, useStyleSheet } from "../../../deps.ts";
 import styleSheet from "./select.scss.js";
 
 // the Option component should be used as the children for this component
@@ -30,6 +30,9 @@ export default function Select({
     <div className="c-select">
       <div className="selected-option" onClick={toggleDropdown}>
         {_children[selectedIdx]}
+        <div className="down-arrow">
+          <Icon icon="chevronDown" />
+        </div>
       </div>
       {isShowingDropdown && (
         <div className="dropdown">

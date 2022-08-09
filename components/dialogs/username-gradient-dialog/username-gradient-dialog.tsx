@@ -3,6 +3,7 @@ import Select from "../../base/select/select.tsx";
 import Option from "../../base/option/option.tsx";
 import { ActivatePowerupDialog } from "../activate-powerup-dialog/activate-powerup-dialog.tsx";
 import styleSheet from "./username-gradient-dialog.scss.js";
+import ColorOption from "../../base/color-option/color-option.tsx";
 
 export default function UsernameGradientDialog({ redeemableCollectible }) {
   useStyleSheet(styleSheet);
@@ -23,40 +24,17 @@ export default function UsernameGradientDialog({ redeemableCollectible }) {
     >
       <div className="c-username-gradient-body">
         <Select onOptionChanged={selectChangeHandler}>
-          <GradientOption disabled defaultOption>
+          <ColorOption disabled defaultOption>
             Select a gradient
-          </GradientOption>
+          </ColorOption>
           {...gradients?.map((gradient) => (
-            <GradientOption value={gradient.value} gradient={gradient.value}>
+            <ColorOption value={gradient.value} color={gradient.value}>
               {gradient.name}
-            </GradientOption>
+            </ColorOption>
           ))}
         </Select>
       </div>
     </ActivatePowerupDialog>
-  );
-}
-
-function GradientOption({
-  children,
-  value,
-  disabled,
-  gradient,
-  defaultOption,
-}: {
-  children?: any;
-  value?: string;
-  disabled?: boolean;
-  gradient?: string;
-  defaultOption?: boolean;
-}) {
-  return (
-    <Option disabled={disabled} value={value} defaultOption={defaultOption}>
-      <div className="gradient-option">
-        <div className="preview" style={{ "--background": gradient }} />
-        <div className="text">{children}</div>
-      </div>
-    </Option>
   );
 }
 

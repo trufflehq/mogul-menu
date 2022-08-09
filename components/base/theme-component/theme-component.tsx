@@ -180,6 +180,31 @@ function ThemeComponent({
           letter-spacing: 0.004em;
           color: var(--mm-color-text-bg-primary);
         }
+
+        /* SCROLLBAR CUSTOMIZATION */
+
+        /* width */
+        ::-webkit-scrollbar {
+          width: 12px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+        
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+          border-radius: 100px;
+          border: 4px solid transparent;
+          background-clip: content-box;
+          background-color: rgba(255, 255, 255, 0.25);;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(255, 255, 255, 0.15);;
+        }
       `}
       </style>
     </>

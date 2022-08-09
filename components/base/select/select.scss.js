@@ -10,6 +10,9 @@ export default scss`
     padding: 14px 12px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   >.dropdown {
