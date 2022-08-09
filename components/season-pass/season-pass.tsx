@@ -305,7 +305,7 @@ export default function SeasonPass(props) {
                 {isMember && (
                   <>
                     <div className="account">
-                      <AccountAvatar />
+                      <AccountAvatar size="72px" />
                     </div>
                     <div className="level-progress">
                       <div className="xp">

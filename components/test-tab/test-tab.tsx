@@ -14,6 +14,7 @@ import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
+import Switch from "../base/switch/switch.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -94,6 +95,7 @@ export default function HomeTab() {
         <Button onClick={actionBannerHandler}>Show action banner</Button>
         <Button onClick={toggleDialogHandler}>Show dialog</Button>
       </div>
+      <Switch value={true} />
     </div>
   );
 }
