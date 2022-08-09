@@ -66,7 +66,7 @@ function ThemeComponent({
             you should use --mm-color-text-bg-primary as the text color
           */
           --mm-color-text-bg-primary: ${colorTextBgPrimary};
-          --mm-color-text-secondary: ${colorTextBgSecondary};
+          --mm-color-text-bg-secondary: ${colorTextBgSecondary};
           --mm-color-text-bg-tertiary: ${colorTextBgTertiary};
           --mm-color-text-primary: ${colorTextPrimary};
           --mm-color-text-secondary: ${colorTextSecondary};
@@ -137,7 +137,6 @@ function ThemeComponent({
           font-size: 16px;
           line-height: 24px;
           letter-spacing: 0.005em;
-          color: var(--mm-color-text-bg-primary);
         }
 
         :host .mm-text-subtitle-2 {

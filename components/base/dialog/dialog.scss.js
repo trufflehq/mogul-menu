@@ -7,19 +7,27 @@ export default scss`
   color: var(--mm-color-text-bg-secondary);
   border-radius: 4px;
   position: relative;
+  overflow: hidden;
 
   >.flex {
-    height: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
 
     >.content {
-      flex: 1;
+      max-height: 75vh;
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: auto;
+      overflow: auto;
     }
 
     >.top-actions {
+      background: var(--background);
+      color: var(--text-color);
       display: flex;
       justify-content: space-between;
+      flex-shrink: 0;
 
       >div {
         padding: 20px;
@@ -30,6 +38,7 @@ export default scss`
       display: flex;
       gap: 12px;
       padding: 24px;
+      flex-shrink: 0;
 
       &.fill {
         >* {

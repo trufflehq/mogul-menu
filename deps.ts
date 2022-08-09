@@ -1,6 +1,11 @@
 // utils
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
-export { gql, useMutation, useQuery } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+export {
+  gql,
+  queryObservable,
+  useMutation,
+  useQuery,
+} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 export { default as _ } from "https://npm.tfl.dev/lodash@4.17.21";
 export {

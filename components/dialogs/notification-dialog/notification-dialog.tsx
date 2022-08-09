@@ -1,11 +1,17 @@
 import React from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 
-import { getSrcByImageObj, gql, useQuery } from "../../../deps.ts";
+import {
+  getSrcByImageObj,
+  gql,
+  useQuery,
+  useStyleSheet,
+} from "../../../deps.ts";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { fromNow } from "../../../util/general.ts";
+import styleSheet from "./notification-dialog.scss.js";
 
 const TRANSACTIONS_QUERY = gql`
   query EconomyTransactionsQuery {
@@ -22,12 +28,11 @@ const TRANSACTIONS_QUERY = gql`
   }
 `;
 
-export default function BrowserExtensionNotificationDialog({
+export default function NotificationDialog({
   channelPointsImageObj,
   xpImageObj,
 }) {
-  const { popDialog } = useDialog();
-
+  useStyleSheet(styleSheet);
   const [{ data: transactionsData }] = useQuery({ query: TRANSACTIONS_QUERY });
   const transactions =
     transactionsData?.economyTransactionConnection?.nodes ?? [];
@@ -47,8 +52,8 @@ export default function BrowserExtensionNotificationDialog({
 
   return (
     <div className="c-browser-extension-notification-dialog">
-      <Dialog>
-        <div className="content">
+      <Dialog headerStyle="primary" headerText="Notifications">
+        <div className="body">
           {_.map(transactions, (transaction) => {
             return (
               <div className="transaction">

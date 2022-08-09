@@ -1,20 +1,16 @@
+import { scss } from "../../../deps.ts";
+
+export default scss`
 .c-browser-extension-notification-dialog {
-  .dialog {
-    // TODO add a background secondary css var
-    background-color: rgba(22, 31, 44, 1) !important;
 
-    > .top {
-      background-color: var(--primary-base) !important;
-      color: var(--primary-base-text);
-    }
-  }
+  .body {
+    padding: 20px 26px;
 
-  .content {
     > .transaction {
       display: flex;
       box-sizing: border-box;
       padding: 12px 0;
-      border-bottom: 1px solid rgba(var(--bg-base-text-rgb-csv), 0.16);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 
       > .info {
         display: flex;
@@ -23,13 +19,13 @@
         > .name {
           font-size: 14px;
           line-height: 21px;
-          color: var(--bg-base-text);
+          color: var(--mm-color-text-bg-secondary);
         }
 
         > .date {
           font-size: 12px;
           line-height: 18px;
-          color: rgba(var(--bg-base-text-rgb-csv), 0.64);
+          color: rgba(255, 255, 255, 0.64);
         }
       }
 
@@ -48,3 +44,4 @@
     }
   }
 }
+`;
