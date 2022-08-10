@@ -22,7 +22,10 @@ export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.t
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts";
 export { default as classKebab } from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 export { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
-export { abbreviateNumber } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
+export {
+  abbreviateNumber,
+  formatNumber,
+} from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";

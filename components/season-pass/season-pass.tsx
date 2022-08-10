@@ -18,7 +18,7 @@ import {
 } from "../../util/season-pass/season-pass.js";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
-import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
+import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote-dialog.tsx";
 import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 
