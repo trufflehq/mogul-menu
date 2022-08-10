@@ -82,10 +82,10 @@ function ThemeComponent({
         :host .mm-text-body-1 {
           font-family: var(--mm-font-family);
           font-style: normal;
-          font-weight: 500;
-          font-size: 10px;
-          line-height: 24px;
-          letter-spacing: 0.004em;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 19px;
+          letter-spacing: 0.005em;
           color: var(--mm-color-text-bg-primary);
         }
 
@@ -167,7 +167,8 @@ function ThemeComponent({
           line-height: 21px;
           letter-spacing: 0.0025em;
           text-decoration-line: underline;
-          color: var(--mm-color-primary);
+          color: var(--mm-color-secondary);
+          cursor: pointer;
         }
 
         :host .mm-text-micro {

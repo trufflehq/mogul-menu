@@ -1,5 +1,4 @@
 import { React, useStyleSheet } from "../../../deps.ts";
-import styleSheet from "./link-button.scss.js";
 
 export default function LinkButton({
   children,
@@ -10,9 +9,8 @@ export default function LinkButton({
   onClick?: () => void;
   className?: string;
 }) {
-  useStyleSheet(styleSheet);
   return (
-    <div className={`c-link-button ${className}`} onClick={() => onClick?.()}>
+    <div className={`mm-text-link ${className}`} onClick={() => onClick?.()}>
       {children}
     </div>
   );

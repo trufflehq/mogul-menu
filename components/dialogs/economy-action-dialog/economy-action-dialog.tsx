@@ -6,6 +6,7 @@ export default function EconomyActionDialog({
   title,
   economyActions,
   orgUserCounterTypeSrc,
+  $bottom,
 }) {
   useStyleSheet(styleSheet);
   return (
@@ -19,6 +20,7 @@ export default function EconomyActionDialog({
             />
           );
         })}
+        {$bottom}
       </div>
     </Dialog>
   );
