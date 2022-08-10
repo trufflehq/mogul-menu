@@ -123,29 +123,12 @@ export default scss`
     box-sizing: border-box;
     margin-top: 44px;
 
-    >.title {
-      font-size: 16px;
-      line-height: 24px;
-      text-transform: uppercase;
-    }
-
     >.description {
       margin-top: 2px;
-      font-size: 16px;
-      line-height: 24px;
-      font-weight: 400;
     }
 
     >.link {
-      margin-top: 2px;
-
-      >button {
-        font-size: 14px;
-        line-height: 21px;
-        color: var(--secondary-base);
-        padding: 2px 0;
-        font-weight: 500;
-      }
+      margin-top: 7px;
     }
   }
 }

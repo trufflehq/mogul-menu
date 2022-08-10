@@ -165,8 +165,8 @@ export default function ChannelPointsShop() {
             </div>
           )}
           <div className="how-to-earn">
-            <div className="title">Earn Channel points</div>
-            <div className="description">
+            <div className="mm-text-header-caps title">Earn Channel points</div>
+            <div className="mm-text-body-1 description">
               Start earning channel points to spend in the shop
             </div>
             <div className="link">
