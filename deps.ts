@@ -25,6 +25,7 @@ export { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-in
 export {
   abbreviateNumber,
   formatNumber,
+  zeroPrefix,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 
 // components

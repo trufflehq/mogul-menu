@@ -1,3 +1,6 @@
+import { scss } from "../../deps.ts";
+
+export default scss`
 $rewardHeight: 100px;
 
 $levelNumberLineHeight: 24px;
@@ -556,19 +559,44 @@ $yellow: #EBC564;
 
 .c-locked-reward-item-dialog {
 
-  .item-name {
+  .body {
+    padding: 0 24px;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    gap: 16px;
 
-    >.status-icon {
-      @include status-icon();
+    >.info {
+
+      >div {
+        margin-bottom: 2px;
+      }
+
+      >.name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        >.status-icon {
+          @include status-icon();
+        }
+      }
+
+      >.value-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        >.value {
+          font-weight: 600;
+          font-size: 12px;
+        }
+      }
+
+      >.description {
+        font-weight: 400;
+        font-size: 14px;
+        color: var(--inherit-base-text);
+      }
     }
-  }
-
-  .value-container {
-    display: flex;
-    gap: 5px;
   }
 }
 
@@ -674,6 +702,5 @@ $dialogBg: var(--mm-color-bg-tertiary);
       }
     }
   }
-
-
 }
+`;

@@ -1,12 +1,18 @@
+import {
+  React,
+  gql,
+  useQuery,
+  useStyleSheet,
+  getSrcByImageObj,
+} from "../../deps.ts";
+
 import _ from "https://npm.tfl.dev/lodash?no-check";
-import React, { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
+import { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
 
 import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import { getSrcByImageObj } from "../../deps.ts";
-import Spinner from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
 import cssVars, {
   hexOpacity,
   rgb2rgba,
@@ -26,14 +32,14 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/le
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
-import { gql, useQuery } from "../../deps.ts";
 import { setActiveTab } from "../../util/tabs/active-tab.ts";
+import Dialog from "../base/dialog/dialog.tsx";
+import Button from "../base/button/button.tsx";
+
+import styleSheet from "./season-pass.scss.js";
 
 const GREEN = "#75DB9E";
 const YELLOW = "#EBC564";
-
-const config = {};
-const router = { link: () => null, get: () => null };
 
 const SEASON_PASS_QUERY = gql`
   query {
@@ -133,11 +139,8 @@ const ME_QUERY = gql`
   }
 `;
 
-function Component() {
-  return "";
-}
-
 export default function SeasonPass(props) {
+  useStyleSheet(styleSheet);
   const {
     shouldUseCurrentLevelZeroPrefix,
     shouldUseLevelsZeroPrefix,
@@ -252,6 +255,7 @@ export default function SeasonPass(props) {
     selectedRewardStream.next();
   };
 
+  // TODO: detect when user levels up
   // useEffect(() => {
   //   if (!_.isEmpty(seasonPass?.seasonPassProgression?.changesSinceLastViewed)) {
   //     _.map(
@@ -296,134 +300,132 @@ export default function SeasonPass(props) {
     : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   return (
-    <ScopedStylesheet url={new URL("season-pass.css", import.meta.url)}>
-      <div className="c-browser-extension-season-pass">
-        {seasonPass && (
-          <>
-            <div className="top-info">
-              <div className="left">
-                {isMember && (
-                  <>
-                    <div className="account">
-                      <AccountAvatar size="72px" />
-                    </div>
-                    <div className="level-progress">
-                      <div className="xp">
-                        <div className="icon">
-                          <ImageByAspectRatio
-                            imageUrl={xpSrc}
-                            aspectRatio={1}
-                            widthPx={24}
-                            height={24}
-                          />
-                        </div>
-                        <div className="amount">{`${progress}/${range}`}</div>
-                      </div>
-                      <div className="progress-bar">
-                        <div
-                          className="filler"
-                          style={{
-                            width: `calc(${(progress / range) * 100}%`,
-                          }}
+    <div className="c-browser-extension-season-pass">
+      {seasonPass && (
+        <>
+          <div className="top-info">
+            <div className="left">
+              {isMember && (
+                <>
+                  <div className="account">
+                    <AccountAvatar size="72px" />
+                  </div>
+                  <div className="level-progress">
+                    <div className="xp">
+                      <div className="icon">
+                        <ImageByAspectRatio
+                          imageUrl={xpSrc}
+                          aspectRatio={1}
+                          widthPx={24}
+                          height={24}
                         />
                       </div>
-                      <div className="level">
-                        {`Level ${
-                          shouldUseCurrentLevelZeroPrefix
-                            ? zeroPrefix(currentLevelNum)
-                            : currentLevelNum
-                        }`}
-                      </div>
+                      <div className="amount">{`${progress}/${range}`}</div>
                     </div>
-                  </>
-                )}
+                    <div className="progress-bar">
+                      <div
+                        className="filler"
+                        style={{
+                          width: `calc(${(progress / range) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="level">
+                      {`Level ${
+                        shouldUseCurrentLevelZeroPrefix
+                          ? zeroPrefix(currentLevelNum)
+                          : currentLevelNum
+                      }`}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          {true && (
+            <div className="pages">
+              <div
+                className={`button left ${classKebab({
+                  isDisabled: isNotLeftClickable,
+                })}`}
+                onClick={onLeftClick}
+              >
+                ◂
+              </div>
+              <div className="days">
+                {`Ends in ${seasonPass?.daysRemaining} days`}
+              </div>
+              <div
+                className={`button right ${classKebab({
+                  isDisabled: isNotRightClickable,
+                })}`}
+                onClick={onRightClick}
+              >
+                ▸
               </div>
             </div>
-            {true && (
-              <div className="pages">
-                <div
-                  className={`button left ${classKebab({
-                    isDisabled: isNotLeftClickable,
-                  })}`}
-                  onClick={onLeftClick}
-                >
-                  ◂
-                </div>
-                <div className="days">
-                  {`Ends in ${seasonPass?.daysRemaining} days`}
-                </div>
-                <div
-                  className={`button right ${classKebab({
-                    isDisabled: isNotRightClickable,
-                  })}`}
-                  onClick={onRightClick}
-                >
-                  ▸
-                </div>
-              </div>
-            )}
-            <div className="action-levels-wrapper">
-              <div
-                className="levels-wrapper"
-                ref={$$levelsRef}
-                onTouchStart={(e) => e.stopPropagation()}
-              >
-                {tiers?.length ? (
-                  <div className="tier-info">
-                    {_.map(tiers, (tier) => {
-                      console.log("tier", tier);
-                      return (
-                        tier?.name && (
-                          <div
-                            className="tier"
-                            style={{
-                              background: tier?.background,
-                            }}
-                          >
-                            {tier?.name}
-                          </div>
-                        )
-                      );
-                    })}
-                  </div>
-                ) : null}
-                <div
-                  className="levels"
-                  style={{
-                    // 165 is in the css. we should probably make a prop and css var in here
-                    gridTemplateColumns: `repeat(${numTiles}, 1fr)`,
-                  }}
-                >
-                  {_.map(visibleLevels, (levelNum) => {
+          )}
+          <div className="action-levels-wrapper">
+            <div
+              className="levels-wrapper"
+              ref={$$levelsRef}
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              {tiers?.length ? (
+                <div className="tier-info">
+                  {_.map(tiers, (tier) => {
+                    console.log("tier", tier);
                     return (
-                      <$level
-                        key={levelNum}
-                        abc="def"
-                        level={groupedLevels[levelNum]}
-                        tierNums={tierNums}
-                        userTierNum={userTierNum}
-                        tiers={tiers}
-                        $$levelRef={$$levelRef}
-                        shouldUseLevelsZeroPrefix={shouldUseLevelsZeroPrefix}
-                        premiumAccentColor={premiumAccentColor}
-                        premiumBgColor={premiumBgColor}
-                        selectedRewardStream={selectedRewardStream}
-                        currentLevelNum={currentLevelNum}
-                        xpRange={range}
-                        xpProgress={progress}
-                        xpImgSrc={xpSrc}
-                        // enqueueSnackBar={enqueueSnackBar}
-                        xp={seasonPass?.xp?.count ?? 0}
-                      />
+                      tier?.name && (
+                        <div
+                          className="tier"
+                          style={{
+                            background: tier?.background,
+                          }}
+                        >
+                          {tier?.name}
+                        </div>
+                      )
                     );
                   })}
                 </div>
+              ) : null}
+              <div
+                className="levels"
+                style={{
+                  // 165 is in the css. we should probably make a prop and css var in here
+                  gridTemplateColumns: `repeat(${numTiles}, 1fr)`,
+                }}
+              >
+                {_.map(visibleLevels, (levelNum) => {
+                  return (
+                    <$level
+                      key={levelNum}
+                      abc="def"
+                      level={groupedLevels[levelNum]}
+                      tierNums={tierNums}
+                      userTierNum={userTierNum}
+                      tiers={tiers}
+                      $$levelRef={$$levelRef}
+                      shouldUseLevelsZeroPrefix={shouldUseLevelsZeroPrefix}
+                      premiumAccentColor={premiumAccentColor}
+                      premiumBgColor={premiumBgColor}
+                      selectedRewardStream={selectedRewardStream}
+                      currentLevelNum={currentLevelNum}
+                      xpRange={range}
+                      xpProgress={progress}
+                      xpImgSrc={xpSrc}
+                      // enqueueSnackBar={enqueueSnackBar}
+                      xp={seasonPass?.xp?.count ?? 0}
+                    />
+                  );
+                })}
               </div>
             </div>
-          </>
-        )}
-      </div>
-    </ScopedStylesheet>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -861,42 +863,75 @@ function NoItemLevelUpDialog({
 
 export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
   const { popDialog } = useDialog();
+  const isEmote = reward?.source?.type === "emote";
   return (
     <div className="c-locked-reward-item-dialog">
-      <ItemDialog
-        displayMode="left"
-        imgRel={reward?.source?.fileRel}
-        primaryText={
-          <div className="item-name">
-            <div className="text">{reward?.source?.name}</div>
-            <$lockIcon />
-          </div>
-        }
-        valueText={
-          <div className="value-container">
-            <ImageByAspectRatio
-              imageUrl={xpImgSrc}
-              aspectRatio={1}
-              widthPx={18}
-              height={18}
+      <Dialog
+        actions={[
+          <Button style="bg-tertiary" onClick={popDialog}>
+            Close
+          </Button>,
+        ]}
+      >
+        <div className="body">
+          <div className="image">
+            <img
+              src={getSrcByImageObj(reward?.source?.fileRel?.fileObj)}
+              width="56"
             />
-            <div>
-              {xp}/{minXp}
+          </div>
+          <div className="info">
+            <div className="name">
+              <div className="text mm-text-subtitle-1">
+                {reward?.source?.name}
+              </div>
+              <$lockIcon />
+            </div>
+            <div className="value-container">
+              <ImageByAspectRatio
+                imageUrl={xpImgSrc}
+                aspectRatio={1}
+                widthPx={18}
+                height={18}
+              />
+              <div>
+                {xp}/{minXp}
+              </div>
+            </div>
+            <div className="description mm-text-body-2">
+              {reward?.description ??
+                (isEmote &&
+                  `Unlock the ${reward?.source?.name} emote to use in chat`)}
             </div>
           </div>
-        }
-        secondaryText={reward?.description}
-        buttons={[
-          {
-            text: "Close",
-            bg: cssVars.$tertiaryBase,
-            borderRadius: "4px",
-            textColor: cssVars.$tertiaryBaseText,
-            onClick: popDialog,
-          },
-        ]}
-        onExit={popDialog}
-      />
+        </div>
+        {/* <div className="body">
+          <div className="image">
+            <img src={getSrcByImageObj(file?.fileObj)} width="56" />
+          </div>
+          <div className="info">
+            <div className="name">{collectibleItem?.source?.name ?? ""}</div>
+            <div className="cost">
+              <div className="value">{formatNumber(amount)}</div>
+              <ImageByAspectRatio
+                imageUrl={channelPointsSrc}
+                aspectRatio={1}
+                widthPx={15}
+                height={15}
+              />
+            </div>
+            {(collectibleItem?.source?.data?.description && (
+              <div className="description">
+                {collectibleItem?.source?.data?.description}
+              </div>
+            )) || (
+              <div className="description">
+                Add {collectibleItem?.source?.name ?? ""} to your collection
+              </div>
+            )}
+          </div>
+        </div> */}
+      </Dialog>
     </div>
   );
 }
@@ -966,15 +1001,6 @@ export function $rewardTooltip({
               height={24}
               isCentered={true}
             />
-            {/* <Component
-              slug="image-by-aspect-ratio"
-              props={{
-                imageUrl: getSrcByImageObj(imageFileObj),
-                aspectRatio: imageFileObj.data.aspectRatio,
-                heightPx: 24,
-                isCentered: true,
-              }}
-            /> */}
           </div>
         )}
         <div className="name">{name}</div>
