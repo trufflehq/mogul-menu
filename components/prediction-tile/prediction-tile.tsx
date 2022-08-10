@@ -14,7 +14,7 @@ import Tile from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
-const POLL_INTERVAL = ONE_SECOND_MS;
+const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
 const ACTIVE_POLL_QUERY = gql`
   query PredictionPoll {
