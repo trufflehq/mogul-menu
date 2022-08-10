@@ -26,7 +26,7 @@ export default function ChatHighlightDialog({ redeemableCollectible }) {
           <ColorOption disabled defaultOption>
             Select a color
           </ColorOption>
-          {...colors?.map((color) => (
+          {colors?.map((color) => (
             <ColorOption value={color.rgba} color={color.rgba}>
               {color.name}
             </ColorOption>

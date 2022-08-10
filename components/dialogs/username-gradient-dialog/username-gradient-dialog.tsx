@@ -27,7 +27,7 @@ export default function UsernameGradientDialog({ redeemableCollectible }) {
           <ColorOption disabled defaultOption>
             Select a gradient
           </ColorOption>
-          {...gradients?.map((gradient) => (
+          {gradients?.map((gradient) => (
             <ColorOption value={gradient.value} color={gradient.value}>
               {gradient.name}
             </ColorOption>

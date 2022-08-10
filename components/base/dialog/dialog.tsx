@@ -1,4 +1,4 @@
-import { React, Icon, useStyleSheet } from "../../../deps.ts";
+import { Icon, React, useStyleSheet } from "../../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import styleSheet from "./dialog.scss.js";
 
@@ -75,9 +75,7 @@ export default function Dialog({
           </div>
         )}
         <div className="content">{children}</div>
-        {actions && (
-          <div className={`bottom-actions ${alignActions}`}>{...actions}</div>
-        )}
+        {actions && <div className={`bottom-actions ${alignActions}`}>{actions}</div>}
       </div>
     </div>
   );
