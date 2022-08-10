@@ -4,6 +4,7 @@ export {
   gql,
   queryObservable,
   useMutation,
+  usePollingQuery,
   useQuery,
 } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
