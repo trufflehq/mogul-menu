@@ -18,6 +18,8 @@ import Dialog from "../base/dialog/dialog.tsx";
 import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import UnlockedEmoteDialog from "../unlocked-emote-dialog/unlocked-emote-dialog.tsx";
+import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
+import LinkButton from "../base/link-button/link-button.tsx";
 
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
@@ -102,6 +104,7 @@ const MESSAGE = {
 };
 
 export default function ChannelPointsShop() {
+  const { pushDialog } = useDialog();
   const channelPointsImageObj = undefined;
 
   // const {
@@ -131,7 +134,11 @@ export default function ChannelPointsShop() {
   });
   const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
 
-  const onHowToEarnClick = () => null;
+  const onHowToEarnClick = () => {
+    pushDialog(
+      <ChannelPointsActionsDialog channelPointsSrc={channelPointsSrc} />
+    );
+  };
 
   // const channelPointsSrc =
   //   model.image.getSrcByImageObj(channelPointsImageObj) ??
@@ -181,9 +188,9 @@ export default function ChannelPointsShop() {
                 Start earning channel points to spend in the shop
               </div>
               <div className="link">
-                <Button size={"small"} onClick={onHowToEarnClick}>
+                <LinkButton onClick={onHowToEarnClick}>
                   How do I earn channel points?
-                </Button>
+                </LinkButton>
               </div>
             </div>
           </>
