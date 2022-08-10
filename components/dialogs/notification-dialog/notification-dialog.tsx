@@ -31,6 +31,9 @@ const TRANSACTIONS_QUERY = gql`
 export default function NotificationDialog({
   channelPointsImageObj,
   xpImageObj,
+}: {
+  channelPointsImageObj?: any;
+  xpImageObj?: any;
 }) {
   useStyleSheet(styleSheet);
   const [{ data: transactionsData }] = useQuery({ query: TRANSACTIONS_QUERY });

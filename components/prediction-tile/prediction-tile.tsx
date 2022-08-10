@@ -1,17 +1,18 @@
-import React, { useMemo } from "https://npm.tfl.dev/react";
 import {
   gql,
+  React,
+  useMemo,
   usePollingQuery,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+  useStyleSheet,
+} from "../../deps.ts";
 import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
-
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import Time from "../time/time.tsx";
+import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = ONE_SECOND_MS;
 
@@ -40,6 +41,7 @@ const ACTIVE_POLL_QUERY = gql`
 `;
 
 export default function PredictionTile() {
+  useStyleSheet(styleSheet);
   const { pushPage } = usePageStack();
 
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
@@ -100,11 +102,7 @@ export default function PredictionTile() {
       headerText="Prediction"
       color="#AB8FE9"
       onClick={() => pushPage(<PredictionPage />)}
-      content={() => (
-        <ScopedStylesheet url={new URL("prediction-tile.css", import.meta.url)}>
-          <Content />
-        </ScopedStylesheet>
-      )}
+      content={() => <Content />}
     />
   );
 }

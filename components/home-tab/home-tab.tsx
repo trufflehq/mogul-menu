@@ -214,7 +214,7 @@ export default function HomeTab() {
           </>
         )}
         <LeaderboardTile />
-        {/* <PredictionTile /> */}
+        <PredictionTile />
         <KothTile />
         {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
       </div>
