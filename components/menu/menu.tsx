@@ -8,9 +8,9 @@ Services that the menu component should provide:
 - Interface for setting tab name - done
 - Interface for enqueueing snackbar - done
 - Interface for pushing/popping page onto page stack - done
-- Interface for displaying action banners
+- Interface for displaying action banners - done
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
-- Interface for navigating between tabs
+- Interface for navigating between tabs - done
 */
 
 import {
@@ -675,8 +675,6 @@ export default function BrowserExtensionMenu(props) {
           </div>
         </div>
       </div>
-      {/* TODO: refactor snackbar container component */}
-
       {/* TODO: refactor NewExtensionUserTooltip */}
       {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip

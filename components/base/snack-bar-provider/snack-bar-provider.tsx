@@ -34,6 +34,9 @@ const DEFAULT_VISIBILITY_DURATION_MS = 5000;
 export default function SnackBarProvider({
   children,
   visibilityDuration = DEFAULT_VISIBILITY_DURATION_MS,
+}: {
+  children?: any;
+  visibilityDuration?: number;
 }) {
   useStyleSheet(styleSheet);
   const snackBarService = useContext(snackBarContext);

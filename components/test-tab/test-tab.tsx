@@ -52,10 +52,12 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        message="Finish setting up your account"
-        buttonText="Sign up"
-        onClick={() => removeActionBanner(actionBannerId)}
-      />
+        action={
+          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
+        }
+      >
+        Finish setting up your account
+      </ActionBanner>
     );
   };
 

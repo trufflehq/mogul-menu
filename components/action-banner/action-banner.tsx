@@ -1,25 +1,20 @@
-import React from "https://npm.tfl.dev/react";
-import root from "https://npm.tfl.dev/react-shadow@19";
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
+import { React, useStyleSheet } from "../../deps.ts";
+import styleSheet from "./action-banner.scss.js";
 
 export default function ActionBanner({
-  onClick,
-  message,
-  buttonText,
+  action,
+  children,
   classNamePostfix,
+}: {
+  action?: any;
+  children?: any;
+  classNamePostfix?: "twitch";
 }) {
+  useStyleSheet(styleSheet);
   return (
-    <root.div>
-      <link
-        rel="stylesheet"
-        href={new URL("action-banner.css", import.meta.url).toString()}
-      />
-      <div className={`action-banner action-banner-style-${classNamePostfix}`}>
-        <div className="info">{message}</div>
-        <div className="signup">
-          <Button text={buttonText} size="small" onClick={onClick} />
-        </div>
-      </div>
-    </root.div>
+    <div className={`c-action-banner action-banner-style-${classNamePostfix}`}>
+      <div className="info">{children}</div>
+      <div className="action">{action}</div>
+    </div>
   );
 }
