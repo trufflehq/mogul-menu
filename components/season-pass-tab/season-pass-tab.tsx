@@ -15,6 +15,7 @@ import {
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import Button from "../base/button/button.tsx";
 import styleSheet from "./season-pass-tab.scss.js";
+import ConnectedAccounts from "../connected-accounts/connected-accounts.tsx";
 
 // HACK - plan is to move to a model where we can view all of the economy actions,
 // just showing watchtime and linking to the site for now
@@ -57,22 +58,16 @@ export default function SeasonPassTab() {
   };
   return (
     <div className="c-season-pass-tab">
-      <SeasonPass
-      // onViewCollection={onViewCollection}
-      // highlightButtonBg={highlightButtonBg}
-      // enqueueSnackBar={enqueueSnackBar}
-      />
+      <SeasonPass />
       <div className="mm-text-header-caps title">Earn XP</div>
       <div className="mm-text-body-1 description">
         Connect your accounts to start earning XP
       </div>
-      <LinkButton onClick={onHowToEarnClick}>How do I earn XP?</LinkButton>
-      {/* {org?.slug !== "faze" && (
-          <Component
-            slug="browser-extension-ways-to-earn"
-            props={{ enqueueSnackBar }}
-          />
-        )} */}
+      <LinkButton className="how-to-earn-link" onClick={onHowToEarnClick}>
+        How do I earn XP?
+      </LinkButton>
+      <div className="mm-text-header-caps connections-heading">Connections</div>
+      <ConnectedAccounts />
     </div>
   );
 }

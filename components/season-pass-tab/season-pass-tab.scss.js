@@ -11,5 +11,13 @@ export default scss`
   >.description {
     margin-bottom: 7px;
   }
+
+  >.how-to-earn-link {
+    margin-bottom: 24px;
+  }
+
+  >.connections-heading {
+    margin-bottom: 18px;
+  }
 }
 `;
