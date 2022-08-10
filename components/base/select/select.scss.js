@@ -16,8 +16,10 @@ export default scss`
   }
 
   >.dropdown {
-    position: absolute;
-    width: 100%;
+    position: fixed;
+    /* TODO: figure out some way to get this to be 100% width of parent; */
+    /* "position: absoulte" doesn't work because any parent that has overflow:hidden will hide it */
+    // width: 100%;
     background: var(--mm-color-bg-tertiary);
     color: var(--mm-color-text-bg-tertiary);
     border: 1px solid rgba(255, 255, 255, 0.2);

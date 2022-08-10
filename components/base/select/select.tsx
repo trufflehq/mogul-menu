@@ -13,7 +13,7 @@ export default function Select({
   const [isShowingDropdown, setIsShowingDropdown] = useState(false);
   const toggleDropdown = () => setIsShowingDropdown((prev) => !prev);
 
-  const _children = Array.isArray(children) ? children : [children];
+  const _children = Array.isArray(children) ? children.flat() : [children];
 
   const [selectedIdx, setSelectedIdx] = useState(() => {
     const defaultIdx = _children.findIndex((child) => child.props?.default);
@@ -36,7 +36,7 @@ export default function Select({
       </div>
       {isShowingDropdown && (
         <div className="dropdown">
-          {children.map((child, idx) => (
+          {_children.map((child, idx) => (
             <div
               className={`option ${child.props?.disabled && "disabled"}`}
               onClick={() => {
