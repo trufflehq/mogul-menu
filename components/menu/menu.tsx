@@ -65,6 +65,10 @@ import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
 import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
 import { activeTabSubject as nextTabSubject } from "../../util/tabs/active-tab.ts";
+import {
+  TabButtonContext,
+  useTabButtonManager,
+} from "../../util/tabs/tab-button.ts";
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -528,6 +532,12 @@ export default function BrowserExtensionMenu(props) {
     // shouldShowOnboardTooltip,
   ]);
 
+  // custom tab buttons
+  const tabButtonManager = useTabButtonManager();
+  const { additionalTabButtons } = useObservables(() => ({
+    additionalTabButtons: tabButtonManager.buttonMapSubject.obs,
+  }));
+
   return (
     <div className={className}>
       <Stylesheet url={new URL("menu.css", import.meta.url)} />
@@ -547,6 +557,9 @@ export default function BrowserExtensionMenu(props) {
         <div className="inner">
           <div className="bottom">
             <div className="tabs">
+              <div className="additional-tab-buttons">
+                {Object.values(additionalTabButtons)}
+              </div>
               {_.map(Object.entries(tabStates), ([id, tabState]) => {
                 const { text: tabText, hasBadge, icon, isActive } = tabState;
                 return (
@@ -646,32 +659,40 @@ export default function BrowserExtensionMenu(props) {
           }
           <div className="body">
             <DialogContainer />
-            <ActionBannerContext.Provider
-              value={{ displayActionBanner, removeActionBanner }}
+            <TabButtonContext.Provider
+              value={_.pick(tabButtonManager, [
+                "addButton",
+                "removeButton",
+                "clearButtons",
+              ])}
             >
-              <TabStateContext.Provider value={tabStateManager}>
-                <PageStackContext.Provider value={{ pushPage, popPage }}>
-                  <SnackBarProvider
-                    visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
-                  />
-                  <PageStack pageStackSubject={pageStackSubject} />
-                  <ActionBannerContainer
-                    actionBannerObjSubject={actionBannerObjSubject}
-                  />
-                  {visibleTabs.map(({ $el: TabComponent }, idx) => (
-                    <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
-                      <div
-                        className={`tab-component ${classKebab({
-                          isActive: idx === activeTabIndex,
-                        })}`}
-                      >
-                        {TabComponent && <TabComponent />}
-                      </div>
-                    </TabIdContext.Provider>
-                  ))}
-                </PageStackContext.Provider>
-              </TabStateContext.Provider>
-            </ActionBannerContext.Provider>
+              <ActionBannerContext.Provider
+                value={{ displayActionBanner, removeActionBanner }}
+              >
+                <TabStateContext.Provider value={tabStateManager}>
+                  <PageStackContext.Provider value={{ pushPage, popPage }}>
+                    <SnackBarProvider
+                      visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
+                    />
+                    <PageStack pageStackSubject={pageStackSubject} />
+                    <ActionBannerContainer
+                      actionBannerObjSubject={actionBannerObjSubject}
+                    />
+                    {visibleTabs.map(({ $el: TabComponent }, idx) => (
+                      <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
+                        <div
+                          className={`tab-component ${classKebab({
+                            isActive: idx === activeTabIndex,
+                          })}`}
+                        >
+                          {TabComponent && <TabComponent />}
+                        </div>
+                      </TabIdContext.Provider>
+                    ))}
+                  </PageStackContext.Provider>
+                </TabStateContext.Provider>
+              </ActionBannerContext.Provider>
+            </TabButtonContext.Provider>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
 export {
   gql,
+  query,
   queryObservable,
   useMutation,
   usePollingQuery,

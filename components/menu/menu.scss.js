@@ -286,27 +286,27 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         }
 
         // TODO: generalize buttons next to tabs
-        // > .channel-points {
-        //   box-sizing: border-box;
-        //   height: 100%;
-        //   height: 40px;
+        > .additional-tab-buttons {
+          box-sizing: border-box;
+          height: 100%;
+          height: 40px;
 
-        //   display: flex;
+          display: flex;
 
-        //   > .c-channel-points {
-        //     > .channel-points {
-        //       display: none;
-        //     }
+          /*> .c-channel-points {
+            > .channel-points {
+              display: none;
+            }
 
-        //     > .claim {
-        //       display: none;
+            > .claim {
+              display: none;
 
-        //       &.is-visible {
-        //         display: flex;
-        //       }
-        //     }
-        //   }
-        // }
+              &.is-visible {
+                display: flex;
+              }
+            }
+          }*/
+        }
 
         >.extension-icon {
           background-color: var(--primary-base);

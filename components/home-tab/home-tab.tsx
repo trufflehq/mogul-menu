@@ -73,6 +73,7 @@ export default function HomeTab() {
   const xp = userInfoData?.seasonPass?.xp?.count;
   const canClaim = true;
   const hasChannelPoints = true;
+  const hasBattlePass = true;
 
   const { pushPage, popPage } = usePageStack();
   const { pushDialog, popDialog } = useDialog();
@@ -203,12 +204,12 @@ export default function HomeTab() {
           <>
             {canClaim && (
               <IsLiveInfo
-              // secondsRemainingSubject={secondsRemainingSubject}
-              // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-              // highlightButtonBg={highlightButtonBg}
-              // creatorName={creatorName}
-              // hasChannelPoints={hasChannelPoints}
-              // hasBattlePass={hasBattlePass}
+                // secondsRemainingSubject={secondsRemainingSubject}
+                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
+                // highlightButtonBg={highlightButtonBg}
+                // creatorName={creatorName}
+                hasChannelPoints={hasChannelPoints}
+                hasBattlePass={hasBattlePass}
               />
             )}
           </>

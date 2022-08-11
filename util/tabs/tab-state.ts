@@ -1,7 +1,6 @@
 import { createContext, useContext, useReducer } from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { TabDefinition, TabState, TabStateMap } from "./types.ts";
-import { uniqueId } from "../general.ts";
 import { useTabId } from "./tab-id.ts";
 
 export type TabStateManager = ReturnType<typeof useTabStateManager>;
