@@ -182,7 +182,7 @@ $yellow: #EBC564;
 
         >.tier {
           color: var(--mm-color-bg-secondary);
-          margin-bottom: calc(#{$rewardHeight} + #{$rewardInnerGapName / 2} + #{$tierBottomMargin} + 4px);
+          margin-bottom: calc(#{$rewardHeight} + calc(#{$rewardInnerGapName} / 2) + #{$tierBottomMargin} + 4px);
           font-weight: 600;
           text-transform: uppercase;
           background: var(--mm-color-bg-secondary);

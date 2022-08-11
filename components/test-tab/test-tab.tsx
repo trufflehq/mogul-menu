@@ -15,6 +15,7 @@ import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 import Switch from "../base/switch/switch.tsx";
+import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -97,7 +98,20 @@ export default function HomeTab() {
         <Button onClick={actionBannerHandler}>Show action banner</Button>
         <Button onClick={toggleDialogHandler}>Show dialog</Button>
       </div>
-      <Switch value={true} />
+      <div>
+        <Switch value={true} />
+      </div>
+      <div>
+        <ChannelPointsClaim
+          hasText
+          hasChannelPoints
+          hasBattlePass
+          highlightButtonBg="var(--mm-gradient)"
+          onClaim={() => null}
+          onFinishedCountdown={() => null}
+          source="youtube"
+        />
+      </div>
     </div>
   );
 }

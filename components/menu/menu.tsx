@@ -21,6 +21,8 @@ import {
   useState,
   _,
   useStyleSheet,
+  getSrcByImageObj,
+  jumper,
 } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
 
@@ -39,8 +41,6 @@ import {
   op,
 } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-import { getSrcByImageObj } from "../../deps.ts";
 
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
 

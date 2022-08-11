@@ -1,9 +1,95 @@
-import React, {
-  useContext,
+import {
+  React,
+  createSubject,
+  classKebab,
+  Obs,
+  op,
   useEffect,
   useMemo,
   useRef,
-} from "https://npm.tfl.dev/react";
+  useObservables,
+  useStyleSheet,
+  _,
+  gql,
+  queryObservable,
+  useMutation,
+  getSrcByImageObj,
+  getModel,
+  setCookie,
+  getCookie,
+} from "../../deps.ts";
+import styleSheet from "./channel-points.scss.js";
+
+const ECONOMY_ACTION_QUERY = gql`
+  query ($economyTriggerId: ID!) {
+    economyAction(input: { economyTriggerId: $economyTriggerId }) {
+      id
+      orgId
+      name
+      action
+      sourceType
+      amountValue
+      amountId
+      data {
+        amountPurchaseIncrementId
+        redeemData
+        items {
+          source {
+            id
+            name
+            type
+            fileRel {
+              key
+              fileId
+              fileObj {
+                id
+                cdn
+                data
+                prefix
+                contentType
+                type
+                variations
+                ext
+              }
+            }
+            data {
+              redeemType
+              description
+              category
+              redeemData
+            }
+          }
+          sourceType
+          sourceId
+          amount
+          color
+        }
+        cooldownSeconds
+      }
+    }
+  }
+`;
+
+const WATCH_TIME_INCREMENT_MUTATION = gql`
+  mutation ($secondsWatched: Int, $sourceType: String) {
+    watchTimeIncrement(
+      input: { secondsWatched: $secondsWatched, sourceType: $sourceType }
+    ) {
+      isUpdated
+    }
+  }
+`;
+
+const WATCH_TIME_CLAIM_MUTATION = gql`
+  mutation ($sourceType: String!) {
+    watchTimeClaim(input: { sourceType: $sourceType }) {
+      economyTransactions {
+        amountId
+        amountValue
+      }
+    }
+  }
+`;
 
 const CHANNEL_POINTS_CLAIM_TRIGGER_ID = "41760be0-6f68-11ec-b706-956d4fcf75c0";
 const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";
@@ -28,13 +114,10 @@ function secondsSinceBySeconds(minuend, subtrahend) {
   return Math.round(minuend - subtrahend);
 }
 
-// HACK: for faze
-const isFaze = typeof window !== "undefined" &&
-  window.location?.hostname === "faze1.live";
-
 // TODO: simplify this by using slug=timer component
 // we could probably add something for timer to count up too?
-export default function $channelPoints(props) {
+export default function ChannelPointsClaim(props) {
+  useStyleSheet(styleSheet);
   const {
     hasText,
     hasChannelPoints,
@@ -44,15 +127,18 @@ export default function $channelPoints(props) {
     darkChannelPointsImageObj,
     highlightButtonBg,
     source,
-    timeWatchedSecondsStream,
-    secondsRemainingStream,
   } = props;
   if (!onFinishedCountdown) {
     console.log("[channel-points]: onFinishedCountdown not defined");
   }
   if (!onClaim) console.log("[channel-points] onClaim not defined");
 
-  const { cookie, model, cssVars } = useContext(context);
+  const [_incrementWatchtimeResult, executeIncrementWatchtimeMutation] =
+    useMutation(WATCH_TIME_INCREMENT_MUTATION);
+
+  const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
+    WATCH_TIME_CLAIM_MUTATION
+  );
 
   const intervalRef = useRef(null);
   const lastUpdateTimeRef = useRef(null);
@@ -72,41 +158,23 @@ export default function $channelPoints(props) {
     claimTimerCountdownSecondsObs,
     claimXpEconomyActionObs,
     claimChannelPointEconomyActionObs,
+    timeWatchedSecondsStream,
+    secondsRemainingStream,
   } = useMemo(() => {
-    const claimChannelPointEconomyActionObs = model.economyAction
-      .getByEconomyTriggerId(CHANNEL_POINTS_CLAIM_TRIGGER_ID);
-    const claimXpEconomyActionObs = model.economyAction.getByEconomyTriggerId(
-      XP_CLAIM_TRIGGER_ID,
-    );
+    const claimChannelPointEconomyActionObs = queryObservable(
+      ECONOMY_ACTION_QUERY,
+      { economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID }
+    ).pipe(op.map((result) => result?.data?.economyAction));
 
-    let fazeWatchTimeObs;
-    // HACK for faze
-    if (isFaze) {
-      // watch time
-      const fazeWatchTimeId = "fdc325f0-d7da-11ec-a45e-fb5dc1a0e92a";
-      // const fazeWatchTimeId = '5af015c0-baea-11ec-aa58-d2e2b8fae502' // staging
-      fazeWatchTimeObs = model.orgUserCounter.getMeByCounterTypeId(
-        fazeWatchTimeId,
-      )
-        .pipe(
-          Stream.op.take(1),
-          Stream.op.map((orgUserCounter) => {
-            // HACK to keep same start time through cache invalidations
-            if (window._fStartTime) {
-              return window._fStartTime;
-            }
-            const secondsWatched = orgUserCounter?.count || 0;
-            window._fStartTime = new Date(Date.now() - 1000 * secondsWatched)
-              .getTime();
-            return new Date(Date.now() - 1000 * secondsWatched).getTime();
-          }),
-        );
-    }
-    const initialTimeMsFromCookie = cookie.get(INITIAL_TIME_MS_COOKIE);
+    const claimXpEconomyActionObs = queryObservable(ECONOMY_ACTION_QUERY, {
+      economyTriggerId: XP_CLAIM_TRIGGER_ID,
+    }).pipe(op.map((result) => result?.data?.economyAction));
+
+    const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
     const initialTimeMs = initialTimeMsFromCookie
       ? parseInt(initialTimeMsFromCookie)
       : Date.now();
-    const lastClaimTimeMsFromCookie = cookie.get(LAST_CLAIM_TIME_MS_COOKIE);
+    const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
     const decrementTimeMs = lastClaimTimeMsFromCookie
       ? parseInt(lastClaimTimeMsFromCookie)
       : Date.now();
@@ -115,49 +183,48 @@ export default function $channelPoints(props) {
     // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
     // and if they come back it'll resume their timer
     // refresh this cookie for another ALLOWED_TIME_AWAY_MS
-    cookie.set(INITIAL_TIME_MS_COOKIE, initialTimeMs, {
+    setCookie(INITIAL_TIME_MS_COOKIE, initialTimeMs, {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
     // set initial
-    cookie.set(LAST_CLAIM_TIME_MS_COOKIE, decrementTimeMs, {
+    setCookie(LAST_CLAIM_TIME_MS_COOKIE, decrementTimeMs, {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
 
-    const claimXpEconomyActionAndClaimChannelPointActionObs = Stream.Obs
-      .combineLatest(
-        claimXpEconomyActionObs,
-        claimChannelPointEconomyActionObs,
-      );
+    const claimXpEconomyActionAndClaimChannelPointActionObs = Obs.combineLatest(
+      claimXpEconomyActionObs,
+      claimChannelPointEconomyActionObs
+    );
 
     return {
-      watchTimeStream: Stream.createStream(null),
-      initialTimeStream: Stream.createStream(fazeWatchTimeObs || initialTimeMs),
-      lastUpdateTimeStream: Stream.createStream(Date.now()),
-      decrementStartTimeStream: Stream.createStream(decrementTimeMs),
-      isClaimButtonVisibleStream: Stream.createStream(false),
+      timeWatchedSecondsStream: createSubject(),
+      secondsRemainingStream: createSubject(),
+      watchTimeStream: createSubject(null),
+      initialTimeStream: createSubject(initialTimeMs),
+      lastUpdateTimeStream: createSubject(Date.now()),
+      decrementStartTimeStream: createSubject(decrementTimeMs),
+      isClaimButtonVisibleStream: createSubject(false),
       claimChannelPointEconomyActionObs,
-      claimChannelPointEconomyActionAmountObs: claimChannelPointEconomyActionObs
-        .pipe(
-          Stream.op.map((economyAction) => economyAction?.amountValue),
+      claimChannelPointEconomyActionAmountObs:
+        claimChannelPointEconomyActionObs.pipe(
+          op.map((economyAction) => economyAction?.amountValue)
         ),
       claimXpEconomyActionObs,
       claimXpEconomyActionAmountObs: claimXpEconomyActionObs.pipe(
-        Stream.op.map((economyAction) => economyAction?.amountValue),
+        op.map((economyAction) => economyAction?.amountValue)
       ),
       claimTimerCountdownSecondsObs:
         claimXpEconomyActionAndClaimChannelPointActionObs.pipe(
-          Stream.op.map(
-            ([claimXpEconomyAction, claimChannelPointEconomyAction]) => {
-              const cooldownSeconds =
-                claimChannelPointEconomyAction?.data?.cooldownSeconds ||
-                claimXpEconomyAction?.data?.cooldownSeconds;
-              if (cooldownSeconds) {
-                return Math.max(cooldownSeconds, DEFAULT_INTERVAL_SECONDS);
-              } else {
-                return DEFAULT_TIMER_SECONDS;
-              }
-            },
-          ),
+          op.map(([claimXpEconomyAction, claimChannelPointEconomyAction]) => {
+            const cooldownSeconds =
+              claimChannelPointEconomyAction?.data?.cooldownSeconds ||
+              claimXpEconomyAction?.data?.cooldownSeconds;
+            if (cooldownSeconds) {
+              return Math.max(cooldownSeconds, DEFAULT_INTERVAL_SECONDS);
+            } else {
+              return DEFAULT_TIMER_SECONDS;
+            }
+          })
         ),
     };
   }, []);
@@ -172,7 +239,7 @@ export default function $channelPoints(props) {
     claimTimerCountdownSeconds,
     claimXpEconomyAction,
     claimChannelPointEconomyAction,
-  } = useStream(() => ({
+  } = useObservables(() => ({
     initialTime: initialTimeStream.obs,
     lastUpdateTime: lastUpdateTimeStream.obs,
     decrementStartTime: decrementStartTimeStream.obs,
@@ -190,12 +257,12 @@ export default function $channelPoints(props) {
 
     const secondsElapsedSinceLastUpdate = secondsSinceByMilliseconds(
       updatedTime,
-      lastUpdateTimeRef.current,
+      lastUpdateTimeRef.current
     );
 
     const secondsSinceInitialLoad = secondsSinceByMilliseconds(
       updatedTime,
-      initialTimeRef.current,
+      initialTimeRef.current
     );
     timeWatchedSecondsStream.next(secondsSinceInitialLoad);
 
@@ -205,20 +272,23 @@ export default function $channelPoints(props) {
 
     if (shouldUpdateWatchTime) {
       // refresh this cookie for another ALLOWED_TIME_AWAY_MS
-      cookie.set(INITIAL_TIME_MS_COOKIE, initialTimeRef.current, {
+      setCookie(INITIAL_TIME_MS_COOKIE, initialTimeRef.current, {
         ttlMs: ALLOWED_TIME_AWAY_MS,
       });
       // refresh last claim time cookie
-      cookie.set(
+      setCookie(
         LAST_CLAIM_TIME_MS_COOKIE,
-        cookie.get(LAST_CLAIM_TIME_MS_COOKIE),
-        { ttlMs: ALLOWED_TIME_AWAY_MS },
+        getCookie(LAST_CLAIM_TIME_MS_COOKIE),
+        { ttlMs: ALLOWED_TIME_AWAY_MS }
       );
       lastUpdateTimeStream.next(Date.now());
       const secondsWatched = secondsElapsedSinceLastUpdate;
 
       if (source?.sourceType) {
-        await model.watchTime.increment(secondsWatched, source.sourceType);
+        await executeIncrementWatchtimeMutation({
+          secondsWatched,
+          sourceType: source.sourceType,
+        });
       }
     }
 
@@ -230,12 +300,12 @@ export default function $channelPoints(props) {
 
     const secondsSinceDecrementStart = secondsSinceByMilliseconds(
       currentTime,
-      decrementStartTimeRef.current,
+      decrementStartTimeRef.current
     );
 
     const secondsRemaining = secondsSinceBySeconds(
       claimTimerCountdownSeconds,
-      secondsSinceDecrementStart,
+      secondsSinceDecrementStart
     );
 
     secondsRemainingStream.next(secondsRemaining);
@@ -247,7 +317,7 @@ export default function $channelPoints(props) {
   };
 
   const onClaimHandler = async () => {
-    cookie.set(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
+    setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
     decrementStartTimeStream.next(Date.now());
@@ -256,16 +326,18 @@ export default function $channelPoints(props) {
     clearTimeout(messageTimerRef.current);
 
     if (source?.sourceType) {
-      const economyTransactions = await model.watchTime.claim(
-        source.sourceType,
-      );
+      const economyTransactions = await executeWatchtimeClaimMutation({
+        sourceType: source.sourceType,
+      });
 
-      const channelPointsClaimed = Legacy._.find(economyTransactions, {
-        amountId: claimChannelPointEconomyAction?.amountId,
-      })?.amountValue || claimChannelPointEconomyActionAmount;
-      const xpClaimed = Legacy._.find(economyTransactions, {
-        amountId: claimXpEconomyAction?.amountId,
-      })?.amountValue || claimXpEconomyActionAmount;
+      const channelPointsClaimed =
+        _.find(economyTransactions, {
+          amountId: claimChannelPointEconomyAction?.amountId,
+        })?.amountValue || claimChannelPointEconomyActionAmount;
+      const xpClaimed =
+        _.find(economyTransactions, {
+          amountId: claimXpEconomyAction?.amountId,
+        })?.amountValue || claimXpEconomyActionAmount;
 
       onClaim({
         channelPointsClaimed,
@@ -282,13 +354,13 @@ export default function $channelPoints(props) {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(incrementTimer, TIMER_INCREMENT_MS);
 
-    if (!cookie.get("hasReceivedInitial")) {
-      cookie.set("hasReceivedInitial", "1");
+    if (!getCookie("hasReceivedInitial")) {
+      setCookie("hasReceivedInitial", "1");
       isClaimButtonVisibleStream.next(true);
     }
 
-    if (!cookie.get("hasReceivedInitialExtra")) {
-      cookie.set("hasReceivedInitialExtra", "1");
+    if (!getCookie("hasReceivedInitialExtra")) {
+      setCookie("hasReceivedInitialExtra", "1");
       // this causes invalidation / refetching of all data, so leaving out for now
       // could optimize to have it only invalidate orgUserCounters
     }
@@ -304,15 +376,17 @@ export default function $channelPoints(props) {
 
   // const channelPointsSrc = model.image.getSrcByImageObj(channelPointsImageObj) ?? 'https://cdn.bio/assets/images/features/chrome_extension/channel-points-default.svg'
   const darkChannelPointsSrc =
-    model.image.getSrcByImageObj(darkChannelPointsImageObj) ??
-      "https://cdn.bio/assets/images/features/chrome_extension/channel-points-default-dark.svg";
-  const fullTitle = hasChannelPoints && hasBattlePass
-    ? "Claim points & XP"
-    : hasChannelPoints
-    ? "Claim points"
-    : hasBattlePass
-    ? "Claim XP"
-    : "Claim";
+    (darkChannelPointsImageObj &&
+      getSrcByImageObj(darkChannelPointsImageObj)) ||
+    "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
+  const fullTitle =
+    hasChannelPoints && hasBattlePass
+      ? "Claim points & XP"
+      : hasChannelPoints
+      ? "Claim points"
+      : hasBattlePass
+      ? "Claim XP"
+      : "Claim";
 
   const shortTitle = hasChannelPoints
     ? "Claim points"
@@ -321,28 +395,21 @@ export default function $channelPoints(props) {
     : "Claim";
 
   return (
-    <div className="z-channel-points" title={fullTitle}>
+    <div className="c-channel-points" title={fullTitle}>
       {
         <div
-          className={`claim ${
-            classKebab({ hasText, isVisible: isClaimButtonVisible })
-          }`}
+          className={`claim ${classKebab({
+            hasText,
+            isVisible: isClaimButtonVisible,
+          })}`}
           style={{
             background: highlightButtonBg,
-            backgroundColor: cssVars.$tertiaryBase,
+            // backgroundColor: cssVars.$tertiaryBase,
           }}
           onClick={onClaimHandler}
         >
           <div className="icon">
-            <Component
-              slug="image-by-aspect-ratio"
-              props={{
-                imageUrl: darkChannelPointsSrc,
-                aspectRatio: 1,
-                widthPx: 16,
-                height: 16,
-              }}
-            />
+            <img src={darkChannelPointsSrc} width="16" />
           </div>
           {hasText && <div className="title">{shortTitle}</div>}
         </div>

@@ -28,6 +28,8 @@ export {
   formatNumber,
   zeroPrefix,
 } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
+export { default as jumper } from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
+export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@0.0.1/cookie/cookie.js";
 
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
