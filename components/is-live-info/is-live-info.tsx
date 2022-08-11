@@ -145,7 +145,6 @@ function ChannelPointsClaimSnackBar({
   const darkChannelPointsSrc = channelPointsImageObj
     ? getSrcByImageObj(darkChannelPointsImageObj)
     : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
-  console.log({ totalChannelPoints });
   return (
     <SnackBar
       {...{
