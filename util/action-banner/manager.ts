@@ -1,21 +1,22 @@
-import React, { useMemo } from "https://npm.tfl.dev/react";
-import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { useState } from "https://npm.tfl.dev/react";
 import { uniqueId } from "../general.ts";
 
 export type ActionBanner = {
-  key: string;
+  key?: string;
   Component: React.ReactNode;
 };
 
 export type ActionBannerObj = Record<string, ActionBanner>;
 
 export function useActionBannerManager() {
-  const actionBannerObjSubject = useMemo(() => createSubject({}), []);
+  const [actionBannerObj, setActionBannerObj]: [
+    ActionBannerObj,
+    (x: any) => any, // TODO rm this once we fix the npm.tfl.dev react types
+  ] = useState({});
 
   const displayActionBanner = (actionBanner: React.ReactNode, key?: string) => {
     const id = uniqueId();
 
-    const actionBannerObj: ActionBannerObj = actionBannerObjSubject.getValue();
     const actionBanners = Object.keys(actionBannerObj).reduce<ActionBanner[]>((acc, id) => {
       const act = actionBannerObj[id];
       acc.push(act);
@@ -28,24 +29,27 @@ export function useActionBannerManager() {
     }
 
     const newObject = {
-      ...actionBannerObjSubject.getValue(),
+      ...actionBannerObj,
       [id]: {
         key,
         Component: actionBanner,
       },
     };
-    actionBannerObjSubject.next(newObject);
+
+    setActionBannerObj(newObject);
     return id;
   };
 
   const removeActionBanner = (id: string) => {
-    const newObject = { ...actionBannerObjSubject.getValue() };
-    delete newObject[id];
-    actionBannerObjSubject.next(newObject);
+    setActionBannerObj((oldObj: ActionBannerObj) => {
+      const newObject: ActionBannerObj = { ...oldObj };
+      delete newObject[id];
+      return newObject;
+    });
   };
 
   return {
-    actionBannerObjSubject,
+    actionBannerObj,
     displayActionBanner,
     removeActionBanner,
   };

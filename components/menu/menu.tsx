@@ -68,6 +68,7 @@ import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
 import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
 import { activeTabSubject as nextTabSubject } from "../../util/tabs/active-tab.ts";
+import { signInWithExtensionJwt } from '../../api/mod.ts'
 import {
   TabButtonContext,
   useTabButtonManager,
@@ -511,10 +512,10 @@ export default function BrowserExtensionMenu(props) {
   }, [nextTabSlugFromExternal]);
 
   // action banners
-  const { actionBannerObjSubject, displayActionBanner, removeActionBanner } =
+  const { actionBannerObj, displayActionBanner, removeActionBanner } =
     useActionBannerManager();
   
-  const [{ data: meRes, fetching: isFetchingUser }, reexecuteQuery] = useQuery({
+  const [{ data: meRes, fetching: isFetchingUser }, reexecuteMeUserQuery] = useQuery({
     query: ME_QUERY,
   });
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
@@ -565,10 +566,32 @@ export default function BrowserExtensionMenu(props) {
     additionalTabButtons: tabButtonManager.buttonMapSubject.obs,
   }));
 
-  const onAuthClose = () => {
+  const onAuthClose = async () => {
     setIsAuthDialogHidden(true);
-    reexecuteQuery({ requestPolicy: "network-only" });
+    reexecuteMeUserQuery({ requestPolicy: "network-only" });
+    await signInWithExtensionJwt(credentials.token, { isTransfer: false})
   }
+
+  const [credentials, setCredentials] = useState()
+
+  useEffect(() => {
+    const fetchCredentials = async () => {
+      const credentials = await jumper.call('context.getCredentials')
+      setCredentials(credentials)
+
+      if (credentials?.sourceType === 'youtube' && credentials?.token) {
+        await signInWithExtensionJwt(credentials.token, { isTransfer: false })
+      }
+
+      // FIXME - add for twitch
+      if (credentials?.sourceType === 'twitch' && credentials?.token) {
+        // model.auth.setAccessToken(credentials?.token)
+        // model.graphqlClient.invalidateAll()
+      }
+    }
+
+    fetchCredentials()
+  }, [])
 
   return (
     <div className={className}>
@@ -714,7 +737,7 @@ export default function BrowserExtensionMenu(props) {
                     />
                     <PageStack pageStackSubject={pageStackSubject} />
                     <ActionBannerContainer
-                      actionBannerObjSubject={actionBannerObjSubject}
+                      actionBannerObj={actionBannerObj}
                     />
                     {visibleTabs.map(({ $el: TabComponent }, idx) => (
                       <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
