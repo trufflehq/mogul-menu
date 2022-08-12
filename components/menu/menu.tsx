@@ -19,6 +19,8 @@ import {
   useMemo,
   useRef,
   useState,
+  useQuery,
+  AuthDialog,
   _,
   useStyleSheet,
   getSrcByImageObj,
@@ -34,7 +36,7 @@ import Stylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/stylesheet
 import SignUpForm from "https://tfl.dev/@truffle/ui@~0.1.0/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
-
+import { isMemberMeUser } from '../../util/mod.ts'
 import {
   createSubject,
   Obs,
@@ -43,6 +45,7 @@ import {
 import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
 
 import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+import ActionBanner from "../action-banner/action-banner.tsx";
 
 import HomeTab from "../home-tab/home-tab.tsx";
 import TestTab from "../test-tab/test-tab.tsx";
@@ -50,7 +53,7 @@ import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
 import DialogContainer from "../base/dialog-container/dialog-container.tsx";
-
+import Button from '../base/button/button.tsx'
 import { TabElement } from "../../util/tabs/types.ts";
 import {
   TabStateContext,
@@ -69,6 +72,8 @@ import {
   TabButtonContext,
   useTabButtonManager,
 } from "../../util/tabs/tab-button.ts";
+
+import { ME_QUERY } from '../../gql/mod.ts'
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -356,6 +361,7 @@ function setMenuStyles({
 }
 
 export default function BrowserExtensionMenu(props) {
+  const signInActionBannerIdRef = useRef(null)
   useStyleSheet(styleSheet);
   // make sure we don't render this on the server
   if (typeof document === "undefined") return <></>;
@@ -459,8 +465,6 @@ export default function BrowserExtensionMenu(props) {
   const [activeTabSlug, setActiveTabId] = useState(tabSlugs[0]);
 
   const activeTabIndex = tabSlugs.indexOf(activeTabSlug);
-  const ActiveTab: TabElement =
-    visibleTabs[activeTabIndex].$el ?? (() => <></>);
 
   useEffect(() => {
     const setTabState = (tabId: string, isActive: boolean) =>
@@ -509,6 +513,29 @@ export default function BrowserExtensionMenu(props) {
   // action banners
   const { actionBannerObjSubject, displayActionBanner, removeActionBanner } =
     useActionBannerManager();
+  
+  const [{ data: meRes, fetching: isFetchingUser }, reexecuteQuery] = useQuery({
+    query: ME_QUERY,
+  });
+  const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
+  
+  useEffect(() => {
+    if(!isFetchingUser) {
+      if(!isMemberMeUser(meRes?.me)) {
+        signInActionBannerIdRef.current = displayActionBanner(
+          (<ActionBanner
+            action={
+              <Button onClick={() => setIsAuthDialogHidden(false)}></Button>
+            }
+          >
+            Finish setting up your account
+          </ActionBanner>), 'sign-in'
+        );
+      } else {
+        removeActionBanner(signInActionBannerIdRef.current)
+      }
+    } 
+  }, [JSON.stringify(meRes?.me), isFetchingUser])
 
   const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab(
     { isOpen, hasNotification, isClaimable }
@@ -537,6 +564,11 @@ export default function BrowserExtensionMenu(props) {
   const { additionalTabButtons } = useObservables(() => ({
     additionalTabButtons: tabButtonManager.buttonMapSubject.obs,
   }));
+
+  const onAuthClose = () => {
+    setIsAuthDialogHidden(true);
+    reexecuteQuery({ requestPolicy: "network-only" });
+  }
 
   return (
     <div className={className}>
@@ -658,6 +690,12 @@ export default function BrowserExtensionMenu(props) {
             />*/
           }
           <div className="body">
+            {!isAuthDialogHidden && (
+              <AuthDialog
+                hidden={isAuthDialogHidden}
+                onclose={onAuthClose}
+              />
+            )}
             <DialogContainer />
             <TabButtonContext.Provider
               value={_.pick(tabButtonManager, [
