@@ -1,3 +1,6 @@
+import { scss } from "../../../deps.ts";
+
+export default scss`
 .c-page {
   > .header {
     display: flex;
@@ -25,3 +28,4 @@
     flex: 1;
   }
 }
+`;

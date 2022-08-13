@@ -9,5 +9,6 @@ $container-width: 95vw;
   width: $container-width;
   left: calc((100vw - #{$container-width}) / 2);
   overflow: visible;
+  z-index: 1000;
 }
 `;

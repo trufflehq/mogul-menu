@@ -10,12 +10,12 @@ import { useTabId } from "../../util/tabs/tab-id.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import { useActionBanner } from "../../util/action-banner/action-banner.ts";
 
-import ChromeExtSettings from "../settings/settings.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
+import Page from "../base/page/page.tsx";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -47,7 +47,7 @@ export default function HomeTab() {
   };
 
   const pushPageHandler = () => {
-    pushPage(<ChromeExtSettings nonce={1} />);
+    pushPage(<Page>What up</Page>);
   };
 
   const actionBannerHandler = () => {

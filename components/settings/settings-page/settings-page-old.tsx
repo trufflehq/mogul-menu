@@ -44,7 +44,7 @@ export default function SettingsPage() {
   }, []);
 
   const {
-    me,
+    // me,
     // org,
     name,
     nameColor,
@@ -56,11 +56,9 @@ export default function SettingsPage() {
     nameColor: nameColorSubject.obs,
   }));
 
-  // const me = {};
+  const me = {};
   const org = {};
   const orgUserKV = {};
-
-  console.log('me', me)
 
   const hasNameChanged = nameSubject.isChanged();
   const hasColorChanged = nameColorSubject.isChanged();

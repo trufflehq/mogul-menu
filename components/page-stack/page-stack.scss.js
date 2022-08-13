@@ -4,7 +4,8 @@ export default scss`
 $ease-function: cubic-bezier(.4,.71,.18,.99);
 
 .c-page-stack {
-  height: 100%;
+  /* 100% of the menu minus the tab bar height */
+  height: calc(100% - 40px);
   width: 100%;
   min-height: 0;
   position: absolute;
