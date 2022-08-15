@@ -12,7 +12,6 @@ Services that the menu component should provide:
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
 - Interface for navigating between tabs - done
 */
-
 import {
   React,
   useEffect,
@@ -20,6 +19,7 @@ import {
   useRef,
   useState,
   useQuery,
+  useMutation,
   AuthDialog,
   _,
   useStyleSheet,
@@ -27,6 +27,9 @@ import {
   jumper,
 } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
+import { EXTENSION_TOKEN_SIGNIN_QUERY } from "../../gql/mod.ts";
+import { setAccessToken } from "../../util/mod.ts";
+import { MogulTvUser } from "../../types/mod.ts";
 
 import Ripple from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/ripple/ripple.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
@@ -68,7 +71,7 @@ import { ActionBannerContext } from "../../util/action-banner/action-banner.ts";
 import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
 import { activeTabSubject as nextTabSubject } from "../../util/tabs/active-tab.ts";
-import { signInWithExtensionJwt } from '../../api/mod.ts'
+
 import {
   TabButtonContext,
   useTabButtonManager,
@@ -334,6 +337,10 @@ function getIframeStyles({
   };
 }
 
+interface OptionalSigninArgs {
+  isTransfer: boolean;
+}
+
 function setMenuStyles({
   state,
   jumper,
@@ -379,6 +386,10 @@ export default function BrowserExtensionMenu(props) {
     darkXpImageObj,
     creatorName,
   } = props;
+
+  const [signInResult, executeSigninMutation] = useMutation(
+    EXTENSION_TOKEN_SIGNIN_QUERY,
+  );
 
   // fetched values
   // TODO: implement logic for fetching from backend
@@ -519,7 +530,7 @@ export default function BrowserExtensionMenu(props) {
     query: ME_QUERY,
   });
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
-  
+
   useEffect(() => {
     if(!isFetchingUser) {
       if(!isMemberMeUser(meRes?.me)) {
@@ -568,8 +579,18 @@ export default function BrowserExtensionMenu(props) {
 
   const onAuthClose = async () => {
     setIsAuthDialogHidden(true);
-    reexecuteMeUserQuery({ requestPolicy: "network-only" });
-    await signInWithExtensionJwt(credentials.token, { isTransfer: false})
+    await reexecuteMeUserQuery({ requestPolicy: "network-only" });
+
+    const result = await executeSigninMutation({
+      token: credentials?.token,
+      isTransfer: true,
+    }, {
+      additionalTypenames: ["Poll", "PollVote", "PollOption", "MeUser", "Collectible", "OwnedCollectible", "ActivePowerup"],
+    });
+
+    const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
+    setAccessToken(mogulTvUser?.truffleAccessToken);
+    await reexecuteMeUserQuery({ requestPolicy: "network-only" });
   }
 
   const [credentials, setCredentials] = useState()
@@ -580,7 +601,17 @@ export default function BrowserExtensionMenu(props) {
       setCredentials(credentials)
 
       if (credentials?.sourceType === 'youtube' && credentials?.token) {
-        await signInWithExtensionJwt(credentials.token, { isTransfer: false })
+        const result = await executeSigninMutation({
+          token: credentials?.token,
+          isTransfer: false,
+        }, {
+          additionalTypenames: ["Poll", "PollVote", "PollOption", "MeUser", "Collectible", "OwnedCollectible", "ActivePowerup"]
+        });
+
+        const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
+        setAccessToken(mogulTvUser?.truffleAccessToken);
+
+        await reexecuteMeUserQuery({ requestPolicy: "network-only" });
       }
 
       // FIXME - add for twitch
