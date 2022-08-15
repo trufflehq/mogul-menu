@@ -39,7 +39,7 @@ import Stylesheet from "https://tfl.dev/@truffle/ui@~0.1.0/components/stylesheet
 import SignUpForm from "https://tfl.dev/@truffle/ui@~0.1.0/components/sign-up-form/sign-up-form.js";
 import cssVars from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
-import { isMemberMeUser } from '../../util/mod.ts'
+import { isMemberMeUser } from "../../util/mod.ts";
 import {
   createSubject,
   Obs,
@@ -56,7 +56,7 @@ import CollectionTab from "../collection-tab/collection-tab.tsx";
 import PageStack from "../page-stack/page-stack.tsx";
 import ActionBannerContainer from "../action-banner-container/action-banner-container.tsx";
 import DialogContainer from "../base/dialog-container/dialog-container.tsx";
-import Button from '../base/button/button.tsx'
+import Button from "../base/button/button.tsx";
 import { TabElement } from "../../util/tabs/types.ts";
 import {
   TabStateContext,
@@ -77,7 +77,7 @@ import {
   useTabButtonManager,
 } from "../../util/tabs/tab-button.ts";
 
-import { ME_QUERY } from '../../gql/mod.ts'
+import { ME_QUERY } from "../../gql/mod.ts";
 
 function getStorageKey(prefix) {
   const extensionMappingId = getExtensionMappingId();
@@ -369,7 +369,7 @@ function setMenuStyles({
 }
 
 export default function BrowserExtensionMenu(props) {
-  const signInActionBannerIdRef = useRef(null)
+  const signInActionBannerIdRef = useRef(null);
   useStyleSheet(styleSheet);
   // make sure we don't render this on the server
   if (typeof document === "undefined") return <></>;
@@ -388,7 +388,7 @@ export default function BrowserExtensionMenu(props) {
   } = props;
 
   const [signInResult, executeSigninMutation] = useMutation(
-    EXTENSION_TOKEN_SIGNIN_QUERY,
+    EXTENSION_TOKEN_SIGNIN_QUERY
   );
 
   // fetched values
@@ -525,29 +525,31 @@ export default function BrowserExtensionMenu(props) {
   // action banners
   const { actionBannerObj, displayActionBanner, removeActionBanner } =
     useActionBannerManager();
-  
-  const [{ data: meRes, fetching: isFetchingUser }, reexecuteMeUserQuery] = useQuery({
-    query: ME_QUERY,
-  });
+
+  const [{ data: meRes, fetching: isFetchingUser }, reexecuteMeUserQuery] =
+    useQuery({
+      query: ME_QUERY,
+    });
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
 
   useEffect(() => {
-    if(!isFetchingUser) {
-      if(!isMemberMeUser(meRes?.me)) {
+    if (!isFetchingUser) {
+      if (!isMemberMeUser(meRes?.me)) {
         signInActionBannerIdRef.current = displayActionBanner(
-          (<ActionBanner
+          <ActionBanner
             action={
               <Button onClick={() => setIsAuthDialogHidden(false)}></Button>
             }
           >
             Finish setting up your account
-          </ActionBanner>), 'sign-in'
+          </ActionBanner>,
+          "sign-in"
         );
       } else {
-        removeActionBanner(signInActionBannerIdRef.current)
+        removeActionBanner(signInActionBannerIdRef.current);
       }
-    } 
-  }, [JSON.stringify(meRes?.me), isFetchingUser])
+    }
+  }, [JSON.stringify(meRes?.me), isFetchingUser]);
 
   const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab(
     { isOpen, hasNotification, isClaimable }
@@ -581,32 +583,54 @@ export default function BrowserExtensionMenu(props) {
     setIsAuthDialogHidden(true);
     await reexecuteMeUserQuery({ requestPolicy: "network-only" });
 
-    const result = await executeSigninMutation({
-      token: credentials?.token,
-      isTransfer: true,
-    }, {
-      additionalTypenames: ["Poll", "PollVote", "PollOption", "MeUser", "Collectible", "OwnedCollectible", "ActivePowerup"],
-    });
+    const result = await executeSigninMutation(
+      {
+        token: credentials?.token,
+        isTransfer: true,
+      },
+      {
+        additionalTypenames: [
+          "Poll",
+          "PollVote",
+          "PollOption",
+          "MeUser",
+          "Collectible",
+          "OwnedCollectible",
+          "ActivePowerup",
+        ],
+      }
+    );
 
     const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
     setAccessToken(mogulTvUser?.truffleAccessToken);
     await reexecuteMeUserQuery({ requestPolicy: "network-only" });
-  }
+  };
 
-  const [credentials, setCredentials] = useState()
+  const [credentials, setCredentials] = useState();
 
   useEffect(() => {
     const fetchCredentials = async () => {
-      const credentials = await jumper.call('context.getCredentials')
-      setCredentials(credentials)
+      const credentials = await jumper.call("context.getCredentials");
+      setCredentials(credentials);
 
-      if (credentials?.sourceType === 'youtube' && credentials?.token) {
-        const result = await executeSigninMutation({
-          token: credentials?.token,
-          isTransfer: false,
-        }, {
-          additionalTypenames: ["Poll", "PollVote", "PollOption", "MeUser", "Collectible", "OwnedCollectible", "ActivePowerup"]
-        });
+      if (credentials?.sourceType === "youtube" && credentials?.token) {
+        const result = await executeSigninMutation(
+          {
+            token: credentials?.token,
+            isTransfer: false,
+          },
+          {
+            additionalTypenames: [
+              "Poll",
+              "PollVote",
+              "PollOption",
+              "MeUser",
+              "Collectible",
+              "OwnedCollectible",
+              "ActivePowerup",
+            ],
+          }
+        );
 
         const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
         setAccessToken(mogulTvUser?.truffleAccessToken);
@@ -615,18 +639,17 @@ export default function BrowserExtensionMenu(props) {
       }
 
       // FIXME - add for twitch
-      if (credentials?.sourceType === 'twitch' && credentials?.token) {
+      if (credentials?.sourceType === "twitch" && credentials?.token) {
         // model.auth.setAccessToken(credentials?.token)
         // model.graphqlClient.invalidateAll()
       }
-    }
+    };
 
-    fetchCredentials()
-  }, [])
+    fetchCredentials();
+  }, []);
 
   return (
     <div className={className}>
-      <Stylesheet url={new URL("menu.css", import.meta.url)} />
       <div
         className="extension-icon"
         style={{
@@ -745,10 +768,7 @@ export default function BrowserExtensionMenu(props) {
           }
           <div className="body">
             {!isAuthDialogHidden && (
-              <AuthDialog
-                hidden={isAuthDialogHidden}
-                onclose={onAuthClose}
-              />
+              <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
             )}
             <DialogContainer />
             <TabButtonContext.Provider
@@ -767,9 +787,7 @@ export default function BrowserExtensionMenu(props) {
                       visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
                     />
                     <PageStack pageStackSubject={pageStackSubject} />
-                    <ActionBannerContainer
-                      actionBannerObj={actionBannerObj}
-                    />
+                    <ActionBannerContainer actionBannerObj={actionBannerObj} />
                     {visibleTabs.map(({ $el: TabComponent }, idx) => (
                       <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
                         <div

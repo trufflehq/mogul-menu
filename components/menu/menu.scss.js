@@ -226,30 +226,9 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
           overflow-y: overlay;
           flex: 1;
 
-          scrollbar-gutter: stable;
-
-          //fix for firefox
-          scrollbar-width: none;
-          margin-bottom: -5px;
-          // margin-right: -5px;
-
-          &::-webkit-scrollbar {
-            width: 20px;
-          }
-
-          &::-webkit-scrollbar-track {
-            background-color: transparent;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background-color: var(--bg-base-text-10);
-            border-radius: 20px;
-            border: 4px solid transparent;
-            background-clip: content-box;
-          }
-
-          &:hover::-webkit-scrollbar-thumb {
-            background-color: var(--bg-base-text-50);
+          /* scrollbar fix for firefox */
+          @-moz-document url-prefix() { 
+            overflow-x: auto;
           }
 
           >.tab {
@@ -283,30 +262,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
               white-space: nowrap;
             }
           }
+
+          > .additional-tab-buttons {
+            flex-shrink: 0;
+          }
         }
 
-        // TODO: generalize buttons next to tabs
-        > .additional-tab-buttons {
-          box-sizing: border-box;
-          height: 100%;
-          height: 40px;
-
-          display: flex;
-
-          /*> .c-channel-points {
-            > .channel-points {
-              display: none;
-            }
-
-            > .claim {
-              display: none;
-
-              &.is-visible {
-                display: flex;
-              }
-            }
-          }*/
-        }
 
         >.extension-icon {
           background-color: var(--primary-base);
