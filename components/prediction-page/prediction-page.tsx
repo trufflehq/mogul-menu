@@ -1,20 +1,19 @@
-import React from "https://npm.tfl.dev/react";
-import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
-import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
-import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
-import Page from "../page/page.tsx";
 import {
+  React,
   abbreviateNumber,
   formatNumber,
-} from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import {
   gql,
+  Icon,
+  ImageByAspectRatio,
   usePollingQuery,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+  useStyleSheet,
+} from "../../deps.ts";
+import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
+import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
+import Page from "../base/page/page.tsx";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import ActivePrediction from "../active-prediction/active-prediction.tsx";
+import styleSheet from "./prediction-page.scss.js";
 
 const CHANNEL_POINTS_QUERY = gql`
   query ChannelPointsQuery {
@@ -29,6 +28,7 @@ const CHANNEL_POINTS_QUERY = gql`
 const POLL_INTERVAL = 1000;
 
 export default function PredictionPage() {
+  useStyleSheet(styleSheet);
   const { data: channelPointsData } = usePollingQuery(POLL_INTERVAL, {
     query: CHANNEL_POINTS_QUERY,
   });
@@ -70,24 +70,23 @@ export default function PredictionPage() {
     <Page
       title="Prediction"
       headerTopRight={
-        <ScopedStylesheet url={new URL("prediction-page.css", import.meta.url)}>
-          <div className="c-predictions-page_channel-points">
-            <div className="icon">
-              <ImageByAspectRatio
-                imageUrl={channelPointsSrc}
-                aspectRatio={1}
-                widthPx={16}
-                height={16}
-              />
-            </div>
-            <div className="amount" title={formatNumber(channelPoints?.count)}>
-              {abbreviateNumber(channelPoints?.count || 0, 1)}
-            </div>
+        <div className="c-predictions-page_channel-points">
+          <div className="icon">
+            <ImageByAspectRatio
+              imageUrl={channelPointsSrc}
+              aspectRatio={1}
+              widthPx={16}
+              height={16}
+            />
           </div>
-        </ScopedStylesheet>
+          <div className="amount" title={formatNumber(channelPoints?.count)}>
+            {abbreviateNumber(channelPoints?.count || 0, 1)}
+          </div>
+        </div>
       }
-      content={pageContent}
       onBack={popPage}
-    />
+    >
+      {pageContent}
+    </Page>
   );
 }

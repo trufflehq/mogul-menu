@@ -21,7 +21,7 @@ import Advert from "../advert/advert.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
-import SettingsPage from "../settings-page/settings-page.tsx";
+import SettingsPage from "../settings/settings-page/settings-page.tsx";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 

@@ -77,6 +77,9 @@ function ThemeComponent({
 
           /* font family */
           --mm-font-family: ${fontFamily};
+
+          /* Truffle UI overrides */
+          --tfl-color-surface-border-selected: var(--mm-color-primary);
         }
 
         :host .mm-text-body-1 {

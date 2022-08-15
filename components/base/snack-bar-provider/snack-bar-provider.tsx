@@ -77,7 +77,12 @@ export default function SnackBarProvider({
   return (
     <>
       <div className="c-snack-bar-container">
-        {shouldRenderSnackBar && <$currentSnackBar />}
+        {shouldRenderSnackBar &&
+          (typeof $currentSnackBar === "function" ? (
+            <$currentSnackBar />
+          ) : (
+            $currentSnackBar
+          ))}
       </div>
       {children}
     </>
