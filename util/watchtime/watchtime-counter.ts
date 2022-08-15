@@ -98,7 +98,7 @@ const ALLOWED_TIME_AWAY_MS = 1000 * (UPDATE_WATCH_TIME_FREQ_SECONDS + 10);
 const INITIAL_TIME_MS_COOKIE = "extensionInitialTimeMs";
 const LAST_CLAIM_TIME_MS_COOKIE = "extensionLastClaimTimeMs";
 
-const DEFAULT_TIMER_SECONDS = 60 * 1;
+const DEFAULT_TIMER_SECONDS = 60 * 5;
 const DEFAULT_INTERVAL_SECONDS = 1;
 function secondsSinceByMilliseconds(minuend, subtrahend) {
   return Math.round((minuend - subtrahend) / MS_TO_SECONDS);
