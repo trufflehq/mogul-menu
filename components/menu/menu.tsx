@@ -40,10 +40,10 @@ import SignUpForm from "https://tfl.dev/@truffle/ui@~0.1.0/components/sign-up-fo
 import cssVars from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import { isMemberMeUser } from "../../util/mod.ts";
-import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 
-import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 import ActionBanner from "../action-banner/action-banner.tsx";
 
 import Draggable from "../draggable/draggable.tsx";
@@ -760,7 +760,10 @@ export default function BrowserExtensionMenu(props) {
             }
             <div className="body">
               {!isAuthDialogHidden && (
-                <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
+                <AuthDialog
+                  hidden={isAuthDialogHidden}
+                  onclose={onAuthClose}
+                />
               )}
               <DialogContainer />
               <TabButtonContext.Provider

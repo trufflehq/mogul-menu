@@ -1,6 +1,6 @@
 import { React, useStyleSheet } from "../../../deps.ts";
 import { dialogService } from "./dialog-service.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 import styleSheet from "./dialog-container.scss.js";
 
 export default function DialogContainer() {
@@ -9,8 +9,7 @@ export default function DialogContainer() {
     dialogStack: dialogService.dialogStackSubject.obs,
   }));
 
-  const topDialog =
-    dialogStack.length > 0 ? dialogStack[dialogStack.length - 1] : null;
+  const topDialog = dialogStack.length > 0 ? dialogStack[dialogStack.length - 1] : null;
 
   if (topDialog === null) return <></>;
 

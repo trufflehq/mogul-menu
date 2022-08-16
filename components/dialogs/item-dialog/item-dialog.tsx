@@ -1,13 +1,9 @@
 // TODO: delete this component entirely
 
 import React from "https://npm.tfl.dev/react";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 import { getSrcByImageObj } from "../../../deps.ts";
-import {
-  createSubject,
-  Obs,
-  op,
-} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 
 import Button from "../../base/button/button.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
@@ -75,7 +71,7 @@ export default function ItemDialog({
   const actions = buttons?.map((button, idx) => {
     if (!button.onClick) {
       console.warn(
-        `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`
+        `[browser-extension-item-dialog] button ${idx} does not have a click handler defined`,
       );
     }
 
@@ -133,9 +129,7 @@ export default function ItemDialog({
         <style>
           {`
         .z-browser-extension-item-dialog {
-          --highlight-gradient: ${
-            highlightBg ?? "var(--tfl-color-primary-fill)"
-          };
+          --highlight-gradient: ${highlightBg ?? "var(--tfl-color-primary-fill)"};
         }
       `}
         </style>
