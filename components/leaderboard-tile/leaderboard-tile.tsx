@@ -1,14 +1,14 @@
 import React, { useMemo } from "https://npm.tfl.dev/react";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 
 import Avatar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
 
 import Tile from "../tile/tile.tsx";
 
 import { TROPHY_ICON } from "../../util/icon/paths.ts";
-import { op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+import { op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 
 const LEADERBOARD_LIMIT = 3;
 

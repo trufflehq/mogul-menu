@@ -1,18 +1,12 @@
-import {
-  React,
-  gql,
-  useQuery,
-  useStyleSheet,
-  getSrcByImageObj,
-} from "../../deps.ts";
+import { getSrcByImageObj, gql, React, useQuery, useStyleSheet } from "../../deps.ts";
 
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
 
-import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import { zeroPrefix } from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
+import { zeroPrefix } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 import cssVars, {
   hexOpacity,
   rgb2rgba,
@@ -290,8 +284,8 @@ export default function SeasonPass(props) {
 
   const tierNums = _.uniqBy(
     _.flatten(
-      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
-    )
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum")),
+    ),
   );
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
@@ -345,9 +339,11 @@ export default function SeasonPass(props) {
           {true && (
             <div className="pages">
               <div
-                className={`button left ${classKebab({
-                  isDisabled: isNotLeftClickable,
-                })}`}
+                className={`button left ${
+                  classKebab({
+                    isDisabled: isNotLeftClickable,
+                  })
+                }`}
                 onClick={onLeftClick}
               >
                 ◂
@@ -356,9 +352,11 @@ export default function SeasonPass(props) {
                 {`Ends in ${seasonPass?.daysRemaining} days`}
               </div>
               <div
-                className={`button right ${classKebab({
-                  isDisabled: isNotRightClickable,
-                })}`}
+                className={`button right ${
+                  classKebab({
+                    isDisabled: isNotRightClickable,
+                  })
+                }`}
                 onClick={onRightClick}
               >
                 ▸
@@ -371,25 +369,27 @@ export default function SeasonPass(props) {
               ref={$$levelsRef}
               onTouchStart={(e) => e.stopPropagation()}
             >
-              {tiers?.length ? (
-                <div className="tier-info">
-                  {_.map(tiers, (tier) => {
-                    console.log("tier", tier);
-                    return (
-                      tier?.name && (
-                        <div
-                          className="tier"
-                          style={{
-                            background: tier?.background,
-                          }}
-                        >
-                          {tier?.name}
-                        </div>
-                      )
-                    );
-                  })}
-                </div>
-              ) : null}
+              {tiers?.length
+                ? (
+                  <div className="tier-info">
+                    {_.map(tiers, (tier) => {
+                      console.log("tier", tier);
+                      return (
+                        tier?.name && (
+                          <div
+                            className="tier"
+                            style={{
+                              background: tier?.background,
+                            }}
+                          >
+                            {tier?.name}
+                          </div>
+                        )
+                      );
+                    })}
+                  </div>
+                )
+                : null}
               <div
                 className="levels"
                 style={{
@@ -661,7 +661,7 @@ export function $level(props) {
             xpImgSrc={xpImgSrc}
             minXp={minXp}
             xp={xp}
-          />
+          />,
         );
         // if the user clicked on an emote
       } else if (isEmote) {
@@ -695,7 +695,7 @@ export function $level(props) {
               },
             ]}
             onExit={popDialog}
-          />
+          />,
         );
       }
     }
@@ -704,10 +704,7 @@ export function $level(props) {
   return (
     <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
-        Level{" "}
-        {shouldUseLevelsZeroPrefix
-          ? zeroPrefix(level.levelNum)
-          : level.levelNum}
+        Level {shouldUseLevelsZeroPrefix ? zeroPrefix(level.levelNum) : level.levelNum}
       </div>
       {_.map(tierNums, (tierNum) => {
         const reward = _.find(level.rewards, { tierNum });
@@ -720,11 +717,12 @@ export function $level(props) {
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${classKebab({
-              isFirstWithTierName:
-                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-              hasTierName: Boolean(tierName),
-            })}`}
+            className={`reward tier-${tierNum} ${
+              classKebab({
+                isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+                hasTierName: Boolean(tierName),
+              })
+            }`}
           >
             <Reward
               selectedRewardStream={selectedRewardStream}
@@ -762,8 +760,7 @@ export function Reward({
   let isRewardSelected;
 
   if (selectedReward?.level) {
-    isRewardSelected =
-      reward &&
+    isRewardSelected = reward &&
       selectedReward?.sourceId === reward.sourceId &&
       selectedReward?.level === level;
   } else {
@@ -780,12 +777,14 @@ export function Reward({
 
   return (
     <div
-      className={`c-reward ${rewardClassname} ${classKebab({
-        isSelected: isRewardSelected,
-        isFreeUnlocked,
-        isPaidUnlocked,
-        hasTooltip: Boolean(reward),
-      })}`}
+      className={`c-reward ${rewardClassname} ${
+        classKebab({
+          isSelected: isRewardSelected,
+          isFreeUnlocked,
+          isPaidUnlocked,
+          hasTooltip: Boolean(reward),
+        })
+      }`}
       ref={$$ref}
       onClick={(e) => {
         onClick(reward, $$ref, tierNum);
@@ -905,7 +904,8 @@ export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
             </div>
           </div>
         </div>
-        {/* <div className="body">
+        {
+          /* <div className="body">
           <div className="image">
             <img src={getSrcByImageObj(file?.fileObj)} width="56" />
           </div>
@@ -930,7 +930,8 @@ export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
               </div>
             )}
           </div>
-        </div> */}
+        </div> */
+        }
       </Dialog>
     </div>
   );
@@ -948,8 +949,7 @@ export function $rewardTooltip({
 
   const breakpoint = "desktop";
 
-  const imageUrl =
-    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
+  const imageUrl = "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
 
   const isMobile = breakpoint === "mobile";
   return (

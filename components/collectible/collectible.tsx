@@ -1,5 +1,5 @@
 import React, { useState } from "https://npm.tfl.dev/react";
-import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 import { getSrcByImageObj } from "../../deps.ts";
 
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
@@ -14,8 +14,7 @@ export default function Collctible(props) {
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
   const imageUrl = getSrcByImageObj(collectible?.fileRel?.fileObj);
-  const canRedeem =
-    collectible.type === "redeemable" &&
+  const canRedeem = collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
   const { pushDialog, popDialog } = useDialog();
@@ -26,7 +25,7 @@ export default function Collctible(props) {
         primaryText={collectible.name}
         redeemableCollectible={{ source: collectible }}
         onExit={popDialog}
-      />
+      />,
     );
   };
 
@@ -45,18 +44,22 @@ export default function Collctible(props) {
         {collectible?.name && (
           <div className="info">
             <div className="name">{collectible?.name}</div>
-            {collectible?.ownedCollectible?.count ? (
-              <div className="count">
-                {`x${collectible?.ownedCollectible?.count}`}
-              </div>
-            ) : null}
+            {collectible?.ownedCollectible?.count
+              ? (
+                <div className="count">
+                  {`x${collectible?.ownedCollectible?.count}`}
+                </div>
+              )
+              : null}
           </div>
         )}
         {isOwned && canRedeem && (
           <div
-            className={`button ${classKebab({
-              isActive: Boolean(activePowerup),
-            })}`}
+            className={`button ${
+              classKebab({
+                isActive: Boolean(activePowerup),
+              })
+            }`}
           >
             <Button
               onClick={onRedeemHandler}
@@ -64,13 +67,15 @@ export default function Collctible(props) {
               border={true}
               size="small"
             >
-              {activePowerup ? (
-                <span style={{ color: "var(--mm-color-positive)" }}>
-                  Active
-                </span>
-              ) : (
-                collectible?.data?.redeemButtonText ?? "Redeem"
-              )}
+              {activePowerup
+                ? (
+                  <span style={{ color: "var(--mm-color-positive)" }}>
+                    Active
+                  </span>
+                )
+                : (
+                  collectible?.data?.redeemButtonText ?? "Redeem"
+                )}
             </Button>
           </div>
         )}
