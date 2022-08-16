@@ -35,7 +35,14 @@ const POINTS_QUERY = gql`
 
 const CLAIM_BUTTON = "claim-button";
 
-export default function IsLiveInfo(props) {
+interface IsLiveInfoProps {
+  highlightButtonBg: string
+  // creatorName,
+  hasChannelPoints: boolean
+  hasBattlePass: boolean
+}
+
+export default function IsLiveInfo(props: IsLiveInfoProps) {
   useStyleSheet(styleSheet);
   const {
     highlightButtonBg,
@@ -140,6 +147,11 @@ function ChannelPointsClaimSnackBar({
   totalChannelPoints = 0,
   channelPointsImageObj,
   darkChannelPointsImageObj,
+}: {
+  channelPointsClaimed: number;
+  totalChannelPoints: number;
+  channelPointsImageObj?: any;
+  darkChannelPointsImageObj?: any
 }) {
   // const channelPointsSrc = channelPointsImageObj ? getModel().image.getSrcByImageObj(channelPointsImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/channel-points.svg'
   const darkChannelPointsSrc = channelPointsImageObj
@@ -175,6 +187,11 @@ function XpClaimSnackBar({
   totalXp = 0,
   xpImageObj,
   darkXpImageObj,
+}: {
+  xpClaimed: number,
+  totalXp: number,
+  xpImageObj?: any,
+  darkXpImageObj?: any,
 }) {
   // const xpSrc = xpImageObj ? getModel().image.getSrcByImageObj(xpImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/xp.svg'
   const darkXpSrc = xpImageObj

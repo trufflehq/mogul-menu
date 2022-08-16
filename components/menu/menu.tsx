@@ -12,6 +12,8 @@ Services that the menu component should provide:
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
 - Interface for navigating between tabs - done
 */
+import globalContext from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
+
 import {
   _,
   AuthDialog,
@@ -349,7 +351,7 @@ export default function BrowserExtensionMenu(props) {
   useStyleSheet(styleSheet);
   // make sure we don't render this on the server
   if (typeof document === "undefined") return <></>;
-
+  // console.log('BrowserExtensionMenu', BrowserExtensionMenu)
   // props
   const {
     // hasChannelPoints,
@@ -362,6 +364,10 @@ export default function BrowserExtensionMenu(props) {
     darkXpImageObj,
     creatorName,
   } = props;
+
+  const context = globalContext.getStore();
+  // console.log('context', context)
+
 
   const [signInResult, executeSigninMutation] = useMutation(
     EXTENSION_TOKEN_SIGNIN_QUERY,
@@ -716,13 +722,11 @@ export default function BrowserExtensionMenu(props) {
             <div className="extension-icon-placeholder"></div>
           </div>
           {/* TODO: put back account linking logic */}
-          {
-            /*shouldShowSignupBanner && <ActionBanner
+          {/*shouldShowSignupBanner && <ActionBanner
             message="Finish setting up your account"
             buttonText="Sign up"
             onClick={handleSignup}
-          />*/
-          }
+          />*/}
           {/*shouldShowTwitchBanner && getModel().user.isMember(me) && credentials?.sourceType === 'twitch' && !hasConnectedAccount && <TwitchSignupBanner /> */}
           {
             // TODO: move this to the actions page
@@ -784,25 +788,21 @@ export default function BrowserExtensionMenu(props) {
         </div>
       </div>
       {/* TODO: refactor NewExtensionUserTooltip */}
-      {
-        /* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
+      {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
         <NewExtensionUserTooltip
           hasViewedOnboardTooltipSubject={hasViewedOnboardTooltipSubject}
           $$extensionIconRef={$$extensionIconRef}
         />
-      </Modal> */
-      }
+      </Modal> */}
       {/* TODO: wire up */}
-      {
-        /* <Modal isVisibleSubject={isSignupVisibleSubject}>
+      {/* <Modal isVisibleSubject={isSignupVisibleSubject}>
         <SignUpForm
           source='extension-sign-up'
           prefillName={me?.name}
           infoMessage='Create an account to secure your collection'
           onComplete={transferJwt}
         />
-      </Modal> */
-      }
+      </Modal> */}
     </div>
   );
 }
