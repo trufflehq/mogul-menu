@@ -4,19 +4,15 @@ import {
   pollingQueryObservable,
   useMutation,
 } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-import {
-  createSubject,
-  Obs,
-  op,
-} from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import {
   abbreviateNumber,
   formatNumber,
   formatPercentage,
-} from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
+} from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
@@ -96,26 +92,25 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   } = useMemo(() => {
     const activePollConnectionObs = pollingQueryObservable(
       POLL_INTERVAL,
-      ACTIVE_POLL_QUERY
+      ACTIVE_POLL_QUERY,
     ).pipe(op.map(({ data }: any) => data?.pollConnection));
     const activePollObs = activePollConnectionObs.pipe(
       op.map((activePollConnection) => {
         return activePollConnection?.nodes?.[0];
-      })
+      }),
     );
 
     const orgUserCounterObs = pollingQueryObservable(
       POLL_INTERVAL,
-      CHANNEL_POINTS_QUERY
+      CHANNEL_POINTS_QUERY,
     ).pipe(op.map(({ data }: any) => data?.channelPoints?.orgUserCounter));
 
     const pollMsLeftStream = createSubject(
       activePollObs.pipe(
         op.map(
-          (activePoll) =>
-            new Date(activePoll?.endTime || Date.now()).getTime() - Date.now()
-        )
-      )
+          (activePoll) => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
+        ),
+      ),
     );
 
     const msSinceStartStream = createSubject(
@@ -123,9 +118,9 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
         op.map(
           (activePoll) =>
             (new Date(activePoll?.time || Date.now()).getTime() - Date.now()) *
-            -1
-        )
-      )
+            -1,
+        ),
+      ),
     );
 
     return {
@@ -138,7 +133,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
       voteCountStream: createSubject("0"),
       isExpiredObs: pollMsLeftStream.obs.pipe(op.map((msLeft) => msLeft <= 0)),
       myVoteStream: createSubject(
-        activePollObs.pipe(op.map((poll) => poll?.myVote))
+        activePollObs.pipe(op.map((poll) => poll?.myVote)),
       ),
       hiddenPollIdsStream: createSubject([]),
     };
@@ -206,9 +201,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   const isWinner = votedOptionIndex === winningOptionIndex;
   const myVotes = myVote?.count;
   const winningVotes = activePoll?.options[winningOptionIndex]?.count || 1;
-  const myWinningShare = isWinner
-    ? Math.floor((myVotes / winningVotes) * totalVotes)
-    : 0;
+  const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
   const isRefund = activePoll?.data?.isRefund;
 
   return (
@@ -243,8 +236,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                   className="current-amount"
                   title={formatNumber(orgUserCounter?.count)}
                 >
-                  of {abbreviateNumber(orgUserCounter?.count || 0, 1)} channel
-                  points
+                  of {abbreviateNumber(orgUserCounter?.count || 0, 1)} channel points
                 </div>
               </div>
             </div>
@@ -255,26 +247,24 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
           <div className="options bmargin-24">
             {activePoll.options?.map((option, optionIndex) => {
               const count = option.count || 0;
-              const ratio =
-                count && totalVotes - count
-                  ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
-                  : 1;
-              const isWinner =
-                activePoll?.data?.winningOptionIndex === optionIndex;
+              const ratio = count && totalVotes - count
+                ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
+                : 1;
+              const isWinner = activePoll?.data?.winningOptionIndex === optionIndex;
               return (
                 <div
-                  className={`option option${optionIndex + 1} ${classKebab({
-                    isWinner,
-                  })}`}
+                  className={`option option${optionIndex + 1} ${
+                    classKebab({
+                      isWinner,
+                    })
+                  }`}
                   key={optionIndex}
                 >
                   <div className="name">{option.text}</div>
                   <div className="stats">
                     <div className="percentage">
                       <div>
-                        {totalVotes
-                          ? formatPercentage((option.count || 0) / totalVotes)
-                          : "0%"}
+                        {totalVotes ? formatPercentage((option.count || 0) / totalVotes) : "0%"}
                       </div>
                     </div>
                     <div className="value">
@@ -293,11 +283,9 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                           style="inherit"
                           isFullWidth={true}
                           text={voteCount}
-                          isDisabled={
-                            isPredicting ||
+                          isDisabled={isPredicting ||
                             !(voteCount > 0) ||
-                            (hasVoted && votedOptionIndex !== optionIndex)
-                          }
+                            (hasVoted && votedOptionIndex !== optionIndex)}
                           shouldHandleLoading={true}
                           isLoadingStream={isPredictingStream}
                           icon={COIN_ICON_PATH}
@@ -347,60 +335,56 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
             {hasVoted && hasWinner && !isWinner && (
               <div className="user-prediction-text">Better luck next time!</div>
             )}
-            {!hasWinner ? (
-              // before the winner is selected
-              <div className="status">
-                <TimeSince
-                  msSinceStream={msSinceStartStream}
-                  renderFn={(msSince) => {
-                    const minutesSince = Math.floor(msSince / ONE_MINUTE_MS);
-                    const secondsSince = Math.floor(msSince / ONE_SECOND_MS);
+            {!hasWinner
+              ? (
+                // before the winner is selected
+                <div className="status">
+                  <TimeSince
+                    msSinceStream={msSinceStartStream}
+                    renderFn={(msSince) => {
+                      const minutesSince = Math.floor(msSince / ONE_MINUTE_MS);
+                      const secondsSince = Math.floor(msSince / ONE_SECOND_MS);
 
-                    let timeSince;
-                    if (minutesSince < 1) {
-                      if (secondsSince > 1) {
-                        timeSince = `${secondsSince} seconds ago`;
-                      } else timeSince = `${secondsSince} second ago`;
-                    } else {
-                      if (minutesSince > 1) {
-                        timeSince = `${minutesSince} minutes ago`;
-                      } else timeSince = `${minutesSince} minute ago`;
-                    }
+                      let timeSince;
+                      if (minutesSince < 1) {
+                        if (secondsSince > 1) {
+                          timeSince = `${secondsSince} seconds ago`;
+                        } else timeSince = `${secondsSince} second ago`;
+                      } else {
+                        if (minutesSince > 1) {
+                          timeSince = `${minutesSince} minutes ago`;
+                        } else timeSince = `${minutesSince} minute ago`;
+                      }
 
-                    return (
-                      <>Prediction started {timeSince}. Waiting for results</>
-                    );
-                  }}
-                />
-              </div>
-            ) : // after the winner is selected
-            isWinner ? (
-              // if the user voted for the winner
-              <div className="status">
-                {formatNumber(totalVotes)}{" "}
-                <span>
-                  <ChannelPoints />
-                </span>{" "}
-                go to you and{" "}
-                {activePoll?.options[activePoll?.data?.winningOptionIndex]
-                  .unique - 1}{" "}
-                others
-              </div>
-            ) : (
-              // if the user voted for the loser
-              <div className="status">
-                {formatNumber(totalVotes)}{" "}
-                <span>
-                  <ChannelPoints />
-                </span>{" "}
-                go to{" "}
-                {
-                  activePoll?.options[activePoll?.data?.winningOptionIndex]
-                    .unique
-                }{" "}
-                users
-              </div>
-            )}
+                      return <>Prediction started {timeSince}. Waiting for results</>;
+                    }}
+                  />
+                </div>
+              )
+              : // after the winner is selected
+                isWinner
+                ? (
+                  // if the user voted for the winner
+                  <div className="status">
+                    {formatNumber(totalVotes)}{" "}
+                    <span>
+                      <ChannelPoints />
+                    </span>{" "}
+                    go to you and {activePoll?.options[activePoll?.data?.winningOptionIndex]
+                      .unique - 1} others
+                  </div>
+                )
+                : (
+                  // if the user voted for the loser
+                  <div className="status">
+                    {formatNumber(totalVotes)}{" "}
+                    <span>
+                      <ChannelPoints />
+                    </span>{" "}
+                    go to {activePoll?.options[activePoll?.data?.winningOptionIndex]
+                      .unique} users
+                  </div>
+                )}
           </div>
         )}
         {hasVoted && isRefund && (

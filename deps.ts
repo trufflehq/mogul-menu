@@ -8,7 +8,7 @@ export {
   usePollingQuery,
   useQuery,
 } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
+export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 export { default as _ } from "https://npm.tfl.dev/lodash@4.17.21";
 export {
   createContext,
@@ -19,18 +19,17 @@ export {
   useRef,
   useState,
 } from "https://npm.tfl.dev/react";
-export { default as useObservables } from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.ts";
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts";
-export { default as classKebab } from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-export { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
+export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 export {
   abbreviateNumber,
   formatNumber,
   zeroPrefix,
-} from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
-export { default as jumper } from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@0.0.1/cookie/cookie.js";
+} from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+export { default as jumper } from "https://tfl.dev/@truffle/utils@~0.0.2/jumper/jumper.ts";
+export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@~0.0.2/cookie/cookie.ts";
 
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";

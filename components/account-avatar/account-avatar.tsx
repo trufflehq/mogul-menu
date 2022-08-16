@@ -1,4 +1,4 @@
-import { React, Avatar, getHost, gql, useQuery } from "../../deps.ts";
+import { Avatar, gql, React, useQuery } from "../../deps.ts";
 
 const ME_QUERY = gql`
   query {
@@ -30,7 +30,7 @@ export default function AccountAvatar({ size = "24px" }: { size?: string }) {
 
   return (
     <div className="c-account-avatar">
-      <a href={`${getHost()}/edit-profile`} target="_blank" rel="noreferrer">
+      <a href="/edit-profile" target="_blank" rel="noreferrer">
         <Avatar user={me} size={size} />
       </a>
     </div>

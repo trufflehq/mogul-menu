@@ -2,15 +2,14 @@ import SeasonPass from "../season-pass/season-pass.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
 import EconomyActionDialog from "../dialogs/economy-action-dialog/economy-action-dialog.tsx";
 import {
-  React,
-  op,
   _,
-  useObservables,
-  queryObservable,
   gql,
-  getHost,
-  useStyleSheet,
+  op,
+  queryObservable,
+  React,
   useMemo,
+  useObservables,
+  useStyleSheet,
 } from "../../deps.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import Button from "../base/button/button.tsx";
@@ -50,8 +49,7 @@ export default function SeasonPassTab() {
   // const xpSrc = props?.xpImageObj
   //   ? getSrcByImageObj(props.xpImageObj)
   //   : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
-  const xpSrc =
-    "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const onHowToEarnClick = () => {
     pushDialog(<XpActionsDialog xpSrc={xpSrc} />);
@@ -83,9 +81,9 @@ function XpActionsDialog({ xpSrc }) {
           seasonPass?.economyActionConnection?.nodes,
           (action) =>
             action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
-            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID
+            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
         );
-      })
+      }),
     );
     return {
       seasonPassWatchTimeActionsObs,
@@ -108,7 +106,7 @@ function XpActionsDialog({ xpSrc }) {
 
 function LearnMoreButton() {
   const clickHandler = () => {
-    window.open(getHost(), "_blank", "noreferrer");
+    window.open("/", "_blank", "noreferrer");
   };
   return (
     <div className="c-learn-more">

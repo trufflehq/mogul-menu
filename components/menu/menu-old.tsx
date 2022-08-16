@@ -1,17 +1,16 @@
 import _ from "https://npm.tfl.dev/lodash?no-check";
 import React, { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
 
-import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
-import { getCookie } from "https://tfl.dev/@truffle/utils@0.0.1/cookie/cookie.js";
-import classKebab from "https://tfl.dev/@truffle/utils@0.0.1/legacy/class-kebab.js";
-import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-import { getHost } from "https://tfl.dev/@truffle/utils@0.0.1/request/request-info.js";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
+import { getCookie } from "https://tfl.dev/@truffle/utils@~0.0.2/cookie/cookie.ts";
+import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
+import jumper from "https://tfl.dev/@truffle/utils@~0.0.2/jumper/jumper.ts";
 import {
   abbreviateNumber,
   formatCountdown,
   formatNumber,
-} from "https://tfl.dev/@truffle/utils@0.0.1/format/format.js";
+} from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
 
 import { getModel } from "https://tfl.dev/@truffle/api@0.0.1/legacy/index.js";
 
@@ -1577,7 +1576,7 @@ function HomeTab({
   };
 
   const handleOpenSupportChat = () => {
-    const supportChatUrl = `${getHost()}/chat/support`;
+    const supportChatUrl = "/chat/support";
     window.open(supportChatUrl, "_blank");
   };
 
@@ -2279,7 +2278,7 @@ function AccountAvatar() {
   return (
     <div className="c-account-avatar">
       {
-        <a href={`${getHost()}/edit-profile`} target="_blank" rel="noreferrer">
+        <a href="/edit-profile" target="_blank" rel="noreferrer">
           <Component
             slug="avatar"
             props={{
@@ -2608,7 +2607,7 @@ function LearnMoreButton() {
   return (
     <div className="c-learn-more">
       <div className="title">Earn XP through linked accounts</div>
-      <a href={getHost()} target="_blank" className="button" rel="noreferrer">
+      <a href="/" target="_blank" className="button" rel="noreferrer">
         <Button
           text="Learn more"
           size="medium"

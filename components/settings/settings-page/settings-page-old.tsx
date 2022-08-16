@@ -1,17 +1,10 @@
-import React, {
-  useCallback,
-  useMemo,
-  useState,
-} from "https://npm.tfl.dev/react";
+import React, { useCallback, useMemo, useState } from "https://npm.tfl.dev/react";
 
-import { createSubject } from "https://tfl.dev/@truffle/utils@0.0.1/obs/subject.js";
-import useObservables from "https://tfl.dev/@truffle/utils@0.0.1/obs/use-observables.js";
+import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 import { usePageStack } from "../../util/page-stack/page-stack.ts";
 import { getSrcByImageObj } from "../../deps.ts";
-import {
-  gql,
-  useMutation,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+import { gql, useMutation } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import Input from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/input/input.tsx";
@@ -110,14 +103,16 @@ export default function SettingsPage() {
                 <Input label="Display name" valueSubject={nameSubject} />
               </div>
               <div className="color">
-                {/* <Component
+                {
+                  /* <Component
                 slug="input-color"
                 props={{
                   label: "Chat name color",
                   colorSubject: nameColorSubject,
                   isLabelVisible: true,
                 }}
-              /> */}
+              /> */
+                }
               </div>
             </>
           )}
@@ -127,7 +122,8 @@ export default function SettingsPage() {
             extensionInfo={{}}
             extensionIconPositionSubject={{}}
           />
-          {/* {isChanged && (
+          {
+            /* {isChanged && (
           <Component
             slug="unsaved-snackbar"
             props={{
@@ -135,17 +131,16 @@ export default function SettingsPage() {
               onCancel: reset,
             }}
           />
-        )} */}
+        )} */
+          }
           {!name && <LoginButton />}
         </div>
       </ScopedStylesheet>
     ),
-    []
+    [],
   );
 
-  return (
-    <Page title="Settings" content={<SettingsPageContent />} onBack={popPage} />
-  );
+  return <Page title="Settings" content={<SettingsPageContent />} onBack={popPage} />;
 }
 
 function LoginButton() {
@@ -184,13 +179,12 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
   }
 
   const minVersionForLayoutConfigSteps = "3.1.0";
-  const hasLayoutConfigSteps =
-    extensionInfo?.version &&
+  const hasLayoutConfigSteps = extensionInfo?.version &&
     extensionInfo.version.localeCompare(
-      minVersionForLayoutConfigSteps,
-      undefined,
-      { numeric: true, sensitivity: "base" }
-    ) !== -1 &&
+        minVersionForLayoutConfigSteps,
+        undefined,
+        { numeric: true, sensitivity: "base" },
+      ) !== -1 &&
     allowsThirdPartyCookies;
 
   const positions = getExtensionPositions({ extensionInfo });
@@ -215,8 +209,7 @@ function PositionChooser({ extensionInfo, extensionIconPositionSubject }) {
       {hasLayoutConfigSteps && (
         <>
           {positions.map((position) => {
-            const isSelected =
-              (extensionIconPosition || "stream-top-right") ===
+            const isSelected = (extensionIconPosition || "stream-top-right") ===
               position.positionSlug;
             return (
               <div
@@ -319,18 +312,14 @@ const YOUTUBE_ICON_POSITIONS = [
 export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
 export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) =>
-    isTwitchSourceType(identifier.sourceType)
-  );
+  pageInfoIdentifiers?.find((identifier) => isTwitchSourceType(identifier.sourceType));
 
 function getExtensionPositions({ extensionInfo }) {
   const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo
+    extensionInfo?.pageInfo,
   );
 
-  const positions = twitchPageIdentifiers
-    ? TWITCH_ICON_POSITIONS
-    : YOUTUBE_ICON_POSITIONS;
+  const positions = twitchPageIdentifiers ? TWITCH_ICON_POSITIONS : YOUTUBE_ICON_POSITIONS;
 
   return positions;
 }
