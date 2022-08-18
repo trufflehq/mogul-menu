@@ -672,77 +672,9 @@ export default function BrowserExtensionMenu(props) {
                 );
               })}
             </div>
-            {/* TODO: refactor channel points component */}
-            {
-              /*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
-              <ChannelPoints {...{
-                hasText: isOpen,
-                fontColor: '#FFFFFF',
-                source,
-                connectionObs,
-                highlightButtonBg,
-                channelPointsImageObj,
-                hasChannelPoints,
-                hasBattlePass,
-                darkChannelPointsImageObj: hasChannelPoints ? darkChannelPointsImageObj : darkXpImageObj,
-                timeWatchedSecondsSubject,
-                secondsRemainingSubject,
-                onFinishedCountdown: () => {
-                  // set a badge on the extension icon
-                  // when the user is able to claim channel points
-                  // setBadge('channel-points', true)
-                  isClaimableSubject.next(true)
-                },
-                onClaim: ({ channelPointsClaimed, xpClaimed }) => {
-                  // clear the badge when the user claims their channel points
-                  // setBadge('channel-points', false)
-                  isClaimableSubject.next(false)
-
-                  // display a couple of snack bars to notify them of their rewards
-                  hasChannelPoints && enqueueSnackBar(
-                    () =>
-                      <ChannelPointsClaimSnackBar
-                        channelPointsClaimed={channelPointsClaimed}
-                        totalChannelPoints={channelPoints?.count}
-                        channelPointsImageObj={channelPointsImageObj}
-                        darkChannelPointsImageObj={darkChannelPointsImageObj}
-                      />
-                  )
-                  enqueueSnackBar(
-                    () =>
-                      <XpClaimSnackBar
-                        xpClaimed={xpClaimed}
-                        totalXp={parseInt(seasonPass?.xp?.count || 0)}
-                        xpImageObj={xpImageObj}
-                        darkXpImageObj={darkXpImageObj}
-                      />
-                  )
-                }
-              }} />
-            </div> */
             }
             <div className="extension-icon-placeholder"></div>
           </div>
-          {/* TODO: put back account linking logic */}
-          {/*shouldShowSignupBanner && <ActionBanner
-            message="Finish setting up your account"
-            buttonText="Sign up"
-            onClick={handleSignup}
-          />*/}
-          {/*shouldShowTwitchBanner && getModel().user.isMember(me) && credentials?.sourceType === 'twitch' && !hasConnectedAccount && <TwitchSignupBanner /> */}
-          {
-            // TODO: move this to the actions page
-            // TODO: update to mockup spec w/ timer, etc...
-            // make separate component so we're only rerendering on timer tick in that component
-            // also only show if timer hasn't expired (make isPredictionExpiredObs)
-            // ActionBanner should support a close icon
-            /*getModel().user.isMember(me) && activePoll && isPageStackEmpty && <ActionBanner
-              message={`Prediction: ${activePoll.question}`}
-              buttonText="Participate"
-              onClick={ () => pushPage(PredictionPage, {
-                activePoll, channelPointsImageObj, channelPointsOrgUserCounterObs, onBack: popPage
-              }) }
-            />*/
           }
           <div className="body">
             {!isAuthDialogHidden && (
@@ -789,22 +721,6 @@ export default function BrowserExtensionMenu(props) {
           </div>
         </div>
       </div>
-      {/* TODO: refactor NewExtensionUserTooltip */}
-      {/* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
-        <NewExtensionUserTooltip
-          hasViewedOnboardTooltipSubject={hasViewedOnboardTooltipSubject}
-          $$extensionIconRef={$$extensionIconRef}
-        />
-      </Modal> */}
-      {/* TODO: wire up */}
-      {/* <Modal isVisibleSubject={isSignupVisibleSubject}>
-        <SignUpForm
-          source='extension-sign-up'
-          prefillName={me?.name}
-          infoMessage='Create an account to secure your collection'
-          onComplete={transferJwt}
-        />
-      </Modal> */}
     </div>
   );
 }
