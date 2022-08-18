@@ -566,6 +566,7 @@ export default function BrowserExtensionMenu(props) {
       },
       {
         additionalTypenames: [
+          "OrgUserCounter",
           "Poll",
           "PollVote",
           "PollOption",
@@ -597,6 +598,7 @@ export default function BrowserExtensionMenu(props) {
           },
           {
             additionalTypenames: [
+              "OrgUserCounter",
               "Poll",
               "PollVote",
               "PollOption",

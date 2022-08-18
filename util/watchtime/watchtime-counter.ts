@@ -100,7 +100,6 @@ export function useWatchtimeCounter({
       ECONOMY_ACTION_QUERY,
       { economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID },
     ).pipe(op.map((result) => {
-      console.log("cp ea", result);
       return result?.data?.economyAction;
     }));
 
@@ -112,7 +111,7 @@ export function useWatchtimeCounter({
     const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
     const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
     const decrementTimeMs = lastClaimTimeMsFromCookie
-      ? parseInt(lastClaimTimeMsFromCookie)
+      ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
       : Date.now();
 
     // set a cookie for when they started watching
@@ -150,10 +149,8 @@ export function useWatchtimeCounter({
       ),
       claimTimerCountdownSecondsObs: claimXpEconomyActionAndClaimChannelPointActionObs.pipe(
         op.map(([claimXpEconomyAction, claimChannelPointEconomyAction]) => {
-          console.log("claimXpEconomyAction", claimXpEconomyAction, claimChannelPointEconomyAction);
           const cooldownSeconds = claimChannelPointEconomyAction?.data?.cooldownSeconds ||
             claimXpEconomyAction?.data?.cooldownSeconds;
-          console.log("cooldown", cooldownSeconds);
           if (cooldownSeconds) {
             return Math.max(cooldownSeconds, DEFAULT_INTERVAL_SECONDS);
           } else {
@@ -221,6 +218,14 @@ export function useWatchtimeCounter({
         await executeIncrementWatchtimeMutation({
           secondsWatched,
           sourceType: source,
+        }, {
+          additionalTypenames: [
+            "OrgUserCounter",
+            "OwnedCollectible",
+            "SeasonPassProgression",
+            "ActivePowerup",
+            "EconomyTransaction",
+          ],
         });
       }
     }
