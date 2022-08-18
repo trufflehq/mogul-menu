@@ -707,9 +707,6 @@ export default function BrowserExtensionMenu(props) {
           </div>
 
           <div className="body">
-            {!isAuthDialogHidden && (
-              <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
-            )}
             <DialogContainer />
             <TabButtonContext.Provider
               value={_.pick(tabButtonManager, [
@@ -743,6 +740,9 @@ export default function BrowserExtensionMenu(props) {
                 </TabStateContext.Provider>
               </ActionBannerContext.Provider>
             </TabButtonContext.Provider>
+            {!isAuthDialogHidden && (
+              <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
+            )}
           </div>
         </div>
       </div>
