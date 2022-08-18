@@ -14,55 +14,7 @@ import {
   useRef,
 } from "../../deps.ts";
 
-const ECONOMY_ACTION_QUERY = gql`
-  query ($economyTriggerId: ID!) {
-    economyAction(input: { economyTriggerId: $economyTriggerId }) {
-      id
-      orgId
-      name
-      action
-      sourceType
-      amountValue
-      amountId
-      data {
-        amountPurchaseIncrementId
-        redeemData
-        items {
-          source {
-            id
-            name
-            type
-            fileRel {
-              key
-              fileId
-              fileObj {
-                id
-                cdn
-                data
-                prefix
-                contentType
-                type
-                variations
-                ext
-              }
-            }
-            data {
-              redeemType
-              description
-              category
-              redeemData
-            }
-          }
-          sourceType
-          sourceId
-          amount
-          color
-        }
-        cooldownSeconds
-      }
-    }
-  }
-`;
+import { ECONOMY_ACTION_QUERY } from "../../gql/mod.ts";
 
 const WATCH_TIME_INCREMENT_MUTATION = gql`
   mutation ($secondsWatched: Int, $sourceType: String) {
@@ -100,11 +52,11 @@ const LAST_CLAIM_TIME_MS_COOKIE = "extensionLastClaimTimeMs";
 
 const DEFAULT_TIMER_SECONDS = 60 * 5;
 const DEFAULT_INTERVAL_SECONDS = 1;
-function secondsSinceByMilliseconds(minuend, subtrahend) {
+function secondsSinceByMilliseconds(minuend: number, subtrahend: number) {
   return Math.round((minuend - subtrahend) / MS_TO_SECONDS);
 }
 
-function secondsSinceBySeconds(minuend, subtrahend) {
+function secondsSinceBySeconds(minuend: number, subtrahend: number) {
   return Math.round(minuend - subtrahend);
 }
 
@@ -147,7 +99,9 @@ export function useWatchtimeCounter({
     const claimChannelPointEconomyActionObs = queryObservable(
       ECONOMY_ACTION_QUERY,
       { economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID },
-    ).pipe(op.map((result) => result?.data?.economyAction));
+    ).pipe(op.map((result) => {
+      return result?.data?.economyAction;
+    }));
 
     const claimXpEconomyActionObs = queryObservable(ECONOMY_ACTION_QUERY, {
       economyTriggerId: XP_CLAIM_TRIGGER_ID,
@@ -157,7 +111,7 @@ export function useWatchtimeCounter({
     const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
     const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
     const decrementTimeMs = lastClaimTimeMsFromCookie
-      ? parseInt(lastClaimTimeMsFromCookie)
+      ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
       : Date.now();
 
     // set a cookie for when they started watching
@@ -260,10 +214,18 @@ export function useWatchtimeCounter({
       lastUpdateTimeSubject.next(Date.now());
       const secondsWatched = secondsElapsedSinceLastUpdate;
 
-      if (source?.sourceType) {
+      if (source) {
         await executeIncrementWatchtimeMutation({
           secondsWatched,
-          sourceType: source.sourceType,
+          sourceType: source,
+        }, {
+          additionalTypenames: [
+            "OrgUserCounter",
+            "OwnedCollectible",
+            "SeasonPassProgression",
+            "ActivePowerup",
+            "EconomyTransaction",
+          ],
         });
       }
     }
@@ -300,10 +262,17 @@ export function useWatchtimeCounter({
     isClaimButtonVisibleSubject.next(false);
 
     clearTimeout(messageTimerRef.current);
-
-    if (source?.sourceType) {
+    if (source) {
       const economyTransactions = await executeWatchtimeClaimMutation({
-        sourceType: source.sourceType,
+        sourceType: source,
+      }, {
+        additionalTypenames: [
+          "OrgUserCounter",
+          "OwnedCollectible",
+          "SeasonPassProgression",
+          "ActivePowerup",
+          "EconomyTransaction",
+        ],
       });
 
       const channelPointsClaimed = _.find(economyTransactions, {
