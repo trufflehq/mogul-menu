@@ -24,7 +24,7 @@ const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";
 const SEASON_PASS_QUERY = gql`
   query {
     seasonPass {
-      economyActionConnection {
+      economyActionConnection(first: 100) {
         nodes {
           economyTriggerId
           name
@@ -49,7 +49,8 @@ export default function SeasonPassTab() {
   // const xpSrc = props?.xpImageObj
   //   ? getSrcByImageObj(props.xpImageObj)
   //   : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
-  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const xpSrc =
+    "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const onHowToEarnClick = () => {
     pushDialog(<XpActionsDialog xpSrc={xpSrc} />);
@@ -81,9 +82,9 @@ function XpActionsDialog({ xpSrc }) {
           seasonPass?.economyActionConnection?.nodes,
           (action) =>
             action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
-            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
+            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID
         );
-      }),
+      })
     );
     return {
       seasonPassWatchTimeActionsObs,

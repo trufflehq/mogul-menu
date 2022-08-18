@@ -23,7 +23,10 @@ const ORG_USER_COUNTER_TYPE_QUERY = gql`
 
 const ECONOMY_ACTIONS_QUERY = gql`
   query {
-    economyActionConnection(input: { amountType: "orgUserCounterType" }) {
+    economyActionConnection(
+      input: { amountType: "orgUserCounterType" }
+      first: 500
+    ) {
       nodes {
         id
         orgId
