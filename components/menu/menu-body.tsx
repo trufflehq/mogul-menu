@@ -17,6 +17,7 @@ import {
   setMenuStyles,
   useTabStateManager,
 } from "../../util/mod.ts";
+import Draggable from '../draggable/draggable.tsx'
 import Tabs from "../tabs/tabs.tsx";
 import TabBar from "../tab-bar/tab-bar.tsx";
 import AuthManager from "../auth-manager/auth-manager.tsx";
@@ -65,7 +66,55 @@ export default function BrowserExtensionMenuBody() {
   const onExtensionIconClick = () => {
     toggleIsOpen()
   }
+
+  const base = { x: 640, y: 600 };
+  const defaultModifier = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    transition: "none",
+  };
+  const dragProps = {
+    dimensions: {
+      base: base,
+      modifiers: defaultModifier,
+    },
+    defaultPosition: { x: 0, y: 0 },
+  };
+
+  // new iFrame styles
+  const menuState = getMenuState({
+    isOpen,
+    isClaimable,
+    snackBarQueue: undefined,
+    shouldShowOnboardTooltip: false
+  });
+  switch (menuState) {
+    case "closed":
+      dragProps.dimensions.modifiers = {
+        ...defaultModifier,
+        bottom: -560,
+        left: -600,
+        transition: "clip-path .5s cubic-bezier(.4, .71, .18, .99)",
+      };
+      break;
+    case "closed-with-claim":
+      //TODO: add the sizes for the other things once we implement them
+      break;
+    case "closed-with-snackbar":
+      break;
+    case "closed-with-tooltip":
+      break;
+  }
+
   return (
+    <Draggable
+    dimensions={dragProps.dimensions}
+    defaultPosition={dragProps.defaultPosition}
+    requiredClassName="extension-icon"
+    ignoreClassName="z-browser-extension-menu"
+  >
     <div className={className}>
       <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
       <div className="menu">
@@ -84,5 +133,6 @@ export default function BrowserExtensionMenuBody() {
         </div>
       </div>
     </div>
+    </Draggable>
   );
 }
