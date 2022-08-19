@@ -26,19 +26,18 @@ export interface Dimensions {
   base: Vector;
   modifiers: Modifiers;
 }
-
+function createClipPath(
+  position: Vector,
+  base: Vector,
+  { top, right, bottom, left },
+) {
+  return `inset(
+				${position.y - top}px
+				calc(100% - ${position.x + base.x + right}px) 
+				calc(100% - ${position.y + base.y + bottom}px) 
+				${position.x - left}px)`;
+}
 function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
-  function createClipPath(
-    position: Vector,
-    base: Vector,
-    { top, right, bottom, left },
-  ) {
-    return `inset(
-					${position.y - top}px
-					calc(100% - ${position.x + base.x + right}px) 
-					calc(100% - ${position.y + base.y + bottom}px) 
-					${position.x - left}px)`;
-  }
   //creates an element that spans the entire screen
   //a clip path is used to crop to only the actual component
   const style = {
@@ -123,6 +122,15 @@ export default function Draggable(
         top: "0px",
         left: "0px",
         background: "green",
+        width: "100%",
+        height: "100%",
+        // uncomment for local testing
+        "clip-path": dragInfo.pressed ? "none" : createClipPath(
+          dragInfo.current,
+          dimensions.base,
+          dimensions.modifiers,
+        ),
+        transition: dimensions.modifiers.transition,
       }}
       onMouseDown={(e: { target: Element }) => {
         const target = e.target as Element;
@@ -173,6 +181,7 @@ export default function Draggable(
           left: dragInfo.current.x + "px",
           //disable text selection while dragging
           "user-select": dragInfo.pressed ? "none" : "inherit",
+          "pointer-events": dragInfo.pressed ? "none" : "inherit",
         } as React.CSSProperties}
       >
         {children}

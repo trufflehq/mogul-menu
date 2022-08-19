@@ -620,17 +620,29 @@ export default function BrowserExtensionMenu(props) {
     fetchCredentials();
   }, []);
   const base = { x: 640, y: 600 };
-  const defaultModifier = { top: 0, right: 0, bottom: -600, left: -560, transition: "none" };
-  const [dragProps, setDragProps] = useState(
-    {
-      dimensions: {
-        base: base,
-        modifiers: defaultModifier,
-      },
-      defaultPosition: { x: 200, y: 200 },
+  const defaultModifier = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    transition: "none",
+  };
+  const dragProps = {
+    dimensions: {
+      base: base,
+      modifiers: defaultModifier,
     },
-  );
-
+    defaultPosition: { x: 0, y: 0 },
+  };
+  console.log(isOpen);
+  if (!isOpen) {
+    dragProps.dimensions.modifiers = {
+      ...defaultModifier,
+      bottom: -560,
+      left: -600,
+      transition: "clip-path .5s cubic-bezier(.4, .71, .18, .99)",
+    };
+  }
   return (
     <Draggable
       dimensions={dragProps.dimensions}
