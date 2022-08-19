@@ -49,7 +49,7 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
       dimensions.modifiers,
     ),
     transition: dimensions.modifiers.transition,
-    background: "red",
+    background: "none",
     position: "fixed",
     top: "0",
     left: "0",
@@ -103,7 +103,7 @@ export default function Draggable(
 
   // use jumper to update the clip path based on the dimensions and drag info
   useEffect(() => {
-    const style = createIframeStyle(dimensions, dragInfo); //{ width: "100vw", height: "100vh", background: "red" }
+    const style = createIframeStyle(dimensions, dragInfo);
     jumper.call("layout.applyLayoutConfigSteps", {
       layoutConfigSteps: [
         { action: "useSubject" }, // start with our iframe
@@ -121,7 +121,7 @@ export default function Draggable(
         position: "absolute",
         top: "0px",
         left: "0px",
-        background: "green",
+        background: "none",
         width: "100%",
         height: "100%",
         // uncomment for local testing
@@ -174,7 +174,7 @@ export default function Draggable(
       <div
         style={{
           //set position of child container
-          background: "blue",
+          background: "none",
           width: "fit-content",
           position: "absolute",
           top: dragInfo.current.y + "px",
