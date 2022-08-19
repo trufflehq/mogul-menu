@@ -12,6 +12,7 @@ import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import styleSheet from "./collectible.scss.js";
 
 export default function Collctible(props) {
+  useStyleSheet(styleSheet);
   const { collectible, activePowerup, sizePx = 60 } = props;
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
