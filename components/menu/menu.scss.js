@@ -103,14 +103,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
-  
-
-  &.position-chat {
-    >.extension-icon {
-      top: initial;
-      bottom: 10px;
-    }
-  }
 
   >.menu {
     width: 640px;
@@ -360,35 +352,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   //     transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
   //   }
   // }
-
-  &.position-chat {
-    >.menu {
-      clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
-      top: initial;
-      bottom: 10px;
-
-      >.inner {
-        >.body {
-          order: 1;
-        }
-
-        >.bottom {
-          order: 2;
-        }
-      }
-    }
-
-    // TODO: generalize button in tab menu behavior
-    // &.is-claimable {
-    //   > .menu {
-    //     clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 78px));
-    //   }
-    // }
-
-    .c-snack-bar-container {
-      bottom: 40px + 16px;
-    }
-  }
 }
 
 .z-browser-extension-menu.is-open {
@@ -698,32 +661,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   }
 }
 
-.c-position-chooser {
-  >.label {
-    font-weight: 700;
-    font-size: 14px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-  }
-
-  >.option {
-    font-size: 14px;
-    padding: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 4px;
-    border: 1px solid var(--bg-base-text-10);
-
-
-    &:hover {
-      border: 1px solid var(--bg-base-text-30);
-    }
-
-    &.is-selected {
-      border: 1px solid var(--bg-base-text-60);
-    }
-  }
-}
 
 .c-prediction-page_no-active-predictions {
   color: var(--bg-base-text-60);
