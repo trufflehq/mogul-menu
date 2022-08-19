@@ -335,23 +335,6 @@ export default function BrowserExtensionMenu(props) {
       { isOpen, hasNotification, isClaimable },
     )
   }`;
-
-  // icon positioning
-  useEffect(() => {
-    const state = getMenuState({
-      isOpen,
-      isClaimable,
-      snackBarQueue: undefined,
-      shouldShowOnboardTooltip: undefined,
-    });
-  }, [
-    isOpen,
-    isClaimable,
-    // snackBarQueue,
-    extensionInfo,
-    // shouldShowOnboardTooltip,
-  ]);
-
   // custom tab buttons
   const tabButtonManager = useTabButtonManager();
   const { additionalTabButtons } = useObservables(() => ({
@@ -441,14 +424,30 @@ export default function BrowserExtensionMenu(props) {
     },
     defaultPosition: { x: 0, y: 0 },
   };
-  console.log(isOpen);
-  if (!isOpen) {
-    dragProps.dimensions.modifiers = {
-      ...defaultModifier,
-      bottom: -560,
-      left: -600,
-      transition: "clip-path .5s cubic-bezier(.4, .71, .18, .99)",
-    };
+
+  // new iFrame styles
+  const menuState = getMenuState({
+    isOpen,
+    isClaimable,
+    snackBarQueue: undefined,
+    shouldShowOnboardTooltip: undefined,
+  });
+  switch (menuState) {
+    case "closed":
+      dragProps.dimensions.modifiers = {
+        ...defaultModifier,
+        bottom: -560,
+        left: -600,
+        transition: "clip-path .5s cubic-bezier(.4, .71, .18, .99)",
+      };
+      break;
+    case "closed-with-claim":
+      //TODO: add the sizes for the other things once we implement them
+      break;
+    case "closed-with-snackbar":
+      break;
+    case "closed-with-tooltip":
+      break;
   }
   return (
     <Draggable
