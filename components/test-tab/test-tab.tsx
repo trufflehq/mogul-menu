@@ -4,6 +4,8 @@ import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 import Button from "../base/button/button.tsx";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import Dialog from "../base/dialog/dialog.tsx";
+import Select from "../base/select/select.tsx";
+import ColorOption from "../base/color-option/color-option.tsx";
 
 import { useTabState } from "../../util/tabs/tab-state.ts";
 import { useTabId } from "../../util/tabs/tab-id.ts";
@@ -29,12 +31,20 @@ export default function HomeTab() {
   const { pushDialog, popDialog } = useDialog();
 
   const { displayActionBanner, removeActionBanner } = useActionBanner();
+  const gradients = [
+    { name: "gradient1", value: "blue" },
+    { name: "gradient2", value: "red" },
+    { name: "gradoemt3", value: "orange" },
+  ];
+  const [selectedValue, setSelectedValue] = useState();
+  const additionalData = { value: selectedValue };
 
+  const selectChangeHandler = (value, _idx) => {
+    setSelectedValue(value);
+  };
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
-    enqueueSnackBar(() => (
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
-    ));
+    enqueueSnackBar(() => <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />);
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };
@@ -53,12 +63,10 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={
-          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
-        }
+        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
       >
         Finish setting up your account
-      </ActionBanner>
+      </ActionBanner>,
     );
   };
 
@@ -80,7 +88,7 @@ export default function HomeTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>
+      </Dialog>,
     );
   };
 
@@ -100,6 +108,18 @@ export default function HomeTab() {
       </div>
       <div>
         <Switch value={true} />
+      </div>
+      <div>
+        <Select onOptionChanged={selectChangeHandler}>
+          <ColorOption disabled defaultOption>
+            Select a gradient
+          </ColorOption>
+          {gradients?.map((gradient) => (
+            <ColorOption value={gradient.value} color={gradient.value}>
+              {gradient.name}
+            </ColorOption>
+          ))}
+        </Select>
       </div>
       <div>
         <ChannelPointsClaim
