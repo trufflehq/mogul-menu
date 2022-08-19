@@ -18,7 +18,7 @@ const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
 const ACTIVE_POLL_QUERY = gql`
   query PredictionPoll {
-    pollConnection(first: 1) {
+    pollConnection(first: 50) {
       nodes {
         id
         question
@@ -49,7 +49,10 @@ export default function PredictionTile() {
   });
 
   const activePoll = useMemo(
-    () => activePollData?.pollConnection?.nodes?.[0],
+    () =>
+      activePollData?.pollConnection?.nodes?.find(
+        (poll) => poll?.data?.type === "prediction"
+      ),
     [activePollData]
   );
   const pollMsLeft = useMemo(

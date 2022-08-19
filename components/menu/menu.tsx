@@ -12,6 +12,8 @@ Services that the menu component should provide:
 - Interface for displaying a button to the right of tabs (like the channel points claim button)
 - Interface for navigating between tabs - done
 */
+import globalContext from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
+
 import {
   _,
   AuthDialog,
@@ -160,7 +162,7 @@ export default function BrowserExtensionMenu(props) {
   useStyleSheet(styleSheet);
   // make sure we don't render this on the server
   if (typeof document === "undefined") return <></>;
-
+  // console.log('BrowserExtensionMenu', BrowserExtensionMenu)
   // props
   const {
     // hasChannelPoints,
@@ -173,6 +175,9 @@ export default function BrowserExtensionMenu(props) {
     darkXpImageObj,
     creatorName,
   } = props;
+
+  const context = globalContext.getStore();
+  // console.log('context', context)
 
   const [signInResult, executeSigninMutation] = useMutation(
     EXTENSION_TOKEN_SIGNIN_QUERY,
@@ -320,6 +325,7 @@ export default function BrowserExtensionMenu(props) {
       },
       {
         additionalTypenames: [
+          "OrgUserCounter",
           "Poll",
           "PollVote",
           "PollOption",
@@ -351,6 +357,7 @@ export default function BrowserExtensionMenu(props) {
           },
           {
             additionalTypenames: [
+              "OrgUserCounter",
               "Poll",
               "PollVote",
               "PollOption",
@@ -452,62 +459,12 @@ export default function BrowserExtensionMenu(props) {
                           height={18}
                         />
                       </div>
-                      {/* TODO: add a way for tabs to set the tab name */}
                       <div className="title truffle-text-body-2">{tabText}</div>
                       <Ripple color="var(--mm-color-text-bg-primary)" />
                     </div>
                   );
                 })}
               </div>
-              {/* TODO: refactor channel points component */}
-              {
-                /*(hasChannelPoints || hasBattlePass) && canClaim && <div className="channel-points">
-              <ChannelPoints {...{
-                hasText: isOpen,
-                fontColor: '#FFFFFF',
-                source,
-                connectionObs,
-                highlightButtonBg,
-                channelPointsImageObj,
-                hasChannelPoints,
-                hasBattlePass,
-                darkChannelPointsImageObj: hasChannelPoints ? darkChannelPointsImageObj : darkXpImageObj,
-                timeWatchedSecondsSubject,
-                secondsRemainingSubject,
-                onFinishedCountdown: () => {
-                  // set a badge on the extension icon
-                  // when the user is able to claim channel points
-                  // setBadge('channel-points', true)
-                  isClaimableSubject.next(true)
-                },
-                onClaim: ({ channelPointsClaimed, xpClaimed }) => {
-                  // clear the badge when the user claims their channel points
-                  // setBadge('channel-points', false)
-                  isClaimableSubject.next(false)
-
-                  // display a couple of snack bars to notify them of their rewards
-                  hasChannelPoints && enqueueSnackBar(
-                    () =>
-                      <ChannelPointsClaimSnackBar
-                        channelPointsClaimed={channelPointsClaimed}
-                        totalChannelPoints={channelPoints?.count}
-                        channelPointsImageObj={channelPointsImageObj}
-                        darkChannelPointsImageObj={darkChannelPointsImageObj}
-                      />
-                  )
-                  enqueueSnackBar(
-                    () =>
-                      <XpClaimSnackBar
-                        xpClaimed={xpClaimed}
-                        totalXp={parseInt(seasonPass?.xp?.count || 0)}
-                        xpImageObj={xpImageObj}
-                        darkXpImageObj={darkXpImageObj}
-                      />
-                  )
-                }
-              }} />
-            </div> */
-              }
               <div
                 className="extension-icon"
                 style={{
@@ -521,36 +478,7 @@ export default function BrowserExtensionMenu(props) {
                 <Ripple color="var(--mm-color-text-bg-primary)" />
               </div>
             </div>
-            {/* TODO: put back account linking logic */}
-            {
-              /*shouldShowSignupBanner && <ActionBanner
-            message="Finish setting up your account"
-            buttonText="Sign up"
-            onClick={handleSignup}
-          />*/
-            }
-            {/*shouldShowTwitchBanner && getModel().user.isMember(me) && credentials?.sourceType === 'twitch' && !hasConnectedAccount && <TwitchSignupBanner /> */}
-            {
-              // TODO: move this to the actions page
-              // TODO: update to mockup spec w/ timer, etc...
-              // make separate component so we're only rerendering on timer tick in that component
-              // also only show if timer hasn't expired (make isPredictionExpiredObs)
-              // ActionBanner should support a close icon
-              /*getModel().user.isMember(me) && activePoll && isPageStackEmpty && <ActionBanner
-              message={`Prediction: ${activePoll.question}`}
-              buttonText="Participate"
-              onClick={ () => pushPage(PredictionPage, {
-                activePoll, channelPointsImageObj, channelPointsOrgUserCounterObs, onBack: popPage
-              }) }
-            />*/
-            }
             <div className="body">
-              {!isAuthDialogHidden && (
-                <AuthDialog
-                  hidden={isAuthDialogHidden}
-                  onclose={onAuthClose}
-                />
-              )}
               <DialogContainer />
               <TabButtonContext.Provider
                 value={_.pick(tabButtonManager, [
@@ -586,29 +514,12 @@ export default function BrowserExtensionMenu(props) {
                   </TabStateContext.Provider>
                 </ActionBannerContext.Provider>
               </TabButtonContext.Provider>
+              {!isAuthDialogHidden && (
+                <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
+              )}
             </div>
           </div>
         </div>
-        {/* TODO: refactor NewExtensionUserTooltip */}
-        {
-          /* <Modal isVisibleSubject={isOnboardTooltipVisibleSubject}>
-        <NewExtensionUserTooltip
-          hasViewedOnboardTooltipSubject={hasViewedOnboardTooltipSubject}
-          $$extensionIconRef={$$extensionIconRef}
-        />
-      </Modal> */
-        }
-        {/* TODO: wire up */}
-        {
-          /* <Modal isVisibleSubject={isSignupVisibleSubject}>
-        <SignUpForm
-          source='extension-sign-up'
-          prefillName={me?.name}
-          infoMessage='Create an account to secure your collection'
-          onComplete={transferJwt}
-        />
-      </Modal> */
-        }
       </div>
     </Draggable>
   );

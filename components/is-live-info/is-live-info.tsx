@@ -4,6 +4,7 @@ import {
   gql,
   ImageByAspectRatio,
   query,
+  useQuery,
   React,
   useObservables,
   useStyleSheet,
@@ -35,7 +36,14 @@ const POINTS_QUERY = gql`
 
 const CLAIM_BUTTON = "claim-button";
 
-export default function IsLiveInfo(props) {
+interface IsLiveInfoProps {
+  highlightButtonBg: string
+  // creatorName,
+  hasChannelPoints: boolean
+  hasBattlePass: boolean
+}
+
+export default function IsLiveInfo(props: IsLiveInfoProps) {
   useStyleSheet(styleSheet);
   const {
     highlightButtonBg,
@@ -44,6 +52,10 @@ export default function IsLiveInfo(props) {
     hasBattlePass,
   } = props;
 
+  const [{ data: pointsData, fetching: isFetchingPoints }, reexecutePointsQuery] = useQuery({
+    query: POINTS_QUERY,
+  });
+
   const { addButton, removeButton } = useTabButton();
   const enqueueSnackBar = useSnackBar();
 
@@ -51,7 +63,14 @@ export default function IsLiveInfo(props) {
 
   const claimHandler = async () => {
     const { channelPointsClaimed, xpClaimed } = (await claim()) ?? {};
-    const { data: pointsData, error } = await query(POINTS_QUERY);
+    await reexecutePointsQuery({ requestPolicy: "network-only", additionalTypenames: [
+      "OrgUserCounter",
+      "OwnedCollectible",
+      "SeasonPassProgression",
+      "ActivePowerup",
+      "EconomyTransaction",
+    ]})
+    
     const { channelPoints, seasonPass } = pointsData ?? {};
 
     // display a couple of snack bars to notify them of their rewards
@@ -60,23 +79,27 @@ export default function IsLiveInfo(props) {
         <ChannelPointsClaimSnackBar
           channelPointsClaimed={channelPointsClaimed}
           totalChannelPoints={channelPoints?.orgUserCounter?.count || 0}
-          // channelPointsImageObj={channelPointsImageObj}
-          // darkChannelPointsImageObj={darkChannelPointsImageObj}
         />
       ));
     enqueueSnackBar(() => (
       <XpClaimSnackBar
         xpClaimed={xpClaimed}
         totalXp={parseInt(seasonPass?.xp?.count || 0)}
-        // xpImageObj={xpImageObj}
-        // darkXpImageObj={darkXpImageObj}
       />
     ));
+
 
     removeButton(CLAIM_BUTTON);
   };
 
-  const onFinishedCountdown = () => {
+  const onFinishedCountdown = async () => {
+    await reexecutePointsQuery({ requestPolicy: "network-only", additionalTypenames: [
+      "OrgUserCounter",
+      "OwnedCollectible",
+      "SeasonPassProgression",
+      "ActivePowerup",
+      "EconomyTransaction",
+    ]})
     addButton(
       CLAIM_BUTTON,
       <ChannelPoints
@@ -140,6 +163,11 @@ function ChannelPointsClaimSnackBar({
   totalChannelPoints = 0,
   channelPointsImageObj,
   darkChannelPointsImageObj,
+}: {
+  channelPointsClaimed: number;
+  totalChannelPoints: number;
+  channelPointsImageObj?: any;
+  darkChannelPointsImageObj?: any
 }) {
   // const channelPointsSrc = channelPointsImageObj ? getModel().image.getSrcByImageObj(channelPointsImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/channel-points.svg'
   const darkChannelPointsSrc = channelPointsImageObj
@@ -175,6 +203,11 @@ function XpClaimSnackBar({
   totalXp = 0,
   xpImageObj,
   darkXpImageObj,
+}: {
+  xpClaimed: number,
+  totalXp: number,
+  xpImageObj?: any,
+  darkXpImageObj?: any,
 }) {
   // const xpSrc = xpImageObj ? getModel().image.getSrcByImageObj(xpImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/xp.svg'
   const darkXpSrc = xpImageObj
