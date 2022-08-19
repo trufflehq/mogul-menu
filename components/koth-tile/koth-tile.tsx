@@ -1,12 +1,20 @@
-import React, { useMemo } from "https://npm.tfl.dev/react";
-import Avatar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
-import { Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
-import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
+import {
+  Avatar,
+  gql,
+  Obs,
+  op,
+  queryObservable,
+  React,
+  useMemo,
+  useObservables,
+  useStyleSheet,
+} from "../../deps.ts";
 
 import { CROWN_ICON } from "../../util/icon/paths.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
+
+import styleSheet from "./koth-tile.scss.js";
 
 const ORG_QUERY = gql`
   query KOTHOrgQuery {
@@ -34,17 +42,18 @@ const KOTH_USER_QUERY = gql`
 `;
 
 export default function KothTile() {
+  useStyleSheet(styleSheet);
   const { kingOrgUserObs } = useMemo(() => {
     const kingOrgUserObs = queryObservable(ORG_QUERY).pipe(
       op.map(({ data }: any) => data?.org?.orgConfig),
       op.switchMap((orgConfig: any) =>
         orgConfig?.data?.kingOfTheHill?.userId
           ? queryObservable(KOTH_USER_QUERY, {
-            userId: orgConfig?.data?.kingOfTheHill?.userId,
-          })
+              userId: orgConfig?.data?.kingOfTheHill?.userId,
+            })
           : Obs.of({})
       ),
-      op.map(({ data }: any) => data?.orgUser),
+      op.map(({ data }: any) => data?.orgUser)
     );
     return {
       kingOrgUserObs,
@@ -67,10 +76,6 @@ export default function KothTile() {
       color="#E0BB72"
       content={() => (
         <div className="content">
-          <link
-            rel="stylesheet"
-            href={new URL("koth-tile.css", import.meta.url).toString()}
-          />
           <div className="avatar">
             <Avatar user={kingOrgUser?.user} size={"56px"} />
           </div>

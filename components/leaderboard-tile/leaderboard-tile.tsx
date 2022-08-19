@@ -1,14 +1,20 @@
-import React, { useMemo } from "https://npm.tfl.dev/react";
-import _ from "https://npm.tfl.dev/lodash?no-check";
-import { gql, queryObservable } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
-
-import Avatar from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
+import {
+  Avatar,
+  gql,
+  op,
+  queryObservable,
+  React,
+  useMemo,
+  useObservables,
+  useStyleSheet,
+  _,
+} from "../../deps.ts";
 
 import Tile from "../tile/tile.tsx";
 
 import { TROPHY_ICON } from "../../util/icon/paths.ts";
-import { op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+
+import styleSheet from "./leaderboard-tile.scss.js";
 
 const LEADERBOARD_LIMIT = 3;
 
@@ -43,6 +49,7 @@ const LEADERBOARD_COUNTER_QUERY = gql`
 `;
 
 export function LeaderboardTile() {
+  useStyleSheet(styleSheet);
   // const { leaderboardCountersObs } = useMemo(() => {
   //   const seasonPassObs = getModel().seasonPass.getCurrent();
   //   const leaderboardCountersObs = seasonPassObs.pipe(
@@ -67,7 +74,7 @@ export function LeaderboardTile() {
 
   const { leaderboardCountersObs } = useMemo(() => {
     const leaderboardCountersObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY,
+      ORG_USER_COUNTER_TYPE_QUERY
     ).pipe(
       op.switchMap(({ data }: any) =>
         queryObservable(LEADERBOARD_COUNTER_QUERY, {
@@ -75,7 +82,7 @@ export function LeaderboardTile() {
           orgUserCounterTypeId: data?.seasonPass?.orgUserCounterTypeId,
         })
       ),
-      op.map(({ data }) => data?.orgUserCounterConnection),
+      op.map(({ data }) => data?.orgUserCounterConnection)
     );
 
     return {
