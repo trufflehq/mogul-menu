@@ -696,7 +696,6 @@ export default function BrowserExtensionMenu(props) {
                         height={18}
                       />
                     </div>
-                    {/* TODO: add a way for tabs to set the tab name */}
                     <div className="title truffle-text-body-2">{tabText}</div>
                     <Ripple color="var(--mm-color-text-bg-primary)" />
                   </div>
