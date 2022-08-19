@@ -98,7 +98,6 @@ export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
   pageInfoIdentifiers?.find((identifier) => isTwitchSourceType(identifier.sourceType));
 
 const SNACKBAR_ANIMATION_DURATION_MS = 5000;
-const STORAGE_POSITION_PREFIX = "extensionIconPosition";
 const STORAGE_TOOLTIP_PREFIX = "hasViewedOnboardTooltip";
 const DEFAULT_TABS = [
   {
@@ -133,126 +132,6 @@ const DEFAULT_TABS = [
   },
 ];
 
-const BASE_IFRAME_STYLES = {
-  height: "600px",
-  width: "640px",
-  background: "transparent",
-  "z-index": 2000,
-  position: "absolute",
-  overflow: "hidden",
-  transition: "clip-path .5s cubic-bezier(.4,.71,.18,.99)",
-};
-
-const YOUTUBE_VIDEO_QUERY_SELECTOR = "#ytd-player > #container > #movie_player";
-const TWITCH_VIDEO_QUERY_SELECTOR = ".video-player__container";
-
-const BASE_IFRAME_STYLES_IN_VIDEO = {
-  ...BASE_IFRAME_STYLES,
-  // right: '20px',
-  // top: '50px',
-  // FAZEFIXME: rm faze styles
-  right: typeof document !== "undefined" &&
-      window.location?.hostname === "faze1.live"
-    ? "10px"
-    : "20px",
-  top: typeof document !== "undefined" &&
-      window.location?.hostname === "faze1.live"
-    ? "72px"
-    : "50px",
-  "max-height": "calc(100% - 50px)",
-};
-
-const BASE_IFRAME_STYLES_IN_CHAT = {
-  ...BASE_IFRAME_STYLES,
-  right: "0",
-  top: "-540px",
-  "max-height": "none",
-};
-
-const BASE_TWITCH_IFRAME_STYLES_IN_CHAT = {
-  ...BASE_IFRAME_STYLES,
-  right: "calc(100% - 50px)",
-};
-
-const YOUTUBE_ICON_POSITIONS = [
-  {
-    positionSlug: "chat",
-    text: "Below chat",
-    layoutConfigSteps: [
-      { action: "querySelector", value: "#show-hide-button" },
-      { action: "setStyle", value: { height: "60px", position: "relative" } },
-      { action: "appendSubject" },
-      // center button
-      { action: "querySelector", value: ".ytd-toggle-button-renderer" },
-      { action: "setStyle", value: { height: "60px" } },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-  {
-    positionSlug: "stream-top-right",
-    text: "Top right of stream",
-    layoutConfigSteps: [
-      { action: "querySelector", value: YOUTUBE_VIDEO_QUERY_SELECTOR },
-      { action: "appendSubject" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-];
-
-const TWITCH_ICON_POSITIONS = [
-  {
-    positionSlug: "chat",
-    text: "Below chat",
-    layoutConfigSteps: [
-      { action: "querySelector", value: ".chat-input__buttons-container" },
-      {
-        action: "setStyle",
-        value: {
-          height: "55px",
-          "align-items": "center",
-          position: "relative",
-        },
-      },
-      {
-        action: "querySelector",
-        value: ".chat-input__buttons-container > div",
-      },
-      {
-        action: "setStyle",
-        value: {
-          height: "55px",
-          "align-items": "center",
-          "margin-left": "45px",
-          position: "relative",
-        },
-      },
-      { action: "insertSubjectBefore" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-  {
-    positionSlug: "stream-top-right",
-    text: "Top right of stream",
-    layoutConfigSteps: [
-      // reset channel points positioning
-      {
-        action: "querySelector",
-        value: ".chat-input__buttons-container > div",
-      },
-      { action: "setStyle", value: { "margin-left": "0px" } },
-      // move to video
-      { action: "useDocument" },
-      { action: "querySelector", value: TWITCH_VIDEO_QUERY_SELECTOR },
-      { action: "appendSubject" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-];
-
 function getMenuState({
   isOpen,
   isClaimable,
@@ -272,78 +151,40 @@ function getMenuState({
   }
 }
 
-function getBaseStyles({ extensionIconPosition, extensionInfo }) {
-  const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo,
-  );
-  const baseStyles = extensionIconPosition === "chat"
-    ? twitchPageIdentifiers ? BASE_TWITCH_IFRAME_STYLES_IN_CHAT : BASE_IFRAME_STYLES_IN_CHAT
-    : BASE_IFRAME_STYLES_IN_VIDEO;
+// function getIframeStyles({
+//   state = "open",
+//   extensionIconPosition,
+//   extensionInfo,
+// }) {
+//   const baseStyles = getBaseStyles({ extensionIconPosition, extensionInfo });
+//   if (state === "open") {
+//     const stateStyles = { "clip-path": "inset(0% 0% 0% 0%)" };
+//     return { ...baseStyles, ...stateStyles };
+//   }
 
-  return baseStyles;
-}
+//   const closedStates = {
+//     // NOTE: i (austin) have no clue how these clips work :p
+//     // we should try to document/name them better
+//     "closed-with-claim": { width: "calc(100% - 88px)", heightPx: 55 },
+//     "closed-with-snackbar": { width: "calc(0% + 120px", heightPx: 100 },
+//     "closed-with-tooltip": { width: "calc(0% + 100px", heightPx: 200 },
+//     closed: { width: "calc(100% - 50px)", heightPx: 55 },
+//   };
 
-function getIframeStyles({
-  state = "open",
-  extensionIconPosition,
-  extensionInfo,
-}) {
-  const baseStyles = getBaseStyles({ extensionIconPosition, extensionInfo });
-  if (state === "open") {
-    const stateStyles = { "clip-path": "inset(0% 0% 0% 0%)" };
-    return { ...baseStyles, ...stateStyles };
-  }
+//   const { width, heightPx } = closedStates[state] || closedStates.closed;
 
-  const closedStates = {
-    // NOTE: i (austin) have no clue how these clips work :p
-    // we should try to document/name them better
-    "closed-with-claim": { width: "calc(100% - 88px)", heightPx: 55 },
-    "closed-with-snackbar": { width: "calc(0% + 120px", heightPx: 100 },
-    "closed-with-tooltip": { width: "calc(0% + 100px", heightPx: 200 },
-    closed: { width: "calc(100% - 50px)", heightPx: 55 },
-  };
+//   const stateStyles = extensionIconPosition === "chat"
+//     ? { "clip-path": `inset(calc(100% - ${heightPx}px) 0% 0% ${width})` }
+//     : { "clip-path": `inset(0% 0% calc(100% - ${heightPx}px) ${width})` };
 
-  const { width, heightPx } = closedStates[state] || closedStates.closed;
-
-  const stateStyles = extensionIconPosition === "chat"
-    ? { "clip-path": `inset(calc(100% - ${heightPx}px) 0% 0% ${width})` }
-    : { "clip-path": `inset(0% 0% calc(100% - ${heightPx}px) ${width})` };
-
-  return {
-    ...baseStyles,
-    ...stateStyles,
-  };
-}
+//   return {
+//     ...baseStyles,
+//     ...stateStyles,
+//   };
+// }
 
 interface OptionalSigninArgs {
   isTransfer: boolean;
-}
-
-function setMenuStyles({
-  state,
-  jumper,
-  extensionIconPosition,
-  extensionInfo,
-}) {
-  const style = getIframeStyles({
-    state,
-    extensionIconPosition,
-    extensionInfo,
-  });
-
-  jumper.call("layout.applyLayoutConfigSteps", {
-    layoutConfigSteps: [
-      { action: "useSubject" }, // start with our iframe
-      { action: "setStyle", value: style },
-    ],
-  });
-  // DEPRECATED: applyLayoutConfigSteps replaces in 3.1.0. can rm in late 2022
-  jumper.call("dom.setStyle", {
-    querySelector: "#spore-chrome-extension-menu",
-    style: Object.entries(style)
-      .map(([k, v]) => `${k}:${v}`)
-      .join(";"),
-  });
 }
 
 export default function BrowserExtensionMenu(props) {
@@ -368,38 +209,9 @@ export default function BrowserExtensionMenu(props) {
   const [signInResult, executeSigninMutation] = useMutation(
     EXTENSION_TOKEN_SIGNIN_QUERY,
   );
-
   // fetched values
   // TODO: implement logic for fetching from backend
   const { extensionIconPositionObs, hasViewedOnboardTooltipObs } = useMemo(() => {
-    const extensionIconPositionObs = Obs.from(
-      jumper
-        ?.call("storage.get", {
-          key: getStorageKey(STORAGE_POSITION_PREFIX),
-        })
-        // TODO: remove entire .then in mid-june 2022. legacy code to use old window.localStorage value
-        ?.then(async (value) => {
-          try {
-            if (!value) {
-              const legacyValue = (await jumper?.call("storage.get", {
-                key: STORAGE_POSITION_PREFIX,
-              })) || window.localStorage.getItem("extensionIconPosition");
-              await jumper.call("storage.set", {
-                key: getStorageKey(STORAGE_POSITION_PREFIX),
-                value: legacyValue,
-              });
-              value = legacyValue;
-              // cleanup old values
-              jumper.call("storage.set", {
-                key: STORAGE_POSITION_PREFIX,
-                value: "",
-              });
-              window.localStorage.removeItem("extensionIconPosition");
-            }
-          } catch {}
-          return value;
-        }) || "",
-    );
     // want this to always be true/false since it's async
     const hasViewedOnboardTooltipObs = Obs.from(
       jumper
@@ -410,13 +222,10 @@ export default function BrowserExtensionMenu(props) {
     );
 
     return {
-      extensionIconPositionObs,
       hasViewedOnboardTooltipObs,
     };
   }, []);
-
-  const { extensionIconPosition, hasViewedOnboardTooltip, extensionInfo } = useObservables(() => ({
-    extensionIconPosition: extensionIconPositionObs,
+  const { hasViewedOnboardTooltip, extensionInfo } = useObservables(() => ({
     hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
     extensionInfo: Obs.from(jumper?.call("context.getInfo") || ""),
   }));
@@ -521,7 +330,7 @@ export default function BrowserExtensionMenu(props) {
     }
   }, [JSON.stringify(meRes?.me), isFetchingUser]);
 
-  const className = `z-browser-extension-menu position-${extensionIconPosition} ${
+  const className = `z-browser-extension-menu ${
     classKebab(
       { isOpen, hasNotification, isClaimable },
     )
@@ -535,12 +344,10 @@ export default function BrowserExtensionMenu(props) {
       snackBarQueue: undefined,
       shouldShowOnboardTooltip: undefined,
     });
-    setMenuStyles({ state, jumper, extensionIconPosition, extensionInfo });
   }, [
     isOpen,
     isClaimable,
     // snackBarQueue,
-    extensionIconPosition,
     extensionInfo,
     // shouldShowOnboardTooltip,
   ]);

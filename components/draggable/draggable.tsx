@@ -53,7 +53,7 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
     position: "fixed",
     top: "0",
     left: "0",
-    "z-index": "999",
+    "z-index": "9999",
   };
   //remove clip path if mouse is pressed so we get mouse events across the entire page
   if (dragInfo.pressed) style["clip-path"] = "none";
@@ -103,7 +103,7 @@ export default function Draggable(
 
   // use jumper to update the clip path based on the dimensions and drag info
   useEffect(() => {
-    const style = createIframeStyle(dimensions, dragInfo);
+    const style = createIframeStyle(dimensions, dragInfo); //{ width: "100vw", height: "100vh", background: "red" }
     jumper.call("layout.applyLayoutConfigSteps", {
       layoutConfigSteps: [
         { action: "useSubject" }, // start with our iframe
@@ -125,12 +125,12 @@ export default function Draggable(
         width: "100%",
         height: "100%",
         // uncomment for local testing
-        "clip-path": dragInfo.pressed ? "none" : createClipPath(
-          dragInfo.current,
-          dimensions.base,
-          dimensions.modifiers,
-        ),
-        transition: dimensions.modifiers.transition,
+        // "clip-path": dragInfo.pressed ? "none" : createClipPath(
+        //   dragInfo.current,
+        //   dimensions.base,
+        //   dimensions.modifiers,
+        // ),
+        // transition: dimensions.modifiers.transition,
       }}
       onMouseDown={(e: { target: Element }) => {
         const target = e.target as Element;
