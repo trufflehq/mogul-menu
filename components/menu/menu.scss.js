@@ -103,49 +103,13 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
-  >.extension-icon {
-    cursor: pointer;
-    position: absolute;
-    z-index: 99999;
-    top: $extension-top-offset;
-    right: $extension-right-offset;
-    background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
-    background-size: 100%;
-    background-repeat: no-repeat;
-    // background-color: var(--bg-base);
-    background-color: rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    width: 40px;
-    height: 40px;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    transition: box-shadow 0.25s;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.3);
-      box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
-    }
-  }
-
-  &.position-chat {
-    >.extension-icon {
-      top: initial;
-      bottom: 10px;
-    }
-  }
 
   >.menu {
+    width: 640px;
+    height: 600px;
     // we use clipping so extension menu can close w/ an animation
     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
     transition: clip-path .5s $ease-function;
-
-    position: absolute;
-    // space for notif icon
-    right: $extension-right-offset;
-    top: $extension-top-offset;
-    // account for us starting at right and top offsets
-    height: calc(100% - #{$extension-top-offset});
-    width: calc(100% - #{$extension-right-offset});
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);
@@ -214,7 +178,30 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         justify-content: flex-end;
         max-height: 40px;
         width: 100%;
-
+        >.extension-icon {
+          cursor: pointer;
+          // position: absolute;
+          // z-index: 99999;
+          // top: $extension-top-offset;
+          // right: $extension-right-offset;
+          background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
+          background-size: 100%;
+          background-repeat: no-repeat;
+          // background-color: var(--bg-base);
+          background-color: rgba(0, 0, 0, 0.1);
+          box-sizing: border-box;
+          flex-shrink: 0;
+          width: 40px;
+          height: 40px;
+          border-top-right-radius: 2px;
+          border-bottom-right-radius: 2px;
+          transition: box-shadow 0.25s;
+      
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
+          }
+        }
         >.tabs {
           opacity: 0;
           flex-direction: row-reverse;
@@ -274,12 +261,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
           border-radius: 0px;
           border: 1px solid transparent;
           position: relative;
-        }
-
-        >.extension-icon-placeholder {
-          flex-shrink: 0;
-          width: 40px;
-          height: 40px;
         }
       }
 
@@ -363,35 +344,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   //     transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
   //   }
   // }
-
-  &.position-chat {
-    >.menu {
-      clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 40px));
-      top: initial;
-      bottom: 10px;
-
-      >.inner {
-        >.body {
-          order: 1;
-        }
-
-        >.bottom {
-          order: 2;
-        }
-      }
-    }
-
-    // TODO: generalize button in tab menu behavior
-    // &.is-claimable {
-    //   > .menu {
-    //     clip-path: inset(calc(100% - 40px) 0% 0% calc(100% - 78px));
-    //   }
-    // }
-
-    .c-snack-bar-container {
-      bottom: 40px + 16px;
-    }
-  }
 }
 
 .z-browser-extension-menu.is-open {
@@ -701,32 +653,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   }
 }
 
-.c-position-chooser {
-  >.label {
-    font-weight: 700;
-    font-size: 14px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-  }
-
-  >.option {
-    font-size: 14px;
-    padding: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 4px;
-    border: 1px solid var(--bg-base-text-10);
-
-
-    &:hover {
-      border: 1px solid var(--bg-base-text-30);
-    }
-
-    &.is-selected {
-      border: 1px solid var(--bg-base-text-60);
-    }
-  }
-}
 
 .c-prediction-page_no-active-predictions {
   color: var(--bg-base-text-60);

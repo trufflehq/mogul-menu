@@ -42,15 +42,13 @@ import SignUpForm from "https://tfl.dev/@truffle/ui@~0.1.0/components/sign-up-fo
 import cssVars from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import { isMemberMeUser } from "../../util/mod.ts";
-import {
-  createSubject,
-  Obs,
-  op,
-} from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 
 import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 import ActionBanner from "../action-banner/action-banner.tsx";
+
+import Draggable from "../draggable/draggable.tsx";
 
 import HomeTab from "../home-tab/home-tab.tsx";
 import TestTab from "../test-tab/test-tab.tsx";
@@ -60,11 +58,7 @@ import ActionBannerContainer from "../action-banner-container/action-banner-cont
 import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 import Button from "../base/button/button.tsx";
 import { TabElement } from "../../util/tabs/types.ts";
-import {
-  TabStateContext,
-  TabStateManager,
-  useTabStateManager,
-} from "../../util/tabs/tab-state.ts";
+import { TabStateContext, TabStateManager, useTabStateManager } from "../../util/tabs/tab-state.ts";
 import { TabIdContext } from "../../util/tabs/tab-id.ts";
 import { PageStackContext } from "../../util/page-stack/page-stack.ts";
 import { usePageStackManager } from "../../util/page-stack/manager.ts";
@@ -74,10 +68,7 @@ import SeasonPassTab from "../season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../channel-points-shop-tab/channel-points-shop-tab.tsx";
 import { activeTabSubject as nextTabSubject } from "../../util/tabs/active-tab.ts";
 
-import {
-  TabButtonContext,
-  useTabButtonManager,
-} from "../../util/tabs/tab-button.ts";
+import { TabButtonContext, useTabButtonManager } from "../../util/tabs/tab-button.ts";
 
 import { ME_QUERY } from "../../gql/mod.ts";
 
@@ -101,19 +92,14 @@ export const isYoutubeSourceType = (sourceType) =>
   sourceType === "youtubeVideo";
 
 export const getYoutubePageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) =>
-    isYoutubeSourceType(identifier.sourceType)
-  );
+  pageInfoIdentifiers?.find((identifier) => isYoutubeSourceType(identifier.sourceType));
 
 export const isTwitchSourceType = (sourceType) => sourceType === "twitch";
 
 export const getTwitchPageIdentifier = (pageInfoIdentifiers) =>
-  pageInfoIdentifiers?.find((identifier) =>
-    isTwitchSourceType(identifier.sourceType)
-  );
+  pageInfoIdentifiers?.find((identifier) => isTwitchSourceType(identifier.sourceType));
 
 const SNACKBAR_ANIMATION_DURATION_MS = 5000;
-const STORAGE_POSITION_PREFIX = "extensionIconPosition";
 const STORAGE_TOOLTIP_PREFIX = "hasViewedOnboardTooltip";
 const DEFAULT_TABS = [
   {
@@ -131,145 +117,20 @@ const DEFAULT_TABS = [
   {
     text: "Collection",
     slug: "collection",
-    imgUrl:
-      "https://cdn.bio/assets/images/features/browser_extension/collection.svg",
+    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/collection.svg",
     $el: CollectionTab,
   },
   {
     text: "Battle Pass",
     slug: "battle-pass",
-    imgUrl:
-      "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
+    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
     $el: SeasonPassTab,
   },
   {
     text: "Shop",
     slug: "shop",
-    imgUrl:
-      "https://cdn.bio/assets/images/features/browser_extension/store.svg",
+    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/store.svg",
     $el: ChannelPointsShopTab,
-  },
-];
-
-const BASE_IFRAME_STYLES = {
-  height: "600px",
-  width: "640px",
-  background: "transparent",
-  "z-index": 2000,
-  position: "absolute",
-  overflow: "hidden",
-  transition: "clip-path .5s cubic-bezier(.4,.71,.18,.99)",
-};
-
-const YOUTUBE_VIDEO_QUERY_SELECTOR = "#ytd-player > #container > #movie_player";
-const TWITCH_VIDEO_QUERY_SELECTOR = ".video-player__container";
-
-const BASE_IFRAME_STYLES_IN_VIDEO = {
-  ...BASE_IFRAME_STYLES,
-  // right: '20px',
-  // top: '50px',
-  // FAZEFIXME: rm faze styles
-  right:
-    typeof document !== "undefined" &&
-    window.location?.hostname === "faze1.live"
-      ? "10px"
-      : "20px",
-  top:
-    typeof document !== "undefined" &&
-    window.location?.hostname === "faze1.live"
-      ? "72px"
-      : "50px",
-  "max-height": "calc(100% - 50px)",
-};
-
-const BASE_IFRAME_STYLES_IN_CHAT = {
-  ...BASE_IFRAME_STYLES,
-  right: "0",
-  top: "-540px",
-  "max-height": "none",
-};
-
-const BASE_TWITCH_IFRAME_STYLES_IN_CHAT = {
-  ...BASE_IFRAME_STYLES,
-  right: "calc(100% - 50px)",
-};
-
-const YOUTUBE_ICON_POSITIONS = [
-  {
-    positionSlug: "chat",
-    text: "Below chat",
-    layoutConfigSteps: [
-      { action: "querySelector", value: "#show-hide-button" },
-      { action: "setStyle", value: { height: "60px", position: "relative" } },
-      { action: "appendSubject" },
-      // center button
-      { action: "querySelector", value: ".ytd-toggle-button-renderer" },
-      { action: "setStyle", value: { height: "60px" } },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-  {
-    positionSlug: "stream-top-right",
-    text: "Top right of stream",
-    layoutConfigSteps: [
-      { action: "querySelector", value: YOUTUBE_VIDEO_QUERY_SELECTOR },
-      { action: "appendSubject" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-];
-
-const TWITCH_ICON_POSITIONS = [
-  {
-    positionSlug: "chat",
-    text: "Below chat",
-    layoutConfigSteps: [
-      { action: "querySelector", value: ".chat-input__buttons-container" },
-      {
-        action: "setStyle",
-        value: {
-          height: "55px",
-          "align-items": "center",
-          position: "relative",
-        },
-      },
-      {
-        action: "querySelector",
-        value: ".chat-input__buttons-container > div",
-      },
-      {
-        action: "setStyle",
-        value: {
-          height: "55px",
-          "align-items": "center",
-          "margin-left": "45px",
-          position: "relative",
-        },
-      },
-      { action: "insertSubjectBefore" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
-  },
-  {
-    positionSlug: "stream-top-right",
-    text: "Top right of stream",
-    layoutConfigSteps: [
-      // reset channel points positioning
-      {
-        action: "querySelector",
-        value: ".chat-input__buttons-container > div",
-      },
-      { action: "setStyle", value: { "margin-left": "0px" } },
-      // move to video
-      { action: "useDocument" },
-      { action: "querySelector", value: TWITCH_VIDEO_QUERY_SELECTOR },
-      { action: "appendSubject" },
-      { action: "useSubject" },
-      { action: "resetStyles" }, // clear styles for our iframe (otherwise we have big empty iframe on page)
-    ],
   },
 ];
 
@@ -292,82 +153,8 @@ function getMenuState({
   }
 }
 
-function getBaseStyles({ extensionIconPosition, extensionInfo }) {
-  const twitchPageIdentifiers = getTwitchPageIdentifier(
-    extensionInfo?.pageInfo
-  );
-  const baseStyles =
-    extensionIconPosition === "chat"
-      ? twitchPageIdentifiers
-        ? BASE_TWITCH_IFRAME_STYLES_IN_CHAT
-        : BASE_IFRAME_STYLES_IN_CHAT
-      : BASE_IFRAME_STYLES_IN_VIDEO;
-
-  return baseStyles;
-}
-
-function getIframeStyles({
-  state = "open",
-  extensionIconPosition,
-  extensionInfo,
-}) {
-  const baseStyles = getBaseStyles({ extensionIconPosition, extensionInfo });
-  if (state === "open") {
-    const stateStyles = { "clip-path": "inset(0% 0% 0% 0%)" };
-    return { ...baseStyles, ...stateStyles };
-  }
-
-  const closedStates = {
-    // NOTE: i (austin) have no clue how these clips work :p
-    // we should try to document/name them better
-    "closed-with-claim": { width: "calc(100% - 88px)", heightPx: 55 },
-    "closed-with-snackbar": { width: "calc(0% + 120px", heightPx: 100 },
-    "closed-with-tooltip": { width: "calc(0% + 100px", heightPx: 200 },
-    closed: { width: "calc(100% - 50px)", heightPx: 55 },
-  };
-
-  const { width, heightPx } = closedStates[state] || closedStates.closed;
-
-  const stateStyles =
-    extensionIconPosition === "chat"
-      ? { "clip-path": `inset(calc(100% - ${heightPx}px) 0% 0% ${width})` }
-      : { "clip-path": `inset(0% 0% calc(100% - ${heightPx}px) ${width})` };
-
-  return {
-    ...baseStyles,
-    ...stateStyles,
-  };
-}
-
 interface OptionalSigninArgs {
   isTransfer: boolean;
-}
-
-function setMenuStyles({
-  state,
-  jumper,
-  extensionIconPosition,
-  extensionInfo,
-}) {
-  const style = getIframeStyles({
-    state,
-    extensionIconPosition,
-    extensionInfo,
-  });
-
-  jumper.call("layout.applyLayoutConfigSteps", {
-    layoutConfigSteps: [
-      { action: "useSubject" }, // start with our iframe
-      { action: "setStyle", value: style },
-    ],
-  });
-  // DEPRECATED: applyLayoutConfigSteps replaces in 3.1.0. can rm in late 2022
-  jumper.call("dom.setStyle", {
-    querySelector: "#spore-chrome-extension-menu",
-    style: Object.entries(style)
-      .map(([k, v]) => `${k}:${v}`)
-      .join(";"),
-  });
 }
 
 export default function BrowserExtensionMenu(props) {
@@ -393,63 +180,28 @@ export default function BrowserExtensionMenu(props) {
   // console.log('context', context)
 
   const [signInResult, executeSigninMutation] = useMutation(
-    EXTENSION_TOKEN_SIGNIN_QUERY
+    EXTENSION_TOKEN_SIGNIN_QUERY,
   );
-
   // fetched values
   // TODO: implement logic for fetching from backend
-  const { extensionIconPositionObs, hasViewedOnboardTooltipObs } =
-    useMemo(() => {
-      const extensionIconPositionObs = Obs.from(
-        jumper
-          ?.call("storage.get", {
-            key: getStorageKey(STORAGE_POSITION_PREFIX),
-          })
-          // TODO: remove entire .then in mid-june 2022. legacy code to use old window.localStorage value
-          ?.then(async (value) => {
-            try {
-              if (!value) {
-                const legacyValue =
-                  (await jumper?.call("storage.get", {
-                    key: STORAGE_POSITION_PREFIX,
-                  })) || window.localStorage.getItem("extensionIconPosition");
-                await jumper.call("storage.set", {
-                  key: getStorageKey(STORAGE_POSITION_PREFIX),
-                  value: legacyValue,
-                });
-                value = legacyValue;
-                // cleanup old values
-                jumper.call("storage.set", {
-                  key: STORAGE_POSITION_PREFIX,
-                  value: "",
-                });
-                window.localStorage.removeItem("extensionIconPosition");
-              }
-            } catch {}
-            return value;
-          }) || ""
-      );
-      // want this to always be true/false since it's async
-      const hasViewedOnboardTooltipObs = Obs.from(
-        jumper
-          ?.call("storage.get", {
-            key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
-          })
-          ?.then((value) => value || false) || ""
-      );
+  const { extensionIconPositionObs, hasViewedOnboardTooltipObs } = useMemo(() => {
+    // want this to always be true/false since it's async
+    const hasViewedOnboardTooltipObs = Obs.from(
+      jumper
+        ?.call("storage.get", {
+          key: getStorageKey(STORAGE_TOOLTIP_PREFIX),
+        })
+        ?.then((value) => value || false) || "",
+    );
 
-      return {
-        extensionIconPositionObs,
-        hasViewedOnboardTooltipObs,
-      };
-    }, []);
-
-  const { extensionIconPosition, hasViewedOnboardTooltip, extensionInfo } =
-    useObservables(() => ({
-      extensionIconPosition: extensionIconPositionObs,
-      hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
-      extensionInfo: Obs.from(jumper?.call("context.getInfo") || ""),
-    }));
+    return {
+      hasViewedOnboardTooltipObs,
+    };
+  }, []);
+  const { hasViewedOnboardTooltip, extensionInfo } = useObservables(() => ({
+    hasViewedOnboardTooltip: hasViewedOnboardTooltipObs,
+    extensionInfo: Obs.from(jumper?.call("context.getInfo") || ""),
+  }));
 
   const isClaimable = false;
   const hasChannelPoints = true;
@@ -472,8 +224,7 @@ export default function BrowserExtensionMenu(props) {
     return true;
   });
 
-  const { pushPage, popPage, clearPageStack, pageStackSubject } =
-    usePageStackManager();
+  const { pushPage, popPage, clearPageStack, pageStackSubject } = usePageStackManager();
 
   // set up state for TabNameContext
   const tabStateManager: TabStateManager = useTabStateManager(visibleTabs);
@@ -507,7 +258,7 @@ export default function BrowserExtensionMenu(props) {
 
   const hasNotification = Object.values(tabStates).reduce(
     (acc, tabState) => acc || tabState.hasBadge,
-    false
+    false,
   );
 
   const { nextTabSlugFromExternal } = useObservables(() => ({
@@ -528,13 +279,11 @@ export default function BrowserExtensionMenu(props) {
   }, [nextTabSlugFromExternal]);
 
   // action banners
-  const { actionBannerObj, displayActionBanner, removeActionBanner } =
-    useActionBannerManager();
+  const { actionBannerObj, displayActionBanner, removeActionBanner } = useActionBannerManager();
 
-  const [{ data: meRes, fetching: isFetchingUser }, reexecuteMeUserQuery] =
-    useQuery({
-      query: ME_QUERY,
-    });
+  const [{ data: meRes, fetching: isFetchingUser }, reexecuteMeUserQuery] = useQuery({
+    query: ME_QUERY,
+  });
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
 
   useEffect(() => {
@@ -542,13 +291,11 @@ export default function BrowserExtensionMenu(props) {
       if (!isMemberMeUser(meRes?.me)) {
         signInActionBannerIdRef.current = displayActionBanner(
           <ActionBanner
-            action={
-              <Button onClick={() => setIsAuthDialogHidden(false)}></Button>
-            }
+            action={<Button onClick={() => setIsAuthDialogHidden(false)}></Button>}
           >
             Finish setting up your account
           </ActionBanner>,
-          "sign-in"
+          "sign-in",
         );
       } else {
         removeActionBanner(signInActionBannerIdRef.current);
@@ -556,28 +303,11 @@ export default function BrowserExtensionMenu(props) {
     }
   }, [JSON.stringify(meRes?.me), isFetchingUser]);
 
-  const className = `z-browser-extension-menu position-${extensionIconPosition} ${classKebab(
-    { isOpen, hasNotification, isClaimable }
-  )}`;
-
-  // icon positioning
-  useEffect(() => {
-    const state = getMenuState({
-      isOpen,
-      isClaimable,
-      snackBarQueue: undefined,
-      shouldShowOnboardTooltip: undefined,
-    });
-    setMenuStyles({ state, jumper, extensionIconPosition, extensionInfo });
-  }, [
-    isOpen,
-    isClaimable,
-    // snackBarQueue,
-    extensionIconPosition,
-    extensionInfo,
-    // shouldShowOnboardTooltip,
-  ]);
-
+  const className = `z-browser-extension-menu ${
+    classKebab(
+      { isOpen, hasNotification, isClaimable },
+    )
+  }`;
   // custom tab buttons
   const tabButtonManager = useTabButtonManager();
   const { additionalTabButtons } = useObservables(() => ({
@@ -604,7 +334,7 @@ export default function BrowserExtensionMenu(props) {
           "OwnedCollectible",
           "ActivePowerup",
         ],
-      }
+      },
     );
 
     const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
@@ -636,7 +366,7 @@ export default function BrowserExtensionMenu(props) {
               "OwnedCollectible",
               "ActivePowerup",
             ],
-          }
+          },
         );
 
         const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
@@ -654,97 +384,143 @@ export default function BrowserExtensionMenu(props) {
 
     fetchCredentials();
   }, []);
+  const base = { x: 640, y: 600 };
+  const defaultModifier = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    transition: "none",
+  };
+  const dragProps = {
+    dimensions: {
+      base: base,
+      modifiers: defaultModifier,
+    },
+    defaultPosition: { x: 0, y: 0 },
+  };
 
+  // new iFrame styles
+  const menuState = getMenuState({
+    isOpen,
+    isClaimable,
+    snackBarQueue: undefined,
+    shouldShowOnboardTooltip: undefined,
+  });
+  switch (menuState) {
+    case "closed":
+      dragProps.dimensions.modifiers = {
+        ...defaultModifier,
+        bottom: -560,
+        left: -600,
+        transition: "clip-path .5s cubic-bezier(.4, .71, .18, .99)",
+      };
+      break;
+    case "closed-with-claim":
+      //TODO: add the sizes for the other things once we implement them
+      break;
+    case "closed-with-snackbar":
+      break;
+    case "closed-with-tooltip":
+      break;
+  }
   return (
-    <div className={className}>
-      <div
-        className="extension-icon"
-        style={{
-          backgroundImage: iconImageObj
-            ? `url(${getSrcByImageObj(iconImageObj)})`
-            : undefined,
-        }}
-        ref={$$extensionIconRef}
-        onClick={toggleIsOpen}
-      >
-        <Ripple color="var(--mm-color-text-bg-primary)" />
-      </div>
-      <div className="menu">
-        <div className="inner">
-          <div className="bottom">
-            <div className="tabs">
-              <div className="additional-tab-buttons">
-                {Object.values(additionalTabButtons)}
-              </div>
-              {_.map(Object.entries(tabStates), ([id, tabState]) => {
-                const { text: tabText, hasBadge, icon, isActive } = tabState;
-                return (
-                  <div
-                    key={id}
-                    className={`tab ${classKebab({ isActive, hasBadge })}`}
-                    onClick={() => {
-                      clearPageStack();
-                      // set the tab that was clicked to the current tab
-                      setActiveTabId(id);
-                    }}
-                  >
-                    <div className="icon">
-                      <ImageByAspectRatio
-                        imageUrl={icon}
-                        aspectRatio={1}
-                        width={18}
-                        height={18}
-                      />
+    <Draggable
+      dimensions={dragProps.dimensions}
+      defaultPosition={dragProps.defaultPosition}
+      requiredClassName="extension-icon"
+      ignoreClassName="z-browser-extension-menu"
+    >
+      <div className={className}>
+        <div className="menu">
+          <div className="inner">
+            <div className="bottom">
+              <div className="tabs">
+                <div className="additional-tab-buttons">
+                  {Object.values(additionalTabButtons)}
+                </div>
+                {_.map(Object.entries(tabStates), ([id, tabState]) => {
+                  const { text: tabText, hasBadge, icon, isActive } = tabState;
+                  return (
+                    <div
+                      key={id}
+                      className={`tab ${classKebab({ isActive, hasBadge })}`}
+                      onClick={() => {
+                        clearPageStack();
+                        // set the tab that was clicked to the current tab
+                        setActiveTabId(id);
+                      }}
+                    >
+                      <div className="icon">
+                        <ImageByAspectRatio
+                          imageUrl={icon}
+                          aspectRatio={1}
+                          width={18}
+                          height={18}
+                        />
+                      </div>
+                      <div className="title truffle-text-body-2">{tabText}</div>
+                      <Ripple color="var(--mm-color-text-bg-primary)" />
                     </div>
-                    <div className="title truffle-text-body-2">{tabText}</div>
-                    <Ripple color="var(--mm-color-text-bg-primary)" />
-                  </div>
-                );
-              })}
-            </div>
-            <div className="extension-icon-placeholder"></div>
-          </div>
-
-          <div className="body">
-            <DialogContainer />
-            <TabButtonContext.Provider
-              value={_.pick(tabButtonManager, [
-                "addButton",
-                "removeButton",
-                "clearButtons",
-              ])}
-            >
-              <ActionBannerContext.Provider
-                value={{ displayActionBanner, removeActionBanner }}
+                  );
+                })}
+              </div>
+              <div
+                className="extension-icon"
+                style={{
+                  backgroundImage: iconImageObj
+                    ? `url(${getSrcByImageObj(iconImageObj)})`
+                    : undefined,
+                }}
+                ref={$$extensionIconRef}
+                onClick={toggleIsOpen}
               >
-                <TabStateContext.Provider value={tabStateManager}>
-                  <PageStackContext.Provider value={{ pushPage, popPage }}>
-                    <SnackBarProvider
-                      visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
-                    />
-                    <PageStack pageStackSubject={pageStackSubject} />
-                    <ActionBannerContainer actionBannerObj={actionBannerObj} />
-                    {visibleTabs.map(({ $el: TabComponent }, idx) => (
-                      <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
-                        <div
-                          className={`tab-component ${classKebab({
-                            isActive: idx === activeTabIndex,
-                          })}`}
-                        >
-                          {TabComponent && <TabComponent />}
-                        </div>
-                      </TabIdContext.Provider>
-                    ))}
-                  </PageStackContext.Provider>
-                </TabStateContext.Provider>
-              </ActionBannerContext.Provider>
-            </TabButtonContext.Provider>
-            {!isAuthDialogHidden && (
-              <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
-            )}
+                <Ripple color="var(--mm-color-text-bg-primary)" />
+              </div>
+            </div>
+            <div className="body">
+              <DialogContainer />
+              <TabButtonContext.Provider
+                value={_.pick(tabButtonManager, [
+                  "addButton",
+                  "removeButton",
+                  "clearButtons",
+                ])}
+              >
+                <ActionBannerContext.Provider
+                  value={{ displayActionBanner, removeActionBanner }}
+                >
+                  <TabStateContext.Provider value={tabStateManager}>
+                    <PageStackContext.Provider value={{ pushPage, popPage }}>
+                      <SnackBarProvider
+                        visibilityDuration={SNACKBAR_ANIMATION_DURATION_MS}
+                      />
+                      <PageStack pageStackSubject={pageStackSubject} />
+                      <ActionBannerContainer actionBannerObj={actionBannerObj} />
+                      {visibleTabs.map(({ $el: TabComponent }, idx) => (
+                        <TabIdContext.Provider key={idx} value={tabSlugs[idx]}>
+                          <div
+                            className={`tab-component ${
+                              classKebab({
+                                isActive: idx === activeTabIndex,
+                              })
+                            }`}
+                          >
+                            {TabComponent && <TabComponent />}
+                          </div>
+                        </TabIdContext.Provider>
+                      ))}
+                    </PageStackContext.Provider>
+                  </TabStateContext.Provider>
+                </ActionBannerContext.Provider>
+              </TabButtonContext.Provider>
+              {!isAuthDialogHidden && (
+                <AuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Draggable>
   );
 }
