@@ -7,7 +7,8 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-import { setActiveTab } from "../../../util/tabs/active-tab.ts";
+// import { setActiveTab } from "../../../util/mod.ts";
+import { useTabStateManager, useTabButtonManager } from '../../../util/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -130,6 +131,8 @@ export default function ConfirmPurchaseDialog({
 
 function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
   const { popDialog } = useDialog();
+
+  const tabButtonManager = useTabButtonManager();
 
   const onViewCollectionHandler = () => {
     popDialog();

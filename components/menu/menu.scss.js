@@ -103,6 +103,36 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
+  >.extension-icon {
+    cursor: pointer;
+    position: absolute;
+    z-index: 99999;
+    top: $extension-top-offset;
+    right: $extension-right-offset;
+    background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    // background-color: var(--bg-base);
+    background-color: rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    transition: box-shadow 0.25s;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &.position-chat {
+    >.extension-icon {
+      top: initial;
+      bottom: 10px;
+    }
+  }
 
   >.menu {
     width: 640px;

@@ -26,7 +26,7 @@ import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/le
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
-import { setActiveTab } from "../../util/tabs/active-tab.ts";
+import { setActiveTab } from "../../util/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 

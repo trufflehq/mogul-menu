@@ -28,7 +28,6 @@ export default function ChannelPointsClaim({
 
   const isClaimButtonVisible = true;
 
-  // const channelPointsSrc = model.image.getSrcByImageObj(channelPointsImageObj) ?? 'https://cdn.bio/assets/images/features/chrome_extension/channel-points-default.svg'
   const darkChannelPointsSrc =
     (darkChannelPointsImageObj &&
       getSrcByImageObj(darkChannelPointsImageObj)) ||
@@ -58,7 +57,6 @@ export default function ChannelPointsClaim({
           })}`}
           style={{
             background: highlightButtonBg,
-            // backgroundColor: cssVars.$tertiaryBase,
           }}
           onClick={onClick}
         >

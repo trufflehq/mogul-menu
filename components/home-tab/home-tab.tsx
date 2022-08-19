@@ -11,7 +11,7 @@ import {
 
 import styleSheet from "./home-tab.scss.js";
 
-import { usePageStack } from "../../util/page-stack/page-stack.ts";
+import { usePageStack } from "../../util/mod.ts";
 
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
@@ -174,13 +174,7 @@ export default function HomeTab() {
             <Icon
               icon="settings"
               onclick={() =>
-                // pushPage(SettingsPage, {
-                //   extensionIconPositionSubject,
-                //   extensionInfo,
-                //   onBack: popPage,
-                // })
-                pushPage(<SettingsPage />)
-              }
+                pushPage(<SettingsPage />)}
               hasRipple={true}
               size="24px"
               iconViewBox="24px"
@@ -203,10 +197,6 @@ export default function HomeTab() {
           <>
             {canClaim && (
               <IsLiveInfo
-                // secondsRemainingSubject={secondsRemainingSubject}
-                // timeWatchedSecondsSubject={timeWatchedSecondsSubject}
-                // highlightButtonBg={highlightButtonBg}
-                // creatorName={creatorName}
                 hasChannelPoints={hasChannelPoints}
                 hasBattlePass={hasBattlePass}
               />

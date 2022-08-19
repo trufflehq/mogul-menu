@@ -1,5 +1,5 @@
 import React, { useContext } from "https://npm.tfl.dev/react";
-import { setActiveTab } from "../../../util/tabs/active-tab.ts";
+import { setActiveTab } from "../../../util/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";

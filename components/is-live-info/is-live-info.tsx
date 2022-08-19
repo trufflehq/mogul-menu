@@ -14,7 +14,7 @@ import styleSheet from "./is-live-info.scss.js";
 
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
-import { useTabButton } from "../../util/tabs/tab-button.ts";
+import { useTabButtonManager } from "../../util/mod.ts";
 import ChannelPoints from "../channel-points/channel-points.tsx";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
@@ -38,7 +38,7 @@ const POINTS_QUERY = gql`
 const CLAIM_BUTTON = "claim-button";
 
 interface IsLiveInfoProps {
-  highlightButtonBg: string;
+  highlightButtonBg: string
   // creatorName,
   hasChannelPoints: boolean;
   hasBattlePass: boolean;
@@ -60,7 +60,7 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
     query: POINTS_QUERY,
   });
 
-  const { addButton, removeButton } = useTabButton();
+  const { addButton, removeButton, buttonMap } = useTabButtonManager();
   const enqueueSnackBar = useSnackBar();
 
   const creatorName = "Ludwig";

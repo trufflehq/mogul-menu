@@ -1,4 +1,4 @@
-import { useState } from "https://npm.tfl.dev/react";
+import { useState } from "../../deps.ts";
 import { uniqueId } from "../general.ts";
 
 export type ActionBanner = {
@@ -9,10 +9,7 @@ export type ActionBanner = {
 export type ActionBannerObj = Record<string, ActionBanner>;
 
 export function useActionBannerManager() {
-  const [actionBannerObj, setActionBannerObj]: [
-    ActionBannerObj,
-    (x: any) => any, // TODO rm this once we fix the npm.tfl.dev react types
-  ] = useState({});
+  const [actionBannerObj, setActionBannerObj] = useState<ActionBannerObj>({});
 
   const displayActionBanner = (actionBanner: React.ReactNode, key?: string) => {
     const id = uniqueId();

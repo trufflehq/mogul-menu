@@ -7,10 +7,7 @@ import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
 import ColorOption from "../base/color-option/color-option.tsx";
 
-import { useTabState } from "../../util/tabs/tab-state.ts";
-import { useTabId } from "../../util/tabs/tab-id.ts";
-import { usePageStack } from "../../util/page-stack/page-stack.ts";
-import { useActionBanner } from "../../util/action-banner/action-banner.ts";
+import { usePageStack, useTabId, useTabState, useActionBanner } from "../../util/mod.ts";
 
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -55,8 +52,8 @@ export default function HomeTab() {
   };
 
   const tabNameHandler = () => {
-    tabState.setTabText(`Home (${count})`);
-    tabState.setTabBadge(isSelected);
+    tabState?.setTabText(`Home (${count})`);
+    tabState?.setTabBadge(isSelected);
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };
@@ -76,10 +73,6 @@ export default function HomeTab() {
       </ActionBanner>
     );
   };
-
-  // this uses the truffle UI dialog
-  // const [isDialogHidden, setDialogHidden] = useState(true);
-  // const toggleDialogHandler = () => setDialogHidden((prev: boolean) => !prev);
 
   // this uses the mogul-menu dialog service
   const toggleDialogHandler = () => {
@@ -111,9 +104,9 @@ export default function HomeTab() {
   return (
     <div className="z-home-tab">
       <div className="truffle-text-header-1">Tab id: {tabId}</div>
-      <div className="truffle-text-header-1">Tab name: {tabState.text}</div>
+      <div className="truffle-text-header-1">Tab name: {tabState?.text}</div>
       <div className="truffle-text-header-1">
-        Tab isActive: {String(tabState.isActive)}
+        Tab isActive: {String(tabState?.isActive)}
       </div>
       <div>
         <Button onClick={snackBarHandler}>Enqueue snackbar</Button>
@@ -144,9 +137,7 @@ export default function HomeTab() {
           hasChannelPoints
           hasBattlePass
           highlightButtonBg="var(--mm-gradient)"
-          onClaim={() => null}
-          onFinishedCountdown={() => null}
-          source="youtube"
+          onClick={() => null}
         />
       </div>
     </div>

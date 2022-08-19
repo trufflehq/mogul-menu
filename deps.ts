@@ -11,6 +11,8 @@ export {
 } from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 export { default as _ } from "https://npm.tfl.dev/lodash@4.17.21";
+
+// @deno-types="https://npm.tfl.dev/v86/@types/react@~18.0/index.d.ts"
 export {
   createContext,
   default as React,
@@ -18,6 +20,7 @@ export {
   useContext,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from "https://npm.tfl.dev/react";
@@ -31,7 +34,7 @@ export {
   formatPercentage,
   zeroPrefix,
 } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
-export { default as jumper } from "https://tfl.dev/@truffle/utils@~0.0.2/jumper/jumper.ts";
+export { default as jumper } from "https://tfl.dev/@truffle/utils@0.0.3/jumper/jumper.ts";
 export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@~0.0.2/cookie/cookie.ts";
 
 // components
