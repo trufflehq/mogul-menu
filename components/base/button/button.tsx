@@ -1,7 +1,9 @@
 import { React, useState, useStyleSheet } from "../../../deps.ts";
 import styleSheet from "./button.scss.js";
 
-const buttonStyles = {
+type Styles = Record<string, string>;
+
+const buttonStyles: Record<string, Styles> = {
   primary: {
     "--background": "var(--mm-color-primary)",
     "--text-color": "var(--mm-color-text-primary)",
@@ -42,6 +44,7 @@ const buttonStyles = {
     "--text-color": "var(--mm-color-text-bg-tertiary)",
     "--border-color": "transparent",
   },
+  undefined: {},
 };
 
 const sizeStyles = {
@@ -68,7 +71,7 @@ export default function Button({
 }: {
   children?: any;
   shouldHandleLoading?: boolean;
-  style?: keyof typeof buttonStyles;
+  style?: keyof typeof buttonStyles | Styles;
   border?: boolean;
   isDisabled?: boolean;
   onClick?: () => any;
@@ -92,8 +95,8 @@ export default function Button({
     }
   };
 
-  const styles = {
-    ...buttonStyles[style],
+  const styles: Styles = {
+    ...(typeof style === "string" ? buttonStyles[style] : style),
     ...sizeStyles[size],
   };
 
