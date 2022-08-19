@@ -110,14 +110,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     // we use clipping so extension menu can close w/ an animation
     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
     transition: clip-path .5s $ease-function;
-
-    // position: absolute;
-    // // space for notif icon
-    // right: $extension-right-offset;
-    // top: $extension-top-offset;
-    // // account for us starting at right and top offsets
-    // height: calc(100% - #{$extension-top-offset});
-    // width: calc(100% - #{$extension-right-offset});
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);

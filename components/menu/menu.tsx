@@ -392,15 +392,7 @@ export default function BrowserExtensionMenu(props) {
     },
     defaultPosition: { x: 0, y: 0 },
   };
-  // OLD CODE FOR REFERENCE on iframe sizing
-  //   const closedStates = {
-  //     // NOTE: i (austin) have no clue how these clips work :p
-  //     // we should try to document/name them better
-  //     "closed-with-claim": { width: "calc(100% - 88px)", heightPx: 55 },
-  //     "closed-with-snackbar": { width: "calc(0% + 120px", heightPx: 100 },
-  //     "closed-with-tooltip": { width: "calc(0% + 100px", heightPx: 200 },
-  //     closed: { width: "calc(100% - 50px)", heightPx: 55 },
-  //   };
+
   // new iFrame styles
   const menuState = getMenuState({
     isOpen,

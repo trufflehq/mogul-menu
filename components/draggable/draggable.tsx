@@ -135,15 +135,15 @@ export default function Draggable(
       onMouseDown={(e: { target: Element }) => {
         const target = e.target as Element;
         const classes: string = target.className;
-        //prevent dragging by links and any class that has the prevent-drag class
-        console.log(classes);
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
         if (classes.includes(ignoreClassName)) return;
+        // check if requireClassName is set and if it is, only drag if the event target has that name
         if (
           requiredClassName && !classes.includes(requiredClassName)
         ) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
+        //prevent dragging by links and prevent-drag tag
         if (
           target.tagName === "A" || classes.includes("prevent-drag")
         ) {
