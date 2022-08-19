@@ -1,8 +1,10 @@
-import React from "https://npm.tfl.dev/react";
+import { React, useStyleSheet } from "../../deps.ts";
 import ChannelPointsShop from "../channel-points-shop/channel-points-shop.tsx";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
+
+import styleSheet from "./channel-points-shop-tab.scss.js";
 
 export default function ChannelPointsShopTab(props) {
+  useStyleSheet(styleSheet);
   // const channelPointsSrc = channelPointsImageObj
   //   ? getSrcByImageObj(channelPointsImageObj)
   //   : "https://cdn.bio/assets/images/features/browser_extension/channel-points.svg";
@@ -16,12 +18,8 @@ export default function ChannelPointsShopTab(props) {
   };
 
   return (
-    <ScopedStylesheet
-      url={new URL("channel-points-shop-tab.css", import.meta.url)}
-    >
-      <div className="c-channel-points-shop-tab">
-        <ChannelPointsShop />
-      </div>
-    </ScopedStylesheet>
+    <div className="c-channel-points-shop-tab">
+      <ChannelPointsShop />
+    </div>
   );
 }

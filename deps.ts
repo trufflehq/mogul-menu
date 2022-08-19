@@ -14,6 +14,7 @@ export { default as _ } from "https://npm.tfl.dev/lodash@4.17.21";
 export {
   createContext,
   default as React,
+  useCallback,
   useContext,
   useEffect,
   useMemo,

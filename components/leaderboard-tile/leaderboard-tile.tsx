@@ -130,10 +130,6 @@ export function LeaderboardTile() {
       textColor="black"
       content={() => (
         <div className="content">
-          <link
-            rel="stylesheet"
-            href={new URL("leaderboard-tile.css", import.meta.url).toString()}
-          />
           {top3.map((contestant, idx) => (
             <div className="contestant" key={idx}>
               <div

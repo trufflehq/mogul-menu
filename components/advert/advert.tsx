@@ -1,8 +1,10 @@
-import React from "https://npm.tfl.dev/react";
-import Button from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/button/button.tsx";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
+import { React, useStyleSheet } from "../../deps.ts";
+import Button from "../base/button/button.tsx";
+
+import styleSheet from "./advert.scss.js";
 
 export default function Advert(props) {
+  useStyleSheet(styleSheet);
   const {
     className,
     imageSrc,
@@ -17,31 +19,20 @@ export default function Advert(props) {
   } = props;
 
   return (
-    <ScopedStylesheet url={new URL("advert.css", import.meta.url)}>
-      <div className={`c-advert ${className}`}>
-        <div className="image">
-          <img src={imageSrc} alt="Ad" />
+    <div className={`c-advert ${className}`}>
+      <div className="image">
+        <img src={imageSrc} alt="Ad" />
+      </div>
+      <div className="content">
+        <div className="text">
+          {/* <div className='ad'>#ad</div> */}
+          <div className="ad">{hashtag}</div>
+          <div className="tagline">{tagline}</div>
         </div>
-        <div className="content">
-          <div className="text">
-            {/* <div className='ad'>#ad</div> */}
-            <div className="ad">{hashtag}</div>
-            <div className="tagline">{tagline}</div>
-          </div>
-          <div className="actions">
-            <Button
-              text={buttonText}
-              background={buttonBgColor}
-              backgroundHover={buttonBgColorHover}
-              borderRadius="4px"
-              textColor={buttonTextColor}
-              href={buttonHref}
-              onClick={buttonOnClick}
-              outlineHover="1px solid var(--mm-color-text-bg-primary)"
-            />
-          </div>
+        <div className="actions">
+          <Button onClick={buttonOnClick}>{buttonText}</Button>
         </div>
       </div>
-    </ScopedStylesheet>
+    </div>
   );
 }

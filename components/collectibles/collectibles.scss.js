@@ -1,3 +1,6 @@
+import { scss } from "../../deps.ts";
+
+export default scss`
 @mixin container($hasPadding: true) {
   width: 100%;
   max-width: 1260px;
@@ -28,3 +31,4 @@
     }
   }
 }
+`;

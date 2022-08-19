@@ -8,6 +8,7 @@ import {
   React,
   useObservables,
   useStyleSheet,
+  useCallback,
 } from "../../deps.ts";
 import styleSheet from "./is-live-info.scss.js";
 
@@ -37,10 +38,10 @@ const POINTS_QUERY = gql`
 const CLAIM_BUTTON = "claim-button";
 
 interface IsLiveInfoProps {
-  highlightButtonBg: string
+  highlightButtonBg: string;
   // creatorName,
-  hasChannelPoints: boolean
-  hasBattlePass: boolean
+  hasChannelPoints: boolean;
+  hasBattlePass: boolean;
 }
 
 export default function IsLiveInfo(props: IsLiveInfoProps) {
@@ -52,7 +53,10 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
     hasBattlePass,
   } = props;
 
-  const [{ data: pointsData, fetching: isFetchingPoints }, reexecutePointsQuery] = useQuery({
+  const [
+    { data: pointsData, fetching: isFetchingPoints },
+    reexecutePointsQuery,
+  ] = useQuery({
     query: POINTS_QUERY,
   });
 
@@ -63,14 +67,17 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
 
   const claimHandler = async () => {
     const { channelPointsClaimed, xpClaimed } = (await claim()) ?? {};
-    await reexecutePointsQuery({ requestPolicy: "network-only", additionalTypenames: [
-      "OrgUserCounter",
-      "OwnedCollectible",
-      "SeasonPassProgression",
-      "ActivePowerup",
-      "EconomyTransaction",
-    ]})
-    
+    await reexecutePointsQuery({
+      requestPolicy: "network-only",
+      additionalTypenames: [
+        "OrgUserCounter",
+        "OwnedCollectible",
+        "SeasonPassProgression",
+        "ActivePowerup",
+        "EconomyTransaction",
+      ],
+    });
+
     const { channelPoints, seasonPass } = pointsData ?? {};
 
     // display a couple of snack bars to notify them of their rewards
@@ -88,18 +95,20 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
       />
     ));
 
-
     removeButton(CLAIM_BUTTON);
   };
 
-  const onFinishedCountdown = async () => {
-    await reexecutePointsQuery({ requestPolicy: "network-only", additionalTypenames: [
-      "OrgUserCounter",
-      "OwnedCollectible",
-      "SeasonPassProgression",
-      "ActivePowerup",
-      "EconomyTransaction",
-    ]})
+  const onFinishedCountdown = useCallback(async () => {
+    await reexecutePointsQuery({
+      requestPolicy: "network-only",
+      additionalTypenames: [
+        "OrgUserCounter",
+        "OwnedCollectible",
+        "SeasonPassProgression",
+        "ActivePowerup",
+        "EconomyTransaction",
+      ],
+    });
     addButton(
       CLAIM_BUTTON,
       <ChannelPoints
@@ -110,7 +119,7 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
         highlightButtonBg="var(--truffle-gradient)"
       />
     );
-  };
+  }, []);
 
   const { claim, secondsRemainingSubject, timeWatchedSecondsSubject } =
     useWatchtimeCounter({ source: "youtube", onFinishedCountdown });
@@ -167,7 +176,7 @@ function ChannelPointsClaimSnackBar({
   channelPointsClaimed: number;
   totalChannelPoints: number;
   channelPointsImageObj?: any;
-  darkChannelPointsImageObj?: any
+  darkChannelPointsImageObj?: any;
 }) {
   // const channelPointsSrc = channelPointsImageObj ? getModel().image.getSrcByImageObj(channelPointsImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/channel-points.svg'
   const darkChannelPointsSrc = channelPointsImageObj
@@ -204,10 +213,10 @@ function XpClaimSnackBar({
   xpImageObj,
   darkXpImageObj,
 }: {
-  xpClaimed: number,
-  totalXp: number,
-  xpImageObj?: any,
-  darkXpImageObj?: any,
+  xpClaimed: number;
+  totalXp: number;
+  xpImageObj?: any;
+  darkXpImageObj?: any;
 }) {
   // const xpSrc = xpImageObj ? getModel().image.getSrcByImageObj(xpImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/xp.svg'
   const darkXpSrc = xpImageObj
