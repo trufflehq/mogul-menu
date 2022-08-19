@@ -2,6 +2,7 @@
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
 export {
   gql,
+  pollingQueryObservable,
   query,
   queryObservable,
   useMutation,
@@ -26,6 +27,7 @@ export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.2/leg
 export {
   abbreviateNumber,
   formatNumber,
+  formatPercentage,
   zeroPrefix,
 } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
 export { default as jumper } from "https://tfl.dev/@truffle/utils@~0.0.2/jumper/jumper.ts";
