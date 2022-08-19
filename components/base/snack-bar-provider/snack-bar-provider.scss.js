@@ -4,10 +4,11 @@ export default scss`
 $container-width: 95vw;
 
 .c-snack-bar-container {
-  position: fixed;
+  width: 90%;
+  position: absolute;
   bottom: 16px;
-  width: $container-width;
-  left: calc((100vw - #{$container-width}) / 2);
+  left: 50%;
+  transform: translate(-50%, 0);
   overflow: visible;
   z-index: 1000;
 }
