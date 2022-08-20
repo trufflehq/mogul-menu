@@ -4,7 +4,7 @@ import stylesheet from './extension-icon.scss.js'
 
 export default function ExtensionIcon({ $$extensionIconRef, onClick }: { $$extensionIconRef: React.MutableRefObject<HTMLDivElement | null>, onClick: () => void}) {
   const menuContext = useMenu()
-  useStyleSheet(stylesheet)
+  // useStyleSheet(stylesheet)
   const iconImageObj = menuContext?.iconImageObj
   return <div
   className="extension-icon"

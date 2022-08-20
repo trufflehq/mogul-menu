@@ -6,7 +6,6 @@ import {
   TabButtonProvider,
   TabStateProvider,
 } from "../../util/mod.ts";
-import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 interface MenuProviderProps {
   children: React.ReactNode;
   iconImageObj?: any
@@ -39,7 +38,6 @@ export default function MenuWrapper({ children }: MenuProviderProps) {
         <TabButtonProvider>
           <TabStateProvider>
             <ActionBannerProvider>
-            <SnackBarProvider />
               {children}
             </ActionBannerProvider>
           </TabStateProvider>

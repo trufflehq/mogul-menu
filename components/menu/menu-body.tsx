@@ -17,6 +17,7 @@ import {
   setMenuStyles,
   useTabStateManager,
 } from "../../util/mod.ts";
+import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import Draggable from '../draggable/draggable.tsx'
 import Tabs from "../tabs/tabs.tsx";
 import TabBar from "../tab-bar/tab-bar.tsx";
@@ -128,6 +129,7 @@ export default function BrowserExtensionMenuBody() {
             <DialogContainer />
             <PageStack />
             <ActionBannerContainer />
+            <SnackBarProvider />
             <Tabs />
           </div>
         </div>

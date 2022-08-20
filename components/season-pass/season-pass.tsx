@@ -25,7 +25,6 @@ import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import ScopedStylesheet from "../base/stylesheet/stylesheet.tsx";
 import { setActiveTab } from "../../util/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
