@@ -1,4 +1,4 @@
-import { _, React, createContext, createSubject, useState, useContext, useMemo } from "../../deps.ts";
+import { React, createContext, useState, useContext, useMemo } from "../../deps.ts";
 
 interface TabButtonContext {
   addButton: (key: string, Component: React.ReactNode) => void
@@ -9,7 +9,7 @@ interface TabButtonContext {
 
 export const TabButtonContext = createContext<TabButtonContext>(undefined!);
 
-export function useTabButtonManager() {
+export function useTabButton() {
   const { addButton, removeButton, clearButtons, buttonMap } = useContext(TabButtonContext);
 
   return {

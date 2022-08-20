@@ -46,3 +46,4 @@ export { default as Spinner } from "https://tfl.dev/@truffle/ui@~0.1.0/component
 export { default as Avatar } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
 export { default as TextField } from "https://tfl.dev/@truffle/ui@~0.1.0/components/text-field/text-field.tag.ts";
 export { default as AuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.0/components/auth-dialog/auth-dialog.tag.ts";
+export { default as AbsoluteAuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.4/components/absolute-auth-dialog/absolute-auth-dialog.tag.ts";

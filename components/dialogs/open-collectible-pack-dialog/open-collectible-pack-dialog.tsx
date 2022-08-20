@@ -7,7 +7,7 @@ import {
   useQuery,
   _,
 } from "../../../deps.ts";
-import { setActiveTab } from "../../../util/mod.ts";
+import { useTabState } from "../../../util/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -150,10 +150,10 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
 // shown after opening a collectible pack
 function OpenedPackCollectibleDialog({ packCollectible }) {
   const { popDialog } = useDialog();
-
+  const { setActiveTab } = useTabState()
   const viewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection");
+    setActiveTab("collection")
   };
 
   if (!packCollectible) {

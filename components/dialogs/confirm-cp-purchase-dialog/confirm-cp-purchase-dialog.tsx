@@ -7,7 +7,7 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useTabButtonManager } from '../../../util/mod.ts'
+import { useTabButton, useTabState } from '../../../util/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -58,6 +58,7 @@ export default function ConfirmPurchaseDialog({
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
   const onPurchaseHandler = async () => {
+    console.log('on purchase handler')
     await executePurchaseMutation(
       { productId: collectibleItem.id },
       { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
@@ -129,13 +130,13 @@ export default function ConfirmPurchaseDialog({
 }
 
 function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
-  const { popDialog } = useDialog();
 
-  const tabButtonManager = useTabButtonManager();
+  const { popDialog } = useDialog();
+  const { setActiveTab } = useTabState()
 
   const onViewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection");
+    setActiveTab("collection")
   };
 
   const file = collectibleItem?.source?.fileRel;

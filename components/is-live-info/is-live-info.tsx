@@ -14,7 +14,7 @@ import styleSheet from "./is-live-info.scss.js";
 
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
-import { useTabButtonManager } from "../../util/mod.ts";
+import { useTabButton } from "../../util/mod.ts";
 import ChannelPoints from "../channel-points/channel-points.tsx";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
@@ -60,7 +60,7 @@ export default function IsLiveInfo(props: IsLiveInfoProps) {
     query: POINTS_QUERY,
   });
 
-  const { addButton, removeButton, buttonMap } = useTabButtonManager();
+  const { addButton, removeButton } = useTabButton();
   const enqueueSnackBar = useSnackBar();
 
   const creatorName = "Ludwig";

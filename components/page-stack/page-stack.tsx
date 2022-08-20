@@ -10,7 +10,7 @@ export default function PageStack({
   const { pageStack, popPage } = usePageStack()
   useStyleSheet(styleSheet);
 
-  const isPageStackEmpty = !pageStack || pageStack?.length === 0;
+  const isPageStackEmpty = !pageStack || pageStack.length === 0;
 
   const handleEscape = (ev: KeyboardEvent) => {
     if(ev.key === 'Escape') {
@@ -32,7 +32,7 @@ export default function PageStack({
       ) : (
         <div className="c-page-stack" style={{ "--background": background }}>
           <div className="container">
-            {pageStack?.map((Component, idx) => (
+            {pageStack.map((Component, idx) => (
               <div key={idx} className="page">
                 {/* {typeof Component === "function" ? <Component /> : Component} */}
                 {

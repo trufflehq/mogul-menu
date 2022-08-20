@@ -1,18 +1,18 @@
 import { _, classKebab, ImageByAspectRatio, Ripple, React } from "../../deps.ts";
 import {
-  setActiveTab,
   TabState,
   usePageStack,
-  useTabButtonManager,
+  useTabButton,
   useTabStateManager,
+  useTabState
 } from "../../util/mod.ts";
 
 export default function TabBar() {
-  const tabButtonManager = useTabButtonManager();
+  const tabButtonManager = useTabButton();
   const additionalTabButtons = tabButtonManager.buttonMap;
-  const tabStateManager = useTabStateManager();
+  const { store } = useTabStateManager();
+  const { setActiveTab } = useTabState()
   const { clearPageStack } = usePageStack();
-  const { store, dispatch } = tabStateManager;
 
   return (
     <div className="tabs">
@@ -27,7 +27,7 @@ export default function TabBar() {
             className={`tab ${classKebab({ isActive, hasBadge })}`}
             onClick={() => {
               clearPageStack();
-              dispatch(setActiveTab(id));
+              setActiveTab(id)
             }}
           >
             <div className="icon">

@@ -15,7 +15,7 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import Page from "../base/page/page.tsx";
-import { useTabButtonManager } from "../../util/mod.ts";
+import { useTabButton } from "../../util/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -92,7 +92,7 @@ export default function HomeTab() {
     );
   };
 
-  const { addButton, removeButton } = useTabButtonManager();
+  const { addButton, removeButton } = useTabButton();
   const removeButtonHandler = () => removeButton(TAB_BAR_BUTTON);
   const addButtonHandler = () => {
     addButton(

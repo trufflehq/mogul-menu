@@ -25,7 +25,8 @@ import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import { setActiveTab } from "../../util/mod.ts";
+// import { setActiveTab, useTabStateManager } from "../../util/mod.ts";
+import { useTabState } from '../../util/mod.ts'
 import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 
@@ -642,6 +643,8 @@ export function $level(props) {
 
   const isCurrentLevel = currentLevelNum === level.levelNum;
   const { pushDialog, popDialog } = useDialog();
+  // const { dispatch } = useTabStateManager()
+  const { setActiveTab } = useTabState()
 
   const onRewardClick = (reward, $$rewardRef, tierNum) => {
     if (reward) {

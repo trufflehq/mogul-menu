@@ -1,5 +1,5 @@
 import React, { useContext } from "https://npm.tfl.dev/react";
-import { setActiveTab } from "../../../util/mod.ts";
+import { useTabState } from "../../../util/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -14,11 +14,11 @@ export default function UnlockedEmoteDialog({
   highlightBg,
 }) {
   const collectible = reward?.source ?? reward;
-
+  const { setActiveTab } = useTabState()
   const { popDialog } = useDialog();
   const viewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection");
+    setActiveTab("collection")
   };
 
   return (

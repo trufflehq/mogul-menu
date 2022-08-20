@@ -12,7 +12,7 @@ export default function DefaultDialogContentFragment({
 }: {
   imageRel?: FileRel;
   imageUrl?: string;
-  primaryText?: string;
+  primaryText?: React.ReactNode | string;
   secondaryText?: string;
 }) {
   useStyleSheet(styleSheet);

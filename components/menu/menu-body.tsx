@@ -1,11 +1,7 @@
 import {
   _,
   classKebab,
-  jumper,
-  Obs,
   React,
-  useEffect,
-  useObservables,
   useRef,
   useState,
   useStyleSheet,
@@ -14,7 +10,6 @@ import styleSheet from "./menu.scss.js";
 import {
   getHasNotification,
   getMenuState,
-  setMenuStyles,
   useTabStateManager,
 } from "../../util/mod.ts";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
@@ -30,11 +25,6 @@ import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 
 export default function BrowserExtensionMenuBody() {
   useStyleSheet(styleSheet);
-
-  const { extensionInfo } = useObservables(() => ({
-    extensionInfo: Obs.from(jumper.call("context.getInfo") || ""),
-  }));
-
   const isClaimable = false;
   const $$extensionIconRef = useRef(null);
 
@@ -50,23 +40,8 @@ export default function BrowserExtensionMenuBody() {
     )
   }`;
 
-  // icon positioning
-  // useEffect(() => {
-  //   const state = getMenuState({
-  //     isOpen,
-  //     isClaimable,
-  //     shouldShowOnboardTooltip: false,
-  //   });
-  //   setMenuStyles({ state, jumper, extensionInfo });
-  // }, [
-  //   isOpen,
-  //   isClaimable,
-  //   extensionInfo,
-  // ]);
-
   const onExtensionIconClick = () => {
     toggleIsOpen()
-    console.log('on icon click')
   }
 
   const base = { x: 640, y: 600 };
@@ -112,30 +87,30 @@ export default function BrowserExtensionMenuBody() {
 
   return (
     <Draggable
-    dimensions={dragProps.dimensions}
-    defaultPosition={dragProps.defaultPosition}
-    requiredClassName="extension-icon"
-    ignoreClassName="z-browser-extension-menu"
-  >
-    <div className={className}>
-      <div className="menu">
-        <div className="inner">
-          <div className="bottom">
-            <TabBar />
-            <div className="extension-icon-placeholder"></div>
-            <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
-          </div>
-          <div className="body">
-            <AuthManager />
-            <DialogContainer />
-            <PageStack />
-            <ActionBannerContainer />
-            <SnackBarProvider />
-            <Tabs />
+      dimensions={dragProps.dimensions}
+      defaultPosition={dragProps.defaultPosition}
+      requiredClassName="extension-icon"
+      ignoreClassName="z-browser-extension-menu"
+    >
+      <div className={className}>
+        <div className="menu">
+          <div className="inner">
+            <div className="bottom">
+              <TabBar />
+              <div className="extension-icon-placeholder"></div>
+              <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
+            </div>
+            <div className="body">
+              <AuthManager />
+              <DialogContainer />
+              <PageStack />
+              <ActionBannerContainer />
+              <SnackBarProvider />
+              <Tabs />
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </Draggable>
   );
 }

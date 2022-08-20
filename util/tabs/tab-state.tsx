@@ -1,5 +1,4 @@
 import { createContext, useContext, useReducer, React } from "../../deps.ts";
-import _ from "https://npm.tfl.dev/lodash?no-check";
 import { TabDefinition, TabState, TabStateActions, TabStore } from "./types.ts";
 import { DEFAULT_TABS } from './default-tabs.tsx'
 import { useTabId } from "./tab-id.tsx";
@@ -72,29 +71,27 @@ export function useTabState() {
 
   const tabStates = store.tabs;
 
-  if (tabStates) {
-    const currentTabState = tabStates[tabId];
-    const hasTabNotification = Object.values(tabStates).reduce(
-      (acc, tabState) => acc || tabState.hasBadge,
-      false,
-    );
+  const currentTabState = tabStates[tabId];
+  const hasTabNotification = Object.values(tabStates).reduce(
+    (acc, tabState) => acc || tabState.hasBadge,
+    false,
+  );
 
-    return {
-      text: currentTabState?.text,
-      icon: currentTabState?.icon,
-      hasBadge: currentTabState?.hasBadge,
-      isActive: currentTabState?.isActive,
-      hasTabNotification,
-      setTabText: (value: string) =>
-        dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "text", value } }),
-      setTabIcon: (value: string) =>
-        dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "icon", value } }),
-      setTabBadge: (value: boolean) =>
-        dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "hasBadge", value } }),
-      setActiveTab: (tabSlug: string) =>
-        dispatch({ type: "@@UPDATE_ACTIVE_TAB", payload: { tabSlug } }),
-    };
-  }
+  return {
+    text: currentTabState?.text,
+    icon: currentTabState?.icon,
+    hasBadge: currentTabState?.hasBadge,
+    isActive: currentTabState?.isActive,
+    hasTabNotification,
+    setTabText: (value: string) =>
+      dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "text", value } }),
+    setTabIcon: (value: string) =>
+      dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "icon", value } }),
+    setTabBadge: (value: boolean) =>
+      dispatch({ type: "@@UPDATE_TAB_STATE", payload: { tabId, key: "hasBadge", value } }),
+    setActiveTab: (tabSlug: string) =>
+      dispatch({ type: "@@UPDATE_ACTIVE_TAB", payload: { tabSlug } }),
+  };
 }
 
 

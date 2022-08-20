@@ -1,5 +1,6 @@
 import {
   AuthDialog,
+  AbsoluteAuthDialog,
   jumper,
   React,
   useEffect,
@@ -98,7 +99,7 @@ export default function AuthManager() {
   return (
     <div className="c-auth-manager">
       {!isAuthDialogHidden && (
-        <AuthDialog
+        <AbsoluteAuthDialog
           hidden={isAuthDialogHidden}
           onclose={onAuthClose}
         />
