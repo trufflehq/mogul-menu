@@ -7,8 +7,7 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-// import { setActiveTab } from "../../../util/mod.ts";
-import { useTabStateManager, useTabButtonManager } from '../../../util/mod.ts'
+import { useTabButtonManager } from '../../../util/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
