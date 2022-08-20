@@ -123,8 +123,8 @@ export default function BrowserExtensionMenuBody() {
           <div className="bottom">
             <TabBar />
             <div className="extension-icon-placeholder"></div>
+            <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
           </div>
-          <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
           <div className="body">
             <AuthManager />
             <DialogContainer />
