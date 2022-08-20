@@ -1,6 +1,4 @@
-import React from "https://npm.tfl.dev/react";
-import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-import { JSX, useEffect, useState } from "https://npm.tfl.dev/react";
+import { useEffect, useState, React, jumper } from "../../deps.ts";
 
 export interface Vector {
   x: number;

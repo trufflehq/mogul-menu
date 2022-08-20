@@ -51,21 +51,22 @@ export default function BrowserExtensionMenuBody() {
   }`;
 
   // icon positioning
-  useEffect(() => {
-    const state = getMenuState({
-      isOpen,
-      isClaimable,
-      shouldShowOnboardTooltip: false,
-    });
-    setMenuStyles({ state, jumper, extensionInfo });
-  }, [
-    isOpen,
-    isClaimable,
-    extensionInfo,
-  ]);
+  // useEffect(() => {
+  //   const state = getMenuState({
+  //     isOpen,
+  //     isClaimable,
+  //     shouldShowOnboardTooltip: false,
+  //   });
+  //   setMenuStyles({ state, jumper, extensionInfo });
+  // }, [
+  //   isOpen,
+  //   isClaimable,
+  //   extensionInfo,
+  // ]);
 
   const onExtensionIconClick = () => {
     toggleIsOpen()
+    console.log('on icon click')
   }
 
   const base = { x: 640, y: 600 };
@@ -117,13 +118,13 @@ export default function BrowserExtensionMenuBody() {
     ignoreClassName="z-browser-extension-menu"
   >
     <div className={className}>
-      <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
       <div className="menu">
         <div className="inner">
           <div className="bottom">
             <TabBar />
             <div className="extension-icon-placeholder"></div>
           </div>
+          <ExtensionIcon $$extensionIconRef={$$extensionIconRef}  onClick={onExtensionIconClick} />
           <div className="body">
             <AuthManager />
             <DialogContainer />
