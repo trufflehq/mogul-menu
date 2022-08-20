@@ -252,6 +252,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 
           > .additional-tab-buttons {
             flex-shrink: 0;
+            display: flex;
           }
         }
 

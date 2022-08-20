@@ -18,6 +18,9 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import Page from "../base/page/page.tsx";
+import { useTabButton } from "../../util/tabs/tab-button.ts";
+
+const TAB_BAR_BUTTON = "tab-bar-button";
 
 export default function HomeTab() {
   const enqueueSnackBar = useSnackBar();
@@ -44,7 +47,9 @@ export default function HomeTab() {
   };
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
-    enqueueSnackBar(() => <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />);
+    enqueueSnackBar(() => (
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
+    ));
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };
@@ -63,10 +68,12 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
+        action={
+          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
+        }
       >
         Finish setting up your account
-      </ActionBanner>,
+      </ActionBanner>
     );
   };
 
@@ -88,7 +95,16 @@ export default function HomeTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>,
+      </Dialog>
+    );
+  };
+
+  const { addButton, removeButton } = useTabButton();
+  const removeButtonHandler = () => removeButton(TAB_BAR_BUTTON);
+  const addButtonHandler = () => {
+    addButton(
+      TAB_BAR_BUTTON,
+      <Button onClick={removeButtonHandler}>Remove button</Button>
     );
   };
 
@@ -105,6 +121,7 @@ export default function HomeTab() {
         <Button onClick={pushPageHandler}>Push page</Button>
         <Button onClick={actionBannerHandler}>Show action banner</Button>
         <Button onClick={toggleDialogHandler}>Show dialog</Button>
+        <Button onClick={addButtonHandler}>Add tab bar button</Button>
       </div>
       <div>
         <Switch value={true} />
