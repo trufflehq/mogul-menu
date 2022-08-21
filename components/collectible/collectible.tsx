@@ -11,7 +11,7 @@ import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import styleSheet from "./collectible.scss.js";
 
-export default function Collctible(props) {
+export default function Collectible(props) {
   useStyleSheet(styleSheet);
   const { collectible, activePowerup, sizePx = 60 } = props;
 

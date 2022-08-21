@@ -12,6 +12,8 @@ import {
   useRef,
   _,
 } from "../../deps.ts";
+import { Product, OrgUserCounter, File } from '../../types/mod.ts'
+import { CHANNEL_POINTS_QUERY, CHANNEL_POINTS_SHOP_QUERY } from '../../gql/mod.ts'
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
@@ -20,66 +22,6 @@ import styleSheet from "./channel-points-shop.scss.js";
 
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
-
-const CHANNEL_POINTS_SHOP_QUERY = gql`
-  query ChannelPointsShopQuery {
-    productConnection(input: { sourceType: "collectible" }) {
-      nodes {
-        id
-        source
-        productVariants {
-          nodes {
-            amountType
-            amountId
-            amountValue
-          }
-        }
-      }
-    }
-  }
-`;
-
-const CHANNEL_POINTS_QUERY = gql`
-  query ChannelPointsQuery {
-    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
-      orgUserCounter {
-        count
-      }
-    }
-  }
-`;
-
-const testImg = {
-  cdn: "cdn.bio",
-  data: {
-    name: "3.0",
-    aspectRatio: 1,
-    width: 112,
-    height: 112,
-    length: 16420,
-  },
-  prefix: "collectible/73035c80-bae5-11ec-bc90-7b62339255c4",
-  contentType: "image/png",
-  type: "image",
-  variations: [
-    {
-      postfix: ".tiny",
-      width: 32,
-      height: 32,
-    },
-    {
-      postfix: ".small",
-      width: 128,
-      height: 128,
-    },
-    {
-      postfix: ".large",
-      width: 256,
-      height: 256,
-    },
-  ],
-  ext: "png",
-};
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -104,9 +46,10 @@ export default function ChannelPointsShop() {
   const [{ data: storeItemsData }] = useQuery({
     query: CHANNEL_POINTS_SHOP_QUERY,
   });
-  const storeCollectibleItems = _.sortBy(
+
+  const storeCollectibleItems: Product[] = _.sortBy(
     storeItemsData?.productConnection?.nodes ?? [],
-    (node) => {
+    (node: Product) => {
       return node?.productVariants?.nodes?.[0]?.amountValue;
     }
   );
@@ -115,7 +58,7 @@ export default function ChannelPointsShop() {
   const [{ data: channelPointsData }] = useQuery({
     query: CHANNEL_POINTS_QUERY,
   });
-  const channelPoints = channelPointsData?.channelPoints?.orgUserCounter;
+  const channelPoints: OrgUserCounter = channelPointsData?.channelPoints?.orgUserCounter;
 
   const onHowToEarnClick = () => {
     pushDialog(
@@ -153,7 +96,7 @@ export default function ChannelPointsShop() {
         <>
           {!_.isEmpty(storeCollectibleItems) && (
             <div className="items">
-              {_.map(storeCollectibleItems, (storeCollectibleItem: any) => {
+              {storeCollectibleItems?.map((storeCollectibleItem) => {
                 return (
                   <CollectibleItem
                     channelPointsImageObj={channelPointsImageObj}
@@ -181,13 +124,20 @@ export default function ChannelPointsShop() {
   );
 }
 
-function CollectibleItem(props) {
+interface CollectibleItemProps {
+  collectibleItem: Product
+  channelPoints: OrgUserCounter
+  channelPointsImageObj?: File
+  buttonBg?: string
+}
+
+function CollectibleItem(props: CollectibleItemProps) {
   const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } =
     props;
 
-  const { pushDialog, popDialog } = useDialog();
+  const { pushDialog } = useDialog();
 
-  const $$itemRef = useRef();
+  const $$itemRef = useRef(null);
 
   const file = collectibleItem?.source?.fileRel;
 
@@ -202,7 +152,6 @@ function CollectibleItem(props) {
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
   const onPurchaseRequestHandler = () => {
-    // open confirmation dialog
     pushDialog(
       <ConfirmPurchaseDialog
         collectibleItem={collectibleItem}

@@ -7,7 +7,7 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useTabButton, useTabState } from '../../../util/mod.ts'
+import { useTabState } from '../../../util/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -147,6 +147,7 @@ function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
   const isEmote = collectibleItem?.source?.type === "emote";
   const isRedeemable = collectibleItem?.source?.type === "redeemable";
 
+  console.log('collectibleItem', collectibleItem)
   return (
     <>
       {isEmote ? (
