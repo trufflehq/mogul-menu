@@ -44,7 +44,7 @@ const KOTH_USER_QUERY = gql`
 export default function KothTile() {
   useStyleSheet(styleSheet);
   const { kingOrgUserObs } = useMemo(() => {
-    const kingOrgUserObs = queryObservable(ORG_QUERY).pipe(
+    const kingOrgUserObs = queryObservable(ORG_QUERY, {}).pipe(
       op.map(({ data }: any) => data?.org?.orgConfig),
       op.switchMap((orgConfig: any) =>
         orgConfig?.data?.kingOfTheHill?.userId
@@ -64,7 +64,7 @@ export default function KothTile() {
     kingOrgUser: kingOrgUserObs,
   }));
 
-  if (!kingOrgUser) return;
+  if (!kingOrgUser) return <></>;
 
   const activePowerups = kingOrgUser.activePowerupConnection?.nodes;
 

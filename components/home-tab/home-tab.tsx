@@ -1,6 +1,5 @@
 import {
   abbreviateNumber,
-  gql,
   Icon,
   ImageByAspectRatio,
   React,
@@ -12,7 +11,7 @@ import {
 import styleSheet from "./home-tab.scss.js";
 
 import { usePageStack } from "../../util/mod.ts";
-
+import { USER_INFO_QUERY } from '../../gql/mod.ts'
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import IsLiveInfo from "../is-live-info/is-live-info.tsx";
@@ -21,45 +20,9 @@ import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
+import { AdvertProps } from '../advert/advert.tsx'
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
-
-const USER_INFO_QUERY = gql`
-  query UserInfoQuery {
-    me {
-      id
-      name
-    }
-
-    org {
-      id
-      slug
-    }
-
-    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
-      orgUserCounter {
-        count
-      }
-    }
-
-    seasonPass {
-      xp: orgUserCounter {
-        count
-      }
-    }
-
-    activePowerupConnection {
-      nodes {
-        id
-        powerup {
-          id
-          name
-          slug
-        }
-      }
-    }
-  }
-`;
 
 export default function HomeTab() {
   useStyleSheet(styleSheet);
@@ -74,19 +37,11 @@ export default function HomeTab() {
   const hasChannelPoints = true;
   const hasBattlePass = true;
 
-  const { pushPage, popPage } = usePageStack();
-  const { pushDialog, popDialog } = useDialog();
+  const { pushPage } = usePageStack();
+  const { pushDialog } = useDialog();
 
-  const channelPointsSrc = false
-    ? // channelPointsImageObj
-      // ? getSrcByImageObj(channelPointsImageObj)
-      ""
-    : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
-  const xpSrc = false
-    ? // xpImageObj
-      // ? getSrcByImageObj(xpImageObj)
-      ""
-    : "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const channelPointsSrc = "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
+  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const handleOpenNotificationDialog = () => {
     pushDialog(<BrowserExtensionNotificationDialog />);
@@ -99,7 +54,7 @@ export default function HomeTab() {
 
   // TODO: home tab should be "components" component that accepts other components
   // so creators would add the advert component and set the props on that
-  const adverts = {
+  const adverts: Record<string, AdvertProps> = {
     ludwig: {
       className: "base-ad-tile",
       imageSrc:
@@ -206,7 +161,7 @@ export default function HomeTab() {
         <LeaderboardTile />
         <PredictionTile />
         <KothTile />
-        {adverts[org?.slug] && <Advert {...adverts[org.slug]} />}
+        {adverts[org?.slug] ? <Advert {...adverts[org.slug]} /> : null}
       </div>
     </div>
   );

@@ -73,7 +73,10 @@ const ORDER_FN = ({ type }) => {
   return order === -1 ? 9999 : order;
 };
 
-export default function Collectibles(props) {
+interface CollectiblesProps {
+  $emptyState: React.ReactNode
+}
+export default function Collectibles(props: CollectiblesProps) {
   useStyleSheet(styleSheet);
   const { $emptyState } = props;
 

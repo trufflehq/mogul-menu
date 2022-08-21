@@ -38,7 +38,7 @@ const POINTS_QUERY = gql`
 const CLAIM_BUTTON = "claim-button";
 
 interface IsLiveInfoProps {
-  highlightButtonBg: string
+  highlightButtonBg?: string
   // creatorName,
   hasChannelPoints: boolean;
   hasBattlePass: boolean;

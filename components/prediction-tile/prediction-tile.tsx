@@ -95,7 +95,7 @@ export default function PredictionTile() {
     );
   }
 
-  if (!activePoll) return;
+  if (!activePoll) return <></>;
 
   return (
     <Tile
