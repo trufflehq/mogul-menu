@@ -1,17 +1,15 @@
-import React, { useContext } from "https://npm.tfl.dev/react";
+import { React } from '../../../deps.ts'
 import { useTabState } from "../../../util/mod.ts";
+import { Product } from '../../../types/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
-import ItemDialog from "../../dialogs/item-dialog/item-dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
 export default function UnlockedEmoteDialog({
   reward,
-  $title,
-  $children,
-  headerText,
-  highlightBg,
+}: {
+  reward: Product,
 }) {
   const collectible = reward?.source ?? reward;
   const { setActiveTab } = useTabState()

@@ -1,4 +1,5 @@
 import { React, useStyleSheet, _ } from "../../../deps.ts";
+import { EconomyAction } from '../../../types/mod.ts'
 import Dialog from "../../base/dialog/dialog.tsx";
 import styleSheet from "./economy-action-dialog.scss.js";
 
@@ -7,26 +8,31 @@ export default function EconomyActionDialog({
   economyActions,
   orgUserCounterTypeSrc,
   $bottom,
+}: {
+  title: string
+  economyActions: EconomyAction[]
+  orgUserCounterTypeSrc: string
+  $bottom?: React.ReactNode
 }) {
   useStyleSheet(styleSheet);
   return (
     <Dialog headerStyle="primary" headerText={title}>
       <div className="c-economy-action-dialog">
-        {_.map(economyActions, (action) => {
+        {(economyActions?.map((action) => {
           return (
             <EconomyAction
               economyAction={action}
               orgUserCounterTypeSrc={orgUserCounterTypeSrc}
             />
           );
-        })}
+        }))}
         {$bottom}
       </div>
     </Dialog>
   );
 }
 
-function EconomyAction({ economyAction, orgUserCounterTypeSrc }) {
+function EconomyAction({ economyAction, orgUserCounterTypeSrc }: { economyAction: EconomyAction, orgUserCounterTypeSrc: string }) {
   return (
     <div className="economy-action">
       <div className="name">{economyAction?.name}</div>

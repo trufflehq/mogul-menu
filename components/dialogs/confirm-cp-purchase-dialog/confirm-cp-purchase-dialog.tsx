@@ -8,6 +8,7 @@ import {
   useStyleSheet,
 } from "../../../deps.ts";
 import { useTabState } from '../../../util/mod.ts'
+import { Product, File } from '../../../types/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -36,6 +37,10 @@ export default function ConfirmPurchaseDialog({
   collectibleItem,
   channelPointsImageObj,
   buttonBg,
+}: {
+  collectibleItem: Product,
+  channelPointsImageObj: File
+  buttonBg?: string
 }) {
   useStyleSheet(styleSheet);
   // const { org } = useStream(() => ({
@@ -129,7 +134,7 @@ export default function ConfirmPurchaseDialog({
   );
 }
 
-function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
+function NotifyPurchaseDialog({ collectibleItem, buttonBg }: { collectibleItem: Product, buttonBg?: string }) {
 
   const { popDialog } = useDialog();
   const { setActiveTab } = useTabState()

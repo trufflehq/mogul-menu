@@ -1,6 +1,8 @@
 export interface EconomyActionData {
   redeemData: Record<string, unknown>;
   cooldownSeconds: number;
+  amountDescription: string;
+  description: string;
 }
 
 export interface EconomyAction {

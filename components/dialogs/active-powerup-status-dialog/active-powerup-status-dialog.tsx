@@ -1,5 +1,6 @@
 import { React, gql, useMutation } from "../../../deps.ts";
 import { fromNow } from "../../../util/general.ts";
+import { ActivePowerup, Collectible, ActivePowerupRedeemData } from '../../../types/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -18,6 +19,9 @@ const DELETE_ACTIVE_POWERUP_MUTATION = gql`
 export function ActiveRedeemableDialog({
   redeemableCollectible,
   activePowerup,
+}: {
+  redeemableCollectible: { source: Collectible<ActivePowerupRedeemData> },
+  activePowerup: ActivePowerup
 }) {
   const [_deleteResult, executeDeleteActivePowerupMutation] = useMutation(
     DELETE_ACTIVE_POWERUP_MUTATION
