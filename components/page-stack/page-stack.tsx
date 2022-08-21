@@ -1,17 +1,30 @@
-import { React, useObservables, useStyleSheet } from "../../deps.ts";
+import { React, useEffect, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./page-stack.scss.js";
+import { usePageStack } from '../../util/page-stack/mod.ts'
 
 export default function PageStack({
-  pageStackSubject,
   background = "var(--mm-color-bg-primary)",
+}: {
+  background?: string
 }) {
+  const { pageStack, popPage } = usePageStack()
   useStyleSheet(styleSheet);
-  const { pageStack } = useObservables(() => ({
-    pageStack: pageStackSubject.obs,
-  }));
 
-  const isPageStackEmpty = pageStack.length === 0;
+  const isPageStackEmpty = !pageStack || pageStack.length === 0;
 
+  const handleEscape = (ev: KeyboardEvent) => {
+    if(ev.key === 'Escape') {
+      popPage()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscape, false)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape, false)
+    }
+  }, [])
   return (
     <>
       {isPageStackEmpty ? (
@@ -21,7 +34,10 @@ export default function PageStack({
           <div className="container">
             {pageStack.map((Component, idx) => (
               <div key={idx} className="page">
-                {typeof Component === "function" ? <Component /> : Component}
+                {/* {typeof Component === "function" ? <Component /> : Component} */}
+                {
+                  Component
+                }
               </div>
             ))}
           </div>

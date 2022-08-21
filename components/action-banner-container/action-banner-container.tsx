@@ -1,12 +1,13 @@
-import React from "https://npm.tfl.dev/react";
-import { ActionBannerObj } from '../../util/action-banner/manager.ts'
+import { React } from "../../deps.ts";
+import { useActionBanner } from '../../util/mod.ts'
 
-export default function ActionBannerContainer({ actionBannerObj }: { actionBannerObj: ActionBannerObj }) {
+export default function ActionBannerContainer() {
+  const { actionBannerObj } = useActionBanner();
+
   return (
     <div className="c-action-banner-container">
       {Object.entries(actionBannerObj).map(([id, { Component }]) => (
         <div key={id} className="action-banner-container">
-          {/* {typeof Component === "function" ? <Component /> : Component} */}
           {Component}
         </div>
       ))}

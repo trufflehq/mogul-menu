@@ -1,6 +1,4 @@
-import React from "https://npm.tfl.dev/react";
-import jumper from "https://tfl.dev/@truffle/utils@0.0.1/jumper/jumper.js";
-import { JSX, useEffect, useState } from "https://npm.tfl.dev/react";
+import { useEffect, useState, React, jumper } from "../../deps.ts";
 
 export interface Vector {
   x: number;
@@ -11,7 +9,7 @@ export interface DragInfo {
   current: Vector;
   start: Vector;
   pressed: boolean;
-  dragabble: boolean;
+  draggable: boolean;
 }
 
 export interface Modifiers {
@@ -29,7 +27,7 @@ export interface Dimensions {
 function createClipPath(
   position: Vector,
   base: Vector,
-  { top, right, bottom, left },
+  { top, right, bottom, left }: Pick<Modifiers, 'top' | 'right' | 'bottom' | 'left' >
 ) {
   return `inset(
 				${position.y - top}px
@@ -62,7 +60,7 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
 
 export default function Draggable(
   { children, dimensions, defaultPosition, requiredClassName, ignoreClassName }: {
-    children: JSX.ReactNode;
+    children: React.ReactNode;
     dimensions: Dimensions;
     defaultPosition: Vector;
     requiredClassName?: string;
@@ -79,7 +77,7 @@ export default function Draggable(
   );
 
   useEffect(() => {
-    const handleWindowMouseMove = (event) => {
+    const handleWindowMouseMove = (event: MouseEvent) => {
       setDragInfo((old: DragInfo) => (
         {
           ...old,
@@ -132,20 +130,20 @@ export default function Draggable(
         // ),
         // transition: dimensions.modifiers.transition,
       }}
-      onMouseDown={(e: { target: Element }) => {
-        const target = e.target as Element;
-        const classes: string = target.className;
+      onMouseDown={(e) => {
+        const target = e.target as HTMLDivElement;
+        const classes = target.className;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
-        if (classes.includes(ignoreClassName)) return;
+        if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
         // check if requireClassName is set and if it is, only drag if the event target has that name
         if (
-          requiredClassName && !classes.includes(requiredClassName)
+          requiredClassName && !classes?.includes(requiredClassName)
         ) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
         //prevent dragging by links and prevent-drag tag
         if (
-          target.tagName === "A" || classes.includes("prevent-drag")
+          target.tagName === "A" || classes?.includes("prevent-drag")
         ) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }

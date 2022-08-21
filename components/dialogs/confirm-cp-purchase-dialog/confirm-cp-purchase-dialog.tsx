@@ -7,7 +7,8 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-import { setActiveTab } from "../../../util/tabs/active-tab.ts";
+import { useTabState } from '../../../util/mod.ts'
+import { Product, File } from '../../../types/mod.ts'
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -36,6 +37,10 @@ export default function ConfirmPurchaseDialog({
   collectibleItem,
   channelPointsImageObj,
   buttonBg,
+}: {
+  collectibleItem: Product,
+  channelPointsImageObj: File
+  buttonBg?: string
 }) {
   useStyleSheet(styleSheet);
   // const { org } = useStream(() => ({
@@ -58,6 +63,7 @@ export default function ConfirmPurchaseDialog({
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
   const onPurchaseHandler = async () => {
+    console.log('on purchase handler')
     await executePurchaseMutation(
       { productId: collectibleItem.id },
       { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
@@ -128,12 +134,14 @@ export default function ConfirmPurchaseDialog({
   );
 }
 
-function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
+function NotifyPurchaseDialog({ collectibleItem, buttonBg }: { collectibleItem: Product, buttonBg?: string }) {
+
   const { popDialog } = useDialog();
+  const { setActiveTab } = useTabState()
 
   const onViewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection");
+    setActiveTab("collection")
   };
 
   const file = collectibleItem?.source?.fileRel;
@@ -144,6 +152,7 @@ function NotifyPurchaseDialog({ collectibleItem, buttonBg }) {
   const isEmote = collectibleItem?.source?.type === "emote";
   const isRedeemable = collectibleItem?.source?.type === "redeemable";
 
+  console.log('collectibleItem', collectibleItem)
   return (
     <>
       {isEmote ? (

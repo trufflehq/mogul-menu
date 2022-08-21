@@ -8,7 +8,7 @@ import {
 } from "../../deps.ts";
 
 import Collectible from "../collectible/collectible.tsx";
-import { usePageStack } from "../../util/page-stack/page-stack.ts";
+import { usePageStack } from "../../util/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
@@ -73,7 +73,10 @@ const ORDER_FN = ({ type }) => {
   return order === -1 ? 9999 : order;
 };
 
-export default function Collectibles(props) {
+interface CollectiblesProps {
+  $emptyState: React.ReactNode
+}
+export default function Collectibles(props: CollectiblesProps) {
   useStyleSheet(styleSheet);
   const { $emptyState } = props;
 
@@ -115,7 +118,9 @@ export default function Collectibles(props) {
   const activePowerups =
     activePowerupData?.activePowerupConnection?.nodes ?? [];
 
-  if (isEmpty) return "Looks like you don't have any collectibles!";
+  if (isEmpty) return <>
+    Looks like you don't have any collectibles!
+  </>
 
   return (
     <div className="c-collectibles">

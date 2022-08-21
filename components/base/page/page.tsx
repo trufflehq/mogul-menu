@@ -1,5 +1,5 @@
 import { Icon, React, useStyleSheet } from "../../../deps.ts";
-import { usePageStack } from "../../../util/page-stack/page-stack.ts";
+import { usePageStack } from "../../../util/mod.ts";
 import styleSheet from "./page.scss.js";
 
 export default function Page({

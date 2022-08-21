@@ -47,13 +47,13 @@ const ECONOMY_ACTIONS_QUERY = gql`
   }
 `;
 
-export default function ChannelPointsActionsDialog({ channelPointsSrc }) {
+export default function ChannelPointsActionsDialog({ channelPointsSrc }: { channelPointsSrc: string }) {
   const { channelPointsEarnActionsObs } = useMemo(() => {
     const channelPointsOrgUserCounterTypeObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY
+      ORG_USER_COUNTER_TYPE_QUERY, {}
     ).pipe(op.map((result) => result?.data?.orgUserCounterType));
 
-    const economyActionsObs = queryObservable(ECONOMY_ACTIONS_QUERY).pipe(
+    const economyActionsObs = queryObservable(ECONOMY_ACTIONS_QUERY, {}).pipe(
       op.map((result) => result?.data?.economyActionConnection)
     );
 

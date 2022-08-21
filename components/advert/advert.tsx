@@ -3,7 +3,20 @@ import Button from "../base/button/button.tsx";
 
 import styleSheet from "./advert.scss.js";
 
-export default function Advert(props) {
+export interface AdvertProps {
+  className: string
+  imageSrc: string
+  hashtag: string
+  tagline: string
+  buttonHref: string
+  buttonOnClick?: () => void
+  buttonText: string
+  buttonBgColor: string
+  buttonTextColor: string
+  buttonBgColorHover: string
+}
+
+export default function Advert(props: AdvertProps) {
   useStyleSheet(styleSheet);
   const {
     className,

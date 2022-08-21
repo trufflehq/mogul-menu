@@ -1,11 +1,5 @@
-import {
-  React,
-  useMutation,
-  useObservables,
-  gql,
-  Obs,
-  _,
-} from "../../../deps.ts";
+import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
+import { Collectible, ActivePowerupRedeemData } from "../../../types/mod.ts";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { useSnackBar } from "../../../util/snack-bar/snack-bar.ts";
 import { PowerupActivatedSnackBar } from "../../snack-bars/powerup-activated-snack-bar/powerup-activated-snack-bar.tsx";
@@ -30,10 +24,10 @@ export function ActivatePowerupDialog({
   isActivateButtonDisabled = false,
   additionalData = {},
 }: {
-  redeemableCollectible: any;
-  children?: any;
+  redeemableCollectible: { description?: string, source: Collectible<ActivePowerupRedeemData> };
+  children?: React.ReactNode;
   isActivateButtonDisabled?: boolean;
-  additionalData?: any;
+  additionalData?: Record<string, unknown>;
 }) {
   const { popDialog } = useDialog();
 
@@ -46,7 +40,7 @@ export function ActivatePowerupDialog({
   const collectible = redeemableCollectible?.source;
   const enqueueSnackBar = useSnackBar();
   const [_redeemResult, executeRedeemMutation] = useMutation(
-    REDEEM_COLLECTIBLE_MUTATION
+    REDEEM_COLLECTIBLE_MUTATION,
   );
 
   const redeemHandler = async () => {
@@ -58,7 +52,7 @@ export function ActivatePowerupDialog({
         },
         {
           additionalTypenames: ["OwnedCollectible", "ActivePowerup"],
-        }
+        },
       );
 
       popDialog();
@@ -72,9 +66,7 @@ export function ActivatePowerupDialog({
       } else if (redeemError) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else {
-        enqueueSnackBar(() => (
-          <PowerupActivatedSnackBar collectible={collectible} />
-        ));
+        enqueueSnackBar(() => <PowerupActivatedSnackBar collectible={collectible} />);
       }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
@@ -103,10 +95,8 @@ export function ActivatePowerupDialog({
       <DefaultDialogContentFragment
         imageRel={redeemableCollectible?.source?.fileRel?.fileObj}
         primaryText={`${redeemableCollectible?.source?.name} unlocked`}
-        secondaryText={
-          redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+        secondaryText={redeemableCollectible?.description ??
+          redeemableCollectible?.source?.data?.description}
       />
       {children}
     </Dialog>

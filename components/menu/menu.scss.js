@@ -103,7 +103,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
-
   >.menu {
     width: 640px;
     height: 600px;

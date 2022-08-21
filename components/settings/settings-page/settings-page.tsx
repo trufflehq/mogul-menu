@@ -1,5 +1,5 @@
 import { React } from "../../../deps.ts";
-import { usePageStack } from "../../../util/page-stack/page-stack.ts";
+import { usePageStack } from "../../../util/mod.ts";
 import MenuItem from "../../base/menu-item/menu-item.tsx";
 import Page from "../../base/page/page.tsx";
 import AccountDetailsPage from "../account-details-page/account-details-page.tsx";
