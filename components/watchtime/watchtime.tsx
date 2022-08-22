@@ -3,14 +3,13 @@ import {
   getSrcByImageObj,
   gql,
   ImageByAspectRatio,
-  query,
   useQuery,
   React,
   useObservables,
   useStyleSheet,
   useCallback,
 } from "../../deps.ts";
-import styleSheet from "./is-live-info.scss.js";
+import styleSheet from "./watchtime.scss.js";
 
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
@@ -37,14 +36,14 @@ const POINTS_QUERY = gql`
 
 const CLAIM_BUTTON = "claim-button";
 
-interface IsLiveInfoProps {
-  highlightButtonBg?: string
+interface WatchtimeProps {
+  highlightButtonBg?: string;
   // creatorName,
   hasChannelPoints: boolean;
   hasBattlePass: boolean;
 }
 
-export default function IsLiveInfo(props: IsLiveInfoProps) {
+export default function Watchtime(props: WatchtimeProps) {
   useStyleSheet(styleSheet);
   const {
     highlightButtonBg,
