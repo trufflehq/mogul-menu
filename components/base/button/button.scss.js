@@ -3,6 +3,7 @@ import { scss } from "../../../deps.ts";
 export default scss`
 .c-button {
   background: var(--background);
+  box-sizing: border-box;
   color: var(--text-color);
   outline: 1px solid var(--border-color);
   border: none;
@@ -13,9 +14,17 @@ export default scss`
   font-family: var(--mm-font-family);
   font-weight: var(--font-weight);
   font-size: var(--font-size);
+  outline: 2px solid transparent;
 
   &:hover {
     filter: brightness(80%);
+  }
+
+  &:focus {
+    outline: 3px solid var(--border-color);
+  }
+  &:active {
+    outline: 3px solid var(--border-color);
   }
 
   &:disabled {

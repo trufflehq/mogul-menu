@@ -1,5 +1,6 @@
-import { Icon, React, useStyleSheet } from "../../../deps.ts";
+import { Icon, React, useEffect, useRef, useStyleSheet } from "../../../deps.ts";
 import { usePageStack } from "../../../util/mod.ts";
+import FocusTrap from '../../focus-trap/focus-trap.tsx'
 import styleSheet from "./page.scss.js";
 
 export default function Page({
@@ -8,24 +9,40 @@ export default function Page({
   onBack,
   children,
 }: {
-  title?: any;
-  headerTopRight?: any;
+  title?: React.ReactNode;
+  headerTopRight?: React.ReactNode;
   onBack?: () => void;
-  children?: any;
+  children?: React.ReactNode;
 }) {
+  const $$backIconRef = useRef<HTMLDivElement>(null)
   useStyleSheet(styleSheet);
 
   const { popPage } = usePageStack();
+  const handleKeyPress = (ev: React.KeyboardEvent<HTMLDivElement>) => {
+    if((ev.key === 'Escape' || ev.key === 'Enter' || ev.key === 'ArrowLeft')) {
+      onBack?.() ?? popPage();
+    }
+  }
+  useEffect(() => {
+    if($$backIconRef?.current) {
+      $$backIconRef?.current.focus()
+    }
+  }, [])
+
+  const handleOnClick = () => {
+    onBack?.() ?? popPage()
+  }
 
   return (
+  <FocusTrap>
     <div className="c-page">
       <div className="header">
         <div className="left">
-          <div className="back-icon">
+          <div className="back-icon" onClick={handleOnClick} onKeyDown={handleKeyPress} tabIndex={0} ref={$$backIconRef}>
             <Icon
               icon="back"
               color="var(--mm-color-text-bg-primary)"
-              onclick={onBack ?? popPage}
+              onclick={handleOnClick}
             />
           </div>
           <div className="text">{title}</div>
@@ -34,5 +51,6 @@ export default function Page({
       </div>
       <div className="content">{children}</div>
     </div>
+  </FocusTrap>
   );
 }

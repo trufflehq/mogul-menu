@@ -1,5 +1,6 @@
-import { Icon, React, useStyleSheet } from "../../../deps.ts";
+import { Icon, React, useRef, useEffect, useStyleSheet } from "../../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
+import FocusTrap from '../../focus-trap/focus-trap.tsx'
 import styleSheet from "./dialog.scss.js";
 
 const HEADER_STYLES = {
@@ -38,6 +39,7 @@ export default function Dialog({
   headerStyle?: "default" | "primary" | "secondary";
   headerText?: any;
 }) {
+  const $$closeIconRef = useRef<HTMLDivElement>(null)
   useStyleSheet(styleSheet);
   const { popDialog } = useDialog();
 
@@ -48,35 +50,58 @@ export default function Dialog({
 
   const selectedStyles = HEADER_STYLES[headerStyle];
 
+  const handleKeyPress = (ev: KeyboardEvent) => {
+    if(ev.key === 'Escape') {
+      popDialog();
+    } else if(ev.key === 'Enter') {
+      popDialog();
+    }
+  }
+  useEffect(() => {
+    if($$closeIconRef?.current) {
+      $$closeIconRef?.current.focus()
+    }
+
+    document.addEventListener('keydown', handleKeyPress, false)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress, false)
+    }
+  }, [])
+
   return (
-    <div className="c-dialog">
-      <div className="flex">
-        {hasTopActions && (
-          <div className="top-actions" style={selectedStyles}>
-            <div className="left">
-              {showBack && (
-                <Icon
-                  icon="back"
-                  color={selectedStyles["--text-color"]}
-                  onclick={onBack ?? defaultBackHandler}
-                />
-              )}
-              <div className="mm-text-subtitle-1">{headerText}</div>
+    <FocusTrap>
+      <div className="c-dialog">
+        <div className="flex">
+          {hasTopActions && (
+            <div className="top-actions" style={selectedStyles}>
+              <div className="left">
+                {showBack && (
+                  <Icon
+                    icon="back"
+                    color={selectedStyles["--text-color"]}
+                    onclick={onBack ?? defaultBackHandler}
+                  />
+                )}
+                <div className="mm-text-subtitle-1">{headerText}</div>
+              </div>
+              <div className="right">
+                {showClose && (
+                  <div className="close" tabIndex={0} ref={$$closeIconRef}>
+                    <Icon
+                      icon="close"
+                      color={selectedStyles["--text-color"]}
+                      onclick={onClose ?? defaultCloseHandler}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="right">
-              {showClose && (
-                <Icon
-                  icon="close"
-                  color={selectedStyles["--text-color"]}
-                  onclick={onClose ?? defaultCloseHandler}
-                />
-              )}
-            </div>
-          </div>
-        )}
-        <div className="content">{children}</div>
-        {actions && <div className={`bottom-actions ${alignActions}`}>{actions}</div>}
+          )}
+          <div className="content">{children}</div>
+          {actions && <div className={`bottom-actions ${alignActions}`}>{actions}</div>}
+        </div>
       </div>
-    </div>
+    </FocusTrap>
   );
 }

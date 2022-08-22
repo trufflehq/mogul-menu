@@ -32,6 +32,25 @@ export default scss`
       >div {
         padding: 20px;
       }
+
+      .close {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        outline: none;
+
+        &:focus {
+          border: 2px solid var(--mm-color-primary);
+        }
+
+        &:active {
+          border: 2px solid var(--mm-color-primary);
+        }
+      }
     }
 
     >.bottom-actions {

@@ -7,6 +7,14 @@ export default scss`
   padding: 20px 26px;
   cursor: pointer;
   transition: all linear 50ms;
+  box-sizing: border-box;
+  border: 2px solid transparent;  
+  outline: none; 
+
+  &:focus, 
+  &:active {
+    border: 2px solid var(--mm-color-primary);
+  }
 
   >.left {
     display: flex;

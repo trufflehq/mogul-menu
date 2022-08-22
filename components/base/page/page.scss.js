@@ -20,6 +20,21 @@ export default scss`
         font-size: 18px;
         letter-spacing: 0.04em;
       }
+
+      > .back-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        outline: none;
+
+        &:focus, &:active {
+          border: 2px solid var(--mm-color-primary);
+        }
+      }
     }
   } 
 
