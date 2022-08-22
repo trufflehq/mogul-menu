@@ -133,6 +133,7 @@ export default function Draggable(
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
+        if(!classes || !classes?.includes) return
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
         if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
         // check if requireClassName is set and if it is, only drag if the event target has that name
