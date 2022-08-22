@@ -11,18 +11,19 @@ import {
 import styleSheet from "./home-tab.scss.js";
 
 import { usePageStack } from "../../util/mod.ts";
-import { USER_INFO_QUERY } from '../../gql/mod.ts'
+import { USER_INFO_QUERY } from "../../gql/mod.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import IsLiveInfo from "../is-live-info/is-live-info.tsx";
+import Watchtime from "../watchtime/watchtime.tsx";
 import Advert from "../advert/advert.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
-import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
-import { AdvertProps } from '../advert/advert.tsx'
+import { AdvertProps } from "../advert/advert.tsx";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
+import BattlepassLeaderboardTile from "../battlepass-leaderboard-tile/battlepass-leaderboard-tile.tsx";
+import IsLive from "../is-live/is-live.tsx";
 
 export default function HomeTab() {
   useStyleSheet(styleSheet);
@@ -33,15 +34,16 @@ export default function HomeTab() {
   const activePowerups = userInfoData?.activePowerups?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
   const xp = userInfoData?.seasonPass?.xp?.count;
-  const canClaim = true;
   const hasChannelPoints = true;
   const hasBattlePass = true;
 
   const { pushPage } = usePageStack();
   const { pushDialog } = useDialog();
 
-  const channelPointsSrc = "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
-  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const channelPointsSrc =
+    "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
+  const xpSrc =
+    "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const handleOpenNotificationDialog = () => {
     pushDialog(<BrowserExtensionNotificationDialog />);
@@ -128,8 +130,7 @@ export default function HomeTab() {
           <div className="icon">
             <Icon
               icon="settings"
-              onclick={() =>
-                pushPage(<SettingsPage />)}
+              onclick={() => pushPage(<SettingsPage />)}
               hasRipple={true}
               size="24px"
               iconViewBox="24px"
@@ -150,15 +151,15 @@ export default function HomeTab() {
         {isLoading && <Spinner />}
         {!isLoading && (
           <>
-            {canClaim && (
-              <IsLiveInfo
+            <IsLive sourceType="youtube">
+              <Watchtime
                 hasChannelPoints={hasChannelPoints}
                 hasBattlePass={hasBattlePass}
               />
-            )}
+            </IsLive>
           </>
         )}
-        <LeaderboardTile />
+        <BattlepassLeaderboardTile />
         <PredictionTile />
         <KothTile />
         {adverts[org?.slug] ? <Advert {...adverts[org.slug]} /> : null}
