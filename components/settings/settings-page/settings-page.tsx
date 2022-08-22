@@ -8,7 +8,7 @@ export default function SettingsPage() {
   const { pushPage } = usePageStack();
 
   return (
-    <Page title="Settings">
+    <Page title="Settings" >
       <MenuItem
         icon="accountCircle"
         onClick={() => pushPage(<AccountDetailsPage />)}

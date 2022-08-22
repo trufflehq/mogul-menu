@@ -122,6 +122,7 @@ export default function AccountDetailsPage() {
               setHasChanged(true);
               setNameColorState(e?.target?.value);
             }}
+            tabIndex={0}
             value={nameColorState}
           />
         </div>

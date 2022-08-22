@@ -7,12 +7,12 @@ const buttonStyles: Record<string, Styles> = {
   primary: {
     "--background": "var(--mm-color-primary)",
     "--text-color": "var(--mm-color-text-primary)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-secondary)",
   },
   secondary: {
     "--background": "var(--mm-color-secondary)",
     "--text-color": "var(--mm-color-text-secondary)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   gradient: {
     "--background": "var(--mm-gradient)",
@@ -22,27 +22,27 @@ const buttonStyles: Record<string, Styles> = {
   error: {
     "--background": "var(--mm-color-error)",
     "--text-color": "var(--mm-color-text-error)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   positive: {
     "--background": "var(--mm-color-positive)",
     "--text-color": "var(--mm-color-text-positive)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   "bg-primary": {
     "--background": "var(--mm-color-bg-primary)",
     "--text-color": "var(--mm-color-text-bg-primary)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   "bg-secondary": {
     "--background": "var(--mm-color-bg-secondary)",
     "--text-color": "var(--mm-color-text-bg-secondary)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   "bg-tertiary": {
     "--background": "var(--mm-color-bg-tertiary)",
     "--text-color": "var(--mm-color-text-bg-tertiary)",
-    "--border-color": "transparent",
+    "--border-color": "var(--mm-color-primary)",
   },
   undefined: {},
 };
@@ -69,12 +69,12 @@ export default function Button({
   onClick = () => null,
   size = "normal",
 }: {
-  children?: any;
+  children?: React.ReactNode;
   shouldHandleLoading?: boolean;
   style?: keyof typeof buttonStyles | Styles;
   border?: boolean;
   isDisabled?: boolean;
-  onClick?: () => any;
+  onClick?: () => void;
   size?: keyof typeof sizeStyles;
 }) {
   useStyleSheet(styleSheet);
@@ -105,7 +105,9 @@ export default function Button({
   return (
     <button
       disabled={_isDisabled}
+      tabIndex={_isDisabled ? -1 : 0}
       className="c-button"
+      onChange={clickHandler}
       onClick={clickHandler}
       style={styles}
     >
