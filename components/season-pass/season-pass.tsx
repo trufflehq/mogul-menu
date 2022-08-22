@@ -1,18 +1,20 @@
 import {
+  React,
   getSrcByImageObj,
   gql,
-  React,
   useQuery,
   useStyleSheet,
+  classKebab,
+  createSubject,
+  cssVars,
+  ImageByAspectRatio,
+  useEffect,
+  useMemo,
+  useObservables,
+  useRef,
+  zeroPrefix,
+  _,
 } from "../../deps.ts";
-
-import _ from "https://npm.tfl.dev/lodash?no-check";
-import { useEffect, useMemo, useRef } from "https://npm.tfl.dev/react";
-
-import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
-import { zeroPrefix } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
-import classKebab from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 
 import {
   getLevelBySeasonPassAndXp,
@@ -24,23 +26,17 @@ import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote
 import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
-import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-// import { setActiveTab, useTabStateManager } from "../../util/mod.ts";
 import { useTabState } from "../../util/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 
 import styleSheet from "./season-pass.scss.js";
-import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
-import { useSeasonPassData } from "./season-pass-data.ts";
 import { useTestSeasonPassData } from "./season-pass-data-test.ts";
 import Reward from "../season-pass-reward/season-pass-reward.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
-
-const GREEN = "#75DB9E";
-const YELLOW = "#EBC564";
+import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
+import SingleRewardLevelUpDialog from "../dialogs/single-reward-level-up-dialog/single-reward-level-up-dialog.tsx";
 
 const ME_QUERY = gql`
   query MeQuery {
@@ -60,14 +56,12 @@ export default function SeasonPass(props) {
     shouldUseLevelsZeroPrefix,
     premiumAccentColor,
     premiumBgColor = "",
-    freeTierText,
-    premiumTierText,
     numTiles = 4,
     xpImageObj,
-    highlightButtonBg,
-    // onViewCollection,
-    enqueueSnackBar,
   } = props;
+
+  const { pushDialog, popDialog } = useDialog();
+  const { setTabBadge } = useTabState();
 
   const [{ data: meData }] = useQuery({ query: ME_QUERY });
   const me = meData?.me;
@@ -81,17 +75,9 @@ export default function SeasonPass(props) {
     };
   }, []);
 
-  const { meOrgUserWithKv, focalIndex } = useObservables(() => ({
-    // org: getModel().org.getMe(),
+  const { focalIndex } = useObservables(() => ({
     focalIndex: focalIndexStream.obs,
-    // meOrgUserWithKv: getModel().orgUser.getMeWithKV(),
   }));
-
-  // const seasonPass = {
-  //   daysRemaining: 30,
-  //   levels: [{ minXp: 5 }, { minXp: 15 }],
-  //   xp: 10,
-  // };
 
   const {
     data: seasonPassData,
@@ -171,11 +157,26 @@ export default function SeasonPass(props) {
       _.map(
         seasonPass?.seasonPassProgression?.changesSinceLastViewed,
         (change) => {
-          console.log({ change });
-          const Component =
-            change?.rewards?.length > 1
-              ? MultipleRewardLevelUpDialog
-              : LevelUpDialog;
+          setTabBadge(true);
+
+          const hasMultipleRewards = change?.rewards?.length > 1;
+          if (hasMultipleRewards) {
+            pushDialog(<MultiRewardLevelUpDialog />);
+          } else {
+            pushDialog({
+              isModal: true,
+              element: (
+                <SingleRewardLevelUpDialog
+                  reward={change?.rewards?.[0]}
+                  levelNum={change?.levelNum}
+                  onClose={() => {
+                    popDialog();
+                    setTabBadge(false);
+                  }}
+                />
+              ),
+            });
+          }
         }
       );
     }
@@ -331,22 +332,6 @@ export default function SeasonPass(props) {
   );
 }
 
-function LevelUpDialog({}) {
-  return (
-    <Dialog>
-      <DefaultDialogContentFragment primaryText="Level up!" />
-    </Dialog>
-  );
-}
-
-function MultipleRewardLevelUpDialog({}) {
-  return (
-    <Dialog>
-      <DefaultDialogContentFragment primaryText="Multiple levels up!" />
-    </Dialog>
-  );
-}
-
 export function $level(props) {
   const {
     level,
@@ -367,6 +352,10 @@ export function $level(props) {
   const { pushDialog, popDialog } = useDialog();
   // const { dispatch } = useTabStateManager()
   const { setActiveTab } = useTabState();
+
+  const { selectedReward } = useObservables(() => ({
+    selectedReward: selectedRewardStream.obs,
+  }));
 
   const onRewardClick = (reward, $$rewardRef, tierNum) => {
     if (reward) {
@@ -441,6 +430,18 @@ export function $level(props) {
         const isUnlockedLevel = currentLevelNum >= level.levelNum;
         const isUnlocked = reward && isValidTierNum && isUnlockedLevel;
 
+        let isRewardSelected;
+
+        if (selectedReward?.level) {
+          isRewardSelected =
+            reward &&
+            selectedReward?.sourceId === reward.sourceId &&
+            selectedReward?.level === level;
+        } else {
+          isRewardSelected =
+            reward && selectedReward?.sourceId === reward.sourceId;
+        }
+
         return (
           <div
             key={tierNum}
@@ -451,14 +452,13 @@ export function $level(props) {
             })}`}
           >
             <Reward
-              selectedRewardStream={selectedRewardStream}
+              isSelected={isRewardSelected}
               premiumAccentColor={premiumAccentColor}
               premiumBgColor={premiumBgColor}
               onClick={onRewardClick}
               isUnlocked={isUnlocked}
               reward={reward}
               tierNum={tierNum}
-              level={level}
             />
           </div>
         );
