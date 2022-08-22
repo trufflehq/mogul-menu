@@ -24,6 +24,7 @@ import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/n
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import BattlepassLeaderboardTile from "../battlepass-leaderboard-tile/battlepass-leaderboard-tile.tsx";
 import IsLive from "../is-live/is-live.tsx";
+import CPSpentTile from "../cp-spent-tile/cp-spent-tile.tsx";
 
 export default function HomeTab() {
   useStyleSheet(styleSheet);
@@ -161,6 +162,7 @@ export default function HomeTab() {
         )}
         <BattlepassLeaderboardTile />
         <PredictionTile />
+        <CPSpentTile />
         <KothTile />
         {adverts[org?.slug] ? <Advert {...adverts[org.slug]} /> : null}
       </div>
