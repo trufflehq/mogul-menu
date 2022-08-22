@@ -87,6 +87,7 @@ $snackbar-container-width: 95%;
 $closed-offest-width: 60px;
 
 $ease-function: cubic-bezier(.4, .71, .18, .99);
+$clip-path-transition: .5s;
 
 // body {
 //   background: transparent !important;
@@ -104,11 +105,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
   >.menu {
+    transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
     width: 640px;
     height: 600px;
     // we use clipping so extension menu can close w/ an animation
-    clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
-    transition: clip-path .5s $ease-function;
+    // clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
+    // transition: clip-path $clip-path-transition $ease-function;
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);
@@ -201,60 +203,6 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
             box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
           }
         }
-        >.tabs {
-          opacity: 0;
-          flex-direction: row-reverse;
-          box-sizing: border-box;
-          max-height: 40px;
-
-          display: flex;
-          overflow-x: overlay;
-          overflow-y: overlay;
-          flex: 1;
-
-          /* scrollbar fix for firefox */
-          @-moz-document url-prefix() { 
-            overflow-x: auto;
-          }
-
-          >.tab {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-            cursor: pointer;
-            position: relative;
-
-            padding: 0px 12px;
-
-            &:hover {
-              background-color: var(--mm-color-bg-tertiary);
-            }
-
-            &.is-active {
-              background-color: var(--mm-color-bg-tertiary);
-            }
-
-            &.has-badge>.icon {
-              position: relative;
-              @include badge(top-right);
-            }
-
-            >.icon {
-              margin-right: 8px;
-            }
-
-            >.title {
-              white-space: nowrap;
-            }
-          }
-
-          > .additional-tab-buttons {
-            flex-shrink: 0;
-            display: flex;
-          }
-        }
-
 
         >.extension-icon {
           background-color: var(--primary-base);
@@ -341,46 +289,45 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // &.is-claimable {
   //   > .menu {
   //     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 78px));
-  //     transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
+  //     transition: clip-path $clip-path-transition cubic-bezier(.4,.71,.18,.99);
   //   }
   // }
 }
 
-.z-browser-extension-menu.is-open {
-  >.menu {
-    clip-path: inset(0% 0% 0% 0%);
-    transition: clip-path .5s cubic-bezier(.4, .71, .18, .99);
+// .z-browser-extension-menu.is-open {
+//   >.menu {
+//     // clip-path: inset(0% 0% 0% 0%);
 
-    >.inner {
-      >.bottom {
-        >.tabs {
-          opacity: 1;
-        }
-      }
-    }
-  }
+//     >.inner {
+//       >.bottom {
+//         >.tabs {
+//           // opacity: 1;
+//         }
+//       }
+//     }
+//   }
 
-  >.c-snack-bar-container {
-    top: unset;
-    right: unset;
-    width: 95%;
-    max-width: unset;
-    left: calc((100% - #{$snackbar-container-width}) / 2);
-    pointer-events: none;
+//   >.c-snack-bar-container {
+//     top: unset;
+//     right: unset;
+//     width: 95%;
+//     max-width: unset;
+//     left: calc((100% - #{$snackbar-container-width}) / 2);
+//     pointer-events: none;
 
-    >.c-snack-bar-el {
-      display: flex;
-      pointer-events: all;
-    }
-  }
-}
+//     >.c-snack-bar-el {
+//       display: flex;
+//       pointer-events: all;
+//     }
+//   }
+// }
 
 
-.z-browser-extension-menu.has-notification:not(.is-open) {
-  >.extension-icon {
-    @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
-  }
-}
+// .z-browser-extension-menu.has-notification:not(.is-open) {
+//   >.extension-icon {
+//     @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
+//   }
+// }
 
 .z-browser-extension-menu_terms {
   margin-top: 16px;

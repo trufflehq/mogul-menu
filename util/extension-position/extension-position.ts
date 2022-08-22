@@ -83,26 +83,26 @@ export function getIframeStyles({
 /**
  * Get the position state of the menu
  */
-export function getMenuState({
-  isOpen,
-  isClaimable,
-  snackBarQueue,
-  shouldShowOnboardTooltip,
-}: {
-  isOpen: boolean;
-  isClaimable: boolean;
-  snackBarQueue?: React.ReactNode[];
-  shouldShowOnboardTooltip: boolean;
-}) {
-  if (isOpen) {
-    return "open";
-  } else if (shouldShowOnboardTooltip) {
-    return "closed-with-tooltip";
-  } else if (snackBarQueue && snackBarQueue?.length > 0) {
-    return "closed-with-snackbar";
-  } else if (isClaimable) {
-    return "closed-with-claim";
-  } else {
-    return "closed";
-  }
-}
+// export function getMenuState({
+//   isOpen,
+//   isClaimable,
+//   snackBarQueue,
+//   shouldShowOnboardTooltip,
+// }: {
+//   isOpen: boolean;
+//   isClaimable: boolean;
+//   snackBarQueue?: React.ReactNode[];
+//   shouldShowOnboardTooltip: boolean;
+// }) {
+//   if (isOpen) {
+//     return "open";
+//   } else if (shouldShowOnboardTooltip) {
+//     return "closed-with-tooltip";
+//   } else if (snackBarQueue && snackBarQueue?.length > 0) {
+//     return "closed-with-snackbar";
+//   } else if (isClaimable) {
+//     return "closed-with-claim";
+//   } else {
+//     return "closed";
+//   }
+// }

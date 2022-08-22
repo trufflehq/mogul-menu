@@ -1,5 +1,5 @@
 import { useEffect, useState, React, jumper } from "../../deps.ts";
-
+import { useMenu, getDimensions } from '../../util/mod.ts'
 export interface Vector {
   x: number;
   y: number;
@@ -59,14 +59,25 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
 }
 
 export default function Draggable(
-  { children, dimensions, defaultPosition, requiredClassName, ignoreClassName }: {
+  // { children, dimensions, defaultPosition, requiredClassName, ignoreClassName }: {
+  { children, requiredClassName, ignoreClassName }: {
+
     children: React.ReactNode;
-    dimensions: Dimensions;
-    defaultPosition: Vector;
+    // dimensions: Dimensions;
+    // defaultPosition: Vector;
     requiredClassName?: string;
     ignoreClassName?: string;
   },
 ) {
+  const { store: menuStore } = useMenu()
+    const dimensions = getDimensions(menuStore)
+  // console.log('dimensions', dimensions)
+  // const dragProps = {
+  //   dimensions,
+  // };
+  const defaultPosition = { x: 0, y: 0 }
+
+
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
       current: defaultPosition,
@@ -128,7 +139,12 @@ export default function Draggable(
         //   dimensions.base,
         //   dimensions.modifiers,
         // ),
-        // transition: dimensions.modifiers.transition,
+        "clip-path": createClipPath(
+          dragInfo.current,
+          dimensions.base,
+          dimensions.modifiers,
+        ),
+        transition: dimensions.modifiers.transition,
       }}
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
@@ -171,6 +187,7 @@ export default function Draggable(
       }}
     >
       <div
+        className="childr"
         style={{
           //set position of child container
           background: "none",

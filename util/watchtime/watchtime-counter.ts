@@ -15,7 +15,7 @@ import {
 } from "../../deps.ts";
 
 import { ECONOMY_ACTION_QUERY } from "../../gql/mod.ts";
-
+import { getIsClaimable, useMenu } from "../mod.ts";
 const WATCH_TIME_INCREMENT_MUTATION = gql`
   mutation ($secondsWatched: Int, $sourceType: String) {
     watchTimeIncrement(
@@ -74,6 +74,9 @@ export function useWatchtimeCounter({
   const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
     WATCH_TIME_CLAIM_MUTATION,
   );
+
+  const { store } = useMenu();
+  const isClaimable = getIsClaimable(store);
 
   const intervalRef = useRef(null);
   const lastUpdateTimeRef = useRef(null);
@@ -248,13 +251,15 @@ export function useWatchtimeCounter({
 
     secondsRemainingSubject.next(secondsRemaining);
 
-    if (secondsRemaining <= 0) {
+    if (secondsRemaining <= 0 && !isClaimable) {
       isClaimButtonVisibleSubject.next(true);
+      console.log("setting countdown", isClaimable, store);
       onFinishedCountdown?.();
     }
   };
 
   const claim = async () => {
+    console.log('claim')
     setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
@@ -314,7 +319,7 @@ export function useWatchtimeCounter({
       clearInterval(intervalRef.current);
       clearInterval(lootTimerRef.current);
     };
-  }, [claimTimerCountdownSeconds]);
+  }, [claimTimerCountdownSeconds, isClaimable]);
 
   return { claim, timeWatchedSecondsSubject, secondsRemainingSubject };
 }

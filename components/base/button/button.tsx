@@ -61,6 +61,7 @@ const sizeStyles = {
 };
 
 export default function Button({
+  className,
   children = "Click me",
   shouldHandleLoading = false,
   style = "bg-secondary",
@@ -69,6 +70,7 @@ export default function Button({
   onClick = () => null,
   size = "normal",
 }: {
+  className?: string
   children?: React.ReactNode;
   shouldHandleLoading?: boolean;
   style?: keyof typeof buttonStyles | Styles;
@@ -106,7 +108,7 @@ export default function Button({
     <button
       disabled={_isDisabled}
       tabIndex={_isDisabled ? -1 : 0}
-      className="c-button"
+      className={`c-button ${className}`}
       onChange={clickHandler}
       onClick={clickHandler}
       style={styles}
