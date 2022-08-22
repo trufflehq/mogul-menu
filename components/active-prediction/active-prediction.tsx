@@ -96,10 +96,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     const activePollConnectionObs = pollingQueryObservable(
       POLL_INTERVAL,
       ACTIVE_POLL_QUERY
-    ).pipe(
-      op.map(({ data }: any) => data?.pollConnection),
-      op.tap(console.log)
-    );
+    ).pipe(op.map(({ data }: any) => data?.pollConnection));
     const activePollObs = activePollConnectionObs.pipe(
       op.map((activePollConnection) => {
         return activePollConnection?.nodes?.find(
