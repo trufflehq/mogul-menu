@@ -50,10 +50,16 @@ export default function Dialog({
 
   const selectedStyles = HEADER_STYLES[headerStyle];
 
-  const handleKeyPress = (ev: KeyboardEvent) => {
+  const handleKeyPress = (ev: React.KeyboardEvent) => {
     if(ev.key === 'Escape') {
       popDialog();
     } else if(ev.key === 'Enter') {
+      popDialog();
+    }
+  }
+
+  const globalEscapeHandler = (ev: KeyboardEvent) => {
+    if(ev.key === 'Escape') {
       popDialog();
     }
   }
@@ -62,10 +68,10 @@ export default function Dialog({
       $$closeIconRef?.current.focus()
     }
 
-    document.addEventListener('keydown', handleKeyPress, false)
+    document.addEventListener('keydown', globalEscapeHandler, false)
 
     return () => {
-      document.removeEventListener('keydown', handleKeyPress, false)
+      document.removeEventListener('keydown', globalEscapeHandler, false)
     }
   }, [])
 
@@ -87,7 +93,7 @@ export default function Dialog({
               </div>
               <div className="right">
                 {showClose && (
-                  <div className="close" tabIndex={0} ref={$$closeIconRef}>
+                  <div className="close" onKeyDown={handleKeyPress} tabIndex={0} ref={$$closeIconRef}>
                     <Icon
                       icon="close"
                       color={selectedStyles["--text-color"]}
