@@ -1,14 +1,4 @@
-import {
-  Avatar,
-  gql,
-  op,
-  queryObservable,
-  React,
-  useMemo,
-  useObservables,
-  useStyleSheet,
-  _,
-} from "../../deps.ts";
+import { Avatar, gql, React, useQuery, useStyleSheet, _ } from "../../deps.ts";
 
 import Tile from "../tile/tile.tsx";
 
@@ -17,14 +7,6 @@ import { TROPHY_ICON } from "../../util/icon/paths.ts";
 import styleSheet from "./leaderboard-tile.scss.js";
 
 const LEADERBOARD_LIMIT = 3;
-
-const ORG_USER_COUNTER_TYPE_QUERY = gql`
-  query OrgUserCounterTypeQuery {
-    seasonPass {
-      orgUserCounterTypeId
-    }
-  }
-`;
 
 const LEADERBOARD_COUNTER_QUERY = gql`
   query LeaderboardQuery($orgUserCounterTypeId: ID!, $limit: Int) {
@@ -48,58 +30,34 @@ const LEADERBOARD_COUNTER_QUERY = gql`
   }
 `;
 
-export function LeaderboardTile() {
+export function LeaderboardTile({
+  headerText,
+  orgUserCounterTypeId,
+}: {
+  headerText: string;
+  orgUserCounterTypeId: string;
+}) {
   useStyleSheet(styleSheet);
-  // const { leaderboardCountersObs } = useMemo(() => {
-  //   const seasonPassObs = getModel().seasonPass.getCurrent();
-  //   const leaderboardCountersObs = seasonPassObs.pipe(
-  //     op.switchMap((seasonPass) =>
-  //       seasonPass
-  //         ? getModel().orgUserCounter.getAllByCounterTypeId(
-  //           seasonPass.orgUserCounterTypeId,
-  //           { limit: LEADERBOARD_LIMIT },
-  //         )
-  //         : Obs.of(null)
-  //     ),
-  //   );
 
-  //   return {
-  //     leaderboardCountersObs,
-  //   };
-  // }, []);
-
-  // const { leaderboardCounters } = useObservables(() => ({
-  //   leaderboardCounters: leaderboardCountersObs,
-  // }));
-
-  const { leaderboardCountersObs } = useMemo(() => {
-    const leaderboardCountersObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY
-    ).pipe(
-      op.switchMap(({ data }: any) =>
-        queryObservable(LEADERBOARD_COUNTER_QUERY, {
-          limit: LEADERBOARD_LIMIT,
-          orgUserCounterTypeId: data?.seasonPass?.orgUserCounterTypeId,
-        })
-      ),
-      op.map(({ data }) => data?.orgUserCounterConnection)
-    );
-
-    return {
-      leaderboardCountersObs,
-    };
-  }, []);
-
-  const { leaderboardCounters } = useObservables(() => ({
-    leaderboardCounters: leaderboardCountersObs,
-  }));
-
-  let userRanks = _.map(leaderboardCounters?.nodes, (orgUserCounter, i) => {
-    return {
-      ...orgUserCounter,
-      count: parseInt(orgUserCounter.count),
-    };
+  const [{ data: leaderboardCounterData }] = useQuery({
+    query: LEADERBOARD_COUNTER_QUERY,
+    variables: {
+      limit: LEADERBOARD_LIMIT,
+      orgUserCounterTypeId: orgUserCounterTypeId,
+    },
   });
+
+  const leaderboardCounters = leaderboardCounterData?.orgUserCounterConnection;
+
+  let userRanks = _.map(
+    leaderboardCounters?.nodes,
+    (orgUserCounter, i: number) => {
+      return {
+        ...orgUserCounter,
+        count: parseInt(orgUserCounter.count),
+      };
+    }
+  );
 
   userRanks = _.orderBy(userRanks, ["count"], ["desc"]);
   userRanks = _.uniqBy(userRanks, (rank) => rank.orgUser?.user?.id);
@@ -125,7 +83,7 @@ export function LeaderboardTile() {
     <Tile
       className="c-leaderboard-tile"
       icon={TROPHY_ICON}
-      headerText="Top Battlepass"
+      headerText={headerText}
       color="#CEDEE3"
       textColor="black"
       content={() => (
