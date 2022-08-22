@@ -1,6 +1,12 @@
-import { Icon, React, useRef, useEffect, useStyleSheet } from "../../../deps.ts";
+import {
+  Icon,
+  React,
+  useRef,
+  useEffect,
+  useStyleSheet,
+} from "../../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
-import FocusTrap from '../../focus-trap/focus-trap.tsx'
+import FocusTrap from "../../focus-trap/focus-trap.tsx";
 import styleSheet from "./dialog.scss.js";
 
 const HEADER_STYLES = {
@@ -15,6 +21,10 @@ const HEADER_STYLES = {
   secondary: {
     "--background": "var(--mm-color-secondary)",
     "--text-color": "var(--mm-color-text-secondary)",
+  },
+  gradient: {
+    "--background": "var(--mm-gradient)",
+    "--text-color": "var(--mm-color-text-gradient)",
   },
 };
 
@@ -36,10 +46,10 @@ export default function Dialog({
   children?: any;
   onClose?: () => any;
   onBack?: () => any;
-  headerStyle?: "default" | "primary" | "secondary";
+  headerStyle?: keyof typeof HEADER_STYLES;
   headerText?: any;
 }) {
-  const $$closeIconRef = useRef<HTMLDivElement>(null)
+  const $$closeIconRef = useRef<HTMLDivElement>(null);
   useStyleSheet(styleSheet);
   const { popDialog } = useDialog();
 
@@ -51,29 +61,29 @@ export default function Dialog({
   const selectedStyles = HEADER_STYLES[headerStyle];
 
   const handleKeyPress = (ev: React.KeyboardEvent) => {
-    if(ev.key === 'Escape') {
+    if (ev.key === "Escape") {
       popDialog();
-    } else if(ev.key === 'Enter') {
+    } else if (ev.key === "Enter") {
       popDialog();
     }
-  }
+  };
 
   const globalEscapeHandler = (ev: KeyboardEvent) => {
-    if(ev.key === 'Escape') {
+    if (ev.key === "Escape") {
       popDialog();
     }
-  }
+  };
   useEffect(() => {
-    if($$closeIconRef?.current) {
-      $$closeIconRef?.current.focus()
+    if ($$closeIconRef?.current) {
+      $$closeIconRef?.current.focus();
     }
 
-    document.addEventListener('keydown', globalEscapeHandler, false)
+    document.addEventListener("keydown", globalEscapeHandler, false);
 
     return () => {
-      document.removeEventListener('keydown', globalEscapeHandler, false)
-    }
-  }, [])
+      document.removeEventListener("keydown", globalEscapeHandler, false);
+    };
+  }, []);
 
   return (
     <FocusTrap>
@@ -93,7 +103,12 @@ export default function Dialog({
               </div>
               <div className="right">
                 {showClose && (
-                  <div className="close" onKeyDown={handleKeyPress} tabIndex={0} ref={$$closeIconRef}>
+                  <div
+                    className="close"
+                    onKeyDown={handleKeyPress}
+                    tabIndex={0}
+                    ref={$$closeIconRef}
+                  >
                     <Icon
                       icon="close"
                       color={selectedStyles["--text-color"]}
@@ -105,7 +120,9 @@ export default function Dialog({
             </div>
           )}
           <div className="content">{children}</div>
-          {actions && <div className={`bottom-actions ${alignActions}`}>{actions}</div>}
+          {actions && (
+            <div className={`bottom-actions ${alignActions}`}>{actions}</div>
+          )}
         </div>
       </div>
     </FocusTrap>

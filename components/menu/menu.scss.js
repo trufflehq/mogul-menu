@@ -377,7 +377,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 
 
 .z-browser-extension-menu.has-notification:not(.is-open) {
-  >.extension-icon {
+  >.menu>.inner>.bottom>.extension-icon {
     @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
   }
 }

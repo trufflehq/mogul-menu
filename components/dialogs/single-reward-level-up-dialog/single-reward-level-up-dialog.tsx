@@ -24,6 +24,8 @@ export default function SingleRewardLevelUpDialog({
   return (
     <div className="c-single-reward-level-up-dialog">
       <Dialog
+        headerStyle="gradient"
+        headerText="You leveled up!"
         actions={[
           <Button onClick={closeHandler} style="bg-tertiary">
             Close
@@ -40,7 +42,9 @@ export default function SingleRewardLevelUpDialog({
         </div>
         <DefaultDialogContentFragment
           primaryText={<>{reward?.source?.name} unlocked!</>}
-          secondaryText={reward?.description}
+          secondaryText={
+            reward?.source?.data?.description ?? reward?.description
+          }
         />
       </Dialog>
     </div>
