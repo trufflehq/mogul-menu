@@ -3,14 +3,13 @@ import {
   useRef,
   classKebab,
   getSrcByImageObj,
-  hexOpacity,
-  rgb2rgba,
   useStyleSheet,
 } from "../../deps.ts";
 import { UnlockedIcon } from "../unlocked-icon/unlocked-icon.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 
 import styleSheet from "./season-pass-reward.scss.js";
+import { SeasonPassLevelReward } from "../../types/season-pass.types.ts";
 
 export default function Reward({
   isSelected,
@@ -22,8 +21,12 @@ export default function Reward({
   isUnlocked,
 }: {
   isSelected?: boolean;
-  onClick?: (reward: any, ref: any, tierNum: number) => void;
-  reward: any;
+  onClick?: (
+    reward: SeasonPassLevelReward<any>,
+    ref: any,
+    tierNum: number
+  ) => void;
+  reward: SeasonPassLevelReward<any>;
   tierNum?: number;
   background?: string;
   accentColor?: string;

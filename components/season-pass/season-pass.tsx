@@ -32,12 +32,13 @@ import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 
 import styleSheet from "./season-pass.scss.js";
-import { useTestSeasonPassData } from "./season-pass-data-test.ts";
+import { useTestSeasonPassData } from "../../util/season-pass/season-pass-data-test.ts";
 import Reward from "../season-pass-reward/season-pass-reward.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
 import SingleRewardLevelUpDialog from "../dialogs/single-reward-level-up-dialog/single-reward-level-up-dialog.tsx";
-import { useSeasonPassData } from "./season-pass-data.ts";
+import { useSeasonPassData } from "../../util/season-pass/season-pass-data.ts";
+import { SeasonPass } from "../../types/season-pass.types.ts";
 
 const ME_QUERY = gql`
   query MeQuery {
@@ -86,7 +87,14 @@ export default function SeasonPass(props) {
     error: seasonPassFetchError,
   } = useSeasonPassData();
 
-  const seasonPass = seasonPassData?.seasonPass;
+  // use this for testing
+  // const {
+  //   data: seasonPassData,
+  //   fetching: isFetchingSeasonPass,
+  //   error: seasonPassFetchError,
+  // } = useTestSeasonPassData();
+
+  const seasonPass: SeasonPass = seasonPassData?.seasonPass;
 
   // if (!seasonPass) {
   //   return (
