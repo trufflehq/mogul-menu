@@ -8,7 +8,12 @@ import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
 import ColorOption from "../base/color-option/color-option.tsx";
 
-import { usePageStack, useTabId, useTabState, useActionBanner } from "../../util/mod.ts";
+import {
+  usePageStack,
+  useTabId,
+  useTabState,
+  useActionBanner,
+} from "../../util/mod.ts";
 
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -53,8 +58,8 @@ export default function HomeTab() {
   };
 
   const tabNameHandler = () => {
-    tabState?.setTabText(`Home (${count})`);
-    tabState?.setTabBadge(isSelected);
+    tabState.setTabText(`Home (${count})`);
+    tabState.setTabBadge(isSelected);
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };

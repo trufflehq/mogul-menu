@@ -30,10 +30,8 @@ export default scss`
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-
-      > div {
-        padding: 12px;
-      }
+      align-items: center;
+      padding: 12px 16px;
 
       .close {
         display: flex;

@@ -1,4 +1,4 @@
-import { _, classKebab, useEffect, React } from "../../deps.ts";
+import { _, classKebab, useEffect, React, useStyleSheet } from "../../deps.ts";
 import {
   DEFAULT_TABS,
   getActiveTab,
@@ -7,22 +7,24 @@ import {
   useTabStateManager,
   updateTabState,
 } from "../../util/mod.ts";
+import styleSheet from "./tabs.scss.js";
 
 export default function Tabs() {
+  useStyleSheet(styleSheet);
   const tabStateManager = useTabStateManager();
   const { store, dispatch } = tabStateManager;
   const tabSlugs = Object.keys(store.tabs);
   const activeTab = getActiveTab(tabStateManager.store);
-  const { clearPageStack } = usePageStack()
+  const { clearPageStack } = usePageStack();
   useEffect(() => {
-    clearPageStack()
-  }, [activeTab])
+    clearPageStack();
+  }, [activeTab]);
 
   useEffect(() => {
-    dispatch(updateTabState(activeTab, 'isActive', true))
+    dispatch(updateTabState(activeTab, "isActive", true));
 
     const onNavigateAway = () => {
-      dispatch(updateTabState(activeTab, 'isActive', false))
+      dispatch(updateTabState(activeTab, "isActive", false));
     };
 
     return onNavigateAway;
@@ -34,11 +36,9 @@ export default function Tabs() {
         return (
           <TabIdProvider key={idx} tabId={tabSlugs[idx]}>
             <div
-              className={`tab-component ${
-                classKebab({
-                  isActive: tabSlugs[idx] === activeTab,
-                })
-              }`}
+              className={`c-tab-component ${classKebab({
+                isActive: tabSlugs[idx] === activeTab,
+              })}`}
             >
               {TabComponent && <TabComponent />}
             </div>
