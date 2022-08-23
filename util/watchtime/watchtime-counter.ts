@@ -253,13 +253,11 @@ export function useWatchtimeCounter({
 
     if (secondsRemaining <= 0 && !isClaimable) {
       isClaimButtonVisibleSubject.next(true);
-      console.log("setting countdown", isClaimable, store);
       onFinishedCountdown?.();
     }
   };
 
   const claim = async () => {
-    console.log('claim')
     setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });

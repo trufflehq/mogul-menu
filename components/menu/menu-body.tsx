@@ -38,9 +38,6 @@ export default function BrowserExtensionMenuBody() {
     )
   }`;
 
-
-  console.log('menu body render')
-
   return (
     <Draggable
       requiredClassName="extension-icon"
