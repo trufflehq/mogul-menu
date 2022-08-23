@@ -8,7 +8,11 @@ export interface DimensionModifiers {
   transition: string;
 }
 
-export interface MenuStore {
+interface SnackBar {
+  $component: React.ReactNode;
+}
+
+export interface MenuState {
   menuState: string;
   isClaimable: boolean;
   $$additionalButtonRef: React.MutableRefObject<HTMLDivElement> | null;
@@ -19,6 +23,7 @@ export interface MenuStore {
     };
     modifiers: DimensionModifiers;
   };
+  snackBars: React.ReactNode[];
 }
 
 export type OpenMenuAction = {
@@ -31,21 +36,33 @@ export type CloseMenuAction = {
   payload: Record<never, never>;
 };
 
-export type UpdateClaimableState = {
+export type UpdateClaimableStateAction = {
   type: "@@MENU_UPDATE_CLAIMABLE";
   payload: {
     isClaimable: boolean;
   };
 };
 
-export type UpdateAdditionalButtonRef = {
+export type UpdateAdditionalButtonRefAction = {
   type: "@@MENU_ADDITIONAL_BUTTON_REF";
   payload: {
     ref: React.MutableRefObject<HTMLDivElement>;
   };
 };
 
-export type UpdateDimensions = {
+export type EnqueueSnackbarAction = {
+  type: "@@MENU_ENQUEUE_SNACKBAR";
+  payload: {
+    snackbar: React.ReactNode;
+  };
+};
+
+export type PopSnackbarAction = {
+  type: "@@MENU_POP_SNACKBAR";
+  payload: Record<never, never>;
+};
+
+export type UpdateDimensionsAction = {
   type: "@@MENU_UPDATE_DIMENSIONS";
   payload?: {
     top?: number;
@@ -59,6 +76,8 @@ export type MenuDimensionActions = OpenMenuAction | CloseMenuAction;
 
 export type MenuActions =
   | MenuDimensionActions
-  | UpdateClaimableState
-  | UpdateAdditionalButtonRef
-  | UpdateDimensions;
+  | UpdateClaimableStateAction
+  | UpdateAdditionalButtonRefAction
+  | UpdateDimensionsAction
+  | EnqueueSnackbarAction
+  | PopSnackbarAction;

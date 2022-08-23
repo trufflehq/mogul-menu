@@ -2,10 +2,12 @@ import { React } from "../../deps.ts";
 import {
   CloseMenuAction,
   DimensionModifiers,
+  EnqueueSnackbarAction,
   OpenMenuAction,
-  UpdateAdditionalButtonRef,
-  UpdateClaimableState,
-  UpdateDimensions,
+  PopSnackbarAction,
+  UpdateAdditionalButtonRefAction,
+  UpdateClaimableStateAction,
+  UpdateDimensionsAction,
 } from "./types.ts";
 
 export const setOpen = (): OpenMenuAction => ({
@@ -18,7 +20,7 @@ export const setClosed = (): CloseMenuAction => ({
   payload: {},
 });
 
-export const setIsClaimable = (isClaimable: boolean): UpdateClaimableState => ({
+export const setIsClaimable = (isClaimable: boolean): UpdateClaimableStateAction => ({
   type: "@@MENU_UPDATE_CLAIMABLE",
   payload: {
     isClaimable,
@@ -27,14 +29,26 @@ export const setIsClaimable = (isClaimable: boolean): UpdateClaimableState => ({
 
 export const setAdditionalButtonRef = (
   ref: React.MutableRefObject<HTMLDivElement>,
-): UpdateAdditionalButtonRef => ({
+): UpdateAdditionalButtonRefAction => ({
   type: "@@MENU_ADDITIONAL_BUTTON_REF",
   payload: {
     ref,
   },
 });
 
-export const updateDimensions = (mods?: Partial<DimensionModifiers>): UpdateDimensions => ({
+export const updateDimensions = (mods?: Partial<DimensionModifiers>): UpdateDimensionsAction => ({
   type: "@@MENU_UPDATE_DIMENSIONS",
   payload: mods,
+});
+
+export const enqueueSnackBar = (snackbar: React.ReactNode): EnqueueSnackbarAction => ({
+  type: "@@MENU_ENQUEUE_SNACKBAR",
+  payload: {
+    snackbar,
+  },
+});
+
+export const popSnackBar = (): PopSnackbarAction => ({
+  type: "@@MENU_POP_SNACKBAR",
+  payload: {},
 });

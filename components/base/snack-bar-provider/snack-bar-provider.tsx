@@ -1,33 +1,6 @@
-import {
-  React,
-  createContext,
-  useContext,
-  useEffect,
-  createSubject,
-  op,
-  useObservables,
-  useStyleSheet,
-} from "../../../deps.ts";
+import { React, useEffect, useMemo, useStyleSheet } from "../../../deps.ts";
+import { getSnackBars, getTopSnackbar, useMenu } from "../../../util/mod.ts";
 import styleSheet from "./snack-bar-provider.scss.js";
-
-class SnackBarSerivce {
-  _queueSubject;
-
-  constructor() {
-    this._queueSubject = createSubject([]);
-  }
-
-  get queueSubject() {
-    return this._queueSubject;
-  }
-
-  enqueueSnackBar(snackBar) {
-    const currentQueue = this._queueSubject.getValue();
-    this._queueSubject.next(currentQueue.concat(snackBar));
-  }
-}
-
-export const snackBarContext = createContext(new SnackBarSerivce());
 
 const DEFAULT_VISIBILITY_DURATION_MS = 5000;
 
@@ -35,21 +8,13 @@ export default function SnackBarProvider({
   children,
   visibilityDuration = DEFAULT_VISIBILITY_DURATION_MS,
 }: {
-  children?: any;
+  children?: React.ReactNode;
   visibilityDuration?: number;
 }) {
   useStyleSheet(styleSheet);
-  const snackBarService = useContext(snackBarContext);
-  const snackBarQueueSubject = snackBarService.queueSubject;
-
-  const { snackBarQueue, currentSnackBar: $currentSnackBar } = useObservables(
-    () => ({
-      snackBarQueue: snackBarQueueSubject.obs,
-      currentSnackBar: snackBarQueueSubject.obs.pipe(
-        op.map((queue) => queue?.[0])
-      ),
-    })
-  );
+  const { store, popSnackBar } = useMenu();
+  const $currentSnackBar = getTopSnackbar(store);
+  const snackBarQueue = useMemo(() => getSnackBars(store), [JSON.stringify(store.snackBars)])
 
   const shouldRenderSnackBar = snackBarQueue.length > 0;
 
@@ -65,7 +30,7 @@ export default function SnackBarProvider({
 
         // remove item from the front of the queue
         // and schedule the next item to be removed
-        snackBarQueueSubject.next(snackBarQueue.slice(1));
+        popSnackBar();
       }, visibilityDuration);
     }
 
@@ -77,12 +42,7 @@ export default function SnackBarProvider({
   return (
     <>
       <div className="c-snack-bar-container">
-        {shouldRenderSnackBar &&
-          (typeof $currentSnackBar === "function" ? (
-            <$currentSnackBar />
-          ) : (
-            $currentSnackBar
-          ))}
+        {shouldRenderSnackBar && $currentSnackBar}
       </div>
       {children}
     </>

@@ -132,12 +132,12 @@ export default function ConnectedAccounts() {
         const imgSrc = logo?.snackbarSrc;
         const connectionTitle = logo?.data?.title;
 
-        enqueueSnackBar(() => (
+        enqueueSnackBar(
           <AccountConnectedSnackBar
             connectionImgSrc={imgSrc}
             connectionTitle={connectionTitle}
           />
-        ));
+        );
       }
     }
 
