@@ -7,14 +7,19 @@ export interface FileRel {
 export type FileType = "image" | "video" | "other";
 
 export interface File {
-  id: string;
-  cdn: string;
-  data: {
-    aspectRatio: number;
+  id?: string;
+  cdn?: string;
+  data?: {
+    name?: string;
+    width?: number;
+    height?: number;
+    length?: number;
+    aspectRatio?: number;
   };
-  prefix: string;
-  type: FileType;
-  variations: any;
-  ext: string;
-  signedUrl: string;
+  prefix?: string;
+  contentType?: string;
+  type?: FileType | string;
+  variations?: any;
+  ext?: string;
+  signedUrl?: string;
 }

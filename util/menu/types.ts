@@ -1,5 +1,5 @@
 import { React } from "../../deps.ts";
-
+import { File } from "../../types/mod.ts";
 export interface DimensionModifiers {
   top: number;
   right: number;
@@ -15,6 +15,7 @@ interface SnackBar {
 export interface MenuState {
   menuState: string;
   isClaimable: boolean;
+  iconImageObj?: File;
   $$additionalButtonRef: React.MutableRefObject<HTMLDivElement> | null;
   dimensions: {
     base: {

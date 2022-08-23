@@ -7,16 +7,18 @@ import {
   TabButtonProvider,
   TabStateProvider,
 } from "../../util/mod.ts";
+import { File } from '../../types/mod.ts'
 interface MenuProviderProps {
   children: React.ReactNode;
-  iconImageObj?: any;
+  iconImageObj?: File;
   [x: string]: unknown;
 }
 
-export default function MenuWrapper({ children }: MenuProviderProps) {
+export default function MenuWrapper(props: MenuProviderProps) {
+  const { children, iconImageObj  } = props
   return (
     <>
-      <MenuProvider>
+      <MenuProvider iconImageObj={iconImageObj}>
         <PageStackProvider>
           <ThemeComponent />
           <TabButtonProvider>

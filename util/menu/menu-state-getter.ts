@@ -52,3 +52,7 @@ export function getSnackBars(store: MenuState) {
 export function getTopSnackbar(store: MenuState) {
   return store.snackBars?.[0];
 }
+
+export function getMenuIconImageObj(store: MenuState) {
+  return store.iconImageObj
+}
