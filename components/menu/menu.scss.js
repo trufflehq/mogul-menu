@@ -104,40 +104,36 @@ $clip-path-transition: .5s;
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
-  >.menu {
+  > .menu {
     transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
     width: 640px;
     height: 600px;
-    // we use clipping so extension menu can close w/ an animation
-    // clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
-    // transition: clip-path $clip-path-transition $ease-function;
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);
     color: var(--mm-color-text-bg-primary);
     font-family: var(--mm-font-family);
-    border: 1px solid rgba(60, 58, 65, 1);
 
-    >.inner {
+    > .inner {
       height: 100%;
       width: 100%;
       position: relative;
       display: flex;
       flex-direction: column;
 
-      >.close {
+      > .close {
         position: absolute;
         top: 48px;
         right: 12px;
         cursor: pointer;
       }
 
-      >.body {
+      > .body {
         flex: 1;
         overflow-y: auto;
         box-sizing: border-box;
 
-        >.tab-component {
+        > .tab-component {
           display: none;
 
           &.is-active {
@@ -150,7 +146,7 @@ $clip-path-transition: .5s;
           background: transparent;
         }
 
-        >.prediction {
+        > .prediction {
           background: var(--bg-base);
           position: absolute;
           z-index: 10;
@@ -165,7 +161,7 @@ $clip-path-transition: .5s;
             background: transparent;
           }
 
-          >.close {
+          > .close {
             height: 40px;
             display: flex;
             align-items: center;
@@ -174,21 +170,17 @@ $clip-path-transition: .5s;
         }
       }
 
-      >.bottom {
+      > .bottom {
         display: flex;
         justify-content: flex-end;
         max-height: 40px;
         width: 100%;
-        >.extension-icon {
+        
+        > .extension-icon {
           cursor: pointer;
-          // position: absolute;
-          // z-index: 99999;
-          // top: $extension-top-offset;
-          // right: $extension-right-offset;
           background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
           background-size: 100%;
           background-repeat: no-repeat;
-          // background-color: var(--bg-base);
           background-color: rgba(0, 0, 0, 0.1);
           box-sizing: border-box;
           flex-shrink: 0;
@@ -204,7 +196,7 @@ $clip-path-transition: .5s;
           }
         }
 
-        >.extension-icon {
+        > .extension-icon {
           background-color: var(--primary-base);
           border-radius: 0px;
           border: 1px solid transparent;
@@ -212,7 +204,7 @@ $clip-path-transition: .5s;
         }
       }
 
-      >.page-stack {
+      > .page-stack {
         height: 100%;
         width: 100%;
         // allow to expand to full height (flex hack)
@@ -235,99 +227,13 @@ $clip-path-transition: .5s;
         }
       }
 
-      >.tab-component {
+      > .tab-component {
         position: relative;
         flex: 1;
       }
     }
-
-    // TODO: extract action banner component
-    // .action-banner {
-    //   display: flex;
-    //   align-items: center;
-    //   background-color: var(--secondary-base);
-    //   box-sizing: border-box;
-    //   padding: 2px 16px;
-
-    //   > .info {
-    //     font-size: 14px;
-    //     line-height: 21px;
-    //     font-weight: 600;
-    //     color: var(--secondary-base-text);
-    //     white-space: nowrap;
-    //     overflow: hidden;
-    //     text-overflow: ellipsis;
-    //   }
-
-    //   &.action-banner-style-twitch {
-    //     background: #772CE8;
-
-    //     > .info {
-    //       color:rgba(255, 255, 255, 1);
-    //     }
-    //   }
-
-    //   > .signup {
-    //     display: flex;
-    //     justify-content: flex-end;
-    //     flex: 1;
-    //     margin-left: 8px;
-
-    //     > button {
-    //       font-size: 12px;
-    //       line-height: 18px;
-    //       font-weight: 500;
-    //       max-width: 120px;
-    //       padding: 8px 24px;
-    //       border-radius: 4px;
-    //     }
-    //   }
-    // }
   }
-
-  // TODO: generalize button in tab menu behavior
-  // &.is-claimable {
-  //   > .menu {
-  //     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 78px));
-  //     transition: clip-path $clip-path-transition cubic-bezier(.4,.71,.18,.99);
-  //   }
-  // }
 }
-
-// .z-browser-extension-menu.is-open {
-//   >.menu {
-//     // clip-path: inset(0% 0% 0% 0%);
-
-//     >.inner {
-//       >.bottom {
-//         >.tabs {
-//           // opacity: 1;
-//         }
-//       }
-//     }
-//   }
-
-//   >.c-snack-bar-container {
-//     top: unset;
-//     right: unset;
-//     width: 95%;
-//     max-width: unset;
-//     left: calc((100% - #{$snackbar-container-width}) / 2);
-//     pointer-events: none;
-
-//     >.c-snack-bar-el {
-//       display: flex;
-//       pointer-events: all;
-//     }
-//   }
-// }
-
-
-// .z-browser-extension-menu.has-notification:not(.is-open) {
-//   >.extension-icon {
-//     @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
-//   }
-// }
 
 .z-browser-extension-menu_terms {
   margin-top: 16px;
@@ -356,7 +262,7 @@ $clip-path-transition: .5s;
     cursor: pointer;
   }
 
-  >.header {
+  > .header {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -367,7 +273,7 @@ $clip-path-transition: .5s;
     box-sizing: border-box;
     margin-bottom: 20px;
 
-    >.icon {
+    > .icon {
       background-color: $tile-bg;
       border-radius: 100%;
       width: 40px;
@@ -380,7 +286,7 @@ $clip-path-transition: .5s;
       }
     }
 
-    >.text {
+    > .text {
       font-weight: 500;
       font-size: 16px;
       letter-spacing: 0.02em;
@@ -397,7 +303,7 @@ $clip-path-transition: .5s;
   box-sizing: border-box;
   display: flex;
 
-  >.image {
+  > .image {
     flex: 0 1 153px;
 
     >img {
@@ -408,7 +314,7 @@ $clip-path-transition: .5s;
     }
   }
 
-  >.content {
+  > .content {
     flex: 1 0 0%;
     padding: 16px 22px;
     display: flex;
@@ -416,8 +322,8 @@ $clip-path-transition: .5s;
     justify-content: space-between;
     gap: 16px;
 
-    >.text {
-      >.ad {
+    > .text {
+      > .ad {
         font-weight: 400;
         font-size: 14px;
         line-height: 21px;
@@ -425,7 +331,7 @@ $clip-path-transition: .5s;
         color: var(--bg-base-text-80);
       }
 
-      >.tagline {
+      > .tagline {
         font-weight: 400;
         font-size: 16px;
         line-height: 24px;
@@ -433,8 +339,8 @@ $clip-path-transition: .5s;
       }
     }
 
-    >.actions {
-      >.c-button {
+    > .actions {
+      > .c-button {
         &:hover {
           border: 1px solid var(--bg-base-text);
         }
@@ -445,37 +351,37 @@ $clip-path-transition: .5s;
 }
 
 .c-home-tab {
-  >.header {
+  > .header {
     display: flex;
     align-items: center;
 
     margin-bottom: 16px;
 
-    >.user {
+    > .user {
       display: flex;
       flex: 1;
 
 
-      >.c-account-avatar {
+      > .c-account-avatar {
         margin-right: 16px;
       }
 
-      >.info {
+      > .info {
         display: flex;
         flex-direction: column;
         justify-content: center;
 
-        >.top {
+        > .top {
           display: flex;
           align-items: center;
           margin-bottom: 4px;
 
-          >.name {
+          > .name {
             font-size: 20px;
             font-weight: 600;
           }
 
-          >.powerup {
+          > .powerup {
             width: 24px;
             height: 24px;
             margin-left: 8px;
@@ -483,16 +389,16 @@ $clip-path-transition: .5s;
 
         }
 
-        >.amounts {
+        > .amounts {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 18px;
 
-          >.amount {
+          > .amount {
             display: flex;
             align-items: center;
 
-            >.icon {
+            > .icon {
               margin-right: 8px;
             }
           }
@@ -501,7 +407,7 @@ $clip-path-transition: .5s;
       }
     }
 
-    >.support {
+    > .support {
       font-size: 12px;
       line-height: 16px;
       text-decoration: underline;
@@ -515,12 +421,12 @@ $clip-path-transition: .5s;
     }
 
 
-    >.actions {
+    > .actions {
       display: flex;
       justify-content: flex-end;
       gap: 16px;
 
-      >.icon {
+      > .icon {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -533,14 +439,14 @@ $clip-path-transition: .5s;
 
   }
 
-  >.tile-grid {
+  > .tile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
 
 
-  >.banner {
+  > .banner {
     font-size: 16px;
     font-weight: 600;
     background: var(--tertiary-base);
@@ -550,23 +456,23 @@ $clip-path-transition: .5s;
 }
 
 .c-mogul-pass-tab {
-  >.title {
+  > .title {
     font-weight: 600;
     font-size: 16px;
     margin-bottom: 2px;
   }
 
-  >.description {
+  > .description {
     margin-bottom: 4px;
   }
 
-  >.description,
-  >.learn-more {
+  > .description,
+  > .learn-more {
     font-size: 14px;
     font-weight: 400;
   }
 
-  >.learn-more {
+  > .learn-more {
     color: var(--secondary-base);
     margin-bottom: 20px;
     cursor: pointer;
@@ -577,14 +483,14 @@ $clip-path-transition: .5s;
 .c-settings-page_content {
   padding: 16px;
 
-  >.settings {
+  > .settings {
     margin-bottom: 16px;
 
-    >.name {
+    > .name {
       margin-top: 8px;
     }
 
-    >.color {
+    > .color {
       margin-top: 8px;
     }
   }
@@ -594,7 +500,7 @@ $clip-path-transition: .5s;
     align-items: center;
     padding: 4px 16px;
 
-    >.actions {
+    > .actions {
       margin-top: 0;
     }
   }
@@ -624,7 +530,7 @@ $clip-path-transition: .5s;
   font-size: 14px;
   font-weight: 400;
 
-  >.icon {
+  > .icon {
     margin-right: 8px;
   }
 }
@@ -637,7 +543,7 @@ $clip-path-transition: .5s;
   margin-top: 16px;
   min-height: 200px;
 
-  >.sponsor {
+  > .sponsor {
     width: 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -656,44 +562,39 @@ $clip-path-transition: .5s;
   text-align: center;
   border-radius: 4px;
 
-  >.header-image {
+  > .header-image {
     max-width: 568px;
     margin: 0 auto;
     margin-bottom: 20px;
   }
 
-  >.text {
+  > .text {
     margin-bottom: 16px;
   }
 }
-
-// this class can be used in child components so that they're not affected by the default padding 
-// .reach-edge {
-//   margin: auto (-$tab-body-padding);
-// }
 
 .c-collectible-empty {
   margin: 24px auto;
   box-sizing: border-box;
   max-width: 348px;
 
-  >.wrapper {
+  > .wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
 
-    >.preview {
+    > .preview {
       display: flex;
       flex-direction: column;
       margin-bottom: 12px;
 
-      >.stack {
+      > .stack {
         position: relative;
         width: fit-content;
         margin: auto;
 
-        >.block {
+        > .block {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -719,7 +620,7 @@ $clip-path-transition: .5s;
         }
       }
 
-      >.message {
+      > .message {
         margin-top: 24px;
         font-size: 16px;
         line-height: 24px;
@@ -727,12 +628,12 @@ $clip-path-transition: .5s;
       }
     }
 
-    >.body {
+    > .body {
       background-color: var(--tertiary-base);
       border-radius: 6px;
       padding: 24px 32px;
 
-      >.title {
+      > .title {
         font-size: 16px;
         line-height: 24px;
         text-transform: uppercase;
@@ -741,25 +642,25 @@ $clip-path-transition: .5s;
       }
 
 
-      >.way-to-earn {
+      > .way-to-earn {
         display: flex;
         margin-bottom: 24px;
 
-        >.left {}
+        > .left {}
 
-        >.right {
+        > .right {
           display: flex;
           flex-direction: column;
           padding-left: 12px;
 
-          >.description {
+          > .description {
             font-size: 16px;
             line-height: 24px;
             font-weight: 400;
             margin-bottom: 12px;
           }
 
-          >.button {
+          > .button {
             margin-bottom: 12px;
 
             >button {
@@ -771,7 +672,7 @@ $clip-path-transition: .5s;
             }
           }
 
-          >.link {
+          > .link {
             text-decoration: underline;
             cursor: pointer;
           }
@@ -787,7 +688,7 @@ $clip-path-transition: .5s;
     // TODO add a background secondary css var
     background-color: rgba(22, 31, 44, 1) !important;
 
-    >.top {
+    > .top {
       background-color: var(--primary-base) !important;
       color: var(--primary-base-text);
     }
@@ -815,25 +716,25 @@ $clip-path-transition: .5s;
   box-sizing: border-box;
   margin-bottom: 20px;
 
-  >.name {
+  > .name {
     @include font-body-bold;
   }
 
-  >.reward {
+  > .reward {
     display: flex;
     align-items: center;
     margin-top: 2px;
 
-    >.icon {
+    > .icon {
       margin-right: 4px;
     }
 
-    >.amount {
+    > .amount {
       @include font-body-bold;
     }
   }
 
-  >.description {
+  > .description {
     margin-top: 4px;
     @include font-body-caption;
   }
@@ -842,12 +743,12 @@ $clip-path-transition: .5s;
 .c-learn-more {
   box-sizing: border-box;
 
-  >.title {
+  > .title {
     @include font-body-bold();
     margin-bottom: 8px;
   }
 
-  >.button {
+  > .button {
     >a {
       font-size: 14px;
       font-weight: normal;
@@ -877,12 +778,12 @@ $clip-path-transition: .5s;
     max-width: 232px;
   }
 
-  >.message {
+  > .message {
     position: relative;
     z-index: 2;
   }
 
-  >.button {
+  > .button {
     display: flex;
     justify-content: flex-end;
     margin-top: 4px;

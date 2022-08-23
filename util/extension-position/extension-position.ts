@@ -59,7 +59,7 @@ export function getIframeStyles({
 }) {
   const baseStyles = BASE_IFRAME_STYLES_IN_VIDEO;
   if (state === "open") {
-    const stateStyles = { "clip-path": "inset(0% 0% 0% 0%)" };
+    const stateStyles = { "clip-path": "inset(0% 0% 0% 0% round 4px)" };
     return { ...baseStyles, ...stateStyles };
   }
 

@@ -1,41 +1,57 @@
-import { _, classKebab, useRef, useEffect, useStyleSheet, ImageByAspectRatio, Ripple, React } from "../../deps.ts";
 import {
+  _,
+  classKebab,
+  ImageByAspectRatio,
+  React,
+  Ripple,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useStyleSheet,
+} from "../../deps.ts";
+import {
+  getIsOpen,
   TabState,
+  useMenu,
   usePageStack,
   useTabButton,
-  useTabStateManager,
   useTabState,
-  useMenu,
-  getIsOpen
+  useTabStateManager,
 } from "../../util/mod.ts";
-import stylesheet from './tab-bar.scss.js'
+import stylesheet from "./tab-bar.scss.js";
 export default function TabBar() {
-  useStyleSheet(stylesheet)
-  const $$additionalButtonRef = useRef(undefined!)
-  const previousTabButtonLengthRef = useRef<number>(0)
+  useStyleSheet(stylesheet);
+  const $$additionalButtonRef = useRef<HTMLDivElement>(undefined!);
+  const previousTabButtonLengthRef = useRef<number>(0);
   const tabButtonManager = useTabButton();
   const additionalTabButtons = tabButtonManager.buttonMap;
   const { store } = useTabStateManager();
-  const { store: menuStore, setAdditionalButtonRef, updateDimensions } = useMenu()
-  const { setActiveTab } = useTabState()
+  const { store: menuStore, setAdditionalButtonRef, updateDimensions } = useMenu();
+  const { setActiveTab } = useTabState();
   const { clearPageStack } = usePageStack();
+  const isMenuOpen = getIsOpen(menuStore);
 
-  useEffect(() => {
-    setAdditionalButtonRef($$additionalButtonRef)
-  }, [$$additionalButtonRef.current])
-
-  const hasTabButtonsLengthChanged = previousTabButtonLengthRef.current !== Object.keys(additionalTabButtons)?.length
-  useEffect(() => {
+  const hasTabButtonsLengthChanged =
+  previousTabButtonLengthRef.current !== Object.keys(additionalTabButtons)?.length;
+  useLayoutEffect(() => {
     updateDimensions()
-    previousTabButtonLengthRef.current = Object.keys(additionalTabButtons)?.length
-  }, [hasTabButtonsLengthChanged])
+    if(hasTabButtonsLengthChanged) {
+      previousTabButtonLengthRef.current = Object.keys(additionalTabButtons)?.length;
+    }
+  }, [isMenuOpen, hasTabButtonsLengthChanged])
 
-  const isMenuOpen = getIsOpen(menuStore)
-  // update additional button dimensions
+  useLayoutEffect(() => {
+    setAdditionalButtonRef($$additionalButtonRef);
+  }, [$$additionalButtonRef.current]);
+
   return (
-    <div className={`c-tab-bar ${classKebab({
-      isCollapsed: !isMenuOpen
-    })}`}>
+    <div
+      className={`c-tab-bar ${
+        classKebab({
+          isCollapsed: !isMenuOpen,
+        })
+      }`}
+    >
       <div ref={$$additionalButtonRef} className="additional-tab-buttons">
         {Object.values(additionalTabButtons)}
       </div>
@@ -47,7 +63,7 @@ export default function TabBar() {
             className={`tab ${classKebab({ isActive, hasBadge })}`}
             onClick={() => {
               clearPageStack();
-              setActiveTab(id)
+              setActiveTab(id);
             }}
           >
             <div className="icon">
@@ -67,13 +83,26 @@ export default function TabBar() {
   );
 }
 
-export function CollapsibleTabButton({ children }: { children?: React.ReactNode }) {
-  const { store } = useMenu()
-  const isMenuOpen = getIsOpen(store)
-  return  <div className={`c-collapsible-tab-button ${classKebab({
-    isOpen: isMenuOpen,
-    isCollapsed: !isMenuOpen
-  })}`}>{
-    children
-  }</div>
+export function CollapsibleTabButton(
+  { children, collapsedIcon, onClick }: {
+    children: React.ReactNode;
+    collapsedIcon?: React.ReactNode;
+    onClick?: () => void
+  },
+) {
+  const { store } = useMenu();
+  const isMenuOpen = getIsOpen(store);
+  return (
+    <div
+      onClick={onClick}
+      className={`c-collapsible-tab-button ${
+        classKebab({
+          isOpen: isMenuOpen,
+          isCollapsed: !isMenuOpen,
+        })
+      }`}
+    >
+      {isMenuOpen ? children : collapsedIcon}
+    </div>
+  );
 }

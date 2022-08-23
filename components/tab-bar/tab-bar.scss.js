@@ -63,9 +63,7 @@ export default scss`
 // .tabs {
 //   overflow: hidden;
 // }
-// .c-collapsible-tab-button {
-//   &.is-collapsed {
-//     max-width: 40px;
-//   }
-// }
+.c-collapsible-tab-button {
+  cursor: pointer;
+}
 `

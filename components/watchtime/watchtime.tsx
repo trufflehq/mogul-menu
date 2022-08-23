@@ -116,15 +116,13 @@ export default function Watchtime(props: WatchtimeProps) {
     // want to update dimensions
     addButton(
       CLAIM_BUTTON,
-      <CollapsibleTabButton>
         <ChannelPoints
           onClick={claimHandler}
           hasText
           hasBattlePass
           hasChannelPoints
           highlightButtonBg="var(--truffle-gradient)"
-          />
-      </CollapsibleTabButton>
+        />
     );
     
     setIsClaimable(true)

@@ -47,7 +47,7 @@ export type UpdateAdditionalButtonRef = {
 
 export type UpdateDimensions = {
   type: "@@MENU_UPDATE_DIMENSIONS";
-  payload: {
+  payload?: {
     top?: number;
     right?: number;
     bottom?: number;

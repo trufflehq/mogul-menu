@@ -24,6 +24,7 @@ export interface Dimensions {
   base: Vector;
   modifiers: Modifiers;
 }
+
 function createClipPath(
   position: Vector,
   base: Vector,
@@ -33,7 +34,7 @@ function createClipPath(
 				${position.y - top}px
 				calc(100% - ${position.x + base.x + right}px) 
 				calc(100% - ${position.y + base.y + bottom}px) 
-				${position.x - left}px)`;
+				${position.x - left}px round 4px)`;
 }
 function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
   //creates an element that spans the entire screen
@@ -133,18 +134,13 @@ export default function Draggable(
         background: "none",
         width: "100%",
         height: "100%",
-        // uncomment for local testing
-        // "clip-path": dragInfo.pressed ? "none" : createClipPath(
-        //   dragInfo.current,
-        //   dimensions.base,
-        //   dimensions.modifiers,
-        // ),
-        "clip-path": createClipPath(
+        "clip-path":  createClipPath(
           dragInfo.current,
           dimensions.base,
           dimensions.modifiers,
         ),
-        transition: dimensions.modifiers.transition,
+        // dragInfo.pressed disables the animation during drag
+        transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
       }}
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
