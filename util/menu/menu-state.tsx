@@ -1,4 +1,5 @@
 import { createContext, React, useContext, useMemo, useReducer } from "../../deps.ts";
+import { File } from '../../types/mod.ts'
 import { DimensionModifiers, MenuActions, MenuState } from "./types.ts";
 import { getClosedHeight, getClosedWidth, getIsOpen, getMenuState } from "./menu-state-getter.ts";
 import {
@@ -147,8 +148,8 @@ export function useMenu() {
   };
 }
 
-export function MenuProvider({ children }: { children: React.ReactNode }) {
-  const menuState = useMenuReducer(INITIAL_MENU_STATE);
+export function MenuProvider({ children, iconImageObj }: { children: React.ReactNode, iconImageObj?: File }) {
+  const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
   return (
     <MenuContext.Provider value={menuState}>
       {children}

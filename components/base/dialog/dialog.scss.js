@@ -7,15 +7,16 @@ export default scss`
   color: var(--mm-color-text-bg-secondary);
   border-radius: 4px;
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 
   >.flex {
-    height: auto;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 
     >.content {
-      max-height: 75vh;
       flex-grow: 1;
       flex-shrink: 1;
       flex-basis: auto;
