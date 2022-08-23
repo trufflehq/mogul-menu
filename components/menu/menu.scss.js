@@ -87,6 +87,7 @@ $snackbar-container-width: 95%;
 $closed-offest-width: 60px;
 
 $ease-function: cubic-bezier(.4, .71, .18, .99);
+$clip-path-transition: .5s;
 
 // body {
 //   background: transparent !important;
@@ -103,39 +104,36 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
-  >.menu {
+  > .menu {
+    transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
     width: 640px;
     height: 600px;
-    // we use clipping so extension menu can close w/ an animation
-    clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 40px));
-    transition: clip-path .5s $ease-function;
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);
     color: var(--mm-color-text-bg-primary);
     font-family: var(--mm-font-family);
-    border: 1px solid rgba(60, 58, 65, 1);
 
-    >.inner {
+    > .inner {
       height: 100%;
       width: 100%;
       position: relative;
       display: flex;
       flex-direction: column;
 
-      >.close {
+      > .close {
         position: absolute;
         top: 48px;
         right: 12px;
         cursor: pointer;
       }
 
-      >.body {
+      > .body {
         flex: 1;
         overflow-y: auto;
         box-sizing: border-box;
 
-        >.tab-component {
+        > .tab-component {
           display: none;
 
           &.is-active {
@@ -148,7 +146,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
           background: transparent;
         }
 
-        >.prediction {
+        > .prediction {
           background: var(--bg-base);
           position: absolute;
           z-index: 10;
@@ -163,7 +161,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
             background: transparent;
           }
 
-          >.close {
+          > .close {
             height: 40px;
             display: flex;
             align-items: center;
@@ -172,21 +170,17 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         }
       }
 
-      >.bottom {
+      > .bottom {
         display: flex;
         justify-content: flex-end;
         max-height: 40px;
         width: 100%;
-        >.extension-icon {
+        
+        > .extension-icon {
           cursor: pointer;
-          // position: absolute;
-          // z-index: 99999;
-          // top: $extension-top-offset;
-          // right: $extension-right-offset;
           background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
           background-size: 100%;
           background-repeat: no-repeat;
-          // background-color: var(--bg-base);
           background-color: rgba(0, 0, 0, 0.1);
           box-sizing: border-box;
           flex-shrink: 0;
@@ -201,62 +195,8 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
             box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.12);
           }
         }
-        >.tabs {
-          opacity: 0;
-          flex-direction: row-reverse;
-          box-sizing: border-box;
-          max-height: 40px;
 
-          display: flex;
-          overflow-x: overlay;
-          overflow-y: overlay;
-          flex: 1;
-
-          /* scrollbar fix for firefox */
-          @-moz-document url-prefix() { 
-            overflow-x: auto;
-          }
-
-          >.tab {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-            cursor: pointer;
-            position: relative;
-
-            padding: 0px 12px;
-
-            &:hover {
-              background-color: var(--mm-color-bg-tertiary);
-            }
-
-            &.is-active {
-              background-color: var(--mm-color-bg-tertiary);
-            }
-
-            &.has-badge>.icon {
-              position: relative;
-              @include badge(top-right);
-            }
-
-            >.icon {
-              margin-right: 8px;
-            }
-
-            >.title {
-              white-space: nowrap;
-            }
-          }
-
-          > .additional-tab-buttons {
-            flex-shrink: 0;
-            display: flex;
-          }
-        }
-
-
-        >.extension-icon {
+        > .extension-icon {
           background-color: var(--primary-base);
           border-radius: 0px;
           border: 1px solid transparent;
@@ -264,7 +204,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         }
       }
 
-      >.page-stack {
+      > .page-stack {
         height: 100%;
         width: 100%;
         // allow to expand to full height (flex hack)
@@ -287,98 +227,11 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         }
       }
 
-      >.tab-component {
+      > .tab-component {
         position: relative;
         flex: 1;
       }
     }
-
-    // TODO: extract action banner component
-    // .action-banner {
-    //   display: flex;
-    //   align-items: center;
-    //   background-color: var(--secondary-base);
-    //   box-sizing: border-box;
-    //   padding: 2px 16px;
-
-    //   > .info {
-    //     font-size: 14px;
-    //     line-height: 21px;
-    //     font-weight: 600;
-    //     color: var(--secondary-base-text);
-    //     white-space: nowrap;
-    //     overflow: hidden;
-    //     text-overflow: ellipsis;
-    //   }
-
-    //   &.action-banner-style-twitch {
-    //     background: #772CE8;
-
-    //     > .info {
-    //       color:rgba(255, 255, 255, 1);
-    //     }
-    //   }
-
-    //   > .signup {
-    //     display: flex;
-    //     justify-content: flex-end;
-    //     flex: 1;
-    //     margin-left: 8px;
-
-    //     > button {
-    //       font-size: 12px;
-    //       line-height: 18px;
-    //       font-weight: 500;
-    //       max-width: 120px;
-    //       padding: 8px 24px;
-    //       border-radius: 4px;
-    //     }
-    //   }
-    // }
-  }
-
-  // TODO: generalize button in tab menu behavior
-  // &.is-claimable {
-  //   > .menu {
-  //     clip-path: inset(0% 0% calc(100% - 40px) calc(100% - 78px));
-  //     transition: clip-path .5s cubic-bezier(.4,.71,.18,.99);
-  //   }
-  // }
-}
-
-.z-browser-extension-menu.is-open {
-  >.menu {
-    clip-path: inset(0% 0% 0% 0%);
-    transition: clip-path .5s cubic-bezier(.4, .71, .18, .99);
-
-    >.inner {
-      >.bottom {
-        >.tabs {
-          opacity: 1;
-        }
-      }
-    }
-  }
-
-  >.c-snack-bar-container {
-    top: unset;
-    right: unset;
-    width: 95%;
-    max-width: unset;
-    left: calc((100% - #{$snackbar-container-width}) / 2);
-    pointer-events: none;
-
-    >.c-snack-bar-el {
-      display: flex;
-      pointer-events: all;
-    }
-  }
-}
-
-
-.z-browser-extension-menu.has-notification:not(.is-open) {
-  >.extension-icon {
-    @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
   }
 }
 
@@ -409,7 +262,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     cursor: pointer;
   }
 
-  >.header {
+  > .header {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -420,7 +273,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     box-sizing: border-box;
     margin-bottom: 20px;
 
-    >.icon {
+    > .icon {
       background-color: $tile-bg;
       border-radius: 100%;
       width: 40px;
@@ -433,7 +286,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
       }
     }
 
-    >.text {
+    > .text {
       font-weight: 500;
       font-size: 16px;
       letter-spacing: 0.02em;
@@ -450,7 +303,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   box-sizing: border-box;
   display: flex;
 
-  >.image {
+  > .image {
     flex: 0 1 153px;
 
     >img {
@@ -461,7 +314,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     }
   }
 
-  >.content {
+  > .content {
     flex: 1 0 0%;
     padding: 16px 22px;
     display: flex;
@@ -469,8 +322,8 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     justify-content: space-between;
     gap: 16px;
 
-    >.text {
-      >.ad {
+    > .text {
+      > .ad {
         font-weight: 400;
         font-size: 14px;
         line-height: 21px;
@@ -478,7 +331,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         color: var(--bg-base-text-80);
       }
 
-      >.tagline {
+      > .tagline {
         font-weight: 400;
         font-size: 16px;
         line-height: 24px;
@@ -486,8 +339,8 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
       }
     }
 
-    >.actions {
-      >.c-button {
+    > .actions {
+      > .c-button {
         &:hover {
           border: 1px solid var(--bg-base-text);
         }
@@ -498,37 +351,37 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 }
 
 .c-home-tab {
-  >.header {
+  > .header {
     display: flex;
     align-items: center;
 
     margin-bottom: 16px;
 
-    >.user {
+    > .user {
       display: flex;
       flex: 1;
 
 
-      >.c-account-avatar {
+      > .c-account-avatar {
         margin-right: 16px;
       }
 
-      >.info {
+      > .info {
         display: flex;
         flex-direction: column;
         justify-content: center;
 
-        >.top {
+        > .top {
           display: flex;
           align-items: center;
           margin-bottom: 4px;
 
-          >.name {
+          > .name {
             font-size: 20px;
             font-weight: 600;
           }
 
-          >.powerup {
+          > .powerup {
             width: 24px;
             height: 24px;
             margin-left: 8px;
@@ -536,16 +389,16 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 
         }
 
-        >.amounts {
+        > .amounts {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 18px;
 
-          >.amount {
+          > .amount {
             display: flex;
             align-items: center;
 
-            >.icon {
+            > .icon {
               margin-right: 8px;
             }
           }
@@ -554,7 +407,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
       }
     }
 
-    >.support {
+    > .support {
       font-size: 12px;
       line-height: 16px;
       text-decoration: underline;
@@ -568,12 +421,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     }
 
 
-    >.actions {
+    > .actions {
       display: flex;
       justify-content: flex-end;
       gap: 16px;
 
-      >.icon {
+      > .icon {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -586,14 +439,14 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 
   }
 
-  >.tile-grid {
+  > .tile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
 
 
-  >.banner {
+  > .banner {
     font-size: 16px;
     font-weight: 600;
     background: var(--tertiary-base);
@@ -603,23 +456,23 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 }
 
 .c-mogul-pass-tab {
-  >.title {
+  > .title {
     font-weight: 600;
     font-size: 16px;
     margin-bottom: 2px;
   }
 
-  >.description {
+  > .description {
     margin-bottom: 4px;
   }
 
-  >.description,
-  >.learn-more {
+  > .description,
+  > .learn-more {
     font-size: 14px;
     font-weight: 400;
   }
 
-  >.learn-more {
+  > .learn-more {
     color: var(--secondary-base);
     margin-bottom: 20px;
     cursor: pointer;
@@ -630,14 +483,14 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 .c-settings-page_content {
   padding: 16px;
 
-  >.settings {
+  > .settings {
     margin-bottom: 16px;
 
-    >.name {
+    > .name {
       margin-top: 8px;
     }
 
-    >.color {
+    > .color {
       margin-top: 8px;
     }
   }
@@ -647,7 +500,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     align-items: center;
     padding: 4px 16px;
 
-    >.actions {
+    > .actions {
       margin-top: 0;
     }
   }
@@ -677,7 +530,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   font-size: 14px;
   font-weight: 400;
 
-  >.icon {
+  > .icon {
     margin-right: 8px;
   }
 }
@@ -690,7 +543,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   margin-top: 16px;
   min-height: 200px;
 
-  >.sponsor {
+  > .sponsor {
     width: 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -709,44 +562,39 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   text-align: center;
   border-radius: 4px;
 
-  >.header-image {
+  > .header-image {
     max-width: 568px;
     margin: 0 auto;
     margin-bottom: 20px;
   }
 
-  >.text {
+  > .text {
     margin-bottom: 16px;
   }
 }
-
-// this class can be used in child components so that they're not affected by the default padding 
-// .reach-edge {
-//   margin: auto (-$tab-body-padding);
-// }
 
 .c-collectible-empty {
   margin: 24px auto;
   box-sizing: border-box;
   max-width: 348px;
 
-  >.wrapper {
+  > .wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
 
-    >.preview {
+    > .preview {
       display: flex;
       flex-direction: column;
       margin-bottom: 12px;
 
-      >.stack {
+      > .stack {
         position: relative;
         width: fit-content;
         margin: auto;
 
-        >.block {
+        > .block {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -772,7 +620,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
         }
       }
 
-      >.message {
+      > .message {
         margin-top: 24px;
         font-size: 16px;
         line-height: 24px;
@@ -780,12 +628,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
       }
     }
 
-    >.body {
+    > .body {
       background-color: var(--tertiary-base);
       border-radius: 6px;
       padding: 24px 32px;
 
-      >.title {
+      > .title {
         font-size: 16px;
         line-height: 24px;
         text-transform: uppercase;
@@ -794,25 +642,25 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
       }
 
 
-      >.way-to-earn {
+      > .way-to-earn {
         display: flex;
         margin-bottom: 24px;
 
-        >.left {}
+        > .left {}
 
-        >.right {
+        > .right {
           display: flex;
           flex-direction: column;
           padding-left: 12px;
 
-          >.description {
+          > .description {
             font-size: 16px;
             line-height: 24px;
             font-weight: 400;
             margin-bottom: 12px;
           }
 
-          >.button {
+          > .button {
             margin-bottom: 12px;
 
             >button {
@@ -824,7 +672,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
             }
           }
 
-          >.link {
+          > .link {
             text-decoration: underline;
             cursor: pointer;
           }
@@ -840,7 +688,7 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     // TODO add a background secondary css var
     background-color: rgba(22, 31, 44, 1) !important;
 
-    >.top {
+    > .top {
       background-color: var(--primary-base) !important;
       color: var(--primary-base-text);
     }
@@ -868,25 +716,25 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
   box-sizing: border-box;
   margin-bottom: 20px;
 
-  >.name {
+  > .name {
     @include font-body-bold;
   }
 
-  >.reward {
+  > .reward {
     display: flex;
     align-items: center;
     margin-top: 2px;
 
-    >.icon {
+    > .icon {
       margin-right: 4px;
     }
 
-    >.amount {
+    > .amount {
       @include font-body-bold;
     }
   }
 
-  >.description {
+  > .description {
     margin-top: 4px;
     @include font-body-caption;
   }
@@ -895,12 +743,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
 .c-learn-more {
   box-sizing: border-box;
 
-  >.title {
+  > .title {
     @include font-body-bold();
     margin-bottom: 8px;
   }
 
-  >.button {
+  > .button {
     >a {
       font-size: 14px;
       font-weight: normal;
@@ -930,12 +778,12 @@ $ease-function: cubic-bezier(.4, .71, .18, .99);
     max-width: 232px;
   }
 
-  >.message {
+  > .message {
     position: relative;
     z-index: 2;
   }
 
-  >.button {
+  > .button {
     display: flex;
     justify-content: flex-end;
     margin-top: 4px;

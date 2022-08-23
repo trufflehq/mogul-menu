@@ -103,6 +103,20 @@ export default scss`
   }
 }
 
+.c-collapsed-channel-points {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 100%;
+
+  > .icon {
+    animation: claim-shake 2s infinite cubic-bezier(.36,.07,.19,.97) both;
+    backface-visibility: hidden;
+    transform-origin: bottom;
+  }
+}
+
 @keyframes gleam {
 	0% {
 		background-position: 0% 0%;

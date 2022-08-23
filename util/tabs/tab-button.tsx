@@ -1,4 +1,4 @@
-import { React, createContext, useState, useContext, useMemo } from "../../deps.ts";
+import { React, createContext, useState, useContext  } from "../../deps.ts";
 
 interface TabButtonContext {
   addButton: (key: string, Component: React.ReactNode) => void

@@ -5,6 +5,7 @@ import {
   _,
   getSrcByImageObj,
 } from "../../deps.ts";
+import { CollapsibleTabButton } from '../tab-bar/tab-bar.tsx'
 import styleSheet from "./channel-points.scss.js";
 
 // TODO: simplify this by using slug=timer component
@@ -25,7 +26,6 @@ export default function ChannelPointsClaim({
   onClick?: () => void;
 }) {
   useStyleSheet(styleSheet);
-
   const isClaimButtonVisible = true;
 
   const darkChannelPointsSrc =
@@ -46,26 +46,40 @@ export default function ChannelPointsClaim({
     : hasBattlePass
     ? "Claim XP"
     : "Claim";
-
+    
   return (
-    <div className="c-channel-points" title={fullTitle}>
-      {
-        <div
-          className={`claim ${classKebab({
-            hasText,
-            isVisible: isClaimButtonVisible,
-          })}`}
-          style={{
-            background: highlightButtonBg,
-          }}
-          onClick={onClick}
-        >
-          <div className="icon">
-            <img src={darkChannelPointsSrc} width="16" />
+    <CollapsibleTabButton onClick={onClick} collapsedIcon={<CollapsedChannelPointsButton highlightButtonBg={highlightButtonBg} />}>
+      <div className={`c-channel-points`} title={fullTitle}>
+        {
+          <div
+            className={`claim ${classKebab({
+              hasText,
+              isVisible: isClaimButtonVisible,
+            })}`}
+            style={{
+              background: highlightButtonBg,
+            }}
+          >
+            <div className="icon">
+              <img src={darkChannelPointsSrc} width="16" />
+            </div>
+            {hasText && <div className="title">{shortTitle}</div>}
           </div>
-          {hasText && <div className="title">{shortTitle}</div>}
-        </div>
-      }
-    </div>
+        }
+      </div>
+    </CollapsibleTabButton>
   );
+}
+
+function CollapsedChannelPointsButton({ highlightButtonBg }: { highlightButtonBg?: string}) {
+  const darkChannelPointsSrc = "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
+  return <div className="c-collapsed-channel-points"
+    style={{
+      background: highlightButtonBg,
+    }}
+  >
+     <div className="icon">
+        <img src={darkChannelPointsSrc} width="16" />
+      </div>
+  </div>
 }

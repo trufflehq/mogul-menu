@@ -12,8 +12,9 @@ import {
 import styleSheet from "./watchtime.scss.js";
 
 import Timer from "../timer/timer.tsx";
+import { CollapsibleTabButton } from '../tab-bar/tab-bar.tsx'
 import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
-import { useTabButton } from "../../util/mod.ts";
+import { useTabButton, useMenu } from "../../util/mod.ts";
 import ChannelPoints from "../channel-points/channel-points.tsx";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
@@ -59,12 +60,15 @@ export default function Watchtime(props: WatchtimeProps) {
     query: POINTS_QUERY,
   });
 
+  const { setIsClaimable } = useMenu()
   const { addButton, removeButton } = useTabButton();
   const enqueueSnackBar = useSnackBar();
 
   const creatorName = "Ludwig";
 
   const claimHandler = async () => {
+    setIsClaimable(false)
+    removeButton(CLAIM_BUTTON);
     const { channelPointsClaimed, xpClaimed } = (await claim()) ?? {};
     await reexecutePointsQuery({
       requestPolicy: "network-only",
@@ -93,11 +97,10 @@ export default function Watchtime(props: WatchtimeProps) {
         totalXp={parseInt(seasonPass?.xp?.count || 0)}
       />
     ));
-
-    removeButton(CLAIM_BUTTON);
   };
 
   const onFinishedCountdown = useCallback(async () => {
+    // console.log('countdown finished')
     await reexecutePointsQuery({
       requestPolicy: "network-only",
       additionalTypenames: [
@@ -108,16 +111,21 @@ export default function Watchtime(props: WatchtimeProps) {
         "EconomyTransaction",
       ],
     });
+
+    
+    // want to update dimensions
     addButton(
       CLAIM_BUTTON,
-      <ChannelPoints
-        onClick={claimHandler}
-        hasText
-        hasBattlePass
-        hasChannelPoints
-        highlightButtonBg="var(--truffle-gradient)"
-      />
+        <ChannelPoints
+          onClick={claimHandler}
+          hasText
+          hasBattlePass
+          hasChannelPoints
+          highlightButtonBg="var(--truffle-gradient)"
+        />
     );
+    
+    setIsClaimable(true)
   }, []);
 
   const { claim, secondsRemainingSubject, timeWatchedSecondsSubject } =
