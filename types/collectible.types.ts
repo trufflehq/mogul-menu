@@ -18,6 +18,13 @@ export interface CollectibleData<T> {
   description: string;
 }
 
+export interface OwnedCollectible<T> {
+  collectible: Collectible<T>;
+  userId: string;
+  collectibleId: string;
+  count: number;
+}
+
 export interface Collectible<T> {
   id: string;
   orgId: string;
@@ -27,6 +34,7 @@ export interface Collectible<T> {
   type: CollectibleType;
   targetType: CollectibleTargetType;
   data: CollectibleData<T>;
+  ownedCollectible: OwnedCollectible<T>;
 }
 
 interface ChatHighlightColor {
@@ -35,9 +43,9 @@ interface ChatHighlightColor {
 }
 
 interface GradientColor {
-  name: string
-  slug: string
-  value: string
+  name: string;
+  slug: string;
+  value: string;
 }
 
 export interface ChatHighlightRedeemData extends ActivePowerupRedeemData {
@@ -47,7 +55,6 @@ export interface ChatHighlightRedeemData extends ActivePowerupRedeemData {
 export interface UsernameGradientRedeemData extends ActivePowerupRedeemData {
   colors: GradientColor[];
 }
-
 
 export interface ActivePowerupRedeemData {
   powerupId: string;

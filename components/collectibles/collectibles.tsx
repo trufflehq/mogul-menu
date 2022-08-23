@@ -13,6 +13,9 @@ import { usePageStack } from "../../util/mod.ts";
 import styleSheet from "./collectibles.scss.js";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 
+import { Collectible as CollectibleType } from "../../types/collectible.types.ts";
+import { ActivePowerup } from "../../types/active-powerup.types.ts";
+
 const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
   query CollectibleGetAllByMe {
     # TODO: fix this hardcoded paging and possibly
@@ -73,12 +76,8 @@ const ORDER_FN = ({ type }) => {
   return order === -1 ? 9999 : order;
 };
 
-interface CollectiblesProps {
-  $emptyState: React.ReactNode
-}
-export default function Collectibles(props: CollectiblesProps) {
+export default function Collectibles() {
   useStyleSheet(styleSheet);
-  const { $emptyState } = props;
 
   const enqueueSnackBar = useSnackBar();
   const { pushPage, popPage } = usePageStack();
@@ -108,7 +107,6 @@ export default function Collectibles(props: CollectiblesProps) {
     }),
     ORDER_FN
   );
-  const isEmpty = _.isEmpty(collectibleConnection?.nodes);
 
   // active powerups
   const [{ data: activePowerupData }] = useQuery({
@@ -118,9 +116,13 @@ export default function Collectibles(props: CollectiblesProps) {
   const activePowerups =
     activePowerupData?.activePowerupConnection?.nodes ?? [];
 
-  if (isEmpty) return <>
-    Looks like you don't have any collectibles!
-  </>
+  const isEmpty = groupedCollectibles.every((group) =>
+    group.collectibles?.every(
+      (collectible) => !shouldShowCollectible(activePowerups, collectible)
+    )
+  );
+
+  if (isEmpty) return <>Looks like you don't have any collectibles!</>;
 
   return (
     <div className="c-collectibles">
@@ -136,8 +138,7 @@ export default function Collectibles(props: CollectiblesProps) {
                 });
 
                 return (
-                  (collectible?.ownedCollectible?.count > 0 ||
-                    activePowerup) && (
+                  shouldShowCollectible(activePowerups, collectible) && (
                     <Collectible
                       key={idx}
                       collectible={collectible}
@@ -155,4 +156,16 @@ export default function Collectibles(props: CollectiblesProps) {
       })}
     </div>
   );
+}
+
+function shouldShowCollectible(
+  activePowerups: ActivePowerup[],
+  collectible: CollectibleType<any>
+) {
+  const powerupId = collectible?.data?.redeemData?.powerupId;
+  const activePowerup = _.find(activePowerups, {
+    powerup: { id: powerupId },
+  });
+
+  return collectible?.ownedCollectible?.count > 0 || activePowerup;
 }
