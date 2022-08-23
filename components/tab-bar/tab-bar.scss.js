@@ -48,6 +48,7 @@ export default scss`
   overflow-x: overlay;
   overflow-y: overlay;
   flex: 1;
+  z-index: 1000;
 
   /* scrollbar fix for firefox */
   @-moz-document url-prefix() { 
