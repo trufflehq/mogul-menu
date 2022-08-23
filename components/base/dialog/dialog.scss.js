@@ -26,11 +26,12 @@ export default scss`
       background: var(--background);
       color: var(--text-color);
       display: flex;
+      align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
 
-      >div {
-        padding: 20px;
+      > div {
+        padding: 12px;
       }
 
       .close {
@@ -44,11 +45,11 @@ export default scss`
         outline: none;
 
         &:focus {
-          border: 2px solid var(--mm-color-primary);
+          border: 2px solid var(--border-color);
         }
 
         &:active {
-          border: 2px solid var(--mm-color-primary);
+          border: 2px solid var(--border-color);
         }
       }
     }

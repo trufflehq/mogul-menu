@@ -58,7 +58,7 @@ $option-2-color: #EE416B;
 
           >.z-channel-points-icon {
             position: absolute;
-            right: 13px;
+            right: 28px;
             top: 3px;
             height: 100%;
           }

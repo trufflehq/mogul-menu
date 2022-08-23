@@ -7,14 +7,17 @@ const HEADER_STYLES = {
   default: {
     "--background": "transparent",
     "--text-color": "var(--mm-color-text-bg-secondary)",
+    "--border-color": "var(--mm-color-primary)"
   },
   primary: {
     "--background": "var(--mm-color-primary)",
     "--text-color": "var(--mm-color-text-primary)",
+    "--border-color": "var(--mm-color-text-primary)"
   },
   secondary: {
     "--background": "var(--mm-color-secondary)",
     "--text-color": "var(--mm-color-text-secondary)",
+    "--border-color": "var(--mm-color-text-secondary)"
   },
 };
 

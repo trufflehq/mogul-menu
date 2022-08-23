@@ -144,34 +144,34 @@ export default function ConnectedAccounts() {
     lastUpdatedConnectionsRef.current = connections;
   }, [connections]);
 
-  // const openOAuth = async (sourceType) => {
-  //   await model.user.requestLoginIfGuest(me, overlay, {
-  //     props: {
-  //       source: "ways-to-earn",
-  //     },
-  //   });
+  const openOAuth = (sourceType: string) => {
+    // await model.user.requestLoginIfGuest(me, overlay, {
+    //   props: {
+    //     source: "ways-to-earn",
+    //   },
+    // });
 
-  //   let openedWindowInterval;
-  //   useEffect(() => {
-  //     return () => {
-  //       clearInterval(openedWindowInterval);
-  //     };
-  //   });
+    let openedWindowInterval;
+    useEffect(() => {
+      return () => {
+        clearInterval(openedWindowInterval);
+      };
+    });
 
-  //   if (!hasConnection(sourceType)) {
-  //     const oAuthUrl = oAuthUrlMap[sourceType];
-  //     // listen for this window to close and invalidate cache
-  //     const openedWindow = window.open(oAuthUrl);
-  //     clearInterval(openedWindowInterval);
-  //     openedWindowInterval = setInterval(() => {
-  //       if (openedWindow.closed) {
-  //         console.log("window closed");
-  //         clearInterval(openedWindowInterval);
-  //         model.graphqlClient.invalidateAll();
-  //       }
-  //     });
-  //   }
-  // };
+    if (!hasConnection(sourceType)) {
+      const oAuthUrl = oAuthUrlMap[sourceType];
+      // listen for this window to close and invalidate cache
+      const openedWindow = window.open(oAuthUrl);
+      clearInterval(openedWindowInterval);
+      openedWindowInterval = setInterval(() => {
+        if (openedWindow?.closed) {
+          console.log("window closed");
+          clearInterval(openedWindowInterval);
+          // model.graphqlClient.invalidateAll();
+        }
+      });
+    }
+  };
 
   const hasConnection = (selectedSource) =>
     _.find(connections, { sourceType: selectedSource });
@@ -192,8 +192,8 @@ export default function ConnectedAccounts() {
               className="connection"
               target={"_blank"}
               key={idx}
-              href={oAuthUrlMap?.[logo?.sourceType] || null}
-              // onClick={() => openOAuth(logo?.sourceType)}
+              // href={oAuthUrlMap?.[logo?.sourceType] || null}
+              onClick={() => openOAuth(logo?.sourceType)}
               rel="noreferrer"
             >
               <img src={logo?.imgUrl ?? getSrcByImageObj(logo?.imgFileObj)} />
