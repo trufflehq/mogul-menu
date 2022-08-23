@@ -45,9 +45,9 @@ export default function HomeTab() {
   };
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
-    enqueueSnackBar(() => (
+    enqueueSnackBar(
       <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
-    ));
+    );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };

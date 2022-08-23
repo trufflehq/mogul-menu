@@ -3,8 +3,9 @@ import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
 import { ACTIVE_POLL_QUERY } from '../../gql/mod.ts'
-import { usePageStack } from "../../util/mod.ts";
+import { usePageStack, useMenu } from "../../util/mod.ts";
 import { Poll } from '../../types/mod.ts'
+// import SnackBar from '../base/snack-bar/snack-bar.tsx'
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
@@ -29,17 +30,19 @@ export default function PredictionTile() {
     [activePollData],
   );
 
-  const hasPollChanged = latestPredictionIdRef.current = activePoll?.id
+  const hasPollChanged = latestPredictionIdRef.current !== activePoll?.id
 
+  // TODO implement w/ the closed snackbar
+  // const { enqueueSnackBar, updateDimensions } = useMenu()
+  // useEffect(() => {
+  //   if(latestPredictionIdRef.current && activePoll?.id) {
+  //     updateDimensions()
+  //     // pop active prediction banner
+  //     enqueueSnackBar(<SnackBar message={'New prediction started'} style='flat' />)
+  //   }
 
-  useEffect(() => {
-    console.log('prediction changed', activePoll?.id)
-    latestPredictionIdRef.current = activePoll?.id
-
-    // pop active prediction banner
-
-
-  }, [hasPollChanged])
+  //   latestPredictionIdRef.current = activePoll?.id
+  // }, [hasPollChanged])
 
   const pollMsLeft = useMemo(
     () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),

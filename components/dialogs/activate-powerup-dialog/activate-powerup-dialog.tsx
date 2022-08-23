@@ -66,7 +66,7 @@ export function ActivatePowerupDialog({
       } else if (redeemError) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else {
-        enqueueSnackBar(() => <PowerupActivatedSnackBar collectible={collectible} />);
+        enqueueSnackBar(<PowerupActivatedSnackBar collectible={collectible} />);
       }
 
       // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
