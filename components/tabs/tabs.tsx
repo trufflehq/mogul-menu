@@ -9,7 +9,6 @@ import {
 } from "../../util/mod.ts";
 
 export default function Tabs() {
-  console.log('tabs rerender')
   const tabStateManager = useTabStateManager();
   const { store, dispatch } = tabStateManager;
   const tabSlugs = Object.keys(store.tabs);
