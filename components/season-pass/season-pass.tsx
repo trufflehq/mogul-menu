@@ -38,7 +38,7 @@ import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
 import SingleRewardLevelUpDialog from "../dialogs/single-reward-level-up-dialog/single-reward-level-up-dialog.tsx";
 import { useSeasonPassData } from "../../util/season-pass/season-pass-data.ts";
-import { SeasonPass } from "../../types/season-pass.types.ts";
+import { SeasonPass as SeasonPassType } from "../../types/season-pass.types.ts";
 
 const ME_QUERY = gql`
   query MeQuery {
@@ -94,7 +94,7 @@ export default function SeasonPass(props) {
   //   error: seasonPassFetchError,
   // } = useTestSeasonPassData();
 
-  const seasonPass: SeasonPass = seasonPassData?.seasonPass;
+  const seasonPass: SeasonPassType = seasonPassData?.seasonPass;
 
   // if (!seasonPass) {
   //   return (
