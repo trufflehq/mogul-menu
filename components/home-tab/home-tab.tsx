@@ -32,7 +32,7 @@ export default function HomeTab() {
 
   const me = userInfoData?.me;
   const org = userInfoData?.org;
-  const activePowerups = userInfoData?.activePowerups?.nodes;
+  const activePowerups = userInfoData?.activePowerupConnection?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
   const xp = userInfoData?.seasonPass?.xp?.count;
   const hasChannelPoints = true;

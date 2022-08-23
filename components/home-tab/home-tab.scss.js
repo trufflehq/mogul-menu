@@ -28,6 +28,7 @@ export default scss`
           display: flex;
           align-items: center;
           margin-bottom: 4px;
+          gap: 10px;
 
           >.name {
             font-size: 20px;

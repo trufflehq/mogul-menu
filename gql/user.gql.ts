@@ -49,6 +49,9 @@ export const USER_INFO_QUERY = gql`
           id
           name
           slug
+          componentRels {
+            props
+          }
         }
       }
     }

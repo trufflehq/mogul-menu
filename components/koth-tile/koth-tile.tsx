@@ -33,8 +33,24 @@ const KOTH_USER_QUERY = gql`
       activePowerupConnection {
         nodes {
           powerup {
-            jsx
+            componentRels {
+              props
+            }
           }
+        }
+      }
+      user {
+        id
+        avatarImage {
+          cdn
+          prefix
+          ext
+          variations {
+            postfix
+            width
+            height
+          }
+          aspectRatio
         }
       }
     }
@@ -53,7 +69,8 @@ export default function KothTile() {
             })
           : Obs.of({})
       ),
-      op.map(({ data }: any) => data?.orgUser)
+      op.map(({ data }: any) => data?.orgUser),
+      op.tap(console.log)
     );
     return {
       kingOrgUserObs,

@@ -1,16 +1,20 @@
-import React from "https://npm.tfl.dev/react";
+import { React, useStyleSheet } from "../../deps.ts";
+import { Powerup as PowerupType } from "../../types/powerup.types.ts";
+import styleSheet from "./powerup.scss.js";
 
-export default function Powerup({ powerup }) {
-  if (!powerup?.js) return;
+export default function Powerup({
+  powerup,
+  size = 20,
+}: {
+  powerup: PowerupType;
+  size?: number;
+}) {
+  useStyleSheet(styleSheet);
+  const imageSrc = powerup?.componentRels?.[0].props?.imageSrc;
+  if (!imageSrc) return;
   return (
-    <div className="powerup">
-      {/* FIXME */}
-      {/* <Components.RenderedJsByJsx
-      jsx={powerup.js}
-      components={_.map(powerup.componentRels, ({ component }) => {
-        return getModel().component.getCachedComponentById(component.id)
-      })}
-    /> */}
+    <div className="c-powerup">
+      <img src={imageSrc} width={size} />
     </div>
   );
 }
