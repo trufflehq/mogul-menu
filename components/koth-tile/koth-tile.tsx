@@ -69,8 +69,7 @@ export default function KothTile() {
             })
           : Obs.of({})
       ),
-      op.map(({ data }: any) => data?.orgUser),
-      op.tap(console.log)
+      op.map(({ data }: any) => data?.orgUser)
     );
     return {
       kingOrgUserObs,
