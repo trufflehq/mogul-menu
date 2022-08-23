@@ -2,6 +2,7 @@ import { React, useState } from "../../deps.ts";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 
 import Button from "../base/button/button.tsx";
+import {CollapsibleTabButton} from '../tab-bar/tab-bar.tsx'
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
@@ -49,9 +50,9 @@ export default function HomeTab() {
   };
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
-    enqueueSnackBar(() => (
+    enqueueSnackBar(
       <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
-    ));
+    );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };
@@ -102,7 +103,9 @@ export default function HomeTab() {
   const addButtonHandler = () => {
     addButton(
       TAB_BAR_BUTTON,
-      <Button onClick={removeButtonHandler}>Remove button</Button>
+      <CollapsibleTabButton onClick={removeButtonHandler} collapsedIcon={<CollapsedTestButton />}>
+        <Button>Remove button</Button>
+      </CollapsibleTabButton>
     );
   };
 
@@ -147,4 +150,18 @@ export default function HomeTab() {
       </div>
     </div>
   );
+}
+
+function CollapsedTestButton() {
+  return <div className="c-collapsed-test-button" style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '32px',
+    boxSizing:'border-box',
+    backgroundColor: "var(--mm-color-bg-secondary)",
+    height: '100%'
+  }}>
+    ❌
+  </div>
 }

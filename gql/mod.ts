@@ -3,3 +3,4 @@ export * from "./extension-auth.gql.ts";
 export * from './economy-action.gql.ts'
 export * from './typenames.gql.ts'
 export * from './channel-points.gql.ts'
+export * from './poll.gql.ts'

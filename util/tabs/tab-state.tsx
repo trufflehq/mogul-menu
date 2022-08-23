@@ -58,9 +58,7 @@ export function initializeTabStateManager(tabs: TabDefinition[]) {
 }
 
 export function useTabStateManager() {
-  const tabStateManager = useContext(TabStateContext)
-
-  const { store, dispatch } = tabStateManager
+  const { store, dispatch } = useContext(TabStateContext)
 
   return { store, dispatch }
 }

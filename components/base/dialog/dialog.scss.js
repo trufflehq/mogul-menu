@@ -26,6 +26,7 @@ export default scss`
       background: var(--background);
       color: var(--text-color);
       display: flex;
+      align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
       align-items: center;
@@ -42,11 +43,11 @@ export default scss`
         outline: none;
 
         &:focus {
-          border: 2px solid var(--mm-color-primary);
+          border: 2px solid var(--border-color);
         }
 
         &:active {
-          border: 2px solid var(--mm-color-primary);
+          border: 2px solid var(--border-color);
         }
       }
     }

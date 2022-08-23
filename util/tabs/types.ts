@@ -40,10 +40,9 @@ export type UpdateActiveTabAction = {
     tabSlug: string;
   };
 };
+export type TabStateActions = UpdateTabStateAction | UpdateActiveTabAction;
 
 export type TabsState = Record<string, TabState>;
-
-export type TabStateActions = UpdateTabStateAction | UpdateActiveTabAction;
 
 export type TabStore = {
   activeTab: string;

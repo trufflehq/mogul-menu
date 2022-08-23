@@ -20,7 +20,7 @@ export default function EconomyActionDialog({
       <div className="c-economy-action-dialog">
         {(economyActions?.map((action) => {
           return (
-            <EconomyAction
+            <EconomyActionRow
               economyAction={action}
               orgUserCounterTypeSrc={orgUserCounterTypeSrc}
             />
@@ -32,7 +32,7 @@ export default function EconomyActionDialog({
   );
 }
 
-function EconomyAction({ economyAction, orgUserCounterTypeSrc }: { economyAction: EconomyAction, orgUserCounterTypeSrc: string }) {
+function EconomyActionRow({ economyAction, orgUserCounterTypeSrc }: { economyAction: EconomyAction, orgUserCounterTypeSrc: string }) {
   return (
     <div className="economy-action">
       <div className="name">{economyAction?.name}</div>
