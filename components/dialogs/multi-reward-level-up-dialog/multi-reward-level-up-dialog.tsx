@@ -5,7 +5,10 @@ import DefaultDialogContentFragment from "../content-fragments/default/default-d
 export default function MultiRewardLevelUpDialog() {
   return (
     <Dialog>
-      <DefaultDialogContentFragment primaryText="Level 2 rewards unlocked" />
+      <DefaultDialogContentFragment
+        primaryText="Woah there!"
+        secondaryText="Looks like you've encountered an unfinished feature! Don't worry, the devs will get on this soon :p"
+      />
     </Dialog>
   );
 }
