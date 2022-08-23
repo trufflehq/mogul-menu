@@ -36,13 +36,18 @@ export function getClosedWidth(store: MenuState) {
 
 export function getClosedHeight(store: MenuState) {
   const snackBars = getSnackBars(store);
+  const position = getMenuPosition(store);
 
-  // TODO fix predictions width
-  if (snackBars?.length > 0) {
+  if (position === "top-right") {
+    // TODO fix predictions width
+    if (snackBars?.length > 0) {
+      return 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT;
+    }
+
     return 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT;
+  } else {
+    return 0;
   }
-
-  return 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT;
 }
 
 export function getSnackBars(store: MenuState) {
@@ -54,5 +59,47 @@ export function getTopSnackbar(store: MenuState) {
 }
 
 export function getMenuIconImageObj(store: MenuState) {
-  return store.iconImageObj
+  return store.iconImageObj;
+}
+
+export function getMenuPosition(store: MenuState) {
+  return store.menuPosition;
+}
+
+export function getClosedModifiers(store: MenuState) {
+  const position = getMenuPosition(store);
+  // if (position === "bottom-right") {
+  return {
+    top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+    right: 0,
+    bottom: 0 - BASE_MENU_HEIGHT,
+    left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
+  };
+  // } else { // top right rn
+  //   return {
+  //     top: 0,
+  //     right: 0,
+  //     left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
+  //     bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+  //   };
+  // }
+}
+
+export function getOpenModifiers(store: MenuState) {
+  const position = getMenuPosition(store);
+  // if (position === "bottom-right") {
+  return {
+    top: 0 - DEFAULT_MENU_ICON_HEIGHT - BASE_MENU_HEIGHT,
+    right: 0,
+    bottom: 0 - BASE_MENU_HEIGHT * 2,
+    left: 0,
+    //   };
+    // } else {
+    //   return {
+    //     top: 0,
+    //     right: 0,
+    //     left: 0,
+    //     bottom: 0,
+    //   };
+  };
 }

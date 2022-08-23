@@ -12,6 +12,8 @@ interface SnackBar {
   $component: React.ReactNode;
 }
 
+export type MenuPosition = "top-right" | "top-left" | "bottom-right" | "bottom-left";
+
 export interface MenuState {
   menuState: string;
   isClaimable: boolean;
@@ -24,6 +26,7 @@ export interface MenuState {
     };
     modifiers: DimensionModifiers;
   };
+  menuPosition: MenuPosition;
   snackBars: React.ReactNode[];
 }
 
@@ -73,6 +76,14 @@ export type UpdateDimensionsAction = {
     transition?: string;
   };
 };
+
+export type UpdateMenuPosition = {
+  type: "@@MENU_UPDATE_POSITION";
+  payload?: {
+    position: MenuPosition;
+  };
+};
+
 export type MenuDimensionActions = OpenMenuAction | CloseMenuAction;
 
 export type MenuActions =
@@ -81,4 +92,5 @@ export type MenuActions =
   | UpdateAdditionalButtonRefAction
   | UpdateDimensionsAction
   | EnqueueSnackbarAction
-  | PopSnackbarAction;
+  | PopSnackbarAction
+  | UpdateMenuPosition;

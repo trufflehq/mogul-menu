@@ -100,6 +100,21 @@ $clip-path-transition: .5s;
   // TODO: rm this when we either include it in the design system or have it as a component prop
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
+
+  &.position-bottom-right {
+    > .menu {
+      > .inner {
+        > .bottom {
+          order: 2;
+        }
+        > .body {
+          order: 1;
+        }
+      }
+    }
+  }
+
+
   > .menu {
     transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
     width: 640px;

@@ -8,6 +8,8 @@ import {
   UpdateAdditionalButtonRefAction,
   UpdateClaimableStateAction,
   UpdateDimensionsAction,
+  UpdateMenuPosition,
+  MenuPosition
 } from "./types.ts";
 
 export const setOpen = (): OpenMenuAction => ({
@@ -52,3 +54,10 @@ export const popSnackBar = (): PopSnackbarAction => ({
   type: "@@MENU_POP_SNACKBAR",
   payload: {},
 });
+
+export const updateMenuPosition = (position: MenuPosition): UpdateMenuPosition => ({
+  type: "@@MENU_UPDATE_POSITION",
+  payload: {
+    position
+  }
+})

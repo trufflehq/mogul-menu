@@ -6,6 +6,7 @@ import {CollapsibleTabButton} from '../tab-bar/tab-bar.tsx'
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
+import Option from '../base/option/option.tsx'
 import ColorOption from "../base/color-option/color-option.tsx";
 
 import {
@@ -21,7 +22,7 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import Page from "../base/page/page.tsx";
-import { useTabButton } from "../../util/mod.ts";
+import { useTabButton, useMenu, getMenuPosition } from "../../util/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -43,11 +44,19 @@ export default function HomeTab() {
     { name: "gradoemt3", value: "orange" },
   ];
   const [selectedValue, setSelectedValue] = useState();
+  const { store, updateMenuPosition } = useMenu()
+  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(store))
   const additionalData = { value: selectedValue };
 
   const selectChangeHandler = (value, _idx) => {
     setSelectedValue(value);
   };
+
+  const menuPositionHandler = (value) => {
+    // console.log('menuPositionHandler', value)
+    setMenuPositionValue(value)
+    updateMenuPosition(value)
+  }
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
@@ -147,6 +156,18 @@ export default function HomeTab() {
           highlightButtonBg="var(--mm-gradient)"
           onClick={() => null}
         />
+      </div>
+      <div>
+      <Select onOptionChanged={menuPositionHandler}>
+          <Option disabled={true} value={menuPositionValue} defaultOption={true}>
+              {menuPositionValue}
+           </Option>
+          {['top-right', 'bottom-right'].map((position) => (
+            <Option value={position}>
+              {position}
+            </Option>
+          ))}
+        </Select>
       </div>
     </div>
   );

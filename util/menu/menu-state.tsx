@@ -1,7 +1,7 @@
 import { createContext, React, useContext, useMemo, useReducer } from "../../deps.ts";
 import { File } from '../../types/mod.ts'
-import { DimensionModifiers, MenuActions, MenuState } from "./types.ts";
-import { getClosedHeight, getClosedWidth, getIsOpen, getMenuState } from "./menu-state-getter.ts";
+import { DimensionModifiers, MenuActions, MenuState, MenuPosition } from "./types.ts";
+import { getClosedHeight, getClosedWidth, getIsOpen, getMenuState, getOpenModifiers, getClosedModifiers } from "./menu-state-getter.ts";
 import {
   enqueueSnackBar,
   popSnackBar,
@@ -10,6 +10,7 @@ import {
   setIsClaimable,
   setOpen,
   updateDimensions,
+  updateMenuPosition
 } from "./menu-state-actions.ts";
 export type MenuStateContext = ReturnType<typeof useMenuReducer>;
 export const MenuContext = createContext<MenuStateContext>(undefined!);
@@ -22,11 +23,25 @@ export const DEFAULT_MENU_ICON_WIDTH = 40;
 const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   $$additionalButtonRef: null,
-  menuState: "closed",
+  // menuState: "closed",
+  menuState: 'open',
+  // menuPosition: 'top-right',
+  menuPosition: 'bottom-right',
   snackBars: [],
   dimensions: {
     base: { x: BASE_MENU_WIDTH, y: BASE_MENU_HEIGHT },
     modifiers: {
+      // bottom right open
+      // top: 0 - DEFAULT_MENU_ICON_HEIGHT - BASE_MENU_HEIGHT,
+      // right: 0,
+      // bottom: 0,
+      // left: 0,
+      // bottom closed
+      // top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+      // right: 0,
+      // bottom: 0,
+      // left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
+      // top-right mods
       top: 0,
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
@@ -40,6 +55,7 @@ export function useMenuReducer(initialState: MenuState) {
   const menuStateReducer = (state: MenuState, { type, payload }: MenuActions) => {
     switch (type) {
       case "@@MENU_DEMENSION_OPEN": {
+        console.log('@@MENU_DEMENSION_OPEN')
         return {
           ...state,
           menuState: "open",
@@ -47,28 +63,33 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
+              ...getOpenModifiers(state)
+              // top: 0,
+              // right: 0,
+              // bottom: 0,
+              // left: 0,
             },
           },
         };
       }
       case "@@MENU_DIMENSION_CLOSE": {
-        const width = getClosedWidth(state);
-        const height = getClosedHeight(state);
+        console.log('@@MENU_DIMENSION_CLOSE')
+        const isOpen = getIsOpen(state);
+
+        // const width = getClosedWidth(state);
+        // const height = getClosedHeight(state);
         return {
           ...state,
           menuState: "closed",
           dimensions: {
             ...state.dimensions,
             modifiers: {
-              ...state.dimensions.modifiers,
-              ...{
-                left: width,
-                bottom: height,
-              },
+              // ...state.dimensions.modifiers,
+              ...(isOpen ? state.dimensions.modifiers : getClosedModifiers(state))
+              // ...{
+              //   left: width,
+              //   bottom: height,
+              // },
             },
           },
         };
@@ -87,16 +108,19 @@ export function useMenuReducer(initialState: MenuState) {
       }
       case "@@MENU_UPDATE_DIMENSIONS": {
         const isOpen = getIsOpen(state);
+        console.log('@@MENU_UPDATE_DIMENSIONS')
         return {
           ...state,
           dimensions: {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
+              ...(isOpen ? getOpenModifiers(state) : getClosedModifiers(state))
+
               // expand if the menu is closed and there are additional buttons
-              left: isOpen ? state.dimensions.modifiers.left : getClosedWidth(state),
-              bottom: isOpen ? state.dimensions.modifiers.bottom : getClosedHeight(state),
-              ...payload,
+              // left: isOpen ? state.dimensions.modifiers.left : getClosedWidth(state),
+              // bottom: isOpen ? state.dimensions.modifiers.bottom : getClosedHeight(state),
+              // ...payload,
             },
           },
         };
@@ -115,7 +139,14 @@ export function useMenuReducer(initialState: MenuState) {
           snackBars: slicedSnackBars,
         };
       }
-
+      case "@@MENU_UPDATE_POSITION": {
+        // console.log('@@MENU_UPDATE_POSITION', payload?.position)
+        if(!payload?.position) return state
+        return {
+          ...state,
+          menuPosition: payload.position
+        }
+      }
       default:
         return state;
     }
@@ -139,12 +170,14 @@ export function useMenu() {
       const menuState = getMenuState(store);
       return menuState === "open" ? dispatch(setClosed()) : dispatch(setOpen());
     },
+    setIsClosed: () => dispatch(setClosed()),
     setIsClaimable: (isClaimable: boolean) => dispatch(setIsClaimable(isClaimable)),
     setAdditionalButtonRef: (ref: React.MutableRefObject<HTMLDivElement>) =>
       dispatch(setAdditionalButtonRef(ref)),
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
     popSnackBar: () => dispatch(popSnackBar()),
+    updateMenuPosition: (position: MenuPosition) => dispatch(updateMenuPosition(position))
   };
 }
 

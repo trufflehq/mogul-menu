@@ -1,5 +1,15 @@
-import { React, useRef, useStyleSheet } from "../../deps.ts";
+import { React, useRef, classKebab, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
+
+import {
+  getHasNotification,
+  getMenuState,
+  getIsOpen,
+  useTabStateManager,
+  getDimensions,
+  useMenu,
+  getMenuPosition
+} from "../../util/mod.ts";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import Draggable from "../draggable/draggable.tsx";
 import Tabs from "../tabs/tabs.tsx";
@@ -13,6 +23,19 @@ import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 export default function BrowserExtensionMenuBody() {
   useStyleSheet(styleSheet);
   const $$extensionIconRef = useRef(null);
+  const { store } = useTabStateManager();
+  const { store:menuStore }  = useMenu()
+  const hasNotification = getHasNotification(store);
+
+  const isOpen = getIsOpen(menuStore)
+  const menuPosition = getMenuPosition(menuStore)
+
+  const className = `z-browser-extension-menu position-${menuPosition} ${
+    classKebab(
+      { isOpen, hasNotification },
+    )
+  }`;
+
 
   return (
     <Draggable
