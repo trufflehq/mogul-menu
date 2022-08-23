@@ -89,7 +89,7 @@ $closed-offest-width: 60px;
 $ease-function: cubic-bezier(.4, .71, .18, .99);
 $clip-path-transition: .5s;
 
-.z-browser-extension-menu {
+.c-browser-extension-menu {
   height: 100%;
   width: 100%;
   position: relative;
@@ -146,7 +146,7 @@ $clip-path-transition: .5s;
 }
 
 
-.z-browser-extension-menu.has-notification:not(.is-open) {
+.c-browser-extension-menu.has-notification:not(.is-open) {
   >.extension-icon {
     @include badge(outer-bottom-right, 16px, 16px, rgba(0, 0, 0, 1));
   }

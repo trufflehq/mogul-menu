@@ -1,20 +1,5 @@
-import {
-  _,
-  classKebab,
-  React,
-  useRef,
-  useState,
-  useStyleSheet,
-} from "../../deps.ts";
+import { React, useRef, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
-import {
-  getHasNotification,
-  getMenuState,
-  getIsOpen,
-  useTabStateManager,
-  getDimensions,
-  useMenu,
-} from "../../util/mod.ts";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import Draggable from "../draggable/draggable.tsx";
 import Tabs from "../tabs/tabs.tsx";
@@ -34,7 +19,7 @@ export default function BrowserExtensionMenuBody() {
       requiredClassName="extension-icon"
       ignoreClassName="c-browser-extension-menu"
     >
-      <div className="z-browser-extension-menu">
+      <div className="c-browser-extension-menu">
         <div className="menu">
           <div className="inner">
             <div className="bottom">
