@@ -77,7 +77,6 @@ export default function HomeTab() {
   // other wise the live box loads in later and pushes everything else down
   const isLive = true;
   const isLoading = isLive == null;
-
   return (
     <div className="c-home-tab">
       <div className="header">

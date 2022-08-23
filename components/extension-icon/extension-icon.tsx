@@ -1,18 +1,18 @@
 import { React, useStyleSheet, Ripple, getSrcByImageObj } from "../../deps.ts"
-import { useMenu } from '../../util/mod.ts'
+import { useMenu, getMenuIconImageObj } from '../../util/mod.ts'
 import stylesheet from './extension-icon.scss.js'
 
 export default function ExtensionIcon({ $$extensionIconRef }: { $$extensionIconRef: React.MutableRefObject<HTMLDivElement | null>}) {
-  const { toggleOpen }  = useMenu()
+  const { store, toggleOpen }  = useMenu()
 
   const onExtensionIconClick = () => {
     toggleOpen()
   }
 
-  // useStyleSheet(stylesheet)
-  const iconImageObj =  undefined // menuContext?.iconImageObj
+  useStyleSheet(stylesheet)
+  const iconImageObj = getMenuIconImageObj(store)
   return <div
-  className="extension-icon"
+  className="c-extension-icon"
   style={{
     backgroundImage: iconImageObj ? `url(${getSrcByImageObj(iconImageObj)})` : undefined,
   }}
