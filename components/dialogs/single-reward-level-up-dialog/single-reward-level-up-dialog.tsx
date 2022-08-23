@@ -1,4 +1,5 @@
 import { React, useStyleSheet } from "../../../deps.ts";
+import { useTabState } from "../../../util/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -19,7 +20,14 @@ export default function SingleRewardLevelUpDialog({
   useStyleSheet(styleSheet);
 
   const { popDialog } = useDialog();
+  const { setActiveTab } = useTabState();
   const closeHandler = onClose ?? popDialog;
+
+  const viewCollectionHandler = () => {
+    if (onClose) onClose();
+    else popDialog();
+    setActiveTab("collection");
+  };
 
   return (
     <div className="c-single-reward-level-up-dialog">
@@ -30,7 +38,9 @@ export default function SingleRewardLevelUpDialog({
           <Button onClick={closeHandler} style="bg-tertiary">
             Close
           </Button>,
-          <Button style="gradient">Activate</Button>,
+          <Button onClick={viewCollectionHandler} style="gradient">
+            View collection
+          </Button>,
         ]}
         onClose={closeHandler}
       >
