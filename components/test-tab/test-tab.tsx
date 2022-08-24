@@ -47,7 +47,9 @@ export default function HomeTab() {
   ];
   const [selectedValue, setSelectedValue] = useState();
   const { state: menuState, updateMenuPosition } = useMenu();
-  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(menuState));
+  const [menuPositionValue, setMenuPositionValue] = useState(
+    getMenuPosition(menuState)
+  );
   const additionalData = { value: selectedValue };
 
   const selectChangeHandler = (value, _idx) => {
@@ -62,7 +64,7 @@ export default function HomeTab() {
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />,
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
     );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
@@ -82,10 +84,12 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
+        action={
+          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
+        }
       >
         Finish setting up your account
-      </ActionBanner>,
+      </ActionBanner>
     );
   };
 
@@ -103,7 +107,7 @@ export default function HomeTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>,
+      </Dialog>
     );
   };
 
@@ -112,9 +116,12 @@ export default function HomeTab() {
   const addButtonHandler = () => {
     addButton(
       TAB_BAR_BUTTON,
-      <CollapsibleTabButton onClick={removeButtonHandler} collapsedIcon={<CollapsedTestButton />}>
+      <CollapsibleTabButton
+        onClick={removeButtonHandler}
+        collapsedIcon={<CollapsedTestButton />}
+      >
         <Button>Remove button</Button>
-      </CollapsibleTabButton>,
+      </CollapsibleTabButton>
     );
   };
 
@@ -159,13 +166,15 @@ export default function HomeTab() {
       </div>
       <div>
         <Select onOptionChanged={menuPositionHandler}>
-          <Option disabled={true} value={menuPositionValue} defaultOption={true}>
+          <Option
+            disabled={true}
+            value={menuPositionValue}
+            defaultOption={true}
+          >
             {menuPositionValue}
           </Option>
           {["top-right", "bottom-right"].map((position) => (
-            <Option value={position}>
-              {position}
-            </Option>
+            <Option value={position}>{position}</Option>
           ))}
         </Select>
       </div>

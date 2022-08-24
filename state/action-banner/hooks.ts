@@ -1,9 +1,10 @@
-import { useState } from "../../deps.ts";
+import { React, useContext, useState } from "../../deps.ts";
 import { uniqueId } from "../../util/general.ts";
+import { ActionBannerContext } from "./context.ts";
 
-import { ActionBannerMap, ActionBanner } from './types.ts'
+import { ActionBanner, ActionBannerMap } from "./types.ts";
 
-export function useActionBanner() {
+export function initActionBanners() {
   const [actionBannerMap, setActionBannerMap] = useState<ActionBannerMap>({});
 
   const displayActionBanner = (actionBanner: React.ReactNode, key?: string) => {
@@ -45,4 +46,11 @@ export function useActionBanner() {
     displayActionBanner,
     removeActionBanner,
   };
+}
+
+export function useActionBanner() {
+  const actionBannerContext: ActionBannerContext = useContext<ActionBannerContext>(
+    ActionBannerContext,
+  );
+  return actionBannerContext;
 }
