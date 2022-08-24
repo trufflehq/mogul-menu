@@ -31,31 +31,18 @@ function createClipPath(
   { top, right, bottom, left }: Pick<Modifiers, "top" | "right" | "bottom" | "left">,
   menuPosition: MenuPosition = 'top-right'
 ) {
-
-  // console.log('menuPosition', menuPosition)
   console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
-  // return  `inset(
-  //   ${position.y - top}px
-  //   calc(100% - ${position.x + base.x + right}px) 
-  //   calc(100% - ${position.y + base.y + bottom}px) 
-  //   ${position.x - left}px round 4px)`
 
-  return `inset(
+  return menuPosition === 'top-right' || menuPosition === 'top-left' ? `inset(
     ${position.y + base.y + top}px
     calc(100% - ${position.x + base.x + right}px) 
-    ${position.y +  bottom}px
+    calc(100% - ${position.y + base.y + bottom}px) 
     ${position.x - left}px round 4px)`
-  // return menuPosition === 'top-right' || menuPosition === 'top-left' ? `inset(
-	// 			${position.y - top}px
-	// 			calc(100% - ${position.x + base.x + right}px) 
-	// 			calc(100% - ${position.y + base.y + bottom}px) 
-	// 			${position.x - left}px round 4px)`
-  //       : `inset(
-  //         ${position.y + base.y + top}px
-  //         calc(100% - ${position.x + base.x + right}px) 
-  //         ${position.y +  bottom}px
-  //         ${position.x - left}px round 4px)`
-        // : `inset(calc(100% - 40px) 0% 0% calc(100% - 40px) round 4px)`;
+    :  `inset(
+      ${position.y + base.y + top}px
+      calc(100% - ${position.x + base.x + right}px) 
+      ${position.y +  bottom}px
+      ${position.x - left}px round 4px)`
 }
 function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosition: MenuPosition = 'top-right') {
   //creates an element that spans the entire screen
@@ -159,7 +146,6 @@ export default function Draggable(
     const handleWindowMouseMove = (event: MouseEvent) => {
       // if(!dragInfo.pressed) {
       //   console.log('updating drag info')
-      //   updateMenuPosition(getPosition(event))
       // }
       // console.log('updated position', getPosition(event))
 
@@ -202,7 +188,7 @@ export default function Draggable(
               ...old,
               current: {
                 x: old.start.x,
-                y: old.start.y + dimensions.base.y,
+                y: old.start.y + dimensions.base.y - 40,
               },
             }
           ));
@@ -213,7 +199,7 @@ export default function Draggable(
               ...old,
               current: {
                 x: old.start.x,
-                y: old.start.y - dimensions.base.y,
+                y: old.start.y - dimensions.base.y + 40,
               },
             }
           ));

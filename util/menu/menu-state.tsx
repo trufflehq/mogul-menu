@@ -46,7 +46,8 @@ const INITIAL_MENU_STATE: MenuState = {
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      "transition": ".5s cubic-bezier(.4, .71, .18, .99)",
+      transition: 'none'
+      // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
     },
   },
 };
