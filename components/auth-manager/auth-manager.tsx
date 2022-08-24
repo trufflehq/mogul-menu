@@ -11,7 +11,8 @@ import {
 } from "../../deps.ts";
 import { EXTENSION_TOKEN_SIGNIN_QUERY, LOGIN_TYPE_NAMES, ME_QUERY } from "../../gql/mod.ts";
 import { ExtensionCredentials, MogulTvUser } from "../../types/mod.ts";
-import { isMemberMeUser, setAccessToken, useActionBanner } from "../../util/mod.ts";
+import { isMemberMeUser, setAccessToken } from "../../util/mod.ts";
+import { useActionBanner } from '../../state/mod.ts'
 import Button from "../base/button/button.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
 

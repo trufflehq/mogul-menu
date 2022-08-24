@@ -6,7 +6,7 @@ import {
   updateTabState,
   useTabs,
 } from "../../state/mod.ts";
-import { usePageStack } from "../../util/mod.ts";
+import { usePageStack } from "../../state/mod.ts";
 import styleSheet from "./tabs.scss.js";
 
 export default function Tabs() {

@@ -1,6 +1,5 @@
 import {
   React,
-  getSrcByImageObj,
   gql,
   useQuery,
   _,
@@ -8,7 +7,7 @@ import {
 } from "../../deps.ts";
 
 import Collectible from "../collectible/collectible.tsx";
-import { usePageStack } from "../../util/mod.ts";
+import { usePageStack } from "../../state/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
 import { useSnackBar, useCurrentTab } from "../../state/mod.ts";

@@ -1,8 +1,15 @@
 import { _, React } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { ActionBannerProvider, PageStackProvider } from "../../util/mod.ts";
-import { MenuProvider, TabButtonProvider, TabsProvider } from "../../state/mod.ts";
+
+import {
+  ActionBannerProvider,
+  MenuProvider,
+  TabButtonProvider,
+  TabsProvider,
+  PageStackProvider
+} from "../../state/mod.ts";
 import { File } from "../../types/mod.ts";
+
 interface MenuProviderProps {
   children: React.ReactNode;
   iconImageObj?: File;

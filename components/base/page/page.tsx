@@ -1,5 +1,5 @@
 import { Icon, React, useEffect, useRef, useStyleSheet } from "../../../deps.ts";
-import { usePageStack } from "../../../util/mod.ts";
+import { usePageStack } from "../../../state/mod.ts";
 import FocusTrap from "../../focus-trap/focus-trap.tsx";
 import styleSheet from "./page.scss.js";
 

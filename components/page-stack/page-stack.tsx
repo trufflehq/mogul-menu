@@ -1,6 +1,6 @@
 import { React, useEffect, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./page-stack.scss.js";
-import { usePageStack } from '../../util/page-stack/mod.ts'
+import { usePageStack } from '../../state/page-stack/mod.ts'
 
 export default function PageStack({
   background = "var(--mm-color-bg-primary)",

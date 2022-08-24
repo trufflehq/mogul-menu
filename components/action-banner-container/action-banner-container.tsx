@@ -1,12 +1,12 @@
 import { React } from "../../deps.ts";
-import { useActionBanner } from '../../util/mod.ts'
+import { useActionBanner } from '../../state/mod.ts'
 
 export default function ActionBannerContainer() {
-  const { actionBannerObj } = useActionBanner();
+  const { actionBannerMap } = useActionBanner();
 
   return (
     <div className="c-action-banner-container">
-      {Object.entries(actionBannerObj).map(([id, { Component }]) => (
+      {Object.entries(actionBannerMap).map(([id, { Component }]) => (
         <div key={id} className="action-banner-container">
           {Component}
         </div>

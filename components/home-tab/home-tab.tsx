@@ -10,7 +10,7 @@ import {
 
 import styleSheet from "./home-tab.scss.js";
 
-import { usePageStack } from "../../util/mod.ts";
+import { usePageStack } from "../../state/mod.ts";
 import { USER_INFO_QUERY } from "../../gql/mod.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
@@ -43,8 +43,7 @@ export default function HomeTab() {
 
   const channelPointsSrc =
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
-  const xpSrc =
-    "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
+  const xpSrc = "https://cdn.bio/assets/images/features/browser_extension/xp.svg";
 
   const handleOpenNotificationDialog = () => {
     pushDialog(<BrowserExtensionNotificationDialog />);
@@ -60,8 +59,7 @@ export default function HomeTab() {
   const adverts: Record<string, AdvertProps> = {
     ludwig: {
       className: "base-ad-tile",
-      imageSrc:
-        "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
+      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
       hashtag: "#announcement",
       tagline: "Ludwig Mondays featuring Fortnite",
       buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
