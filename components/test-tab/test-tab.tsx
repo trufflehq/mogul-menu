@@ -2,19 +2,14 @@ import { React, useState } from "../../deps.ts";
 import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 
 import Button from "../base/button/button.tsx";
-import {CollapsibleTabButton} from '../tab-bar/tab-bar.tsx'
+import { CollapsibleTabButton } from "../tab-bar/tab-bar.tsx";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
-import Option from '../base/option/option.tsx'
+import Option from "../base/option/option.tsx";
 import ColorOption from "../base/color-option/color-option.tsx";
 
-import {
-  usePageStack,
-  useTabId,
-  useTabState,
-  useActionBanner,
-} from "../../util/mod.ts";
+import { useActionBanner, usePageStack, useTabId, useTabState } from "../../util/mod.ts";
 
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -22,7 +17,7 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import Page from "../base/page/page.tsx";
-import { useTabButton, useMenu, getMenuPosition } from "../../util/mod.ts";
+import { getMenuPosition, useMenu, useTabButton } from "../../util/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -44,8 +39,8 @@ export default function HomeTab() {
     { name: "gradoemt3", value: "orange" },
   ];
   const [selectedValue, setSelectedValue] = useState();
-  const { store, updateMenuPosition } = useMenu()
-  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(store))
+  const { store, updateMenuPosition } = useMenu();
+  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(store));
   const additionalData = { value: selectedValue };
 
   const selectChangeHandler = (value, _idx) => {
@@ -54,13 +49,13 @@ export default function HomeTab() {
 
   const menuPositionHandler = (value) => {
     // console.log('menuPositionHandler', value)
-    setMenuPositionValue(value)
-    updateMenuPosition(value)
-  }
+    setMenuPositionValue(value);
+    updateMenuPosition(value);
+  };
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />,
     );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
@@ -80,12 +75,10 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={
-          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
-        }
+        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
       >
         Finish setting up your account
-      </ActionBanner>
+      </ActionBanner>,
     );
   };
 
@@ -103,7 +96,7 @@ export default function HomeTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>
+      </Dialog>,
     );
   };
 
@@ -114,7 +107,7 @@ export default function HomeTab() {
       TAB_BAR_BUTTON,
       <CollapsibleTabButton onClick={removeButtonHandler} collapsedIcon={<CollapsedTestButton />}>
         <Button>Remove button</Button>
-      </CollapsibleTabButton>
+      </CollapsibleTabButton>,
     );
   };
 
@@ -158,11 +151,11 @@ export default function HomeTab() {
         />
       </div>
       <div>
-      <Select onOptionChanged={menuPositionHandler}>
+        <Select onOptionChanged={menuPositionHandler}>
           <Option disabled={true} value={menuPositionValue} defaultOption={true}>
-              {menuPositionValue}
-           </Option>
-          {['top-right', 'bottom-right'].map((position) => (
+            {menuPositionValue}
+          </Option>
+          {["top-right", "bottom-right"].map((position) => (
             <Option value={position}>
               {position}
             </Option>
@@ -174,15 +167,20 @@ export default function HomeTab() {
 }
 
 function CollapsedTestButton() {
-  return <div className="c-collapsed-test-button" style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '32px',
-    boxSizing:'border-box',
-    backgroundColor: "var(--mm-color-bg-secondary)",
-    height: '100%'
-  }}>
-    ❌
-  </div>
+  return (
+    <div
+      className="c-collapsed-test-button"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "32px",
+        boxSizing: "border-box",
+        backgroundColor: "var(--mm-color-bg-secondary)",
+        height: "100%",
+      }}
+    >
+      ❌
+    </div>
+  );
 }

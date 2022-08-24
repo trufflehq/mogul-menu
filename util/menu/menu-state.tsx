@@ -1,7 +1,12 @@
 import { createContext, React, useContext, useMemo, useReducer } from "../../deps.ts";
-import { File } from '../../types/mod.ts'
-import { DimensionModifiers, MenuActions, MenuState, MenuPosition } from "./types.ts";
-import { getIsOpen, getMenuState, getOpenModifiers, getClosedModifiers } from "./menu-state-getter.ts";
+import { File } from "../../types/mod.ts";
+import { DimensionModifiers, MenuActions, MenuPosition, MenuState } from "./types.ts";
+import {
+  getClosedModifiers,
+  getIsOpen,
+  getMenuState,
+  getOpenModifiers,
+} from "./menu-state-getter.ts";
 import {
   enqueueSnackBar,
   popSnackBar,
@@ -10,7 +15,7 @@ import {
   setIsClaimable,
   setOpen,
   updateDimensions,
-  updateMenuPosition
+  updateMenuPosition,
 } from "./menu-state-actions.ts";
 export type MenuStateContext = ReturnType<typeof useMenuReducer>;
 export const MenuContext = createContext<MenuStateContext>(undefined!);
@@ -24,7 +29,7 @@ const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   $$additionalButtonRef: null,
   menuState: "closed",
-  menuPosition: 'top-right',
+  menuPosition: "top-right",
   snackBars: [],
   dimensions: {
     base: { x: BASE_MENU_WIDTH, y: BASE_MENU_HEIGHT },
@@ -110,11 +115,11 @@ export function useMenuReducer(initialState: MenuState) {
         };
       }
       case "@@MENU_UPDATE_POSITION": {
-        if(!payload?.position) return state
+        if (!payload?.position) return state;
         return {
           ...state,
-          menuPosition: payload.position
-        }
+          menuPosition: payload.position,
+        };
       }
       default:
         return state;
@@ -146,11 +151,13 @@ export function useMenu() {
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
     popSnackBar: () => dispatch(popSnackBar()),
-    updateMenuPosition: (position: MenuPosition) => dispatch(updateMenuPosition(position))
+    updateMenuPosition: (position: MenuPosition) => dispatch(updateMenuPosition(position)),
   };
 }
 
-export function MenuProvider({ children, iconImageObj }: { children: React.ReactNode, iconImageObj?: File }) {
+export function MenuProvider(
+  { children, iconImageObj }: { children: React.ReactNode; iconImageObj?: File },
+) {
   const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
   return (
     <MenuContext.Provider value={menuState}>

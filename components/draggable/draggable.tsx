@@ -1,5 +1,5 @@
 import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
-import { getDimensions, useMenu, MenuPosition, getMenuPosition } from "../../util/mod.ts";
+import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../util/mod.ts";
 export interface Vector {
   x: number;
   y: number;
@@ -29,11 +29,12 @@ function createClipPath(
   position: Vector,
   base: Vector,
   { top, right, bottom, left }: Pick<Modifiers, "top" | "right" | "bottom" | "left">,
-  menuPosition: MenuPosition = 'top-right'
+  menuPosition: MenuPosition = "top-right",
 ) {
   // console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
 
-  return menuPosition === 'top-right' || menuPosition === 'top-left' ? `inset(
+  return menuPosition === "top-right" || menuPosition === "top-left"
+    ? `inset(
     ${position.y + base.y + top}px
     calc(100% - ${position.x + base.x + right}px) 
     calc(100% - ${position.y + base.y + bottom}px) 
@@ -42,9 +43,13 @@ function createClipPath(
       ${position.y + base.y + top}px
       calc(100% - ${position.x + base.x + right}px) 
       calc(100% - ${position.y - bottom}px)
-      ${position.x - left}px round 4px)`
+      ${position.x - left}px round 4px)`;
 }
-function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosition: MenuPosition = 'top-right') {
+function createIframeStyle(
+  dimensions: Dimensions,
+  dragInfo: DragInfo,
+  menuPosition: MenuPosition = "top-right",
+) {
   //creates an element that spans the entire screen
   //a clip path is used to crop to only the actual component
   const style = {
@@ -54,7 +59,7 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosit
       dragInfo.current,
       dimensions.base,
       dimensions.modifiers,
-      menuPosition
+      menuPosition,
     ),
     transition: dimensions.modifiers.transition,
     background: "none",
@@ -70,46 +75,46 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosit
 
 function getWindowSize() {
   const win = window,
-  doc = document,
-  docElem = doc.documentElement,
-  body = doc.getElementsByTagName("body")[0],
-  x = win.innerWidth || docElem.clientWidth || body.clientWidth,
-  y = win.innerHeight || docElem.clientHeight || body.clientHeight;
+    doc = document,
+    docElem = doc.documentElement,
+    body = doc.getElementsByTagName("body")[0],
+    x = win.innerWidth || docElem.clientWidth || body.clientWidth,
+    y = win.innerHeight || docElem.clientHeight || body.clientHeight;
 
-  return { x, y }
+  return { x, y };
 }
 
 function getPosition(event: MouseEvent | React.MouseEvent) {
-  let vertical = 'top'
-  let horizontal = 'right'
-  const { x, y } = getWindowSize()
-  const mouseX = event.clientX
-  const mouseY = event.clientY
+  let vertical = "top";
+  let horizontal = "right";
+  const { x, y } = getWindowSize();
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
 
-  if(mouseY < Math.floor(y / 2)) {
-    vertical = 'top'
+  if (mouseY < Math.floor(y / 2)) {
+    vertical = "top";
   } else {
-    vertical = 'bottom'
+    vertical = "bottom";
   }
 
-  if(mouseX < Math.floor(x / 2)) {
-    horizontal = 'left'
+  if (mouseX < Math.floor(x / 2)) {
+    horizontal = "left";
   } else {
-    horizontal = 'right'
+    horizontal = "right";
   }
 
-  return `${vertical}-${horizontal}` as MenuPosition
+  return `${vertical}-${horizontal}` as MenuPosition;
 }
 
 export function getPositionPrefix(position?: MenuPosition) {
-  return position?.slice(0, position?.indexOf('-'))
+  return position?.slice(0, position?.indexOf("-"));
 }
 
 export function isVerticalTranslation(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
-  const lastPositionPrefix = getPositionPrefix(lastPosition)
-  const newPositionPrefix = getPositionPrefix(newPosition)
-  const hasPositions = lastPosition && newPosition
-  return hasPositions && lastPositionPrefix !== newPositionPrefix
+  const lastPositionPrefix = getPositionPrefix(lastPosition);
+  const newPositionPrefix = getPositionPrefix(newPosition);
+  const hasPositions = lastPosition && newPosition;
+  return hasPositions && lastPositionPrefix !== newPositionPrefix;
 }
 
 export default function Draggable(
@@ -122,10 +127,10 @@ export default function Draggable(
     ignoreClassName?: string;
   },
 ) {
-  const lastPositionRef = useRef<MenuPosition>(undefined!)
+  const lastPositionRef = useRef<MenuPosition>(undefined!);
   const { store: menuStore, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
   const dimensions = getDimensions(menuStore);
-  const menuPosition = getMenuPosition(menuStore)
+  const menuPosition = getMenuPosition(menuStore);
 
   const defaultPosition = { x: 0, y: 0 };
 
@@ -162,12 +167,12 @@ export default function Draggable(
   }, [dragInfo.pressed]);
 
   useEffect(() => {
-    const lastPosition = lastPositionRef.current
-    if(menuPosition) {
-      lastPositionRef.current = menuPosition
+    const lastPosition = lastPositionRef.current;
+    if (menuPosition) {
+      lastPositionRef.current = menuPosition;
 
-      if(isVerticalTranslation(lastPosition, menuPosition)) {
-        if(getPositionPrefix(lastPosition) === 'bottom') {
+      if (isVerticalTranslation(lastPosition, menuPosition)) {
+        if (getPositionPrefix(lastPosition) === "bottom") {
           // TODO clean this up
           // update the position from bottom to top
           setDragInfo((old: DragInfo) => (
@@ -179,7 +184,7 @@ export default function Draggable(
               },
             }
           ));
-          updateDimensions()
+          updateDimensions();
         } else {
           // TODO clean this up
           // update the position from top to bottom
@@ -192,11 +197,11 @@ export default function Draggable(
               },
             }
           ));
-          updateDimensions()
+          updateDimensions();
         }
       }
     }
-   }, [menuPosition])
+  }, [menuPosition]);
 
   // use jumper to update the clip path based on the dimensions and drag info
   useEffect(() => {
@@ -225,9 +230,9 @@ export default function Draggable(
           dragInfo.current,
           dimensions.base,
           dimensions.modifiers,
-          menuPosition
+          menuPosition,
         ),
-        cursor: dragInfo.pressed ? 'grab' : 'pointer',
+        cursor: dragInfo.pressed ? "grab" : "pointer",
         // dragInfo.pressed disables the animation during drag
         transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
       }}
@@ -253,10 +258,10 @@ export default function Draggable(
       onDragStart={(e) => {
         e.preventDefault();
         if (dragInfo.draggable) {
-          setIsClosed()
-          updateDimensions({ 
-            transition: 'none'
-          })
+          setIsClosed();
+          updateDimensions({
+            transition: "none",
+          });
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -268,18 +273,18 @@ export default function Draggable(
         }
       }}
       onMouseUp={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if(dragInfo.draggable) {
-          updateMenuPosition(getPosition(e))
-          updateDimensions()
+        e.preventDefault();
+        e.stopPropagation();
+        if (dragInfo.draggable) {
+          updateMenuPosition(getPosition(e));
+          updateDimensions();
 
           // re-enable the transition
           setTimeout(() => {
             updateDimensions({
-              transition: ".25s cubic-bezier(.4, .71, .18, .99)"
-            })
-          }, 100)
+              transition: ".25s cubic-bezier(.4, .71, .18, .99)",
+            });
+          }, 100);
         }
         setDragInfo((old: DragInfo) => ({
           ...old,
@@ -289,8 +294,8 @@ export default function Draggable(
           // NEW
           start: {
             x: old.current.x,
-            y: old.current.y
-          }
+            y: old.current.y,
+          },
         }));
       }}
     >

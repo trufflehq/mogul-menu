@@ -1,5 +1,11 @@
-import { React, useEffect, useMemo, classKebab, useStyleSheet } from "../../../deps.ts";
-import { getSnackBars, getTopSnackbar, useMenu, getMenuPosition, getPositionPrefix } from "../../../util/mod.ts";
+import { classKebab, React, useEffect, useMemo, useStyleSheet } from "../../../deps.ts";
+import {
+  getMenuPosition,
+  getPositionPrefix,
+  getSnackBars,
+  getTopSnackbar,
+  useMenu,
+} from "../../../util/mod.ts";
 import styleSheet from "./snack-bar-provider.scss.js";
 
 const DEFAULT_VISIBILITY_DURATION_MS = 5000;
@@ -13,10 +19,10 @@ export default function SnackBarProvider({
 }) {
   useStyleSheet(styleSheet);
   const { store, popSnackBar } = useMenu();
-  const menuPosition = getMenuPosition(store)
-  const prefix = getPositionPrefix(menuPosition)
+  const menuPosition = getMenuPosition(store);
+  const prefix = getPositionPrefix(menuPosition);
   const $currentSnackBar = getTopSnackbar(store);
-  const snackBarQueue = useMemo(() => getSnackBars(store), [JSON.stringify(store.snackBars)])
+  const snackBarQueue = useMemo(() => getSnackBars(store), [JSON.stringify(store.snackBars)]);
 
   const shouldRenderSnackBar = snackBarQueue.length > 0;
 

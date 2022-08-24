@@ -2,13 +2,13 @@ import { React, useRef, classKebab, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
 
 import {
-  getHasNotification,
-  getMenuState,
-  getIsOpen,
-  useTabStateManager,
   getDimensions,
+  getHasNotification,
+  getIsOpen,
+  getMenuPosition,
+  getMenuState,
   useMenu,
-  getMenuPosition
+  useTabStateManager,
 } from "../../util/mod.ts";
 import SnackBarProvider from "../base/snack-bar-provider/snack-bar-provider.tsx";
 import Draggable from "../draggable/draggable.tsx";
@@ -24,25 +24,24 @@ export default function BrowserExtensionMenuBody() {
   useStyleSheet(styleSheet);
   const $$extensionIconRef = useRef(null);
   const { store } = useTabStateManager();
-  const { store:menuStore }  = useMenu()
+  const { store: menuStore } = useMenu();
   const hasNotification = getHasNotification(store);
 
-  const isOpen = getIsOpen(menuStore)
-  const menuPosition = getMenuPosition(menuStore)
+  const isOpen = getIsOpen(menuStore);
+  const menuPosition = getMenuPosition(menuStore);
 
-  const className = `z-browser-extension-menu position-${menuPosition} ${
+  const className = `c-browser-extension-menu position-${menuPosition} ${
     classKebab(
       { isOpen, hasNotification },
     )
   }`;
-
 
   return (
     <Draggable
       requiredClassName="extension-icon"
       ignoreClassName="c-browser-extension-menu"
     >
-      <div className="c-browser-extension-menu">
+      <div className={className}>
         <div className="menu">
           <div className="inner">
             <div className="bottom">
