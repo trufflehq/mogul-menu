@@ -43,12 +43,6 @@ function createClipPath(
       calc(100% - ${position.x + base.x + right}px) 
       calc(100% - ${position.y - bottom}px)
       ${position.x - left}px round 4px)`
-    
-    // `inset(
-    //   ${position.y + base.y + top}px
-    //   calc(100% - ${position.x + base.x + right}px) 
-    //   ${position.y +  bottom}px
-    //   ${position.x - left}px round 4px)`
 }
 function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosition: MenuPosition = 'top-right') {
   //creates an element that spans the entire screen
@@ -111,7 +105,7 @@ export function getPositionPrefix(position?: MenuPosition) {
   return position?.slice(0, position?.indexOf('-'))
 }
 
-export function isVerticalTransition(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
+export function isVerticalTranslation(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
   const lastPositionPrefix = getPositionPrefix(lastPosition)
   const newPositionPrefix = getPositionPrefix(newPosition)
   console.log({ lastPositionPrefix, newPositionPrefix })
@@ -150,11 +144,6 @@ export default function Draggable(
 
   useEffect(() => {
     const handleWindowMouseMove = (event: MouseEvent) => {
-      // if(!dragInfo.pressed) {
-      //   console.log('updating drag info')
-      // }
-      // console.log('updated position', getPosition(event))
-
       setDragInfo((old: DragInfo) => (
         {
           ...old,
@@ -176,19 +165,15 @@ export default function Draggable(
     ));
   }, [dragInfo.pressed]);
 
-  // console.log('menu position', menuPosition)
   useEffect(() => {
     const lastPosition = lastPositionRef.current
     if(menuPosition) {
       lastPositionRef.current = menuPosition
-      console.log('effect menuPosition', menuPosition)
 
-      if(isVerticalTransition(lastPosition, menuPosition)) {
-        // update the position
-        console.log('is vert transition')
+      if(isVerticalTranslation(lastPosition, menuPosition)) {
         if(getPositionPrefix(lastPosition) === 'bottom') {
-          console.log('jump from bot to top')
-
+          // TODO clean this up
+          // update the position from bottom to top
           setDragInfo((old: DragInfo) => (
             {
               ...old,
@@ -200,6 +185,8 @@ export default function Draggable(
           ));
           updateDimensions()
         } else {
+          // TODO clean this up
+          // update the position from top to bottom
           setDragInfo((old: DragInfo) => (
             {
               ...old,
@@ -210,8 +197,6 @@ export default function Draggable(
             }
           ));
           updateDimensions()
-
-          console.log('jump from top to bot')
         }
       }
     }
@@ -219,13 +204,13 @@ export default function Draggable(
 
   // use jumper to update the clip path based on the dimensions and drag info
   useEffect(() => {
-    // const style = createIframeStyle(dimensions, dragInfo, menuPosition);
-    // jumper.call("layout.applyLayoutConfigSteps", {
-    //   layoutConfigSteps: [
-    //     { action: "useSubject" }, // start with our iframe
-    //     { action: "setStyle", value: style },
-    //   ],
-    // });
+    const style = createIframeStyle(dimensions, dragInfo, menuPosition);
+    jumper.call("layout.applyLayoutConfigSteps", {
+      layoutConfigSteps: [
+        { action: "useSubject" }, // start with our iframe
+        { action: "setStyle", value: style },
+      ],
+    });
   }, [dimensions, dragInfo, menuPosition]);
 
   // console.log('dragInfo', dragInfo)

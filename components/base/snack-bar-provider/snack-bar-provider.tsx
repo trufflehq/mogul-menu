@@ -1,5 +1,5 @@
-import { React, useEffect, useMemo, useStyleSheet } from "../../../deps.ts";
-import { getSnackBars, getTopSnackbar, useMenu } from "../../../util/mod.ts";
+import { React, useEffect, useMemo, classKebab, useStyleSheet } from "../../../deps.ts";
+import { getSnackBars, getTopSnackbar, useMenu, getMenuPosition, getPositionPrefix } from "../../../util/mod.ts";
 import styleSheet from "./snack-bar-provider.scss.js";
 
 const DEFAULT_VISIBILITY_DURATION_MS = 5000;
@@ -13,6 +13,8 @@ export default function SnackBarProvider({
 }) {
   useStyleSheet(styleSheet);
   const { store, popSnackBar } = useMenu();
+  const menuPosition = getMenuPosition(store)
+  const prefix = getPositionPrefix(menuPosition)
   const $currentSnackBar = getTopSnackbar(store);
   const snackBarQueue = useMemo(() => getSnackBars(store), [JSON.stringify(store.snackBars)])
 
@@ -41,7 +43,7 @@ export default function SnackBarProvider({
 
   return (
     <>
-      <div className="c-snack-bar-container">
+      <div className={`c-snack-bar-container position-${prefix}`}>
         {shouldRenderSnackBar && $currentSnackBar}
       </div>
       {children}
