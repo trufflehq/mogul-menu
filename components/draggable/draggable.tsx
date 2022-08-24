@@ -108,7 +108,6 @@ export function getPositionPrefix(position?: MenuPosition) {
 export function isVerticalTranslation(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
   const lastPositionPrefix = getPositionPrefix(lastPosition)
   const newPositionPrefix = getPositionPrefix(newPosition)
-  console.log({ lastPositionPrefix, newPositionPrefix })
   const hasPositions = lastPosition && newPosition
   return hasPositions && lastPositionPrefix !== newPositionPrefix
 }
@@ -127,10 +126,7 @@ export default function Draggable(
   const { store: menuStore, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
   const dimensions = getDimensions(menuStore);
   const menuPosition = getMenuPosition(menuStore)
-  // console.log('dimensions', dimensions)
-  // const dragProps = {
-  //   dimensions,
-  // };
+
   const defaultPosition = { x: 0, y: 0 };
 
   const [dragInfo, setDragInfo] = useState<DragInfo>(
@@ -213,8 +209,6 @@ export default function Draggable(
     });
   }, [dimensions, dragInfo, menuPosition]);
 
-  // console.log('dragInfo', dragInfo)
-
   return (
     //outer div is the full screen div that is cropped with clip path
     <div
@@ -233,6 +227,7 @@ export default function Draggable(
           dimensions.modifiers,
           menuPosition
         ),
+        cursor: dragInfo.pressed ? 'grab' : 'pointer',
         // dragInfo.pressed disables the animation during drag
         transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
       }}
@@ -257,11 +252,11 @@ export default function Draggable(
       }}
       onDragStart={(e) => {
         e.preventDefault();
-        setIsClosed()
-        updateDimensions({ 
-          transition: 'none'
-        })
         if (dragInfo.draggable) {
+          setIsClosed()
+          updateDimensions({ 
+            transition: 'none'
+          })
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -273,8 +268,9 @@ export default function Draggable(
         }
       }}
       onMouseUp={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
         if(dragInfo.draggable) {
-          console.log('on mouse up')
           updateMenuPosition(getPosition(e))
           updateDimensions()
 

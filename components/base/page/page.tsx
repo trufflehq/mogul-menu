@@ -29,7 +29,9 @@ export default function Page({
     }
   }, [])
 
-  const handleOnClick = () => {
+  const handleOnClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
     onBack?.() ?? popPage()
   }
 

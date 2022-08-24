@@ -1,7 +1,7 @@
 import { createContext, React, useContext, useMemo, useReducer } from "../../deps.ts";
 import { File } from '../../types/mod.ts'
 import { DimensionModifiers, MenuActions, MenuState, MenuPosition } from "./types.ts";
-import { getClosedHeight, getClosedWidth, getIsOpen, getMenuState, getOpenModifiers, getClosedModifiers } from "./menu-state-getter.ts";
+import { getIsOpen, getMenuState, getOpenModifiers, getClosedModifiers } from "./menu-state-getter.ts";
 import {
   enqueueSnackBar,
   popSnackBar,
@@ -23,30 +23,16 @@ export const DEFAULT_MENU_ICON_WIDTH = 40;
 const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   $$additionalButtonRef: null,
-  // menuState: "closed",
-  menuState: 'open',
-  // menuPosition: 'top-right',
-  menuPosition: 'bottom-right',
+  menuState: "closed",
+  menuPosition: 'top-right',
   snackBars: [],
   dimensions: {
     base: { x: BASE_MENU_WIDTH, y: BASE_MENU_HEIGHT },
     modifiers: {
-      // bottom right open
-      // top: 0 - DEFAULT_MENU_ICON_HEIGHT - BASE_MENU_HEIGHT,
-      // right: 0,
-      // bottom: 0,
-      // left: 0,
-      // bottom closed
-      // top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      // right: 0,
-      // bottom: 0,
-      // left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      // top-right mods
-      top: 0,
+      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
       right: 0,
-      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+      bottom: 0,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      // transition: 'none'
       "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
     },
   },
@@ -56,7 +42,6 @@ export function useMenuReducer(initialState: MenuState) {
   const menuStateReducer = (state: MenuState, { type, payload }: MenuActions) => {
     switch (type) {
       case "@@MENU_DEMENSION_OPEN": {
-        console.log('@@MENU_DEMENSION_OPEN')
         return {
           ...state,
           menuState: "open",
@@ -65,34 +50,21 @@ export function useMenuReducer(initialState: MenuState) {
             modifiers: {
               ...state.dimensions.modifiers,
               ...getOpenModifiers(state),
-              // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
-              // top: 0,
-              // right: 0,
-              // bottom: 0,
-              // left: 0,
             },
           },
         };
       }
       case "@@MENU_DIMENSION_CLOSE": {
-        console.log('@@MENU_DIMENSION_CLOSE')
         const isOpen = getIsOpen(state);
 
-        // const width = getClosedWidth(state);
-        // const height = getClosedHeight(state);
         return {
           ...state,
           menuState: "closed",
           dimensions: {
             ...state.dimensions,
             modifiers: {
-              // ...state.dimensions.modifiers,
+              ...state.dimensions.modifiers,
               ...(isOpen ? state.dimensions.modifiers : getClosedModifiers(state)),
-              // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
-              // ...{
-              //   left: width,
-              //   bottom: height,
-              // },
             },
           },
         };
@@ -111,7 +83,6 @@ export function useMenuReducer(initialState: MenuState) {
       }
       case "@@MENU_UPDATE_DIMENSIONS": {
         const isOpen = getIsOpen(state);
-        console.log('@@MENU_UPDATE_DIMENSIONS', payload)
         return {
           ...state,
           dimensions: {
@@ -119,10 +90,6 @@ export function useMenuReducer(initialState: MenuState) {
             modifiers: {
               ...state.dimensions.modifiers,
               ...(isOpen ? getOpenModifiers(state) : getClosedModifiers(state)),
-
-              // expand if the menu is closed and there are additional buttons
-              // left: isOpen ? state.dimensions.modifiers.left : getClosedWidth(state),
-              // bottom: isOpen ? state.dimensions.modifiers.bottom : getClosedHeight(state),
               ...payload,
             },
           },
@@ -143,7 +110,6 @@ export function useMenuReducer(initialState: MenuState) {
         };
       }
       case "@@MENU_UPDATE_POSITION": {
-        // console.log('@@MENU_UPDATE_POSITION', payload?.position)
         if(!payload?.position) return state
         return {
           ...state,

@@ -14,7 +14,7 @@ $container-width: 95vw;
     bottom: 16px;
   }
   &.position-bottom {
-    bottom: 56px;
+    bottom: 48px;
   }
 }
 `;

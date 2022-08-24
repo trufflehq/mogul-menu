@@ -26,31 +26,6 @@ export function getAdditionalButtonsWidth(store: MenuState) {
   return store.$$additionalButtonRef?.current.offsetWidth || 0;
 }
 
-export function getClosedWidth(store: MenuState) {
-  const additionalButtonsWidth = getAdditionalButtonsWidth(store);
-  if (additionalButtonsWidth) {
-    return 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth;
-  }
-
-  return 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH;
-}
-
-export function getClosedHeight(store: MenuState) {
-  const snackBars = getSnackBars(store);
-  const position = getMenuPosition(store);
-
-  if (position === "top-right") {
-    // TODO fix predictions width
-    if (snackBars?.length > 0) {
-      return 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT;
-    }
-
-    return 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT;
-  } else {
-    return 0;
-  }
-}
-
 export function getSnackBars(store: MenuState) {
   return store.snackBars;
 }
