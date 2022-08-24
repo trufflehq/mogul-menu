@@ -1,7 +1,12 @@
 import { createContext, React, useContext, useMemo, useReducer } from "../../deps.ts";
-import { File } from '../../types/mod.ts'
-import { DimensionModifiers, MenuActions, MenuState } from "./types.ts";
-import { getClosedHeight, getClosedWidth, getIsOpen, getMenuState } from "./menu-state-getter.ts";
+import { File } from "../../types/mod.ts";
+import { DimensionModifiers, MenuActions, MenuPosition, MenuState } from "./types.ts";
+import {
+  getClosedModifiers,
+  getIsOpen,
+  getMenuState,
+  getOpenModifiers,
+} from "./menu-state-getter.ts";
 import {
   enqueueSnackBar,
   popSnackBar,
@@ -10,6 +15,7 @@ import {
   setIsClaimable,
   setOpen,
   updateDimensions,
+  updateMenuPosition,
 } from "./menu-state-actions.ts";
 export type MenuStateContext = ReturnType<typeof useMenuReducer>;
 export const MenuContext = createContext<MenuStateContext>(undefined!);
@@ -23,15 +29,16 @@ const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   $$additionalButtonRef: null,
   menuState: "closed",
+  menuPosition: "top-right",
   snackBars: [],
   dimensions: {
     base: { x: BASE_MENU_WIDTH, y: BASE_MENU_HEIGHT },
     modifiers: {
-      top: 0,
+      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
       right: 0,
-      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+      bottom: 0,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      "transition": ".5s cubic-bezier(.4, .71, .18, .99)",
+      "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
     },
   },
 };
@@ -47,17 +54,14 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
+              ...getOpenModifiers(state),
             },
           },
         };
       }
       case "@@MENU_DIMENSION_CLOSE": {
-        const width = getClosedWidth(state);
-        const height = getClosedHeight(state);
+        const isOpen = getIsOpen(state);
+
         return {
           ...state,
           menuState: "closed",
@@ -65,10 +69,7 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              ...{
-                left: width,
-                bottom: height,
-              },
+              ...(isOpen ? state.dimensions.modifiers : getClosedModifiers(state)),
             },
           },
         };
@@ -93,9 +94,7 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              // expand if the menu is closed and there are additional buttons
-              left: isOpen ? state.dimensions.modifiers.left : getClosedWidth(state),
-              bottom: isOpen ? state.dimensions.modifiers.bottom : getClosedHeight(state),
+              ...(isOpen ? getOpenModifiers(state) : getClosedModifiers(state)),
               ...payload,
             },
           },
@@ -115,7 +114,13 @@ export function useMenuReducer(initialState: MenuState) {
           snackBars: slicedSnackBars,
         };
       }
-
+      case "@@MENU_UPDATE_POSITION": {
+        if (!payload?.position) return state;
+        return {
+          ...state,
+          menuPosition: payload.position,
+        };
+      }
       default:
         return state;
     }
@@ -139,16 +144,20 @@ export function useMenu() {
       const menuState = getMenuState(store);
       return menuState === "open" ? dispatch(setClosed()) : dispatch(setOpen());
     },
+    setIsClosed: () => dispatch(setClosed()),
     setIsClaimable: (isClaimable: boolean) => dispatch(setIsClaimable(isClaimable)),
     setAdditionalButtonRef: (ref: React.MutableRefObject<HTMLDivElement>) =>
       dispatch(setAdditionalButtonRef(ref)),
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
     popSnackBar: () => dispatch(popSnackBar()),
+    updateMenuPosition: (position: MenuPosition) => dispatch(updateMenuPosition(position)),
   };
 }
 
-export function MenuProvider({ children, iconImageObj }: { children: React.ReactNode, iconImageObj?: File }) {
+export function MenuProvider(
+  { children, iconImageObj }: { children: React.ReactNode; iconImageObj?: File },
+) {
   const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
   return (
     <MenuContext.Provider value={menuState}>

@@ -3,11 +3,13 @@ import {
   CloseMenuAction,
   DimensionModifiers,
   EnqueueSnackbarAction,
+  MenuPosition,
   OpenMenuAction,
   PopSnackbarAction,
   UpdateAdditionalButtonRefAction,
   UpdateClaimableStateAction,
   UpdateDimensionsAction,
+  UpdateMenuPosition,
 } from "./types.ts";
 
 export const setOpen = (): OpenMenuAction => ({
@@ -51,4 +53,11 @@ export const enqueueSnackBar = (snackbar: React.ReactNode): EnqueueSnackbarActio
 export const popSnackBar = (): PopSnackbarAction => ({
   type: "@@MENU_POP_SNACKBAR",
   payload: {},
+});
+
+export const updateMenuPosition = (position: MenuPosition): UpdateMenuPosition => ({
+  type: "@@MENU_UPDATE_POSITION",
+  payload: {
+    position,
+  },
 });

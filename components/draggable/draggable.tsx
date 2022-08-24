@@ -1,5 +1,5 @@
-import { useEffect, useState, React, jumper } from "../../deps.ts";
-import { useMenu, getDimensions } from '../../util/mod.ts'
+import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
+import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../util/mod.ts";
 export interface Vector {
   x: number;
   y: number;
@@ -28,15 +28,28 @@ export interface Dimensions {
 function createClipPath(
   position: Vector,
   base: Vector,
-  { top, right, bottom, left }: Pick<Modifiers, 'top' | 'right' | 'bottom' | 'left' >
+  { top, right, bottom, left }: Pick<Modifiers, "top" | "right" | "bottom" | "left">,
+  menuPosition: MenuPosition = "top-right",
 ) {
-  return `inset(
-				${position.y - top}px
-				calc(100% - ${position.x + base.x + right}px) 
-				calc(100% - ${position.y + base.y + bottom}px) 
-				${position.x - left}px round 4px)`;
+  // console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
+
+  return menuPosition === "top-right" || menuPosition === "top-left"
+    ? `inset(
+    ${position.y + base.y + top}px
+    calc(100% - ${position.x + base.x + right}px) 
+    calc(100% - ${position.y + base.y + bottom}px) 
+    ${position.x - left}px round 4px)`
+    : `inset(
+      ${position.y + base.y + top}px
+      calc(100% - ${position.x + base.x + right}px) 
+      calc(100% - ${position.y - bottom}px)
+      ${position.x - left}px round 4px)`;
 }
-function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
+function createIframeStyle(
+  dimensions: Dimensions,
+  dragInfo: DragInfo,
+  menuPosition: MenuPosition = "top-right",
+) {
   //creates an element that spans the entire screen
   //a clip path is used to crop to only the actual component
   const style = {
@@ -46,6 +59,7 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
       dragInfo.current,
       dimensions.base,
       dimensions.modifiers,
+      menuPosition,
     ),
     transition: dimensions.modifiers.transition,
     background: "none",
@@ -59,10 +73,53 @@ function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo) {
   return style;
 }
 
+function getWindowSize() {
+  const win = window,
+    doc = document,
+    docElem = doc.documentElement,
+    body = doc.getElementsByTagName("body")[0],
+    x = win.innerWidth || docElem.clientWidth || body.clientWidth,
+    y = win.innerHeight || docElem.clientHeight || body.clientHeight;
+
+  return { x, y };
+}
+
+function getPosition(event: MouseEvent | React.MouseEvent) {
+  let vertical = "top";
+  let horizontal = "right";
+  const { x, y } = getWindowSize();
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  if (mouseY < Math.floor(y / 2)) {
+    vertical = "top";
+  } else {
+    vertical = "bottom";
+  }
+
+  if (mouseX < Math.floor(x / 2)) {
+    horizontal = "left";
+  } else {
+    horizontal = "right";
+  }
+
+  return `${vertical}-${horizontal}` as MenuPosition;
+}
+
+export function getPositionPrefix(position?: MenuPosition) {
+  return position?.slice(0, position?.indexOf("-"));
+}
+
+export function isVerticalTranslation(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
+  const lastPositionPrefix = getPositionPrefix(lastPosition);
+  const newPositionPrefix = getPositionPrefix(newPosition);
+  const hasPositions = lastPosition && newPosition;
+  return hasPositions && lastPositionPrefix !== newPositionPrefix;
+}
+
 export default function Draggable(
   // { children, dimensions, defaultPosition, requiredClassName, ignoreClassName }: {
   { children, requiredClassName, ignoreClassName }: {
-
     children: React.ReactNode;
     // dimensions: Dimensions;
     // defaultPosition: Vector;
@@ -70,14 +127,12 @@ export default function Draggable(
     ignoreClassName?: string;
   },
 ) {
-  const { store: menuStore } = useMenu()
-    const dimensions = getDimensions(menuStore)
-  // console.log('dimensions', dimensions)
-  // const dragProps = {
-  //   dimensions,
-  // };
-  const defaultPosition = { x: 0, y: 0 }
+  const lastPositionRef = useRef<MenuPosition>(undefined!);
+  const { store: menuStore, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
+  const dimensions = getDimensions(menuStore);
+  const menuPosition = getMenuPosition(menuStore);
 
+  const defaultPosition = { x: 0, y: 0 };
 
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
@@ -111,16 +166,53 @@ export default function Draggable(
     ));
   }, [dragInfo.pressed]);
 
+  useEffect(() => {
+    const lastPosition = lastPositionRef.current;
+    if (menuPosition) {
+      lastPositionRef.current = menuPosition;
+
+      if (isVerticalTranslation(lastPosition, menuPosition)) {
+        if (getPositionPrefix(lastPosition) === "bottom") {
+          // TODO clean this up
+          // update the position from bottom to top
+          setDragInfo((old: DragInfo) => (
+            {
+              ...old,
+              current: {
+                x: old.start.x,
+                y: old.start.y + dimensions.base.y - 40,
+              },
+            }
+          ));
+          updateDimensions();
+        } else {
+          // TODO clean this up
+          // update the position from top to bottom
+          setDragInfo((old: DragInfo) => (
+            {
+              ...old,
+              current: {
+                x: old.start.x,
+                y: old.start.y - dimensions.base.y + 40,
+              },
+            }
+          ));
+          updateDimensions();
+        }
+      }
+    }
+  }, [menuPosition]);
+
   // use jumper to update the clip path based on the dimensions and drag info
   useEffect(() => {
-    const style = createIframeStyle(dimensions, dragInfo);
+    const style = createIframeStyle(dimensions, dragInfo, menuPosition);
     jumper.call("layout.applyLayoutConfigSteps", {
       layoutConfigSteps: [
         { action: "useSubject" }, // start with our iframe
         { action: "setStyle", value: style },
       ],
     });
-  }, [dimensions, dragInfo]);
+  }, [dimensions, dragInfo, menuPosition]);
 
   return (
     //outer div is the full screen div that is cropped with clip path
@@ -134,18 +226,20 @@ export default function Draggable(
         background: "none",
         width: "100%",
         height: "100%",
-        "clip-path":  createClipPath(
+        "clip-path": createClipPath(
           dragInfo.current,
           dimensions.base,
           dimensions.modifiers,
+          menuPosition,
         ),
+        cursor: dragInfo.pressed ? "grab" : "pointer",
         // dragInfo.pressed disables the animation during drag
         transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
       }}
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
-        if(!classes || !classes?.includes) return
+        if (!classes || !classes?.includes) return;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
         if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
         // check if requireClassName is set and if it is, only drag if the event target has that name
@@ -164,6 +258,10 @@ export default function Draggable(
       onDragStart={(e) => {
         e.preventDefault();
         if (dragInfo.draggable) {
+          setIsClosed();
+          updateDimensions({
+            transition: "none",
+          });
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -174,11 +272,30 @@ export default function Draggable(
           }));
         }
       }}
-      onMouseUp={() => {
+      onMouseUp={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (dragInfo.draggable) {
+          updateMenuPosition(getPosition(e));
+          updateDimensions();
+
+          // re-enable the transition
+          setTimeout(() => {
+            updateDimensions({
+              transition: ".25s cubic-bezier(.4, .71, .18, .99)",
+            });
+          }, 100);
+        }
         setDragInfo((old: DragInfo) => ({
           ...old,
           pressed: false,
           draggable: true,
+
+          // NEW
+          start: {
+            x: old.current.x,
+            y: old.current.y,
+          },
         }));
       }}
     >
@@ -186,7 +303,7 @@ export default function Draggable(
         className="childr"
         style={{
           //set position of child container
-          background: "none",
+          background: "red",
           width: "fit-content",
           position: "absolute",
           top: dragInfo.current.y + "px",
