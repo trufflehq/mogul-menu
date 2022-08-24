@@ -8,10 +8,10 @@ import {
 } from "../../deps.ts";
 
 import Collectible from "../collectible/collectible.tsx";
-import { usePageStack, useTabState } from "../../util/mod.ts";
+import { usePageStack } from "../../util/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
-import { useSnackBar } from "../../state/mod.ts";
+import { useSnackBar, useCurrentTab } from "../../state/mod.ts";
 
 import { Collectible as CollectibleType } from "../../types/collectible.types.ts";
 import { ActivePowerup } from "../../types/active-powerup.types.ts";
@@ -199,7 +199,7 @@ function NoCollectibles() {
 }
 
 function EarnCollectibles() {
-  const { setActiveTab } = useTabState();
+  const { setActiveTab } = useCurrentTab();
   const { pushDialog } = useDialog();
 
   return (

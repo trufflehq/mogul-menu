@@ -1,9 +1,14 @@
-import { React, createContext } from '../../deps.ts'
-import { File } from '../../types/mod.ts'
-import { MenuState } from './types.ts'
-import { useMenuReducer } from './hooks.ts'
-import { MenuContext } from './context.ts'
-import { BASE_MENU_WIDTH, BASE_MENU_HEIGHT, DEFAULT_MENU_ICON_WIDTH, DEFAULT_MENU_ICON_HEIGHT } from './constants.ts'
+import { React } from "../../deps.ts";
+import { File } from "../../types/mod.ts";
+import { MenuState } from "./types.ts";
+import { useMenuReducer } from "./hooks.ts";
+import { MenuContext } from "./context.ts";
+import {
+  BASE_MENU_HEIGHT,
+  BASE_MENU_WIDTH,
+  DEFAULT_MENU_ICON_HEIGHT,
+  DEFAULT_MENU_ICON_WIDTH,
+} from "./constants.ts";
 
 const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,

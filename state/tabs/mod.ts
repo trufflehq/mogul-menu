@@ -1,4 +1,3 @@
-export * from "./tab-button.tsx";
 export * from "./types.ts";
 export * from "./actions.ts";
 export * from "./constants.ts";
