@@ -2,6 +2,10 @@ import { MenuPosition } from "../../state/mod.ts";
 import { Dimensions, DragInfo } from "../../types/mod.ts";
 import { createMenuClipPath } from "./clip-path.ts";
 
+/**
+ * Returns an object with the CSS styles that will be applied as inline styles to the 
+ * parent iframe of the extension mapping (or embeddable or whatever)
+ */
 export function createMenuIframeStyle(
   dimensions: Dimensions,
   dragInfo: DragInfo,

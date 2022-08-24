@@ -1,5 +1,11 @@
 import { useEffect } from "../../deps.ts";
 
+/**
+ * Updates the dragInfo when the mouse is pressed and being dragged
+ * 
+ * @param updateDragInfo function to update the dragInfo state in the Draggable component
+ * @param isPressed whether the mouse is pressed or not
+ */
 export function useUpdateDragPosition(
   updateDragInfo: (x: number, y: number) => void,
   isPressed: boolean,
