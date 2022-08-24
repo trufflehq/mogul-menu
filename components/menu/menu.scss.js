@@ -101,7 +101,7 @@ $clip-path-transition: .5s;
   --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
 
 
-  &.position-bottom-right {
+  &.position-bottom-right, &.position-bottom-left {
     > .menu {
       > .inner {
         > .bottom {

@@ -91,15 +91,15 @@ export function getOpenModifiers(store: MenuState) {
   const prefix = getPositionPrefix(position);
   return prefix === "bottom"
     ? {
-      top: 0 - DEFAULT_MENU_ICON_HEIGHT - BASE_MENU_HEIGHT,
+      top: 0 - BASE_MENU_HEIGHT,
       right: 0,
-      bottom: 0 - BASE_MENU_HEIGHT * 2,
+      bottom: 0 - BASE_MENU_HEIGHT,
       left: 0,
     }
     : {
-      top: 0 - DEFAULT_MENU_ICON_HEIGHT - BASE_MENU_HEIGHT,
+      top: 0 - BASE_MENU_HEIGHT,
       right: 0,
-      bottom: 0 + DEFAULT_MENU_ICON_HEIGHT,
+      bottom: 0,
       left: 0,
     };
 }

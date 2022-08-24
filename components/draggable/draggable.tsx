@@ -38,11 +38,17 @@ function createClipPath(
     calc(100% - ${position.x + base.x + right}px) 
     calc(100% - ${position.y + base.y + bottom}px) 
     ${position.x - left}px round 4px)`
-    :  `inset(
+    : `inset(
       ${position.y + base.y + top}px
       calc(100% - ${position.x + base.x + right}px) 
-      ${position.y +  bottom}px
+      calc(100% - ${position.y - bottom}px)
       ${position.x - left}px round 4px)`
+    
+    // `inset(
+    //   ${position.y + base.y + top}px
+    //   calc(100% - ${position.x + base.x + right}px) 
+    //   ${position.y +  bottom}px
+    //   ${position.x - left}px round 4px)`
 }
 function createIframeStyle(dimensions: Dimensions, dragInfo: DragInfo, menuPosition: MenuPosition = 'top-right') {
   //creates an element that spans the entire screen
@@ -248,10 +254,6 @@ export default function Draggable(
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
-      
-        // updateDimensions({ 
-        //   transition: 'none'
-        // })
         if (!classes || !classes?.includes) return;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
         if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
@@ -289,12 +291,14 @@ export default function Draggable(
         if(dragInfo.draggable) {
           console.log('on mouse up')
           updateMenuPosition(getPosition(e))
+          updateDimensions()
+
+          // re-enable the transition
           setTimeout(() => {
             updateDimensions({
               transition: ".25s cubic-bezier(.4, .71, .18, .99)"
             })
           }, 100)
-          // updateDimensions()
         }
         setDragInfo((old: DragInfo) => ({
           ...old,
