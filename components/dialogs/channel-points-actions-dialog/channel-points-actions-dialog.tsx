@@ -8,6 +8,7 @@ import {
   useObservables,
   _,
 } from "../../../deps.ts";
+import ChannelPointsIcon from "../../channel-points-icon/channel-points-icon.tsx";
 import EconomyActionDialog from "../economy-action-dialog/economy-action-dialog.tsx";
 
 const ORG_USER_COUNTER_TYPE_QUERY = gql`
@@ -47,10 +48,11 @@ const ECONOMY_ACTIONS_QUERY = gql`
   }
 `;
 
-export default function ChannelPointsActionsDialog({ channelPointsSrc }: { channelPointsSrc: string }) {
+export default function ChannelPointsActionsDialog() {
   const { channelPointsEarnActionsObs } = useMemo(() => {
     const channelPointsOrgUserCounterTypeObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY, {}
+      ORG_USER_COUNTER_TYPE_QUERY,
+      {}
     ).pipe(op.map((result) => result?.data?.orgUserCounterType));
 
     const economyActionsObs = queryObservable(ECONOMY_ACTIONS_QUERY, {}).pipe(
@@ -93,7 +95,7 @@ export default function ChannelPointsActionsDialog({ channelPointsSrc }: { chann
   return (
     <EconomyActionDialog
       economyActions={channelPointsEarnActions}
-      orgUserCounterTypeSrc={channelPointsSrc}
+      oucIcon={<ChannelPointsIcon />}
       title={"How to earn channel points"}
     />
   );

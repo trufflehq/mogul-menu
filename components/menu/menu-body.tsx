@@ -50,12 +50,14 @@ export default function BrowserExtensionMenuBody() {
               <ExtensionIcon $$extensionIconRef={$$extensionIconRef} />
             </div>
             <div className="body">
-              <AuthManager />
-              <DialogContainer />
-              <PageStack />
               <ActionBannerContainer />
-              <SnackBarProvider />
-              <Tabs />
+              <PageStack />
+              <div className="tab-body">
+                <AuthManager />
+                <DialogContainer />
+                <SnackBarProvider />
+                <Tabs />
+              </div>
             </div>
           </div>
         </div>

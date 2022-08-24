@@ -1,45 +1,44 @@
 import { React, useStyleSheet, _ } from "../../../deps.ts";
-import { EconomyAction } from '../../../types/mod.ts'
+import { EconomyAction } from "../../../types/mod.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
 import styleSheet from "./economy-action-dialog.scss.js";
 
 export default function EconomyActionDialog({
   title,
   economyActions,
-  orgUserCounterTypeSrc,
+  oucIcon,
   $bottom,
 }: {
-  title: string
-  economyActions: EconomyAction[]
-  orgUserCounterTypeSrc: string
-  $bottom?: React.ReactNode
+  title: string;
+  economyActions: EconomyAction[];
+  oucIcon: React.Node;
+  $bottom?: React.ReactNode;
 }) {
   useStyleSheet(styleSheet);
   return (
     <Dialog headerStyle="primary" headerText={title}>
       <div className="c-economy-action-dialog">
-        {(economyActions?.map((action) => {
-          return (
-            <EconomyActionRow
-              economyAction={action}
-              orgUserCounterTypeSrc={orgUserCounterTypeSrc}
-            />
-          );
-        }))}
+        {economyActions?.map((action) => {
+          return <EconomyActionRow economyAction={action} oucIcon={oucIcon} />;
+        })}
         {$bottom}
       </div>
     </Dialog>
   );
 }
 
-function EconomyActionRow({ economyAction, orgUserCounterTypeSrc }: { economyAction: EconomyAction, orgUserCounterTypeSrc: string }) {
+function EconomyActionRow({
+  economyAction,
+  oucIcon,
+}: {
+  economyAction: EconomyAction;
+  oucIcon: React.Node;
+}) {
   return (
     <div className="economy-action">
       <div className="name">{economyAction?.name}</div>
       <div className="reward">
-        <div className="icon">
-          <img src={orgUserCounterTypeSrc} width="24" />
-        </div>
+        <div className="icon">{oucIcon}</div>
         <div className="amount">
           {economyAction?.amountValue > 0
             ? economyAction?.amountValue
