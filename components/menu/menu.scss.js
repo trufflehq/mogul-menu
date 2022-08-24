@@ -141,12 +141,19 @@ $clip-path-transition: .5s;
 
       > .body {
         flex: 1;
-        overflow-y: auto;
-        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
 
-        &::-webkit-scrollbar {
-          width: 0;
-          background: transparent;
+        > .tab-body {
+          flex: 1;
+          box-sizing: border-box;
+          min-height: 0;
+  
+          &::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+          }
         }
       }
 

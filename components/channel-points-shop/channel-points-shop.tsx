@@ -12,8 +12,11 @@ import {
   useRef,
   _,
 } from "../../deps.ts";
-import { Product, OrgUserCounter, File } from '../../types/mod.ts'
-import { CHANNEL_POINTS_QUERY, CHANNEL_POINTS_SHOP_QUERY } from '../../gql/mod.ts'
+import { Product, OrgUserCounter, File } from "../../types/mod.ts";
+import {
+  CHANNEL_POINTS_QUERY,
+  CHANNEL_POINTS_SHOP_QUERY,
+} from "../../gql/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
@@ -58,12 +61,11 @@ export default function ChannelPointsShop() {
   const [{ data: channelPointsData }] = useQuery({
     query: CHANNEL_POINTS_QUERY,
   });
-  const channelPoints: OrgUserCounter = channelPointsData?.channelPoints?.orgUserCounter;
+  const channelPoints: OrgUserCounter =
+    channelPointsData?.channelPoints?.orgUserCounter;
 
   const onHowToEarnClick = () => {
-    pushDialog(
-      <ChannelPointsActionsDialog channelPointsSrc={channelPointsSrc} />
-    );
+    pushDialog(<ChannelPointsActionsDialog />);
   };
 
   // const channelPointsSrc =
@@ -125,10 +127,10 @@ export default function ChannelPointsShop() {
 }
 
 interface CollectibleItemProps {
-  collectibleItem: Product
-  channelPoints: OrgUserCounter
-  channelPointsImageObj?: File
-  buttonBg?: string
+  collectibleItem: Product;
+  channelPoints: OrgUserCounter;
+  channelPointsImageObj?: File;
+  buttonBg?: string;
 }
 
 function CollectibleItem(props: CollectibleItemProps) {

@@ -31,4 +31,58 @@ export default scss`
     }
   }
 }
+
+.c-no-collectibles-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.c-no-collectibles {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+
+  > img {
+    display: block;
+    margin: auto;
+  }
+}
+
+.c-earn-collectibles {
+  width: 400px;
+  margin: 20px auto;
+  padding: 24px 32px;
+  background: var(--mm-color-bg-secondary);
+  border-radius: 6px;
+
+  > .heading {
+    margin-bottom: 30px;
+  }
+}
+
+.c-way-to-earn-collectibles {
+  display: flex;
+  gap: 15px;
+
+  > .right {
+    > .description {
+      margin-bottom: 22px;
+    }
+
+    > .button {
+      margin-bottom: 12px;
+    }
+  }
+
+  &:not(:last-child) {
+    > .right {
+      >.ouc-link {
+        margin-bottom: 28px;
+      }
+    }
+  }
+}
 `;
