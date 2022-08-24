@@ -4,6 +4,7 @@ import {
   useQuery,
   _,
   useStyleSheet,
+  useMemo,
 } from "../../deps.ts";
 
 import Collectible from "../collectible/collectible.tsx";
@@ -97,6 +98,7 @@ export default function Collectibles() {
     },
   ] = useQuery({
     query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
+    context: useMemo(() => ({ additionalTypenames: ["OwnedCollectible"] }), []),
   });
 
   const collectibleConnection =
