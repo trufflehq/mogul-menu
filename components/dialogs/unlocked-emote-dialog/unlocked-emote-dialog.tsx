@@ -1,6 +1,6 @@
-import { React } from '../../../deps.ts'
-import { useTabState } from "../../../util/mod.ts";
-import { Product } from '../../../types/mod.ts'
+import { React } from "../../../deps.ts";
+import { useCurrentTab } from "../../../state/mod.ts";
+import { Product } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -9,14 +9,14 @@ import DefaultDialogContentFragment from "../content-fragments/default/default-d
 export default function UnlockedEmoteDialog({
   reward,
 }: {
-  reward: Product,
+  reward: Product;
 }) {
   const collectible = reward?.source ?? reward;
-  const { setActiveTab } = useTabState()
+  const { setActiveTab } = useCurrentTab();
   const { popDialog } = useDialog();
   const viewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection")
+    setActiveTab("collection");
   };
 
   return (

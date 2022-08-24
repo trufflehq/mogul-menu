@@ -7,8 +7,8 @@ import {
   useMutation,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useTabState } from '../../../util/mod.ts'
-import { Product, File } from '../../../types/mod.ts'
+import { useCurrentTab } from "../../../state/mod.ts";
+import { File, Product } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -38,9 +38,9 @@ export default function ConfirmPurchaseDialog({
   channelPointsImageObj,
   buttonBg,
 }: {
-  collectibleItem: Product,
-  channelPointsImageObj: File
-  buttonBg?: string
+  collectibleItem: Product;
+  channelPointsImageObj: File;
+  buttonBg?: string;
 }) {
   useStyleSheet(styleSheet);
   // const { org } = useStream(() => ({
@@ -53,7 +53,7 @@ export default function ConfirmPurchaseDialog({
   const amount = collectibleItem.productVariants.nodes[0].amountValue;
 
   const [_purchaseResult, executePurchaseMutation] = useMutation(
-    CHANNEL_POINTS_SHOP_PURCHASE_MUTATION
+    CHANNEL_POINTS_SHOP_PURCHASE_MUTATION,
   );
 
   // const channelPointsSrc =
@@ -63,10 +63,10 @@ export default function ConfirmPurchaseDialog({
     "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
   const onPurchaseHandler = async () => {
-    console.log('on purchase handler')
+    console.log("on purchase handler");
     await executePurchaseMutation(
       { productId: collectibleItem.id },
-      { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] }
+      { additionalTypenames: ["OrgUserCounter", "OwnedCollectible"] },
     );
     // alert(`You purchased a ${collectibleItem.source.name}!`);
     // onViewCollection?.();
@@ -90,7 +90,7 @@ export default function ConfirmPurchaseDialog({
       <NotifyPurchaseDialog
         collectibleItem={collectibleItem}
         buttonBg={buttonBg}
-      />
+      />,
     );
   };
 
@@ -98,9 +98,9 @@ export default function ConfirmPurchaseDialog({
     <div className="c-confirm-cp-purchase-dialog">
       <Dialog
         actions={[
-          <Button onClick={onPurchaseHandler} style="primary">{`Buy ${
-            collectibleItem?.source?.name ?? ""
-          }`}</Button>,
+          <Button onClick={onPurchaseHandler} style="primary">
+            {`Buy ${collectibleItem?.source?.name ?? ""}`}
+          </Button>,
         ]}
       >
         <div className="body">
@@ -134,50 +134,49 @@ export default function ConfirmPurchaseDialog({
   );
 }
 
-function NotifyPurchaseDialog({ collectibleItem, buttonBg }: { collectibleItem: Product, buttonBg?: string }) {
-
+function NotifyPurchaseDialog(
+  { collectibleItem, buttonBg }: { collectibleItem: Product; buttonBg?: string },
+) {
   const { popDialog } = useDialog();
-  const { setActiveTab } = useTabState()
+  const { setActiveTab } = useCurrentTab();
 
   const onViewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection")
+    setActiveTab("collection");
   };
 
   const file = collectibleItem?.source?.fileRel;
-  const actionMessage =
-    collectibleItem?.source?.data?.category === "flair"
-      ? "Redeem in Profile Tab"
-      : "View collection";
+  const actionMessage = collectibleItem?.source?.data?.category === "flair"
+    ? "Redeem in Profile Tab"
+    : "View collection";
   const isEmote = collectibleItem?.source?.type === "emote";
   const isRedeemable = collectibleItem?.source?.type === "redeemable";
 
-  console.log('collectibleItem', collectibleItem)
+  console.log("collectibleItem", collectibleItem);
   return (
     <>
-      {isEmote ? (
-        <UnlockedEmoteDialog reward={collectibleItem} />
-      ) : isRedeemable ? (
-        <RedeemableDialog redeemableCollectible={collectibleItem} />
-      ) : (
-        <Dialog
-          actions={[
-            <Button style="primary" onClick={onViewCollectionHandler}>
-              {actionMessage}
-            </Button>,
-          ]}
-        >
-          <DefaultDialogContentFragment
-            imageRel={file?.fileObj}
-            primaryText={
-              <div>
-                <strong>{collectibleItem?.source?.name ?? ""}</strong> added to
-                your collection!
-              </div>
-            }
-          />
-        </Dialog>
-      )}
+      {isEmote
+        ? <UnlockedEmoteDialog reward={collectibleItem} />
+        : isRedeemable
+        ? <RedeemableDialog redeemableCollectible={collectibleItem} />
+        : (
+          <Dialog
+            actions={[
+              <Button style="primary" onClick={onViewCollectionHandler}>
+                {actionMessage}
+              </Button>,
+            ]}
+          >
+            <DefaultDialogContentFragment
+              imageRel={file?.fileObj}
+              primaryText={
+                <div>
+                  <strong>{collectibleItem?.source?.name ?? ""}</strong> added to your collection!
+                </div>
+              }
+            />
+          </Dialog>
+        )}
     </>
   );
 }

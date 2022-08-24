@@ -1,16 +1,6 @@
-import {
-  React,
-  useStyleSheet,
-  Ripple,
-  getSrcByImageObj,
-  classKebab,
-} from "../../deps.ts";
-import {
-  useMenu,
-  getMenuIconImageObj,
-  getHasNotification,
-  useTabStateManager,
-} from "../../util/mod.ts";
+import { classKebab, getSrcByImageObj, React, Ripple, useStyleSheet } from "../../deps.ts";
+import { getHasNotification, useTabs } from "../../state/mod.ts";
+import { getMenuIconImageObj, useMenu } from "../../state/mod.ts";
 import stylesheet from "./extension-icon.scss.js";
 
 export default function ExtensionIcon({
@@ -18,23 +8,21 @@ export default function ExtensionIcon({
 }: {
   $$extensionIconRef: React.MutableRefObject<HTMLDivElement | null>;
 }) {
-  const { store, toggleOpen } = useMenu();
-  const { store: tabStateStore } = useTabStateManager();
-  const hasNotification = getHasNotification(tabStateStore);
+  const { state: menuState, toggleOpen } = useMenu();
+  const { state: tabsState } = useTabs();
+  const hasNotification = getHasNotification(tabsState);
 
   const onExtensionIconClick = () => {
     toggleOpen();
   };
 
   useStyleSheet(stylesheet);
-  const iconImageObj = getMenuIconImageObj(store);
+  const iconImageObj = getMenuIconImageObj(menuState);
   return (
     <div
       className={`c-extension-icon ${classKebab({ hasNotification })}`}
       style={{
-        backgroundImage: iconImageObj
-          ? `url(${getSrcByImageObj(iconImageObj)})`
-          : undefined,
+        backgroundImage: iconImageObj ? `url(${getSrcByImageObj(iconImageObj)})` : undefined,
       }}
       ref={$$extensionIconRef}
       onClick={onExtensionIconClick}

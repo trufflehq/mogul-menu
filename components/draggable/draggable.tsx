@@ -1,5 +1,5 @@
 import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
-import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../util/mod.ts";
+import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../state/mod.ts";
 export interface Vector {
   x: number;
   y: number;
@@ -128,9 +128,10 @@ export default function Draggable(
   },
 ) {
   const lastPositionRef = useRef<MenuPosition>(undefined!);
-  const { store: menuStore, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
-  const dimensions = getDimensions(menuStore);
-  const menuPosition = getMenuPosition(menuStore);
+  const { state: menuState, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
+  // const { state: menuState, dispatch } = useMenuReducer()
+  const dimensions = getDimensions(menuState);
+  const menuPosition = getMenuPosition(menuState);
 
   const defaultPosition = { x: 0, y: 0 };
 

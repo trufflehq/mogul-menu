@@ -1,5 +1,6 @@
 import { React, useState } from "../../deps.ts";
-import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
+import { getMenuPosition, useMenu, useSnackBar } from "../../state/mod.ts";
+import { useCurrentTab, useTabButton, useTabSlug } from "../../state/mod.ts";
 
 import Button from "../base/button/button.tsx";
 import { CollapsibleTabButton } from "../tab-bar/tab-bar.tsx";
@@ -9,7 +10,7 @@ import Select from "../base/select/select.tsx";
 import Option from "../base/option/option.tsx";
 import ColorOption from "../base/color-option/color-option.tsx";
 
-import { useActionBanner, usePageStack, useTabId, useTabState } from "../../util/mod.ts";
+import { useActionBanner, usePageStack } from "../../util/mod.ts";
 
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -17,7 +18,6 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import Page from "../base/page/page.tsx";
-import { getMenuPosition, useMenu, useTabButton } from "../../util/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -26,11 +26,11 @@ export default function HomeTab() {
   const [count, setCount] = useState(0);
   const [isSelected, setSelected] = useState(false);
 
-  const tabId = useTabId();
-  const tabState = useTabState();
+  const tabSlug = useTabSlug();
+  const { setTabBadge, setTabText, isActive, text } = useCurrentTab();
 
-  const { pushPage, popPage } = usePageStack();
-  const { pushDialog, popDialog } = useDialog();
+  const { pushPage } = usePageStack();
+  const { pushDialog } = useDialog();
 
   const { displayActionBanner, removeActionBanner } = useActionBanner();
   const gradients = [
@@ -39,8 +39,8 @@ export default function HomeTab() {
     { name: "gradoemt3", value: "orange" },
   ];
   const [selectedValue, setSelectedValue] = useState();
-  const { store, updateMenuPosition } = useMenu();
-  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(store));
+  const { state: menuState, updateMenuPosition } = useMenu();
+  const [menuPositionValue, setMenuPositionValue] = useState(getMenuPosition(menuState));
   const additionalData = { value: selectedValue };
 
   const selectChangeHandler = (value, _idx) => {
@@ -62,8 +62,8 @@ export default function HomeTab() {
   };
 
   const tabNameHandler = () => {
-    tabState.setTabText(`Home (${count})`);
-    tabState.setTabBadge(isSelected);
+    setTabText(`Home (${count})`);
+    setTabBadge(isSelected);
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
   };
@@ -113,10 +113,10 @@ export default function HomeTab() {
 
   return (
     <div className="z-home-tab">
-      <div className="truffle-text-header-1">Tab id: {tabId}</div>
-      <div className="truffle-text-header-1">Tab name: {tabState?.text}</div>
+      <div className="truffle-text-header-1">Tab slug: {tabSlug}</div>
+      <div className="truffle-text-header-1">Tab name: {text}</div>
       <div className="truffle-text-header-1">
-        Tab isActive: {String(tabState?.isActive)}
+        Tab isActive: {String(isActive)}
       </div>
       <div>
         <Button onClick={snackBarHandler}>Enqueue snackbar</Button>

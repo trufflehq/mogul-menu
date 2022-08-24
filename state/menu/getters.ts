@@ -4,48 +4,49 @@ import {
   BASE_MENU_WIDTH,
   DEFAULT_MENU_ICON_HEIGHT,
   DEFAULT_MENU_ICON_WIDTH,
-} from "./menu-state.tsx";
+} from "./constants.ts";
+
 import { MenuPosition } from "./types.ts";
-export function getDimensions(store: MenuState) {
-  return store.dimensions;
+export function getDimensions(state: MenuState) {
+  return state.dimensions;
 }
 
-export function getMenuState(store: MenuState) {
-  return store.menuState;
+export function getMenuState(state: MenuState) {
+  return state.menuState;
 }
 
-export function getIsOpen(store: MenuState) {
-  return store.menuState === "open";
+export function getIsOpen(state: MenuState) {
+  return state.menuState === "open";
 }
 
-export function getIsClaimable(store: MenuState) {
-  return store.isClaimable;
+export function getIsClaimable(state: MenuState) {
+  return state.isClaimable;
 }
 
-export function getAdditionalButtonsWidth(store: MenuState) {
-  return store.$$additionalButtonRef?.current.offsetWidth || 0;
+export function getAdditionalButtonsWidth(state: MenuState) {
+  return state.$$additionalButtonRef?.current.offsetWidth || 0;
 }
 
-export function getSnackBars(store: MenuState) {
-  return store.snackBars;
+export function getSnackBars(state: MenuState) {
+  return state.snackBars;
 }
 
-export function getTopSnackbar(store: MenuState) {
-  return store.snackBars?.[0];
+export function getTopSnackbar(state: MenuState) {
+  return state.snackBars?.[0];
 }
 
-export function getMenuIconImageObj(store: MenuState) {
-  return store.iconImageObj;
+export function getMenuIconImageObj(state: MenuState) {
+  return state.iconImageObj;
 }
 
-export function getMenuPosition(store: MenuState) {
-  return store.menuPosition;
+export function getMenuPosition(state: MenuState) {
+  return state.menuPosition;
 }
 
-export function getClosedModifiers(store: MenuState) {
-  const position = getMenuPosition(store);
+export function getClosedModifiers(state: MenuState) {
+  const position = getMenuPosition(state);
   const prefix = getPositionPrefix(position);
-  const additionalButtonsWidth = getAdditionalButtonsWidth(store);
+  const additionalButtonsWidth = getAdditionalButtonsWidth(state);
   return prefix === "bottom"
     ? {
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,
@@ -61,8 +62,8 @@ export function getClosedModifiers(store: MenuState) {
     };
 }
 
-export function getOpenModifiers(store: MenuState) {
-  const position = getMenuPosition(store);
+export function getOpenModifiers(state: MenuState) {
+  const position = getMenuPosition(state);
   const prefix = getPositionPrefix(position);
   return prefix === "bottom"
     ? {

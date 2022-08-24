@@ -12,7 +12,7 @@ import {
   getSrcByImageObj,
   op,
 } from "../../deps.ts";
-import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
+import { useSnackBar } from "../../state/mod.ts";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";
 import styleSheet from "./connected-accounts.scss.js";
 
