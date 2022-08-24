@@ -1,140 +1,36 @@
-import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
-import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../state/mod.ts";
-export interface Vector {
-  x: number;
-  y: number;
-}
-
-export interface DragInfo {
-  current: Vector;
-  start: Vector;
-  pressed: boolean;
-  draggable: boolean;
-}
-
-export interface Modifiers {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-  transition: string; //css value for the transition property
-}
-
-export interface Dimensions {
-  base: Vector;
-  modifiers: Modifiers;
-}
-
-function createClipPath(
-  position: Vector,
-  base: Vector,
-  { top, right, bottom, left }: Pick<Modifiers, "top" | "right" | "bottom" | "left">,
-  menuPosition: MenuPosition = "top-right",
-) {
-  // console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
-
-  return menuPosition === "top-right" || menuPosition === "top-left"
-    ? `inset(
-    ${position.y + base.y + top}px
-    calc(100% - ${position.x + base.x + right}px) 
-    calc(100% - ${position.y + base.y + bottom}px) 
-    ${position.x - left}px round 4px)`
-    : `inset(
-      ${position.y + base.y + top}px
-      calc(100% - ${position.x + base.x + right}px) 
-      calc(100% - ${position.y - bottom}px)
-      ${position.x - left}px round 4px)`;
-}
-function createIframeStyle(
-  dimensions: Dimensions,
-  dragInfo: DragInfo,
-  menuPosition: MenuPosition = "top-right",
-) {
-  //creates an element that spans the entire screen
-  //a clip path is used to crop to only the actual component
-  const style = {
-    width: "100vw",
-    height: "100vh",
-    "clip-path": createClipPath(
-      dragInfo.current,
-      dimensions.base,
-      dimensions.modifiers,
-      menuPosition,
-    ),
-    transition: dimensions.modifiers.transition,
-    background: "none",
-    position: "fixed",
-    top: "0",
-    left: "0",
-    "z-index": "9999",
-  };
-  //remove clip path if mouse is pressed so we get mouse events across the entire page
-  if (dragInfo.pressed) style["clip-path"] = "none";
-  return style;
-}
-
-function getWindowSize() {
-  const win = window,
-    doc = document,
-    docElem = doc.documentElement,
-    body = doc.getElementsByTagName("body")[0],
-    x = win.innerWidth || docElem.clientWidth || body.clientWidth,
-    y = win.innerHeight || docElem.clientHeight || body.clientHeight;
-
-  return { x, y };
-}
-
-function getPosition(event: MouseEvent | React.MouseEvent) {
-  let vertical = "top";
-  let horizontal = "right";
-  const { x, y } = getWindowSize();
-  const mouseX = event.clientX;
-  const mouseY = event.clientY;
-
-  if (mouseY < Math.floor(y / 2)) {
-    vertical = "top";
-  } else {
-    vertical = "bottom";
-  }
-
-  if (mouseX < Math.floor(x / 2)) {
-    horizontal = "left";
-  } else {
-    horizontal = "right";
-  }
-
-  return `${vertical}-${horizontal}` as MenuPosition;
-}
-
-export function getPositionPrefix(position?: MenuPosition) {
-  return position?.slice(0, position?.indexOf("-"));
-}
-
-export function isVerticalTranslation(lastPosition?: MenuPosition, newPosition?: MenuPosition) {
-  const lastPositionPrefix = getPositionPrefix(lastPosition);
-  const newPositionPrefix = getPositionPrefix(newPosition);
-  const hasPositions = lastPosition && newPosition;
-  return hasPositions && lastPositionPrefix !== newPositionPrefix;
-}
+import { React, useState } from "../../deps.ts";
+import { useUpdateDragPosition } from '../../util/mod.ts'
+import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
-  // { children, dimensions, defaultPosition, requiredClassName, ignoreClassName }: {
-  { children, requiredClassName, ignoreClassName }: {
+  {
+    children,
+    dimensions,
+    defaultPosition,
+    createClipPath,
+    requiredClassName,
+    ignoreClassName,
+    onPressedMouseUp,
+    onDragStart,
+    translateFn,
+    updateParentPosition,
+  }: {
     children: React.ReactNode;
-    // dimensions: Dimensions;
-    // defaultPosition: Vector;
+    createClipPath: (
+      position: Vector,
+      base: Vector,
+      { top, right, bottom, left }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
+    ) => void;
+    dimensions: Dimensions;
+    defaultPosition: Vector;
     requiredClassName?: string;
     ignoreClassName?: string;
+    onPressedMouseUp?: (e: React.MouseEvent) => void;
+    onDragStart?: (e: React.MouseEvent) => void;
+    translateFn?: (updateDragInfo: (x: number, y: number) => void) => void;
+    updateParentPosition?: (dragInfo: DragInfo) => void;
   },
 ) {
-  const lastPositionRef = useRef<MenuPosition>(undefined!);
-  const { state: menuState, updateMenuPosition, setIsClosed, updateDimensions } = useMenu();
-  // const { state: menuState, dispatch } = useMenuReducer()
-  const dimensions = getDimensions(menuState);
-  const menuPosition = getMenuPosition(menuState);
-
-  const defaultPosition = { x: 0, y: 0 };
-
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
       current: defaultPosition,
@@ -144,76 +40,33 @@ export default function Draggable(
     },
   );
 
-  useEffect(() => {
-    const handleWindowMouseMove = (event: MouseEvent) => {
-      setDragInfo((old: DragInfo) => (
-        {
-          ...old,
-          current: {
-            x: (event.clientX) - old.start.x,
-            y: (event.clientY) - old.start.y,
-          },
-        }
-      ));
-    };
-    if (dragInfo.pressed) {
-      window.addEventListener("mousemove", handleWindowMouseMove);
-    } else {
-      window.removeEventListener("mousemove", handleWindowMouseMove);
-    }
-    return () => (window.removeEventListener(
-      "mousemove",
-      handleWindowMouseMove,
-    ));
-  }, [dragInfo.pressed]);
-
-  useEffect(() => {
-    const lastPosition = lastPositionRef.current;
-    if (menuPosition) {
-      lastPositionRef.current = menuPosition;
-
-      if (isVerticalTranslation(lastPosition, menuPosition)) {
-        if (getPositionPrefix(lastPosition) === "bottom") {
-          // TODO clean this up
-          // update the position from bottom to top
-          setDragInfo((old: DragInfo) => (
-            {
-              ...old,
-              current: {
-                x: old.start.x,
-                y: old.start.y + dimensions.base.y - 40,
-              },
-            }
-          ));
-          updateDimensions();
-        } else {
-          // TODO clean this up
-          // update the position from top to bottom
-          setDragInfo((old: DragInfo) => (
-            {
-              ...old,
-              current: {
-                x: old.start.x,
-                y: old.start.y - dimensions.base.y + 40,
-              },
-            }
-          ));
-          updateDimensions();
-        }
+  const updateDragPosition = (x: number, y: number) => {
+    setDragInfo((old: DragInfo) => (
+      {
+        ...old,
+        current: {
+          x: x - old.start.x,
+          y: y - old.start.y,
+        },
       }
-    }
-  }, [menuPosition]);
+    ));
+  };
 
-  // use jumper to update the clip path based on the dimensions and drag info
-  useEffect(() => {
-    const style = createIframeStyle(dimensions, dragInfo, menuPosition);
-    jumper.call("layout.applyLayoutConfigSteps", {
-      layoutConfigSteps: [
-        { action: "useSubject" }, // start with our iframe
-        { action: "setStyle", value: style },
-      ],
-    });
-  }, [dimensions, dragInfo, menuPosition]);
+  const updateDragInfo = (x: number, y: number) => {
+    setDragInfo((old: DragInfo) => (
+      {
+        ...old,
+        current: {
+          x: old.start.x + x,
+          y: old.start.y + y,
+        },
+      }
+    ));
+  };
+
+  useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
+  translateFn?.(updateDragInfo);
+  updateParentPosition?.(dragInfo);
 
   return (
     //outer div is the full screen div that is cropped with clip path
@@ -231,7 +84,6 @@ export default function Draggable(
           dragInfo.current,
           dimensions.base,
           dimensions.modifiers,
-          menuPosition,
         ),
         cursor: dragInfo.pressed ? "grab" : "pointer",
         // dragInfo.pressed disables the animation during drag
@@ -259,10 +111,7 @@ export default function Draggable(
       onDragStart={(e) => {
         e.preventDefault();
         if (dragInfo.draggable) {
-          setIsClosed();
-          updateDimensions({
-            transition: "none",
-          });
+          onDragStart?.(e);
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -277,22 +126,12 @@ export default function Draggable(
         e.preventDefault();
         e.stopPropagation();
         if (dragInfo.pressed) {
-          updateMenuPosition(getPosition(e));
-          updateDimensions();
-
-          // re-enable the transition
-          setTimeout(() => {
-            updateDimensions({
-              transition: ".25s cubic-bezier(.4, .71, .18, .99)",
-            });
-          }, 100);
+          onPressedMouseUp?.(e);
         }
         setDragInfo((old: DragInfo) => ({
           ...old,
           pressed: false,
           draggable: true,
-
-          // NEW
           start: {
             x: old.current.x,
             y: old.current.y,

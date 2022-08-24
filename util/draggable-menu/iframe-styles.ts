@@ -1,0 +1,31 @@
+import { MenuPosition } from "../../state/mod.ts";
+import { Dimensions, DragInfo } from "../../types/mod.ts";
+import { createMenuClipPath } from "./clip-path.ts";
+
+export function createMenuIframeStyle(
+  dimensions: Dimensions,
+  dragInfo: DragInfo,
+  menuPosition: MenuPosition = "top-right",
+) {
+  // creates an element that spans the entire screen
+  // a clip path is used to crop to only the actual component
+  const style = {
+    width: "100vw",
+    height: "100vh",
+    "clip-path": createMenuClipPath(
+      dragInfo.current,
+      dimensions.base,
+      dimensions.modifiers,
+      menuPosition,
+    ),
+    transition: dimensions.modifiers.transition,
+    background: "none",
+    position: "fixed",
+    top: "0",
+    left: "0",
+    "z-index": "9999",
+  };
+  // remove clip path if mouse is pressed so we get mouse events across the entire page
+  if (dragInfo.pressed) style["clip-path"] = "none";
+  return style;
+}

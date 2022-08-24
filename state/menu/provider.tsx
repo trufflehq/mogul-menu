@@ -17,8 +17,14 @@ const INITIAL_MENU_STATE: MenuState = {
   menuPosition: "top-right",
   snackBars: [],
   dimensions: {
-    base: { x: BASE_MENU_WIDTH, y: BASE_MENU_HEIGHT },
+    base: {
+      x: BASE_MENU_WIDTH,
+      y: BASE_MENU_HEIGHT,
+      width: DEFAULT_MENU_ICON_WIDTH,
+      height: DEFAULT_MENU_ICON_HEIGHT,
+    },
     modifiers: {
+      // top-right
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,
       right: 0,
       bottom: 0,

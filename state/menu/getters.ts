@@ -7,6 +7,7 @@ import {
 } from "./constants.ts";
 
 import { MenuPosition } from "./types.ts";
+
 export function getDimensions(state: MenuState) {
   return state.dimensions;
 }
@@ -45,21 +46,35 @@ export function getMenuPosition(state: MenuState) {
 
 export function getClosedModifiers(state: MenuState) {
   const position = getMenuPosition(state);
-  const prefix = getPositionPrefix(position);
   const additionalButtonsWidth = getAdditionalButtonsWidth(state);
-  return prefix === "bottom"
+  const modifier = position === "bottom-right"
     ? {
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
     }
-    : {
+    : position === "bottom-left"
+    ? {
+      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      bottom: 0 - BASE_MENU_HEIGHT,
+      left: 0,
+    }
+    : position === "top-right"
+    ? {
       top: 0 - BASE_MENU_HEIGHT,
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+    }
+    : {
+      top: 0 - BASE_MENU_HEIGHT,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+      left: 0,
     };
+  return modifier;
 }
 
 export function getOpenModifiers(state: MenuState) {
@@ -82,4 +97,8 @@ export function getOpenModifiers(state: MenuState) {
 
 export function getPositionPrefix(position?: MenuPosition) {
   return position?.slice(0, position?.indexOf("-"));
+}
+
+export function getPositionSuffix(position?: MenuPosition) {
+  return position?.slice(position?.indexOf("-") + 1);
 }
