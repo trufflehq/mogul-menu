@@ -5,12 +5,12 @@ import {
   getSnackBars,
   getTopSnackbar,
   useMenu,
-} from "../../../util/mod.ts";
-import styleSheet from "./snack-bar-provider.scss.js";
+} from "../../../state/mod.ts";
+import styleSheet from "./snack-bar-container.scss.js";
 
 const DEFAULT_VISIBILITY_DURATION_MS = 5000;
 
-export default function SnackBarProvider({
+export default function SnackBarContainer({
   children,
   visibilityDuration = DEFAULT_VISIBILITY_DURATION_MS,
 }: {
@@ -18,11 +18,11 @@ export default function SnackBarProvider({
   visibilityDuration?: number;
 }) {
   useStyleSheet(styleSheet);
-  const { store, popSnackBar } = useMenu();
-  const menuPosition = getMenuPosition(store);
+  const { state: menuState, popSnackBar } = useMenu();
+  const menuPosition = getMenuPosition(menuState);
   const prefix = getPositionPrefix(menuPosition);
-  const $currentSnackBar = getTopSnackbar(store);
-  const snackBarQueue = useMemo(() => getSnackBars(store), [JSON.stringify(store.snackBars)]);
+  const $currentSnackBar = getTopSnackbar(menuState);
+  const snackBarQueue = useMemo(() => getSnackBars(menuState), [JSON.stringify(menuState.snackBars)]);
 
   const shouldRenderSnackBar = snackBarQueue.length > 0;
 

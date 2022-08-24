@@ -1,13 +1,5 @@
-import {
-  gql,
-  Obs,
-  React,
-  useMutation,
-  useObservables,
-  useQuery,
-  _,
-} from "../../../deps.ts";
-import { useTabState } from "../../../util/mod.ts";
+import { _, gql, Obs, React, useMutation, useObservables, useQuery } from "../../../deps.ts";
+import { useCurrentTab } from "../../../state/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -83,7 +75,7 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
 
   const collectible = redeemableCollectible?.source;
   const [_redeemResult, executeRedeemMutation] = useMutation(
-    REDEEM_COLLECTIBLE_MUTATION
+    REDEEM_COLLECTIBLE_MUTATION,
   );
 
   const redeemHandler = async () => {
@@ -94,7 +86,7 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
         },
         {
           additionalTypenames: ["OwnedCollectible", "ActivePowerup"],
-        }
+        },
       );
 
       const { redeemResponse } = result.ownedCollectibleRedeem;
@@ -107,12 +99,13 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else {
         const collectibleIds = redeemResponse?.collectibleIds;
-        const packCollectible = _.find(collectibles, (collectible) =>
-          collectibleIds.includes(collectible?.id)
+        const packCollectible = _.find(
+          collectibles,
+          (collectible) => collectibleIds.includes(collectible?.id),
         );
         popDialog();
         pushDialog(
-          <OpenedPackCollectibleDialog packCollectible={packCollectible} />
+          <OpenedPackCollectibleDialog packCollectible={packCollectible} />,
         );
       }
 
@@ -138,10 +131,8 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
       <DefaultDialogContentFragment
         imageRel={redeemableCollectible?.source?.fileRel?.fileObj}
         primaryText={`${redeemableCollectible?.source?.name} unlocked`}
-        secondaryText={
-          redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+        secondaryText={redeemableCollectible?.description ??
+          redeemableCollectible?.source?.data?.description}
       />
     </Dialog>
   );
@@ -150,10 +141,10 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
 // shown after opening a collectible pack
 function OpenedPackCollectibleDialog({ packCollectible }) {
   const { popDialog } = useDialog();
-  const { setActiveTab } = useTabState()
+  const { setActiveTab } = useCurrentTab();
   const viewCollectionHandler = () => {
     popDialog();
-    setActiveTab("collection")
+    setActiveTab("collection");
   };
 
   if (!packCollectible) {

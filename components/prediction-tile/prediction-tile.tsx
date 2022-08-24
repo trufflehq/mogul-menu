@@ -1,10 +1,10 @@
-import { React, useMemo, useEffect, useRef, usePollingQuery, useStyleSheet } from "../../deps.ts";
+import { React, useEffect, useMemo, usePollingQuery, useRef, useStyleSheet } from "../../deps.ts";
 import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
-import { ACTIVE_POLL_QUERY } from '../../gql/mod.ts'
-import { usePageStack, useMenu } from "../../util/mod.ts";
-import { Poll } from '../../types/mod.ts'
+import { ACTIVE_POLL_QUERY } from "../../gql/mod.ts";
+import { usePageStack } from "../../util/mod.ts";
+import { Poll } from "../../types/mod.ts";
 // import SnackBar from '../base/snack-bar/snack-bar.tsx'
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";
@@ -15,7 +15,7 @@ const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
 export default function PredictionTile() {
   useStyleSheet(styleSheet);
-  const latestPredictionIdRef = useRef<string>(undefined!)
+  const latestPredictionIdRef = useRef<string>(undefined!);
   const { pushPage } = usePageStack();
 
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
@@ -30,7 +30,7 @@ export default function PredictionTile() {
     [activePollData],
   );
 
-  const hasPollChanged = latestPredictionIdRef.current !== activePoll?.id
+  const hasPollChanged = latestPredictionIdRef.current !== activePoll?.id;
 
   // TODO implement w/ the closed snackbar
   // const { enqueueSnackBar, updateDimensions } = useMenu()

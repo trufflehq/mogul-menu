@@ -8,7 +8,7 @@ import {
   useState,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useSnackBar } from "../../../util/snack-bar/snack-bar.ts";
+import { useSnackBar } from "../../../state/mod.ts";
 import Button from "../../base/button/button.tsx";
 import Page from "../../base/page/page.tsx";
 import SnackBar from "../../base/snack-bar/snack-bar.tsx";

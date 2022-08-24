@@ -4,20 +4,13 @@ import {
   ImageByAspectRatio,
   React,
   Ripple,
-  useEffect,
   useLayoutEffect,
   useRef,
   useStyleSheet,
 } from "../../deps.ts";
-import {
-  getIsOpen,
-  TabState,
-  useMenu,
-  usePageStack,
-  useTabButton,
-  useTabState,
-  useTabStateManager,
-} from "../../util/mod.ts";
+import { getIsOpen, useMenu } from "../../state/mod.ts";
+import { TabState, useCurrentTab, useTabButton, useTabs } from "../../state/mod.ts";
+import { usePageStack } from "../../util/mod.ts";
 import stylesheet from "./tab-bar.scss.js";
 export default function TabBar() {
   useStyleSheet(stylesheet);
@@ -25,20 +18,20 @@ export default function TabBar() {
   const previousTabButtonLengthRef = useRef<number>(0);
   const tabButtonManager = useTabButton();
   const additionalTabButtons = tabButtonManager.buttonMap;
-  const { store } = useTabStateManager();
-  const { store: menuStore, setAdditionalButtonRef, updateDimensions } = useMenu();
-  const { setActiveTab } = useTabState();
+  const { state: tabsState } = useTabs();
+  const { state: menuState, setAdditionalButtonRef, updateDimensions } = useMenu();
+  const { setActiveTab } = useCurrentTab();
   const { clearPageStack } = usePageStack();
-  const isMenuOpen = getIsOpen(menuStore);
+  const isMenuOpen = getIsOpen(menuState);
 
   const hasTabButtonsLengthChanged =
-  previousTabButtonLengthRef.current !== Object.keys(additionalTabButtons)?.length;
+    previousTabButtonLengthRef.current !== Object.keys(additionalTabButtons)?.length;
   useLayoutEffect(() => {
-    updateDimensions()
-    if(hasTabButtonsLengthChanged) {
+    updateDimensions();
+    if (hasTabButtonsLengthChanged) {
       previousTabButtonLengthRef.current = Object.keys(additionalTabButtons)?.length;
     }
-  }, [isMenuOpen, hasTabButtonsLengthChanged])
+  }, [isMenuOpen, hasTabButtonsLengthChanged]);
 
   useLayoutEffect(() => {
     setAdditionalButtonRef($$additionalButtonRef);
@@ -55,7 +48,7 @@ export default function TabBar() {
       <div ref={$$additionalButtonRef} className="additional-tab-buttons">
         {Object.values(additionalTabButtons)}
       </div>
-      {_.map(Object.entries(store.tabs), ([id, tabState]: [string, TabState]) => {
+      {_.map(Object.entries(tabsState.tabs), ([id, tabState]: [string, TabState]) => {
         const { text: tabText, hasBadge, icon, isActive } = tabState;
         return (
           <div
@@ -87,11 +80,11 @@ export function CollapsibleTabButton(
   { children, collapsedIcon, onClick }: {
     children: React.ReactNode;
     collapsedIcon?: React.ReactNode;
-    onClick?: () => void
+    onClick?: () => void;
   },
 ) {
-  const { store } = useMenu();
-  const isMenuOpen = getIsOpen(store);
+  const { state: menuState } = useMenu();
+  const isMenuOpen = getIsOpen(menuState);
   return (
     <div
       onClick={onClick}

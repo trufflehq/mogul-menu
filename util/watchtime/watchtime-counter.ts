@@ -15,7 +15,7 @@ import {
 } from "../../deps.ts";
 
 import { ECONOMY_ACTION_QUERY } from "../../gql/mod.ts";
-import { getIsClaimable, useMenu } from "../mod.ts";
+import { getIsClaimable, useMenu } from "../../state/mod.ts";
 const WATCH_TIME_INCREMENT_MUTATION = gql`
   mutation ($secondsWatched: Int, $sourceType: String) {
     watchTimeIncrement(
@@ -75,8 +75,8 @@ export function useWatchtimeCounter({
     WATCH_TIME_CLAIM_MUTATION,
   );
 
-  const { store } = useMenu();
-  const isClaimable = getIsClaimable(store);
+  const { state: menuState } = useMenu();
+  const isClaimable = getIsClaimable(menuState);
 
   const intervalRef = useRef(null);
   const lastUpdateTimeRef = useRef(null);

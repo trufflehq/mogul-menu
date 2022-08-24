@@ -11,7 +11,7 @@ import Collectible from "../collectible/collectible.tsx";
 import { usePageStack, useTabState } from "../../util/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
-import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
+import { useSnackBar } from "../../state/mod.ts";
 
 import { Collectible as CollectibleType } from "../../types/collectible.types.ts";
 import { ActivePowerup } from "../../types/active-powerup.types.ts";

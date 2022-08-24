@@ -1,5 +1,5 @@
 import { React, useStyleSheet } from "../../../deps.ts";
-import { useTabState } from "../../../util/mod.ts";
+import { useCurrentTab } from "../../../state/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
@@ -20,7 +20,7 @@ export default function SingleRewardLevelUpDialog({
   useStyleSheet(styleSheet);
 
   const { popDialog } = useDialog();
-  const { setActiveTab } = useTabState();
+  const { setActiveTab } = useCurrentTab();
   const closeHandler = onClose ?? popDialog;
 
   const viewCollectionHandler = () => {
@@ -52,9 +52,7 @@ export default function SingleRewardLevelUpDialog({
         </div>
         <DefaultDialogContentFragment
           primaryText={<>{reward?.source?.name} unlocked!</>}
-          secondaryText={
-            reward?.source?.data?.description ?? reward?.description
-          }
+          secondaryText={reward?.source?.data?.description ?? reward?.description}
         />
       </Dialog>
     </div>

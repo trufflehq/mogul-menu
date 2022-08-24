@@ -14,7 +14,8 @@ import styleSheet from "./watchtime.scss.js";
 import Timer from "../timer/timer.tsx";
 import { CollapsibleTabButton } from '../tab-bar/tab-bar.tsx'
 import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
-import { useTabButton, useMenu } from "../../util/mod.ts";
+import { useTabButton } from "../../state/mod.ts";
+import { useMenu } from '../../state/mod.ts'
 import ChannelPoints from "../channel-points/channel-points.tsx";
 // import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
 import SnackBar from "../base/snack-bar/snack-bar.tsx";

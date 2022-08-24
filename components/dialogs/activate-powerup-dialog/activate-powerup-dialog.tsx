@@ -1,7 +1,7 @@
 import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
 import { Collectible, ActivePowerupRedeemData } from "../../../types/mod.ts";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
-import { useSnackBar } from "../../../util/snack-bar/snack-bar.ts";
+import { useSnackBar } from "../../../state/mod.ts";
 import { PowerupActivatedSnackBar } from "../../snack-bars/powerup-activated-snack-bar/powerup-activated-snack-bar.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import Button from "../../base/button/button.tsx";

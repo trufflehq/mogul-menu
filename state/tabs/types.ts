@@ -25,10 +25,10 @@ export type TabStateValue = TabState[keyof TabState];
 export type TabStateKey = keyof TabState;
 export type TabStateMap = Record<string, TabState>;
 
-export type UpdateTabStateAction = {
-  type: "@@UPDATE_TAB_STATE";
+export type UpdateTabAction = {
+  type: "@@UPDATE_TAB";
   payload: {
-    tabId: string;
+    tabSlug: string;
     key: TabStateKey;
     value: TabStateValue;
   };
@@ -40,11 +40,11 @@ export type UpdateActiveTabAction = {
     tabSlug: string;
   };
 };
-export type TabStateActions = UpdateTabStateAction | UpdateActiveTabAction;
+export type TabsActions = UpdateTabAction | UpdateActiveTabAction;
 
-export type TabsState = Record<string, TabState>;
+export type TabsMap = Record<string, TabState>;
 
-export type TabStore = {
+export type TabsState = {
   activeTab: string;
-  tabs: TabsState;
+  tabs: TabsMap;
 };
