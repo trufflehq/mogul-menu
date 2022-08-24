@@ -276,7 +276,7 @@ export default function Draggable(
       onMouseUp={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (dragInfo.draggable) {
+        if (dragInfo.pressed) {
           updateMenuPosition(getPosition(e));
           updateDimensions();
 
