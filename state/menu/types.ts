@@ -1,16 +1,5 @@
 import { React } from "../../deps.ts";
 import { File } from "../../types/mod.ts";
-export interface DimensionModifiers {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-  transition: string;
-}
-
-interface SnackBar {
-  $component: React.ReactNode;
-}
 
 export type MenuPosition = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
@@ -23,6 +12,8 @@ export interface MenuState {
     base: {
       x: number;
       y: number;
+      width: number;
+      height: number;
     };
     modifiers: DimensionModifiers;
   };

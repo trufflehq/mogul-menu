@@ -114,6 +114,22 @@ $clip-path-transition: .5s;
     }
   }
 
+  &.position-top-left, &.position-bottom-left {
+    > .menu {
+      > .inner {
+        > .bottom {
+          > .c-tab-bar {
+            flex-direction: row;
+            order: 2;
+          }
+          > .c-extension-icon {
+            order: 1;
+          }
+        }
+      }
+    }
+  }
+
 
   > .menu {
     transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);

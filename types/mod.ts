@@ -6,4 +6,5 @@ export * from "./file.types.ts";
 export * from "./collectible.types.ts";
 export * from "./product.types.ts";
 export * from "./org-user-counter.types.ts";
-export * from './poll.types.ts'
+export * from "./poll.types.ts";
+export * from "./dimensions.types.ts";
