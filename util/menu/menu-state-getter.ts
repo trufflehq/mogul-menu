@@ -71,7 +71,6 @@ export function getClosedModifiers(store: MenuState) {
   const position = getMenuPosition(store);
   const prefix = getPositionPrefix(position);
   const additionalButtonsWidth = getAdditionalButtonsWidth(store);
-  console.log("additionalButtonsWidth", additionalButtonsWidth);
   return prefix === "bottom"
     ? {
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,

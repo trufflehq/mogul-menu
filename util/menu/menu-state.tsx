@@ -46,8 +46,8 @@ const INITIAL_MENU_STATE: MenuState = {
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
       left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      transition: 'none'
-      // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
+      // transition: 'none'
+      "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
     },
   },
 };
@@ -64,7 +64,8 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              ...getOpenModifiers(state)
+              ...getOpenModifiers(state),
+              // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
               // top: 0,
               // right: 0,
               // bottom: 0,
@@ -86,7 +87,8 @@ export function useMenuReducer(initialState: MenuState) {
             ...state.dimensions,
             modifiers: {
               // ...state.dimensions.modifiers,
-              ...(isOpen ? state.dimensions.modifiers : getClosedModifiers(state))
+              ...(isOpen ? state.dimensions.modifiers : getClosedModifiers(state)),
+              // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
               // ...{
               //   left: width,
               //   bottom: height,
@@ -109,19 +111,19 @@ export function useMenuReducer(initialState: MenuState) {
       }
       case "@@MENU_UPDATE_DIMENSIONS": {
         const isOpen = getIsOpen(state);
-        console.log('@@MENU_UPDATE_DIMENSIONS')
+        console.log('@@MENU_UPDATE_DIMENSIONS', payload)
         return {
           ...state,
           dimensions: {
             ...state.dimensions,
             modifiers: {
               ...state.dimensions.modifiers,
-              ...(isOpen ? getOpenModifiers(state) : getClosedModifiers(state))
+              ...(isOpen ? getOpenModifiers(state) : getClosedModifiers(state)),
 
               // expand if the menu is closed and there are additional buttons
               // left: isOpen ? state.dimensions.modifiers.left : getClosedWidth(state),
               // bottom: isOpen ? state.dimensions.modifiers.bottom : getClosedHeight(state),
-              // ...payload,
+              ...payload,
             },
           },
         };

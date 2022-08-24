@@ -31,7 +31,7 @@ function createClipPath(
   { top, right, bottom, left }: Pick<Modifiers, "top" | "right" | "bottom" | "left">,
   menuPosition: MenuPosition = 'top-right'
 ) {
-  console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
+  // console.log(JSON.stringify({ positionX: position.x, positionY: position.y, top, right, bottom, left }))
 
   return menuPosition === 'top-right' || menuPosition === 'top-left' ? `inset(
     ${position.y + base.y + top}px
@@ -248,6 +248,10 @@ export default function Draggable(
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
+      
+        // updateDimensions({ 
+        //   transition: 'none'
+        // })
         if (!classes || !classes?.includes) return;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
         if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
@@ -266,7 +270,10 @@ export default function Draggable(
       }}
       onDragStart={(e) => {
         e.preventDefault();
-        // setIsClosed()
+        setIsClosed()
+        updateDimensions({ 
+          transition: 'none'
+        })
         if (dragInfo.draggable) {
           setDragInfo((old: DragInfo) => ({
             ...old,
@@ -279,10 +286,14 @@ export default function Draggable(
         }
       }}
       onMouseUp={(e) => {
-        // WANT TO RECALCULATE POSITION FROM LAST POSITION 
         if(dragInfo.draggable) {
           console.log('on mouse up')
           updateMenuPosition(getPosition(e))
+          setTimeout(() => {
+            updateDimensions({
+              transition: ".25s cubic-bezier(.4, .71, .18, .99)"
+            })
+          }, 100)
           // updateDimensions()
         }
         setDragInfo((old: DragInfo) => ({
