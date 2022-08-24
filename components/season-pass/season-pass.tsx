@@ -186,7 +186,7 @@ export default function SeasonPass(props) {
               ),
             });
           }
-        },
+        }
       );
     }
   }, [seasonPass?.seasonPassProgression?.changesSinceLastViewed]);
@@ -203,8 +203,8 @@ export default function SeasonPass(props) {
 
   const tierNums = _.uniqBy(
     _.flatten(
-      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum")),
-    ),
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
+    )
   );
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
@@ -218,7 +218,7 @@ export default function SeasonPass(props) {
         <>
           <div className="top-info">
             <div className="left">
-              {isMember && (
+              {
                 <>
                   <div className="account">
                     <AccountAvatar size="72px" />
@@ -252,17 +252,15 @@ export default function SeasonPass(props) {
                     </div>
                   </div>
                 </>
-              )}
+              }
             </div>
           </div>
           {true && (
             <div className="pages">
               <div
-                className={`button left ${
-                  classKebab({
-                    isDisabled: isNotLeftClickable,
-                  })
-                }`}
+                className={`button left ${classKebab({
+                  isDisabled: isNotLeftClickable,
+                })}`}
                 onClick={onLeftClick}
               >
                 ◂
@@ -271,11 +269,9 @@ export default function SeasonPass(props) {
                 {`Ends in ${seasonPass?.daysRemaining} days`}
               </div>
               <div
-                className={`button right ${
-                  classKebab({
-                    isDisabled: isNotRightClickable,
-                  })
-                }`}
+                className={`button right ${classKebab({
+                  isDisabled: isNotRightClickable,
+                })}`}
                 onClick={onRightClick}
               >
                 ▸
@@ -288,27 +284,25 @@ export default function SeasonPass(props) {
               ref={$$levelsRef}
               onTouchStart={(e) => e.stopPropagation()}
             >
-              {tiers?.length
-                ? (
-                  <div className="tier-info">
-                    {_.map(tiers, (tier) => {
-                      console.log("tier", tier);
-                      return (
-                        tier?.name && (
-                          <div
-                            className="tier"
-                            style={{
-                              background: tier?.background,
-                            }}
-                          >
-                            {tier?.name}
-                          </div>
-                        )
-                      );
-                    })}
-                  </div>
-                )
-                : null}
+              {tiers?.length ? (
+                <div className="tier-info">
+                  {_.map(tiers, (tier) => {
+                    console.log("tier", tier);
+                    return (
+                      tier?.name && (
+                        <div
+                          className="tier"
+                          style={{
+                            background: tier?.background,
+                          }}
+                        >
+                          {tier?.name}
+                        </div>
+                      )
+                    );
+                  })}
+                </div>
+              ) : null}
               <div
                 className="levels"
                 style={{
@@ -388,7 +382,7 @@ export function $level(props) {
             xpImgSrc={xpImgSrc}
             minXp={minXp}
             xp={xp}
-          />,
+          />
         );
         // if the user clicked on an emote
       } else if (isEmote) {
@@ -422,7 +416,7 @@ export function $level(props) {
               },
             ]}
             onExit={popDialog}
-          />,
+          />
         );
       }
     }
@@ -431,7 +425,10 @@ export function $level(props) {
   return (
     <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
-        Level {shouldUseLevelsZeroPrefix ? zeroPrefix(level.levelNum) : level.levelNum}
+        Level{" "}
+        {shouldUseLevelsZeroPrefix
+          ? zeroPrefix(level.levelNum)
+          : level.levelNum}
       </div>
       {_.map(tierNums, (tierNum) => {
         const reward = _.find(level.rewards, { tierNum });
@@ -444,22 +441,23 @@ export function $level(props) {
         let isRewardSelected;
 
         if (selectedReward?.level) {
-          isRewardSelected = reward &&
+          isRewardSelected =
+            reward &&
             selectedReward?.sourceId === reward.sourceId &&
             selectedReward?.level === level;
         } else {
-          isRewardSelected = reward && selectedReward?.sourceId === reward.sourceId;
+          isRewardSelected =
+            reward && selectedReward?.sourceId === reward.sourceId;
         }
 
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${
-              classKebab({
-                isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-                hasTierName: Boolean(tierName),
-              })
-            }`}
+            className={`reward tier-${tierNum} ${classKebab({
+              isFirstWithTierName:
+                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+              hasTierName: Boolean(tierName),
+            })}`}
           >
             <Reward
               isSelected={isRewardSelected}
@@ -571,7 +569,8 @@ export function $rewardTooltip({
 
   const breakpoint = "desktop";
 
-  const imageUrl = "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
+  const imageUrl =
+    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
 
   const isMobile = breakpoint === "mobile";
   return (
