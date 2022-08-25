@@ -9,10 +9,14 @@ import {
   useRef,
   useState,
 } from "../../deps.ts";
-import { EXTENSION_TOKEN_SIGNIN_QUERY, LOGIN_TYPE_NAMES, ME_QUERY } from "../../gql/mod.ts";
+import {
+  EXTENSION_TOKEN_SIGNIN_QUERY,
+  LOGIN_TYPE_NAMES,
+  ME_QUERY,
+} from "../../gql/mod.ts";
 import { ExtensionCredentials, MogulTvUser } from "../../types/mod.ts";
 import { isMemberMeUser, setAccessToken } from "../../util/mod.ts";
-import { useActionBanner } from '../../state/mod.ts'
+import { useActionBanner } from "../../state/mod.ts";
 import Button from "../base/button/button.tsx";
 import ActionBanner from "../action-banner/action-banner.tsx";
 
@@ -22,7 +26,7 @@ function useExtensionAuth() {
   });
 
   const [signInResult, executeSigninMutation] = useMutation(
-    EXTENSION_TOKEN_SIGNIN_QUERY,
+    EXTENSION_TOKEN_SIGNIN_QUERY
   );
 
   const [credentials, setCredentials] = useState<ExtensionCredentials>();
@@ -54,13 +58,19 @@ function useExtensionAuth() {
       },
       {
         additionalTypenames: LOGIN_TYPE_NAMES,
-      },
+      }
     );
 
     return result;
   }
 
-  return { me: meRes?.me, isFetchingUser, credentials, signInWithToken, refetchMe };
+  return {
+    me: meRes?.me,
+    isFetchingUser,
+    credentials,
+    signInWithToken,
+    refetchMe,
+  };
 }
 
 export default function AuthManager() {
@@ -75,11 +85,15 @@ export default function AuthManager() {
       if (!isMemberMeUser(me)) {
         signInActionBannerIdRef.current = displayActionBanner(
           <ActionBanner
-            action={<Button onClick={() => setIsAuthDialogHidden(false)}></Button>}
+            action={
+              <Button onClick={() => setIsAuthDialogHidden(false)}>
+                Sign in
+              </Button>
+            }
           >
             Finish setting up your account
           </ActionBanner>,
-          "sign-in",
+          "sign-in"
         );
       } else if (signInActionBannerIdRef.current) {
         removeActionBanner(signInActionBannerIdRef.current);
@@ -95,15 +109,13 @@ export default function AuthManager() {
     const mogulTvUser: MogulTvUser = signInResult?.data?.mogulTvSignIn;
     setAccessToken(mogulTvUser?.truffleAccessToken);
     await refetchMe({ requestPolicy: "network-only" });
+    removeActionBanner(signInActionBannerIdRef.current);
   };
 
   return (
     <div className="c-auth-manager">
       {!isAuthDialogHidden && (
-        <AbsoluteAuthDialog
-          hidden={isAuthDialogHidden}
-          onclose={onAuthClose}
-        />
+        <AbsoluteAuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
       )}
     </div>
   );
