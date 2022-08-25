@@ -1,4 +1,4 @@
-import { MenuPosition } from '../../state/mod.ts'
+import { MenuPosition } from "../../state/mod.ts";
 
 /**
  * Returns (x,y) for the window
@@ -38,4 +38,12 @@ export function getMenuMousePosition(event: MouseEvent | React.MouseEvent) {
   }
 
   return `${vertical}-${horizontal}` as MenuPosition;
+}
+
+export function getMenuPositionByEl(el: Element) {
+  const rect = el.getBoundingClientRect();
+
+  console.log("rect", rect);
+
+  return rect;
 }

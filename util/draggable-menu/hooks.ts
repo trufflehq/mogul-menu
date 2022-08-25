@@ -11,7 +11,7 @@ import { createMenuIframeStyle } from "./iframe-styles.ts";
  *
  * @param updateDragInfo fn to update the dragInfo position state inside the Draggable component
  */
-export function useTranslate(updateDragInfo: (x: number, y: number) => void) {
+export function useTranslate(updateDragInfo: (x: number, y: number, position: MenuPosition) => void) {
   const lastPositionRef = useRef<MenuPosition>(undefined!);
   const { state: menuState, updateDimensions } = useMenu();
   const menuPosition = getMenuPosition(menuState);
@@ -21,10 +21,10 @@ export function useTranslate(updateDragInfo: (x: number, y: number) => void) {
     const lastPosition = lastPositionRef.current;
     if (menuPosition) {
       lastPositionRef.current = menuPosition;
-
+      console.log(lastPosition, menuPosition);
       const { xMod, yMod } = getTranslationMods(lastPosition, menuPosition, dimensions);
       console.log("translate", xMod, yMod);
-      updateDragInfo(xMod, yMod);
+      updateDragInfo(xMod, yMod, menuPosition);
       updateDimensions();
     }
   }, [menuPosition]);

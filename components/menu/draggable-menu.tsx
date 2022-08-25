@@ -31,18 +31,18 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
   const onPressedMouseUp = (e: React.MouseEvent) => {
     updateMenuPosition(getMenuMousePosition(e));
     updateDimensions();
-    const menuPosition = getMenuMousePosition(e);
+    // const menuPosition = getMenuMousePosition(e);
 
-    console.log("SETTING menu pos", menuPosition);
+    // console.log("SETTING menu pos", menuPosition);
 
-    jumper.call("storage.set", {
-      key: "mogul-menu:position",
-      value: JSON.stringify({
-        menuPosition,
-        x: e.clientX,
-        y: e.clientY,
-      }),
-    });
+    // jumper.call("storage.set", {
+    //   key: "mogul-menu:position",
+    //   value: JSON.stringify({
+    //     menuPosition,
+    //     x: e.clientX,
+    //     y: e.clientY,
+    //   }),
+    // });
 
     // re-enable the transition
     setTimeout(() => {
@@ -68,7 +68,7 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
   };
 
   const dimensions = getDimensions(menuState);
-  const defaultPosition = { x: 0, y: 60 };
+  const defaultPosition = { x: 0, y: 0 };
   // const defaultPosition = { x: 623, y: 326 };
 
   return (
