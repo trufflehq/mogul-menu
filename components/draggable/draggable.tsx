@@ -86,7 +86,7 @@ export default function Draggable(
           dimensions.modifiers,
         ),
         overflow: "hidden",
-        cursor: dragInfo.pressed ? "grab" : "pointer",
+        cursor: dragInfo.pressed ? "grab" : "auto",
         // dragInfo.pressed disables the animation during drag
         transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
       }}
