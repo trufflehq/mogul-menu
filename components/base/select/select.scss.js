@@ -24,7 +24,7 @@ export default scss`
     color: var(--mm-color-text-bg-tertiary);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-    max-height: 200px;
+    max-height: 170px;
     overflow-y: auto;
     z-index: 5;
     
