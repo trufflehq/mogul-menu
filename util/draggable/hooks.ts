@@ -2,7 +2,7 @@ import { useEffect } from "../../deps.ts";
 
 /**
  * Updates the dragInfo when the mouse is pressed and being dragged
- * 
+ *
  * @param updateDragInfo function to update the dragInfo state in the Draggable component
  * @param isPressed whether the mouse is pressed or not
  */
@@ -12,6 +12,7 @@ export function useUpdateDragPosition(
 ) {
   useEffect(() => {
     const handleWindowMouseMove = (event: MouseEvent) => {
+      console.log("handleWindowMouseMove update drag info");
       updateDragInfo(event.clientX, event.clientY);
     };
     if (isPressed) {

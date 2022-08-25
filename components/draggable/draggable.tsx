@@ -1,5 +1,6 @@
-import { React, useState } from "../../deps.ts";
+import { jumper, React, useEffect, useState } from "../../deps.ts";
 import { useUpdateDragPosition } from "../../util/mod.ts";
+import { updateMenuPosition, useMenu } from "../../state/mod.ts";
 import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
@@ -34,13 +35,41 @@ export default function Draggable(
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
       current: defaultPosition,
-      start: { x: 0, y: 0 },
+      start: { x: 0, y: 30 },
+      // start: { x: 623, y: 326 },
       pressed: false,
       draggable: true,
     },
   );
 
+  const { dispatch } = useMenu();
+
+  useEffect(() => {
+    const fetchPosition = async () => {
+      const positionRes = await jumper?.call("storage.get", { key: "mogul-menu:position" });
+      console.log("positionRes", positionRes);
+      const position = JSON.parse(positionRes || "{}");
+      console.log("position", position);
+      if (position?.menuPosition) {
+        dispatch(updateMenuPosition(position.menuPosition));
+      }
+
+      if (position?.x && position?.y) {
+        console.log("has pos", position?.x, position?.y);
+        setDragInfo((old: DragInfo) => ({
+          ...old,
+          current: {
+            x: 0 - position.x,
+            y: 0 - position.y,
+          },
+        }));
+      }
+    };
+    fetchPosition();
+  }, []);
+
   const updateDragPosition = (x: number, y: number) => {
+    console.log("updateDragPosition");
     setDragInfo((old: DragInfo) => (
       {
         ...old,
@@ -53,6 +82,7 @@ export default function Draggable(
   };
 
   const updateDragInfo = (x: number, y: number) => {
+    console.log("updateDragInfo", x, y);
     setDragInfo((old: DragInfo) => (
       {
         ...old,
@@ -67,7 +97,7 @@ export default function Draggable(
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
   translateFn?.(updateDragInfo);
   updateParentPosition?.(dragInfo);
-
+  console.log("current", dragInfo.current);
   return (
     //outer div is the full screen div that is cropped with clip path
     <div
@@ -100,12 +130,14 @@ export default function Draggable(
         if (
           requiredClassName && !classes?.includes(requiredClassName)
         ) {
+          console.log("req classname");
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
         //prevent dragging by links and prevent-drag tag
         if (
           target.tagName === "A" || classes?.includes("prevent-drag")
         ) {
+          console.log("prevent drag");
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
       }}
@@ -113,6 +145,7 @@ export default function Draggable(
         e.preventDefault();
         if (dragInfo.draggable) {
           onDragStart?.(e);
+          console.log("drag start");
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -129,6 +162,8 @@ export default function Draggable(
         if (dragInfo.pressed) {
           onPressedMouseUp?.(e);
         }
+
+        console.log("mouse up");
         setDragInfo((old: DragInfo) => ({
           ...old,
           pressed: false,

@@ -1,5 +1,6 @@
-import { React, useContext, useMemo, useReducer } from "../../deps.ts";
-import { DimensionModifiers, MenuActions, MenuPosition, MenuState } from "./types.ts";
+import { jumper, React, useContext, useEffect, useMemo, useReducer } from "../../deps.ts";
+import { MenuActions, MenuPosition, MenuState } from "./types.ts";
+import { DimensionModifiers } from "../../types/mod.ts";
 import { getMenuState } from "./getters.ts";
 import {
   enqueueSnackBar,
@@ -20,6 +21,20 @@ export function useMenuReducer(initialState: MenuState) {
   const memoizedStore = useMemo<[MenuState, React.Dispatch<MenuActions>]>(() => [state, dispatch], [
     state,
   ]);
+
+  // useEffect(() => {
+  //   const fetchPosition = async () => {
+  //     const positionRes = await jumper?.call("storage.get", { key: "mogul-menu:position" });
+  //     console.log("positionRes", positionRes);
+  //     const position = JSON.parse(positionRes || "{}");
+  //     console.log("position", position);
+  //     if (position?.menuPosition) {
+  //       dispatch(updateMenuPosition(position.menuPosition));
+  //     }
+  //   };
+  //   fetchPosition();
+  // }, []);
+
   return { state: memoizedStore[0], dispatch: memoizedStore[1] };
 }
 

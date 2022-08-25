@@ -23,6 +23,7 @@ export function useTranslate(updateDragInfo: (x: number, y: number) => void) {
       lastPositionRef.current = menuPosition;
 
       const { xMod, yMod } = getTranslationMods(lastPosition, menuPosition, dimensions);
+      console.log("translate", xMod, yMod);
       updateDragInfo(xMod, yMod);
       updateDimensions();
     }

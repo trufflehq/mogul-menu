@@ -74,6 +74,7 @@ export function getClosedModifiers(state: MenuState) {
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
       left: 0,
     };
+
   return modifier;
 }
 
