@@ -1,5 +1,5 @@
 import { React, useState } from "../../deps.ts";
-import { useUpdateDragPosition } from '../../util/mod.ts'
+import { useUpdateDragPosition } from "../../util/mod.ts";
 import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
@@ -85,6 +85,7 @@ export default function Draggable(
           dimensions.base,
           dimensions.modifiers,
         ),
+        overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "pointer",
         // dragInfo.pressed disables the animation during drag
         transition: dragInfo.pressed ? "none" : dimensions.modifiers.transition,
@@ -143,7 +144,7 @@ export default function Draggable(
         className="childr"
         style={{
           //set position of child container
-          background: "red",
+          background: "none",
           width: "fit-content",
           position: "absolute",
           top: dragInfo.current.y + "px",
