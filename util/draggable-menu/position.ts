@@ -1,3 +1,4 @@
+import { jumper } from "../../deps.ts";
 import { MenuPosition } from "../../state/mod.ts";
 
 /**
@@ -46,4 +47,19 @@ export function getMenuPositionByEl(el: Element) {
   console.log("rect", rect);
 
   return rect;
+}
+
+export function persistMenuPosition(
+  menuPosition: MenuPosition,
+  current: { x: number; y: number },
+  start: { x: number; y: number },
+) {
+  jumper.call("storage.set", {
+    key: "mogul-menu:position",
+    value: JSON.stringify({
+      menuPosition,
+      current,
+      start,
+    }),
+  });
 }

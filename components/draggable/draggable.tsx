@@ -2,9 +2,17 @@ import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
 import {
   getMenuMousePosition,
   getMenuPositionByEl,
+  persistMenuPosition,
   useUpdateDragPosition,
 } from "../../util/mod.ts";
-import { MenuPosition, updateMenuPosition, useMenu } from "../../state/mod.ts";
+import {
+  getClosedModifiers,
+  getModifiersByPosition,
+  MenuPosition,
+  updateDimensions,
+  updateMenuPosition,
+  useMenu,
+} from "../../state/mod.ts";
 import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
@@ -15,6 +23,7 @@ export default function Draggable(
     createClipPath,
     requiredClassName,
     ignoreClassName,
+    initializePosition,
     onPressedMouseUp,
     onDragStart,
     translateFn,
@@ -30,20 +39,19 @@ export default function Draggable(
     defaultPosition: Vector;
     requiredClassName?: string;
     ignoreClassName?: string;
-    onPressedMouseUp?: (e: React.MouseEvent) => void;
+    onPressedMouseUp?: (e: React.MouseEvent, dragInfo: DragInfo) => void;
     onDragStart?: (e: React.MouseEvent) => void;
     translateFn?: (
-      updateDragInfo: (x: number, y: number, menuPosition: MenuPosition) => void,
+      updateOnTranslate: (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => void,
     ) => void;
+    initializePosition?: (setInitialPosition: (current: Vector, start: Vector) => void) => void;
     updateParentPosition?: (dragInfo: DragInfo) => void;
   },
 ) {
-  const $$draggableRef = useRef<HTMLDivElement>(undefined!);
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
       current: defaultPosition,
       start: { x: 0, y: 30 },
-      // start: { x: 623, y: 326 },
       pressed: false,
       draggable: true,
     },
@@ -52,43 +60,22 @@ export default function Draggable(
   const { dispatch } = useMenu();
 
   useEffect(() => {
-    const fetchPosition = async () => {
-      const positionRes = await jumper?.call("storage.get", { key: "mogul-menu:position" });
-      console.log("positionRes", positionRes);
-      const position = JSON.parse(positionRes || "{}");
-      const current = position?.current;
-      const start = position?.start;
-      console.log("position", position);
-      console.log("$$draggableRef", $$draggableRef.current);
-      console.log("$$draggableRef rect", $$draggableRef.current.getBoundingClientRect());
-
-      const rect = getMenuPositionByEl($$draggableRef.current);
-      console.log("rect", rect);
-      if (position?.menuPosition) {
-        dispatch(updateMenuPosition(position.menuPosition));
-      } else {
-        // get the position of the icon
-
-        dispatch(updateMenuPosition("top-right"));
-      }
-
-      if (current && start) {
-        console.log("has pos", current, start);
-        setDragInfo((old: DragInfo) => ({
-          ...old,
-          current: {
-            x: current.x,
-            y: current.y,
-          },
-          start: {
-            x: start.x,
-            y: start.y,
-          },
-        }));
-      }
-    };
-    fetchPosition();
+    initializePosition?.(setInitialPosition);
   }, []);
+
+  const setInitialPosition = (current: Vector, start: Vector) => {
+    setDragInfo((old: DragInfo) => ({
+      ...old,
+      current: {
+        x: current.x,
+        y: current.y,
+      },
+      start: {
+        x: start.x,
+        y: start.y,
+      },
+    }));
+  };
 
   const updateDragPosition = (x: number, y: number) => {
     console.log("updateDragPosition");
@@ -103,38 +90,22 @@ export default function Draggable(
     ));
   };
 
-  const updateDragInfo = (x: number, y: number, menuPosition: MenuPosition) => {
+  const updateOnTranslate = (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => {
     setDragInfo((old: DragInfo) => {
-      console.log("updateDragInfo", menuPosition, x, y, old.current, old.start);
-
-      jumper.call("storage.set", {
-        key: "mogul-menu:position",
-        value: JSON.stringify({
-          menuPosition,
-          current: {
-            x: dragInfo.current.x + x,
-            y: dragInfo.current.y + y,
-          },
-          start: {
-            x: old.start.x,
-            y: old.start.y,
-          },
-        }),
-      });
+      console.log("updateOnTranslate", x, y, old.current, old.start);
+      callback?.(old);
       return {
         ...old,
         current: {
           x: old.current.x + x,
           y: old.current.y + y,
-          // x: old.start.x + x,
-          // y: old.start.y + y,
         },
       };
     });
   };
 
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
-  translateFn?.(updateDragInfo);
+  translateFn?.(updateOnTranslate);
   updateParentPosition?.(dragInfo);
   console.log("current", dragInfo.current, dragInfo.start);
   return (
@@ -142,7 +113,6 @@ export default function Draggable(
     <div
       className="draggable"
       draggable={true}
-      ref={$$draggableRef}
       style={{
         position: "absolute",
         top: "0px",
@@ -200,24 +170,18 @@ export default function Draggable(
         e.preventDefault();
         e.stopPropagation();
         if (dragInfo.pressed) {
-          onPressedMouseUp?.(e);
+          onPressedMouseUp?.(e, dragInfo);
 
-          const menuPosition = getMenuMousePosition(e);
-          console.log("mouse up set", dragInfo.current, dragInfo.y);
-          jumper.call("storage.set", {
-            key: "mogul-menu:position",
-            value: JSON.stringify({
-              menuPosition,
-              current: {
-                x: dragInfo.current.x,
-                y: dragInfo.current.y,
-              },
-              start: {
-                x: dragInfo.start.x,
-                y: dragInfo.start.y,
-              },
-            }),
-          });
+          // const menuPosition = getMenuMousePosition(e);
+          // console.log("mouse up set", dragInfo.current, dragInfo.y);
+
+          // persistMenuPosition(menuPosition, {
+          //   x: dragInfo.current.x,
+          //   y: dragInfo.current.y,
+          // }, {
+          //   x: dragInfo.start.x,
+          //   y: dragInfo.start.y,
+          // });
         }
 
         console.log("mouse up");
