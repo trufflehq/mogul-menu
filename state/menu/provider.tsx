@@ -29,13 +29,15 @@ const INITIAL_MENU_STATE: MenuState = {
   },
 };
 
-export function MenuProvider(
-  { children, iconImageObj }: { children: React.ReactNode; iconImageObj?: File },
-) {
+export function MenuProvider({
+  children,
+  iconImageObj,
+}: {
+  children: React.ReactNode;
+  iconImageObj?: File;
+}) {
   const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
   return (
-    <MenuContext.Provider value={menuState}>
-      {children}
-    </MenuContext.Provider>
+    <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>
   );
 }

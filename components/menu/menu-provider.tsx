@@ -4,9 +4,9 @@ import ThemeComponent from "../../components/base/theme-component/theme-componen
 import {
   ActionBannerProvider,
   MenuProvider,
+  PageStackProvider,
   TabButtonProvider,
   TabsProvider,
-  PageStackProvider
 } from "../../state/mod.ts";
 import { File } from "../../types/mod.ts";
 

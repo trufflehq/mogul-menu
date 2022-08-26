@@ -1,49 +1,65 @@
 import { React, useEffect, useState } from "../../deps.ts";
 import { useUpdateDragPosition } from "../../util/mod.ts";
-import { useMenu } from "../../state/mod.ts";
-import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
+import {
+  DimensionModifiers,
+  Dimensions,
+  DragInfo,
+  Vector,
+} from "../../types/mod.ts";
 
-export default function Draggable(
-  {
-    children,
-    dimensions,
-    defaultPosition,
-    createClipPath,
-    requiredClassName,
-    ignoreClassName,
-    initializePosition,
-    onPressedMouseUp,
-    onDragStart,
-    translateFn,
-    updateParentPosition,
-  }: {
-    children: React.ReactNode;
-    createClipPath: (
-      position: Vector,
-      base: Vector,
-      { top, right, bottom, left }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
-    ) => void;
-    dimensions: Dimensions;
-    defaultPosition: Vector;
-    requiredClassName?: string;
-    ignoreClassName?: string;
-    onPressedMouseUp?: (e: React.MouseEvent, dragInfo: DragInfo) => void;
-    onDragStart?: (e: React.MouseEvent) => void;
-    translateFn?: (
-      updateOnTranslate: (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => void,
-    ) => void;
-    initializePosition?: (setInitialPosition: (current: Vector, start: Vector) => void) => void;
-    updateParentPosition?: (dragInfo: DragInfo) => void;
-  },
-) {
-  const [dragInfo, setDragInfo] = useState<DragInfo>(
+export default function Draggable({
+  children,
+  dimensions,
+  defaultPosition,
+  createClipPath,
+  requiredClassName,
+  ignoreClassName,
+  initializePosition,
+  onPressedMouseUp,
+  onDragStart,
+  translateFn,
+  updateParentPosition,
+  resizeObserver,
+}: {
+  children: React.ReactNode;
+  createClipPath: (
+    position: Vector,
+    base: Vector,
     {
-      current: defaultPosition,
-      start: { x: 0, y: 0 },
-      pressed: false,
-      draggable: true,
-    },
-  );
+      top,
+      right,
+      bottom,
+      left,
+    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">
+  ) => void;
+  dimensions: Dimensions;
+  defaultPosition: Vector;
+  requiredClassName?: string;
+  ignoreClassName?: string;
+  onPressedMouseUp?: (e: React.MouseEvent, dragInfo: DragInfo) => void;
+  onDragStart?: (e: React.MouseEvent) => void;
+  translateFn?: (
+    updateOnTranslate: (
+      x: number,
+      y: number,
+      callback?: (dragInfo: DragInfo) => void
+    ) => void
+  ) => void;
+  initializePosition?: (
+    setInitialPosition: (current: Vector, start: Vector) => void
+  ) => void;
+  updateParentPosition?: (dragInfo: DragInfo) => void;
+  resizeObserver?: (
+    dragInfo: DragInfo,
+    shiftDragPosition: (x: number, y: number) => void
+  ) => void;
+}) {
+  const [dragInfo, setDragInfo] = useState<DragInfo>({
+    current: defaultPosition,
+    start: { x: 0, y: 0 },
+    pressed: false,
+    draggable: true,
+  });
 
   useEffect(() => {
     initializePosition?.(setInitialPosition);
@@ -64,18 +80,20 @@ export default function Draggable(
   };
 
   const updateDragPosition = (x: number, y: number) => {
-    setDragInfo((old: DragInfo) => (
-      {
-        ...old,
-        current: {
-          x: x - old.start.x,
-          y: y - old.start.y,
-        },
-      }
-    ));
+    setDragInfo((old: DragInfo) => ({
+      ...old,
+      current: {
+        x: x - old.start.x,
+        y: y - old.start.y,
+      },
+    }));
   };
 
-  const updateOnTranslate = (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => {
+  const updateOnTranslate = (
+    x: number,
+    y: number,
+    callback?: (dragInfo: DragInfo) => void
+  ) => {
     setDragInfo((old: DragInfo) => {
       callback?.(old);
       return {
@@ -91,6 +109,8 @@ export default function Draggable(
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
   translateFn?.(updateOnTranslate);
   updateParentPosition?.(dragInfo);
+  resizeObserver?.(dragInfo, updateOnTranslate);
+
   return (
     //outer div is the full screen div that is cropped with clip path
     <div
@@ -106,7 +126,7 @@ export default function Draggable(
         "clip-path": createClipPath(
           dragInfo.current,
           dimensions.base,
-          dimensions.modifiers,
+          dimensions.modifiers
         ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",
@@ -118,17 +138,18 @@ export default function Draggable(
         const classes = target.className;
         if (!classes || !classes?.includes) return;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
-        if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) return;
-        // check if requireClassName is set and if it is, only drag if the event target has that name
         if (
-          requiredClassName && !classes?.includes(requiredClassName)
+          !classes ||
+          (ignoreClassName && classes?.includes(ignoreClassName))
         ) {
+          return;
+        }
+        // check if requireClassName is set and if it is, only drag if the event target has that name
+        if (requiredClassName && !classes?.includes(requiredClassName)) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
         //prevent dragging by links and prevent-drag tag
-        if (
-          target.tagName === "A" || classes?.includes("prevent-drag")
-        ) {
+        if (target.tagName === "A" || classes?.includes("prevent-drag")) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
       }}
@@ -140,8 +161,8 @@ export default function Draggable(
             ...old,
             pressed: true,
             start: {
-              x: (e.clientX) - old.current.x,
-              y: (e.clientY) - old.current.y,
+              x: e.clientX - old.current.x,
+              y: e.clientY - old.current.y,
             },
           }));
         }
@@ -166,17 +187,19 @@ export default function Draggable(
     >
       <div
         className="childr"
-        style={{
-          //set position of child container
-          background: "none",
-          width: "fit-content",
-          position: "absolute",
-          top: dragInfo.current.y + "px",
-          left: dragInfo.current.x + "px",
-          //disable text selection while dragging
-          "user-select": dragInfo.pressed ? "none" : "inherit",
-          "pointer-events": dragInfo.pressed ? "none" : "inherit",
-        } as React.CSSProperties}
+        style={
+          {
+            //set position of child container
+            background: "none",
+            width: "fit-content",
+            position: "absolute",
+            top: dragInfo.current.y + "px",
+            left: dragInfo.current.x + "px",
+            //disable text selection while dragging
+            "user-select": dragInfo.pressed ? "none" : "inherit",
+            "pointer-events": dragInfo.pressed ? "none" : "inherit",
+          } as React.CSSProperties
+        }
       >
         {children}
       </div>
