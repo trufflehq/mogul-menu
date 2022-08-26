@@ -39,7 +39,7 @@ export default function Draggable(
   const [dragInfo, setDragInfo] = useState<DragInfo>(
     {
       current: defaultPosition,
-      start: { x: 0, y: 30 },
+      start: { x: 0, y: 0 },
       pressed: false,
       draggable: true,
     },
