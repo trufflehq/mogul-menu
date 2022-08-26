@@ -18,23 +18,13 @@ const INITIAL_MENU_STATE: MenuState = {
   snackBars: [],
   dimensions: {
     base: {
-      // x: 0,
-      // y: 0,
       x: BASE_MENU_WIDTH,
       y: BASE_MENU_HEIGHT,
-      // width: 0,
-      // height: 0
       width: DEFAULT_MENU_ICON_WIDTH,
       height: DEFAULT_MENU_ICON_HEIGHT,
     },
     modifiers: {
-      // top-right
-      // top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      // right: 0,
-      // bottom: 0,
-      // left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
       transition: "none",
-      // "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
     },
   },
 };
