@@ -22,19 +22,6 @@ export function useMenuReducer(initialState: MenuState) {
     state,
   ]);
 
-  // useEffect(() => {
-  //   const fetchPosition = async () => {
-  //     const positionRes = await jumper?.call("storage.get", { key: "mogul-menu:position" });
-  //     console.log("positionRes", positionRes);
-  //     const position = JSON.parse(positionRes || "{}");
-  //     console.log("position", position);
-  //     if (position?.menuPosition) {
-  //       dispatch(updateMenuPosition(position.menuPosition));
-  //     }
-  //   };
-  //   fetchPosition();
-  // }, []);
-
   return { state: memoizedStore[0], dispatch: memoizedStore[1] };
 }
 

@@ -14,7 +14,6 @@ const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   $$additionalButtonRef: null,
   menuState: "closed",
-  // menuPosition: "top-right",
   menuPosition: undefined,
   snackBars: [],
   dimensions: {

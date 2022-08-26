@@ -1,11 +1,11 @@
 export default {
-  name: "@dev/mogul-menu",
+  name: "@truffle/mogul-menu",
   version: "0.1.34",
   // staging
-  apiUrl: "https://mycelium.staging.bio/graphql",
+  // apiUrl: "https://mycelium.staging.bio/graphql",
 
   // prod
-  // apiUrl: "https://mycelium.truffle.vip/graphql",
+  apiUrl: "https://mycelium.truffle.vip/graphql",
 
   // localhost
   // apiUrl: 'http://localhost:50420/graphql'
