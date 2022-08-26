@@ -1,3 +1,4 @@
+import { TruffleGQlConnection } from "../deps.ts";
 import { Powerup } from "./powerup.types.ts";
 
 export interface ActivePowerupData {
@@ -16,3 +17,5 @@ export interface ActivePowerup {
   creationDate: string;
   powerup: Powerup;
 }
+
+export type ActivePowerupConnection = TruffleGQlConnection<ActivePowerup>;
