@@ -15,7 +15,7 @@ import {
   persistMenuPosition,
   useTranslate,
   useUpdateDraggableMenuPosition,
-  MOGUL_MENU_POSITION_KEY
+  MOGUL_MENU_POSITION_KEY,
   useWindowResizeObserver,
 } from "../../util/mod.ts";
 import { DimensionModifiers, DragInfo, Vector } from "../../types/dimensions.types.ts";

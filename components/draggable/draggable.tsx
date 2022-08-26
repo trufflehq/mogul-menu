@@ -93,7 +93,7 @@ export default function Draggable(
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
   translateFn?.(updateOnTranslate);
   updateParentPosition?.(dragInfo);
-  resizeObserver?.(dragInfo, shiftDragPosition);
+  resizeObserver?.(dragInfo, updateOnTranslate);
 
   return (
     //outer div is the full screen div that is cropped with clip path
