@@ -1,4 +1,4 @@
-import { classKebab, React, useRef, useStyleSheet } from "../../deps.ts";
+import { React, useRef, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
 
 import DraggableMenu from "./draggable-menu.tsx";
