@@ -4,7 +4,7 @@ import { DragInfo } from "../../types/mod.ts";
 import { getTranslationMods } from "./translation.ts";
 import { createMenuIframeStyle } from "./iframe-styles.ts";
 import { getAbsoluteMenuPosition, getMenuSize, getWindowSize } from "./mod.ts";
-import { persistMenuPosition } from "./position.ts";
+import { getMenuPositionFromCoordinates, persistMenuPosition } from "./position.ts";
 /**
  * This hook is used to translate the position of the child element inside
  * the draggable component based on the menu position. This allows us to reposition the child element
@@ -70,7 +70,7 @@ export function useWindowResizeObserver(
   dragInfo: DragInfo,
   shiftDragPosition: (x: number, y: number) => void,
 ) {
-  const { state: menuState, setIsClosed } = useMenu();
+  const { state: menuState, setIsClosed, updateMenuPosition } = useMenu();
   const dimensions = getDimensions(menuState);
   const menuPosition = getMenuPosition(menuState);
   // create a resize observer that makes sure the draggable doesn't go off screen
@@ -105,6 +105,10 @@ export function useWindowResizeObserver(
       if (bottomEdge > windowSize.y) {
         shiftDragPosition(0, windowSize.y - bottomEdge);
       }
+
+      // update the menu position if it changed
+      const newMenuPosition = getMenuPositionFromCoordinates(x, y);
+      updateMenuPosition(newMenuPosition);
     };
 
     window.addEventListener("resize", resizeHandler);

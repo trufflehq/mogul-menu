@@ -1,3 +1,4 @@
+import { React } from "../../deps.ts";
 import { jumper } from "../../deps.ts";
 import { getPositionPrefix, MenuPosition } from "../../state/mod.ts";
 import { MOGUL_MENU_POSITION_KEY } from "./constants.ts";
@@ -22,19 +23,28 @@ export function getWindowSize() {
  * in conjunction with the Draggable component
  */
 export function getMenuMousePosition(event: MouseEvent | React.MouseEvent) {
+  return getMenuPositionFromCoordinates(event.clientX, event.clientY);
+}
+
+/**
+ * Gets the MenuPosition based on a pair of x-y coordinates.
+ *
+ * @param xPos
+ * @param yPos
+ * @returns
+ */
+export function getMenuPositionFromCoordinates(xPos: number, yPos: number) {
   let vertical = "top";
   let horizontal = "right";
   const { x, y } = getWindowSize();
-  const mouseX = event.clientX;
-  const mouseY = event.clientY;
 
-  if (mouseY < Math.floor(y / 2)) {
+  if (yPos < Math.floor(y / 2)) {
     vertical = "top";
   } else {
     vertical = "bottom";
   }
 
-  if (mouseX < Math.floor(x / 2)) {
+  if (xPos < Math.floor(x / 2)) {
     horizontal = "left";
   } else {
     horizontal = "right";
@@ -65,7 +75,7 @@ export function getAbsoluteMenuPosition(
  * @param dimensions
  * @returns
  */
-export function getMenuSize(menuPosition: MenuPosition, dimensions: Dimensions) {
+export function getMenuSize(menuPosition: MenuPosition | undefined, dimensions: Dimensions) {
   const verticalPosition = getPositionPrefix(menuPosition);
 
   return {
