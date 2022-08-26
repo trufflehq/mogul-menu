@@ -28,6 +28,7 @@ export default function AccountAvatar({ size = "24px" }: { size?: string }) {
 
   const me = meData?.me;
 
+  // console.log("me", me);
   return (
     <div className="c-account-avatar">
       <a href="/edit-profile" target="_blank" rel="noreferrer">
