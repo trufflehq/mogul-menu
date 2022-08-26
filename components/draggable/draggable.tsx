@@ -1,11 +1,6 @@
 import { React, useEffect, useState } from "../../deps.ts";
 import { useUpdateDragPosition } from "../../util/mod.ts";
-import {
-  DimensionModifiers,
-  Dimensions,
-  DragInfo,
-  Vector,
-} from "../../types/mod.ts";
+import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
   {
@@ -115,7 +110,7 @@ export default function Draggable(
         "clip-path": createClipPath(
           dragInfo.current,
           dimensions.base,
-          dimensions.modifiers
+          dimensions.modifiers,
         ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",
@@ -127,8 +122,9 @@ export default function Draggable(
         const classes = target.className;
         if (!classes || !classes?.includes) return;
         //multiple events are fired for some reason, this ignores all events triggered by a certain classname
-        if (!classes || (ignoreClassName && classes?.includes(ignoreClassName)))
+        if (!classes || (ignoreClassName && classes?.includes(ignoreClassName))) {
           return;
+        }
         // check if requireClassName is set and if it is, only drag if the event target has that name
         if (requiredClassName && !classes?.includes(requiredClassName)) {
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
@@ -172,19 +168,17 @@ export default function Draggable(
     >
       <div
         className="childr"
-        style={
-          {
-            //set position of child container
-            background: "none",
-            width: "fit-content",
-            position: "absolute",
-            top: dragInfo.current.y + "px",
-            left: dragInfo.current.x + "px",
-            //disable text selection while dragging
-            "user-select": dragInfo.pressed ? "none" : "inherit",
-            "pointer-events": dragInfo.pressed ? "none" : "inherit",
-          } as React.CSSProperties
-        }
+        style={{
+          //set position of child container
+          background: "none",
+          width: "fit-content",
+          position: "absolute",
+          top: dragInfo.current.y + "px",
+          left: dragInfo.current.x + "px",
+          //disable text selection while dragging
+          "user-select": dragInfo.pressed ? "none" : "inherit",
+          "pointer-events": dragInfo.pressed ? "none" : "inherit",
+        } as React.CSSProperties}
       >
         {children}
       </div>

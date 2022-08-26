@@ -102,13 +102,13 @@ export default function DraggableMenu({
       right,
       bottom,
       left,
-    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">
+    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
   ) => {
     return createMenuClipPath(
       position,
       base,
       { top, right, bottom, left },
-      menuPosition
+      menuPosition,
     );
   };
 
