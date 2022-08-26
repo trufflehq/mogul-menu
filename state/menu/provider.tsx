@@ -24,12 +24,7 @@ const INITIAL_MENU_STATE: MenuState = {
       height: DEFAULT_MENU_ICON_HEIGHT,
     },
     modifiers: {
-      // top-right
-      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      right: 0,
-      bottom: 0,
-      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
-      "transition": ".25s cubic-bezier(.4, .71, .18, .99)",
+      transition: "none",
     },
   },
 };

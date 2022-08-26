@@ -1,4 +1,4 @@
-import { jumper, React, useContext, useEffect, useMemo, useReducer } from "../../deps.ts";
+import { React, useContext, useMemo, useReducer } from "../../deps.ts";
 import { MenuActions, MenuPosition, MenuState } from "./types.ts";
 import { DimensionModifiers } from "../../types/mod.ts";
 import { getMenuState } from "./getters.ts";

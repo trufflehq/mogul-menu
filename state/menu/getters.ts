@@ -44,41 +44,49 @@ export function getMenuPosition(state: MenuState) {
   return state.menuPosition;
 }
 
-export function getModifiersByPosition (position?: MenuPosition, additionalButtonsWidth = 0) {
+export function getModifiersByPosition(position?: MenuPosition, additionalButtonsWidth = 0) {
   const modifier = position === "bottom-right"
-  ? {
-    top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-    right: 0,
-    bottom: 0 - BASE_MENU_HEIGHT,
-    left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-  }
-  : position === "bottom-left"
-  ? {
-    top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-    right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-    bottom: 0 - BASE_MENU_HEIGHT,
-    left: 0,
-  }
-  : position === "top-right"
-  ? {
-    top: 0 - BASE_MENU_HEIGHT,
-    right: 0,
-    bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
-    left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-  }
-  : {
-    top: 0 - BASE_MENU_HEIGHT,
-    right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-    bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
-    left: 0,
-  };
+    ? {
+      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+      right: 0,
+      bottom: 0 - BASE_MENU_HEIGHT,
+      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+    }
+    : position === "bottom-left"
+    ? {
+      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      bottom: 0 - BASE_MENU_HEIGHT,
+      left: 0,
+    }
+    : position === "top-right"
+    ? {
+      top: 0 - BASE_MENU_HEIGHT,
+      right: 0,
+      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+    }
+    : position === "top-left"
+    ? {
+      top: 0 - BASE_MENU_HEIGHT,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+      left: 0,
+    }
+    : { // default to not show the closed menu if a menuPosition isn't set, this allows us to initialize anywhere without the icon
+      // jumping across the screen
+      top: 0 - BASE_MENU_HEIGHT,
+      right: 0 - BASE_MENU_WIDTH,
+      bottom: 0 - BASE_MENU_HEIGHT,
+      left: 0,
+    };
 
-return modifier;
+  return modifier;
 }
 export function getClosedModifiers(state: MenuState) {
   const position = getMenuPosition(state);
   const additionalButtonsWidth = getAdditionalButtonsWidth(state);
-  return getModifiersByPosition(position, additionalButtonsWidth)
+  return getModifiersByPosition(position, additionalButtonsWidth);
 }
 
 export function getOpenModifiers(state: MenuState) {
