@@ -1,10 +1,12 @@
 import { jumper } from "../../deps.ts";
-import { MenuPosition } from "../../state/mod.ts";
-import { MOGUL_MENU_POSITION_KEY } from './constants.ts'
+import { getPositionPrefix, MenuPosition } from "../../state/mod.ts";
+import { MOGUL_MENU_POSITION_KEY } from "./constants.ts";
+import { Dimensions, Vector } from "../../types/mod.ts";
+
 /**
  * Returns (x,y) for the window
  */
-function getWindowSize() {
+export function getWindowSize() {
   const win = window,
     doc = document,
     docElem = doc.documentElement,
@@ -39,6 +41,39 @@ export function getMenuMousePosition(event: MouseEvent | React.MouseEvent) {
   }
 
   return `${vertical}-${horizontal}` as MenuPosition;
+}
+
+/**
+ * Gets the position of the upper left hand corner of the menu regardless of the current orientation of the menu.
+ *
+ * @param dimensions
+ * @param location
+ */
+export function getAbsoluteMenuPosition(
+  dimensions: Dimensions,
+  location: Vector,
+): Vector {
+  return {
+    x: location.x - dimensions.modifiers.left,
+    y: location.y + dimensions.base.y + dimensions.modifiers.top,
+  };
+}
+
+/**
+ * Gets the current size of the menu.
+ *
+ * @param dimensions
+ * @returns
+ */
+export function getMenuSize(menuPosition: MenuPosition, dimensions: Dimensions) {
+  const verticalPosition = getPositionPrefix(menuPosition);
+
+  return {
+    x: dimensions.base.x + dimensions.modifiers.right + dimensions.modifiers.left,
+    y: verticalPosition === "top"
+      ? Math.abs(dimensions.modifiers.bottom - dimensions.modifiers.top)
+      : dimensions.base.y + dimensions.modifiers.bottom - dimensions.modifiers.top,
+  };
 }
 
 export function persistMenuPosition(

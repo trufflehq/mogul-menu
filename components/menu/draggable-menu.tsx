@@ -16,11 +16,16 @@ import {
   useTranslate,
   useUpdateDraggableMenuPosition,
   MOGUL_MENU_POSITION_KEY
+  useWindowResizeObserver,
 } from "../../util/mod.ts";
 import { DimensionModifiers, DragInfo, Vector } from "../../types/dimensions.types.ts";
 import Draggable from "../draggable/draggable.tsx";
 
-export default function DraggableMenu({ children }: { children: React.ReactNode }) {
+export default function DraggableMenu({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { state: tabsState } = useTabs();
   const { state: menuState, dispatch, updateMenuPosition, updateDimensions, setIsClosed } =
     useMenu();
@@ -92,9 +97,19 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
   const createClipPath = (
     position: Vector,
     base: Vector,
-    { top, right, bottom, left }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
+    {
+      top,
+      right,
+      bottom,
+      left,
+    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">
   ) => {
-    return createMenuClipPath(position, base, { top, right, bottom, left }, menuPosition);
+    return createMenuClipPath(
+      position,
+      base,
+      { top, right, bottom, left },
+      menuPosition
+    );
   };
 
   const dimensions = getDimensions(menuState);
@@ -111,12 +126,11 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
       translateFn={useTranslate}
       updateParentPosition={useUpdateDraggableMenuPosition}
       createClipPath={createClipPath}
+      resizeObserver={useWindowResizeObserver}
       initializePosition={initializePosition}
     >
       <div className={className}>
-        <div className="menu">
-          {children}
-        </div>
+        <div className="menu">{children}</div>
       </div>
     </Draggable>
   );

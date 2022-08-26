@@ -1,8 +1,9 @@
-import { jumper, useEffect, useRef } from "../../deps.ts";
+import { jumper, useEffect, useMemo, useRef } from "../../deps.ts";
 import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../state/mod.ts";
 import { DragInfo } from "../../types/mod.ts";
 import { getTranslationMods } from "./translation.ts";
 import { createMenuIframeStyle } from "./iframe-styles.ts";
+import { getAbsoluteMenuPosition, getMenuSize, getWindowSize } from "./mod.ts";
 import { persistMenuPosition } from "./position.ts";
 /**
  * This hook is used to translate the position of the child element inside
@@ -47,7 +48,9 @@ export function useTranslate(
  *
  * @param dragInfo draggable component state
  */
-export function useUpdateDraggableMenuPosition(dragInfo: DragInfo) {
+export function useUpdateDraggableMenuPosition(
+  dragInfo: DragInfo,
+) {
   const { state: menuState } = useMenu();
   const menuPosition = getMenuPosition(menuState);
   const dimensions = getDimensions(menuState);
@@ -61,4 +64,53 @@ export function useUpdateDraggableMenuPosition(dragInfo: DragInfo) {
       ],
     });
   }, [dimensions, dragInfo, menuPosition]);
+}
+
+export function useWindowResizeObserver(
+  dragInfo: DragInfo,
+  shiftDragPosition: (x: number, y: number) => void,
+) {
+  const { state: menuState, setIsClosed } = useMenu();
+  const dimensions = getDimensions(menuState);
+  const menuPosition = getMenuPosition(menuState);
+  // create a resize observer that makes sure the draggable doesn't go off screen
+  useEffect(() => {
+    const resizeHandler = () => {
+      setIsClosed();
+      const { x, y } = getAbsoluteMenuPosition(dimensions, dragInfo.current);
+      const windowSize = getWindowSize();
+      const menuSize = getMenuSize(menuPosition, dimensions);
+
+      const leftEdge = x;
+      const rightEdge = x + menuSize.x;
+      const topEdge = y;
+      const bottomEdge = y + menuSize.y;
+
+      // if the menu goes off the left side of the screen
+      if (leftEdge < 0) {
+        shiftDragPosition(-leftEdge, 0);
+      }
+
+      // if the menu goes off the right side of the screen
+      if (rightEdge > windowSize.x) {
+        shiftDragPosition(windowSize.x - rightEdge, 0);
+      }
+
+      // if the menu goes off the top of the screen
+      if (topEdge < 0) {
+        shiftDragPosition(0, -topEdge);
+      }
+
+      // if the menu goes off the bottom edge of the screen
+      if (bottomEdge > windowSize.y) {
+        shiftDragPosition(0, windowSize.y - bottomEdge);
+      }
+    };
+
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, [dragInfo, dimensions]);
 }
