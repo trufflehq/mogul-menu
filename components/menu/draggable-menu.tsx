@@ -1,24 +1,29 @@
-import { classKebab, React } from "../../deps.ts";
+import { classKebab, jumper, React } from "../../deps.ts";
 import {
   getDimensions,
   getHasNotification,
   getIsOpen,
   getMenuPosition,
+  getModifiersByPosition,
+  updateDimensions as updateDimensionsAction,
+  updateMenuPosition as updateMenuPositionAction,
   useMenu,
   useTabs,
 } from "../../state/mod.ts";
 import {
   createMenuClipPath,
   getMenuMousePosition,
+  persistMenuPosition,
   useTranslate,
   useUpdateDraggableMenuPosition,
 } from "../../util/mod.ts";
-import { DimensionModifiers, Vector } from "../../types/dimensions.types.ts";
+import { DimensionModifiers, DragInfo, Vector } from "../../types/dimensions.types.ts";
 import Draggable from "../draggable/draggable.tsx";
 
 export default function DraggableMenu({ children }: { children: React.ReactNode }) {
   const { state: tabsState } = useTabs();
-  const { state: menuState, updateMenuPosition, updateDimensions, setIsClosed } = useMenu();
+  const { state: menuState, dispatch, updateMenuPosition, updateDimensions, setIsClosed } =
+    useMenu();
   const hasNotification = getHasNotification(tabsState);
   const isOpen = getIsOpen(menuState);
   const menuPosition = getMenuPosition(menuState);
@@ -28,9 +33,41 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
     )
   }`;
 
-  const onPressedMouseUp = (e: React.MouseEvent) => {
+  const initializePosition = (setInitialPosition: (current: Vector, start: Vector) => void) => {
+    const fetchPosition = async () => {
+      const positionFromStorage = await jumper?.call("storage.get", { key: "mogul-menu:position" });
+      const position = JSON.parse(positionFromStorage || "{}");
+      const current = position?.current;
+      const start = position?.start;
+
+      if (position?.menuPosition) {
+        dispatch(updateMenuPositionAction(position.menuPosition));
+      } else {
+        // initialize to the top left
+        dispatch(updateMenuPositionAction("top-left"));
+        dispatch(updateDimensionsAction(getModifiersByPosition("top-left")));
+      }
+
+      if (current && start) {
+        setInitialPosition(current, start);
+      }
+    };
+    fetchPosition();
+  };
+
+  const onPressedMouseUp = (e: React.MouseEvent, dragInfo: DragInfo) => {
     updateMenuPosition(getMenuMousePosition(e));
     updateDimensions();
+
+    const menuPosition = getMenuMousePosition(e);
+
+    persistMenuPosition(menuPosition, {
+      x: dragInfo.current.x,
+      y: dragInfo.current.y,
+    }, {
+      x: dragInfo.start.x,
+      y: dragInfo.start.y,
+    });
 
     // re-enable the transition
     setTimeout(() => {
@@ -69,6 +106,7 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
       translateFn={useTranslate}
       updateParentPosition={useUpdateDraggableMenuPosition}
       createClipPath={createClipPath}
+      initializePosition={initializePosition}
     >
       <div className={className}>
         <div className="menu">

@@ -1,5 +1,6 @@
-import { React, useState } from "../../deps.ts";
+import { React, useEffect, useState } from "../../deps.ts";
 import { useUpdateDragPosition } from "../../util/mod.ts";
+import { useMenu } from "../../state/mod.ts";
 import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
@@ -10,6 +11,7 @@ export default function Draggable(
     createClipPath,
     requiredClassName,
     ignoreClassName,
+    initializePosition,
     onPressedMouseUp,
     onDragStart,
     translateFn,
@@ -25,9 +27,12 @@ export default function Draggable(
     defaultPosition: Vector;
     requiredClassName?: string;
     ignoreClassName?: string;
-    onPressedMouseUp?: (e: React.MouseEvent) => void;
+    onPressedMouseUp?: (e: React.MouseEvent, dragInfo: DragInfo) => void;
     onDragStart?: (e: React.MouseEvent) => void;
-    translateFn?: (updateDragInfo: (x: number, y: number) => void) => void;
+    translateFn?: (
+      updateOnTranslate: (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => void,
+    ) => void;
+    initializePosition?: (setInitialPosition: (current: Vector, start: Vector) => void) => void;
     updateParentPosition?: (dragInfo: DragInfo) => void;
   },
 ) {
@@ -39,6 +44,24 @@ export default function Draggable(
       draggable: true,
     },
   );
+
+  useEffect(() => {
+    initializePosition?.(setInitialPosition);
+  }, []);
+
+  const setInitialPosition = (current: Vector, start: Vector) => {
+    setDragInfo((old: DragInfo) => ({
+      ...old,
+      current: {
+        x: current.x,
+        y: current.y,
+      },
+      start: {
+        x: start.x,
+        y: start.y,
+      },
+    }));
+  };
 
   const updateDragPosition = (x: number, y: number) => {
     setDragInfo((old: DragInfo) => (
@@ -52,22 +75,22 @@ export default function Draggable(
     ));
   };
 
-  const updateDragInfo = (x: number, y: number) => {
-    setDragInfo((old: DragInfo) => (
-      {
+  const updateOnTranslate = (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => {
+    setDragInfo((old: DragInfo) => {
+      callback?.(old);
+      return {
         ...old,
         current: {
-          x: old.start.x + x,
-          y: old.start.y + y,
+          x: old.current.x + x,
+          y: old.current.y + y,
         },
-      }
-    ));
+      };
+    });
   };
 
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
-  translateFn?.(updateDragInfo);
+  translateFn?.(updateOnTranslate);
   updateParentPosition?.(dragInfo);
-
   return (
     //outer div is the full screen div that is cropped with clip path
     <div
@@ -127,8 +150,9 @@ export default function Draggable(
         e.preventDefault();
         e.stopPropagation();
         if (dragInfo.pressed) {
-          onPressedMouseUp?.(e);
+          onPressedMouseUp?.(e, dragInfo);
         }
+
         setDragInfo((old: DragInfo) => ({
           ...old,
           pressed: false,

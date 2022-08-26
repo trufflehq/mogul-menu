@@ -1,5 +1,6 @@
-import { React, useContext, useMemo, useReducer } from "../../deps.ts";
-import { DimensionModifiers, MenuActions, MenuPosition, MenuState } from "./types.ts";
+import { jumper, React, useContext, useEffect, useMemo, useReducer } from "../../deps.ts";
+import { MenuActions, MenuPosition, MenuState } from "./types.ts";
+import { DimensionModifiers } from "../../types/mod.ts";
 import { getMenuState } from "./getters.ts";
 import {
   enqueueSnackBar,
@@ -20,6 +21,7 @@ export function useMenuReducer(initialState: MenuState) {
   const memoizedStore = useMemo<[MenuState, React.Dispatch<MenuActions>]>(() => [state, dispatch], [
     state,
   ]);
+
   return { state: memoizedStore[0], dispatch: memoizedStore[1] };
 }
 

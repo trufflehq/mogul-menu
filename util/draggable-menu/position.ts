@@ -1,4 +1,5 @@
-import { MenuPosition } from '../../state/mod.ts'
+import { jumper } from "../../deps.ts";
+import { MenuPosition } from "../../state/mod.ts";
 
 /**
  * Returns (x,y) for the window
@@ -38,4 +39,19 @@ export function getMenuMousePosition(event: MouseEvent | React.MouseEvent) {
   }
 
   return `${vertical}-${horizontal}` as MenuPosition;
+}
+
+export function persistMenuPosition(
+  menuPosition: MenuPosition,
+  current: { x: number; y: number },
+  start: { x: number; y: number },
+) {
+  jumper.call("storage.set", {
+    key: "mogul-menu:position",
+    value: JSON.stringify({
+      menuPosition,
+      current,
+      start,
+    }),
+  });
 }

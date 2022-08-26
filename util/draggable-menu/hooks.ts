@@ -3,15 +3,17 @@ import { getDimensions, getMenuPosition, MenuPosition, useMenu } from "../../sta
 import { DragInfo } from "../../types/mod.ts";
 import { getTranslationMods } from "./translation.ts";
 import { createMenuIframeStyle } from "./iframe-styles.ts";
-
+import { persistMenuPosition } from "./position.ts";
 /**
  * This hook is used to translate the position of the child element inside
  * the draggable component based on the menu position. This allows us to reposition the child element
  * alongside the clip-path when the menu is dragged to a different quadrant with a different orientation.
  *
- * @param updateDragInfo fn to update the dragInfo position state inside the Draggable component
+ * @param updateOnTranslate fn to update the dragInfo position state inside the Draggable component
  */
-export function useTranslate(updateDragInfo: (x: number, y: number) => void) {
+export function useTranslate(
+  updateOnTranslate: (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => void,
+) {
   const lastPositionRef = useRef<MenuPosition>(undefined!);
   const { state: menuState, updateDimensions } = useMenu();
   const menuPosition = getMenuPosition(menuState);
@@ -21,9 +23,19 @@ export function useTranslate(updateDragInfo: (x: number, y: number) => void) {
     const lastPosition = lastPositionRef.current;
     if (menuPosition) {
       lastPositionRef.current = menuPosition;
-
       const { xMod, yMod } = getTranslationMods(lastPosition, menuPosition, dimensions);
-      updateDragInfo(xMod, yMod);
+
+      const updateStorage = (dragInfo: DragInfo) => {
+        persistMenuPosition(menuPosition, {
+          x: dragInfo.current.x + xMod,
+          y: dragInfo.current.y + yMod,
+        }, {
+          x: dragInfo.start.x,
+          y: dragInfo.start.y,
+        });
+      };
+
+      updateOnTranslate(xMod, yMod, updateStorage);
       updateDimensions();
     }
   }, [menuPosition]);

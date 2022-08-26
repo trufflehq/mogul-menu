@@ -44,37 +44,41 @@ export function getMenuPosition(state: MenuState) {
   return state.menuPosition;
 }
 
+export function getModifiersByPosition (position?: MenuPosition, additionalButtonsWidth = 0) {
+  const modifier = position === "bottom-right"
+  ? {
+    top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+    right: 0,
+    bottom: 0 - BASE_MENU_HEIGHT,
+    left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+  }
+  : position === "bottom-left"
+  ? {
+    top: 0 - DEFAULT_MENU_ICON_HEIGHT,
+    right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+    bottom: 0 - BASE_MENU_HEIGHT,
+    left: 0,
+  }
+  : position === "top-right"
+  ? {
+    top: 0 - BASE_MENU_HEIGHT,
+    right: 0,
+    bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+    left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+  }
+  : {
+    top: 0 - BASE_MENU_HEIGHT,
+    right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+    bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
+    left: 0,
+  };
+
+return modifier;
+}
 export function getClosedModifiers(state: MenuState) {
   const position = getMenuPosition(state);
   const additionalButtonsWidth = getAdditionalButtonsWidth(state);
-  const modifier = position === "bottom-right"
-    ? {
-      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      right: 0,
-      bottom: 0 - BASE_MENU_HEIGHT,
-      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-    }
-    : position === "bottom-left"
-    ? {
-      top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-      bottom: 0 - BASE_MENU_HEIGHT,
-      left: 0,
-    }
-    : position === "top-right"
-    ? {
-      top: 0 - BASE_MENU_HEIGHT,
-      right: 0,
-      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
-      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-    }
-    : {
-      top: 0 - BASE_MENU_HEIGHT,
-      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
-      bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
-      left: 0,
-    };
-  return modifier;
+  return getModifiersByPosition(position, additionalButtonsWidth)
 }
 
 export function getOpenModifiers(state: MenuState) {

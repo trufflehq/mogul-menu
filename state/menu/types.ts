@@ -17,7 +17,7 @@ export interface MenuState {
     };
     modifiers: DimensionModifiers;
   };
-  menuPosition: MenuPosition;
+  menuPosition?: MenuPosition;
   snackBars: React.ReactNode[];
 }
 
