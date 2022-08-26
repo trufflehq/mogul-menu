@@ -6,7 +6,6 @@ import {
   getMenuPosition,
   getModifiersByPosition,
   updateDimensions as updateDimensionsAction,
-  updateMenuPosition as updateMenuPositionAction,
   useMenu,
   useTabs,
 } from "../../state/mod.ts";
@@ -16,6 +15,7 @@ import {
   persistMenuPosition,
   useTranslate,
   useUpdateDraggableMenuPosition,
+  MOGUL_MENU_POSITION_KEY
 } from "../../util/mod.ts";
 import { DimensionModifiers, DragInfo, Vector } from "../../types/dimensions.types.ts";
 import Draggable from "../draggable/draggable.tsx";
@@ -33,26 +33,31 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
     )
   }`;
 
-  const initializePosition = (setInitialPosition: (current: Vector, start: Vector) => void) => {
-    const fetchPosition = async () => {
-      const positionFromStorage = await jumper?.call("storage.get", { key: "mogul-menu:position" });
-      const position = JSON.parse(positionFromStorage || "{}");
-      const current = position?.current;
-      const start = position?.start;
+  const initializePosition = async (
+    setInitialPosition: (current: Vector, start: Vector) => void,
+  ) => {
+    const positionFromStorage = await jumper?.call("storage.get", { key: MOGUL_MENU_POSITION_KEY });
+    const position = JSON.parse(positionFromStorage || "{}");
+    const current = position?.current;
+    const start = position?.start;
+    if (position?.menuPosition) {
+      updateMenuPosition(position.menuPosition);
+    } else {
+      // initialize to the top left
+      updateMenuPosition("top-left");
+      dispatch(updateDimensionsAction(getModifiersByPosition("top-left")));
+    }
 
-      if (position?.menuPosition) {
-        dispatch(updateMenuPositionAction(position.menuPosition));
-      } else {
-        // initialize to the top left
-        dispatch(updateMenuPositionAction("top-left"));
-        dispatch(updateDimensionsAction(getModifiersByPosition("top-left")));
-      }
+    // lazily reenable the transition after the mount so it's not janky
+    setTimeout(() => {
+      updateDimensions({
+        transition: ".25s cubic-bezier(.4, .71, .18, .99)",
+      });
+    }, 250);
 
-      if (current && start) {
-        setInitialPosition(current, start);
-      }
-    };
-    fetchPosition();
+    if (current && start) {
+      setInitialPosition(current, start);
+    }
   };
 
   const onPressedMouseUp = (e: React.MouseEvent, dragInfo: DragInfo) => {

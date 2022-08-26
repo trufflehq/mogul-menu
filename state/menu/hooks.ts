@@ -22,6 +22,7 @@ export function useMenuReducer(initialState: MenuState) {
     state,
   ]);
 
+  // console.log("initializing state");
   return { state: memoizedStore[0], dispatch: memoizedStore[1] };
 }
 

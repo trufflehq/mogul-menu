@@ -1,6 +1,6 @@
 import { jumper } from "../../deps.ts";
 import { MenuPosition } from "../../state/mod.ts";
-
+import { MOGUL_MENU_POSITION_KEY } from './constants.ts'
 /**
  * Returns (x,y) for the window
  */
@@ -47,7 +47,7 @@ export function persistMenuPosition(
   start: { x: number; y: number },
 ) {
   jumper.call("storage.set", {
-    key: "mogul-menu:position",
+    key: MOGUL_MENU_POSITION_KEY,
     value: JSON.stringify({
       menuPosition,
       current,
