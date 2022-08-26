@@ -80,6 +80,8 @@ export default function Watchtime(props: WatchtimeProps) {
         "SeasonPassProgression",
         "ActivePowerup",
         "EconomyTransaction",
+        "Org",
+        "OrgConfig",
       ],
     });
 

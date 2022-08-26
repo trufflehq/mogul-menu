@@ -1,5 +1,5 @@
 import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
-import { Collectible, ActivePowerupRedeemData } from "../../../types/mod.ts";
+import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { useSnackBar } from "../../../state/mod.ts";
 import { PowerupActivatedSnackBar } from "../../snack-bars/powerup-activated-snack-bar/powerup-activated-snack-bar.tsx";
@@ -24,7 +24,7 @@ export function ActivatePowerupDialog({
   isActivateButtonDisabled = false,
   additionalData = {},
 }: {
-  redeemableCollectible: { description?: string, source: Collectible<ActivePowerupRedeemData> };
+  redeemableCollectible: { description?: string; source: Collectible<ActivePowerupRedeemData> };
   children?: React.ReactNode;
   isActivateButtonDisabled?: boolean;
   additionalData?: Record<string, unknown>;
@@ -51,7 +51,7 @@ export function ActivatePowerupDialog({
           additionalData,
         },
         {
-          additionalTypenames: ["OwnedCollectible", "ActivePowerup"],
+          additionalTypenames: ["OwnedCollectible", "ActivePowerup", "Org", "OrgConfig"],
         },
       );
 

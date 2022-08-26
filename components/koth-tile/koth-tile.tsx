@@ -1,88 +1,66 @@
 import {
   Avatar,
-  gql,
-  Obs,
-  op,
-  queryObservable,
   React,
+  useEffect,
   useMemo,
-  useObservables,
+  usePollingQuery,
+  useQuery,
+  useRef,
+  useState,
   useStyleSheet,
 } from "../../deps.ts";
-
+import { KOTHOrgUser } from "../../types/mod.ts";
 import { CROWN_ICON } from "../../util/icon/paths.ts";
+import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "../../gql/mod.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
 
 import styleSheet from "./koth-tile.scss.js";
 
-const ORG_QUERY = gql`
-  query KOTHOrgQuery {
-    org {
-      orgConfig {
-        data
-      }
-    }
-  }
-`;
-
-const KOTH_USER_QUERY = gql`
-  query KOTHUserQuery($userId: ID!) {
-    orgUser(input: { userId: $userId }) {
-      name
-      activePowerupConnection {
-        nodes {
-          powerup {
-            componentRels {
-              props
-            }
-          }
-        }
-      }
-      user {
-        id
-        avatarImage {
-          cdn
-          prefix
-          ext
-          variations {
-            postfix
-            width
-            height
-          }
-          aspectRatio
-        }
-      }
-    }
-  }
-`;
-
 export default function KothTile() {
   useStyleSheet(styleSheet);
-  const { kingOrgUserObs } = useMemo(() => {
-    const kingOrgUserObs = queryObservable(ORG_QUERY, {}).pipe(
-      op.map(({ data }: any) => data?.org?.orgConfig),
-      op.switchMap((orgConfig: any) =>
-        orgConfig?.data?.kingOfTheHill?.userId
-          ? queryObservable(KOTH_USER_QUERY, {
-              userId: orgConfig?.data?.kingOfTheHill?.userId,
-            })
-          : Obs.of({})
-      ),
-      op.map(({ data }: any) => data?.orgUser)
-    );
-    return {
-      kingOrgUserObs,
-    };
-  }, []);
 
-  const { kingOrgUser } = useObservables(() => ({
-    kingOrgUser: kingOrgUserObs,
-  }));
+  const kothUserIdRef = useRef<string>(undefined!);
+  const [kothUserId, setKothUserId] = useState("");
+  const orgKothConfigResponse = usePollingQuery(10000, { query: KOTH_ORG_CONFIG_QUERY });
+  const orgKothConfig = orgKothConfigResponse?.data;
 
-  if (!kingOrgUser) return <></>;
+  const [{ data: kothUser }] = useQuery({
+    query: KOTH_USER_QUERY,
+    variables: {
+      userId: kothUserId,
+    },
+    requestPolicy: "network-only",
+    context: useMemo(() => ({ additionalTypenames: ["Org", "OrgConfig"] }), []),
+  });
 
-  const activePowerups = kingOrgUser.activePowerupConnection?.nodes;
+  kothUserIdRef.current = orgKothConfig?.org?.orgConfig?.data?.kingOfTheHill?.userId;
+
+  useEffect(() => {
+    setKothUserId(kothUserIdRef.current);
+  }, [kothUserIdRef.current]);
+
+  const kothOrgUser = kothUser?.orgUser;
+
+  if (!kothOrgUser) return <></>;
+
+  return <MemoizedTile kothOrgUser={kothOrgUser} />;
+}
+function arePropsEqual(prevProps: OrgUserTileProps, nextProps: OrgUserTileProps) {
+  return prevProps?.kothOrgUser?.user?.id === nextProps?.kothOrgUser?.user?.id;
+}
+
+interface OrgUserTileProps {
+  kothOrgUser?: KOTHOrgUser;
+}
+
+const MemoizedTile = React.memo(
+  OrgUserTile,
+  arePropsEqual,
+);
+
+function OrgUserTile({ kothOrgUser }: { kothOrgUser?: KOTHOrgUser }) {
+  const activePowerups = kothOrgUser?.activePowerupConnection?.nodes;
 
   return (
     <Tile
@@ -93,12 +71,12 @@ export default function KothTile() {
       content={() => (
         <div className="content">
           <div className="avatar">
-            <Avatar user={kingOrgUser?.user} size={"56px"} />
+            <Avatar user={kothOrgUser?.user} size={"56px"} />
           </div>
           <div className="info">
-            <div className="username">{kingOrgUser.name}</div>
+            <div className="username">{kothOrgUser?.name}</div>
             <div className="powerups">
-              <ActivePowerups activePowerups={activePowerups} />
+              {activePowerups ? <ActivePowerups activePowerups={activePowerups} /> : null}
             </div>
           </div>
         </div>
