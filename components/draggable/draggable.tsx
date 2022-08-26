@@ -1,18 +1,6 @@
-import { jumper, React, useEffect, useRef, useState } from "../../deps.ts";
-import {
-  getMenuMousePosition,
-  getMenuPositionByEl,
-  persistMenuPosition,
-  useUpdateDragPosition,
-} from "../../util/mod.ts";
-import {
-  getClosedModifiers,
-  getModifiersByPosition,
-  MenuPosition,
-  updateDimensions,
-  updateMenuPosition,
-  useMenu,
-} from "../../state/mod.ts";
+import { React, useEffect, useState } from "../../deps.ts";
+import { useUpdateDragPosition } from "../../util/mod.ts";
+import { useMenu } from "../../state/mod.ts";
 import { DimensionModifiers, Dimensions, DragInfo, Vector } from "../../types/mod.ts";
 
 export default function Draggable(
@@ -57,8 +45,6 @@ export default function Draggable(
     },
   );
 
-  const { dispatch } = useMenu();
-
   useEffect(() => {
     initializePosition?.(setInitialPosition);
   }, []);
@@ -78,7 +64,6 @@ export default function Draggable(
   };
 
   const updateDragPosition = (x: number, y: number) => {
-    console.log("updateDragPosition");
     setDragInfo((old: DragInfo) => (
       {
         ...old,
@@ -92,7 +77,6 @@ export default function Draggable(
 
   const updateOnTranslate = (x: number, y: number, callback?: (dragInfo: DragInfo) => void) => {
     setDragInfo((old: DragInfo) => {
-      console.log("updateOnTranslate", x, y, old.current, old.start);
       callback?.(old);
       return {
         ...old,
@@ -107,7 +91,6 @@ export default function Draggable(
   useUpdateDragPosition(updateDragPosition, dragInfo.pressed);
   translateFn?.(updateOnTranslate);
   updateParentPosition?.(dragInfo);
-  console.log("current", dragInfo.current, dragInfo.start);
   return (
     //outer div is the full screen div that is cropped with clip path
     <div
@@ -140,14 +123,12 @@ export default function Draggable(
         if (
           requiredClassName && !classes?.includes(requiredClassName)
         ) {
-          console.log("req classname");
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
         //prevent dragging by links and prevent-drag tag
         if (
           target.tagName === "A" || classes?.includes("prevent-drag")
         ) {
-          console.log("prevent drag");
           setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
       }}
@@ -155,7 +136,6 @@ export default function Draggable(
         e.preventDefault();
         if (dragInfo.draggable) {
           onDragStart?.(e);
-          console.log("drag start");
           setDragInfo((old: DragInfo) => ({
             ...old,
             pressed: true,
@@ -171,20 +151,8 @@ export default function Draggable(
         e.stopPropagation();
         if (dragInfo.pressed) {
           onPressedMouseUp?.(e, dragInfo);
-
-          // const menuPosition = getMenuMousePosition(e);
-          // console.log("mouse up set", dragInfo.current, dragInfo.y);
-
-          // persistMenuPosition(menuPosition, {
-          //   x: dragInfo.current.x,
-          //   y: dragInfo.current.y,
-          // }, {
-          //   x: dragInfo.start.x,
-          //   y: dragInfo.start.y,
-          // });
         }
 
-        console.log("mouse up");
         setDragInfo((old: DragInfo) => ({
           ...old,
           pressed: false,

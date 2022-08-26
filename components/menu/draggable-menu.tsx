@@ -1,4 +1,4 @@
-import { classKebab, jumper, React, useCallback } from "../../deps.ts";
+import { classKebab, jumper, React } from "../../deps.ts";
 import {
   getDimensions,
   getHasNotification,
@@ -36,7 +36,6 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
   const initializePosition = (setInitialPosition: (current: Vector, start: Vector) => void) => {
     const fetchPosition = async () => {
       const positionFromStorage = await jumper?.call("storage.get", { key: "mogul-menu:position" });
-      console.log("positionFromStorage", positionFromStorage);
       const position = JSON.parse(positionFromStorage || "{}");
       const current = position?.current;
       const start = position?.start;
@@ -50,7 +49,6 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
       }
 
       if (current && start) {
-        console.log("has pos", current, start);
         setInitialPosition(current, start);
       }
     };
@@ -62,7 +60,6 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
     updateDimensions();
 
     const menuPosition = getMenuMousePosition(e);
-    console.log("mouse up set", dragInfo.current, dragInfo.y);
 
     persistMenuPosition(menuPosition, {
       x: dragInfo.current.x,
@@ -97,7 +94,6 @@ export default function DraggableMenu({ children }: { children: React.ReactNode 
 
   const dimensions = getDimensions(menuState);
   const defaultPosition = { x: 0, y: 0 };
-  // const defaultPosition = { x: 623, y: 326 };
 
   return (
     <Draggable

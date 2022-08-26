@@ -12,7 +12,6 @@ export function useUpdateDragPosition(
 ) {
   useEffect(() => {
     const handleWindowMouseMove = (event: MouseEvent) => {
-      console.log("handleWindowMouseMove update drag info");
       updateDragInfo(event.clientX, event.clientY);
     };
     if (isPressed) {

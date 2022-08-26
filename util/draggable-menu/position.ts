@@ -41,14 +41,6 @@ export function getMenuMousePosition(event: MouseEvent | React.MouseEvent) {
   return `${vertical}-${horizontal}` as MenuPosition;
 }
 
-export function getMenuPositionByEl(el: Element) {
-  const rect = el.getBoundingClientRect();
-
-  console.log("rect", rect);
-
-  return rect;
-}
-
 export function persistMenuPosition(
   menuPosition: MenuPosition,
   current: { x: number; y: number },
