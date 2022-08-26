@@ -49,11 +49,6 @@ export default function HomeTab() {
     pushDialog(<BrowserExtensionNotificationDialog />);
   };
 
-  const handleOpenSupportChat = () => {
-    const supportChatUrl = "/chat/support";
-    window.open(supportChatUrl, "_blank");
-  };
-
   // TODO: home tab should be "components" component that accepts other components
   // so creators would add the advert component and set the props on that
   const adverts: Record<string, AdvertProps> = {
@@ -116,15 +111,6 @@ export default function HomeTab() {
           </div>
         </div>
         <div className="actions">
-          <div className="icon">
-            <Icon
-              icon="help"
-              onclick={handleOpenSupportChat}
-              hasRipple={true}
-              size="24px"
-              iconViewBox="24px"
-            />
-          </div>
           <div className="icon">
             <Icon
               icon="settings"
