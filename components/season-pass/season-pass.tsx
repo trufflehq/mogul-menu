@@ -20,6 +20,7 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
+import { useCollectibleConnection } from "../../util/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote-dialog.tsx";
@@ -32,7 +33,6 @@ import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 
 import styleSheet from "./season-pass.scss.js";
-import { useTestSeasonPassData } from "../../util/season-pass/season-pass-data-test.ts";
 import Reward from "../season-pass-reward/season-pass-reward.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
@@ -87,22 +87,8 @@ export default function SeasonPass(props) {
     error: seasonPassFetchError,
   } = useSeasonPassData();
 
-  // use this for testing
-  // const {
-  //   data: seasonPassData,
-  //   fetching: isFetchingSeasonPass,
-  //   error: seasonPassFetchError,
-  // } = useTestSeasonPassData();
-
   const seasonPass: SeasonPassType = seasonPassData?.seasonPass;
-
-  // if (!seasonPass) {
-  //   return (
-  //     <div className="c-season-pass">
-  //       <Spinner />
-  //     </div>
-  //   );
-  // }
+  const { reexecuteCollectibleConnQuery } = useCollectibleConnection();
 
   const currentLevelNum = seasonPass
     ? getLevelBySeasonPassAndXp(seasonPass, seasonPass?.xp)?.levelNum || 0
@@ -112,13 +98,9 @@ export default function SeasonPass(props) {
     ? getXPBarBySeasonPassAndXp(seasonPass, seasonPass?.xp)
     : { range: 0, progress: 0 };
 
-  // console.log({ range, progress, xp: seasonPass?.xp });
-
   const tiers = seasonPass?.data?.tiers;
 
   const levels = seasonPass?.levels;
-
-  // const { range, progress } = { range: 0, progress: 0 };
 
   const groupedLevels = _.keyBy(seasonPass?.levels, "levelNum");
 
@@ -163,6 +145,14 @@ export default function SeasonPass(props) {
   // TODO: detect when user levels up
   useEffect(() => {
     if (!_.isEmpty(seasonPass?.seasonPassProgression?.changesSinceLastViewed)) {
+      reexecuteCollectibleConnQuery({
+        requestPolicy: "network-only",
+        additionalTypenames: [
+          "Collectible",
+          "CollectibleConnection",
+          "OwnedCollectible",
+        ],
+      });
       _.map(
         seasonPass?.seasonPassProgression?.changesSinceLastViewed,
         (change) => {
@@ -186,7 +176,7 @@ export default function SeasonPass(props) {
               ),
             });
           }
-        }
+        },
       );
     }
   }, [seasonPass?.seasonPassProgression?.changesSinceLastViewed]);
@@ -203,8 +193,8 @@ export default function SeasonPass(props) {
 
   const tierNums = _.uniqBy(
     _.flatten(
-      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum"))
-    )
+      _.map(seasonPass?.levels, (level) => _.map(level.rewards, "tierNum")),
+    ),
   );
 
   const userTierNum = seasonPass?.seasonPassProgression?.tierNum;
@@ -258,9 +248,11 @@ export default function SeasonPass(props) {
           {true && (
             <div className="pages">
               <div
-                className={`button left ${classKebab({
-                  isDisabled: isNotLeftClickable,
-                })}`}
+                className={`button left ${
+                  classKebab({
+                    isDisabled: isNotLeftClickable,
+                  })
+                }`}
                 onClick={onLeftClick}
               >
                 ◂
@@ -269,9 +261,11 @@ export default function SeasonPass(props) {
                 {`Ends in ${seasonPass?.daysRemaining} days`}
               </div>
               <div
-                className={`button right ${classKebab({
-                  isDisabled: isNotRightClickable,
-                })}`}
+                className={`button right ${
+                  classKebab({
+                    isDisabled: isNotRightClickable,
+                  })
+                }`}
                 onClick={onRightClick}
               >
                 ▸
@@ -284,25 +278,27 @@ export default function SeasonPass(props) {
               ref={$$levelsRef}
               onTouchStart={(e) => e.stopPropagation()}
             >
-              {tiers?.length ? (
-                <div className="tier-info">
-                  {_.map(tiers, (tier) => {
-                    console.log("tier", tier);
-                    return (
-                      tier?.name && (
-                        <div
-                          className="tier"
-                          style={{
-                            background: tier?.background,
-                          }}
-                        >
-                          {tier?.name}
-                        </div>
-                      )
-                    );
-                  })}
-                </div>
-              ) : null}
+              {tiers?.length
+                ? (
+                  <div className="tier-info">
+                    {_.map(tiers, (tier) => {
+                      console.log("tier", tier);
+                      return (
+                        tier?.name && (
+                          <div
+                            className="tier"
+                            style={{
+                              background: tier?.background,
+                            }}
+                          >
+                            {tier?.name}
+                          </div>
+                        )
+                      );
+                    })}
+                  </div>
+                )
+                : null}
               <div
                 className="levels"
                 style={{
@@ -382,7 +378,7 @@ export function $level(props) {
             xpImgSrc={xpImgSrc}
             minXp={minXp}
             xp={xp}
-          />
+          />,
         );
         // if the user clicked on an emote
       } else if (isEmote) {
@@ -416,7 +412,7 @@ export function $level(props) {
               },
             ]}
             onExit={popDialog}
-          />
+          />,
         );
       }
     }
@@ -425,10 +421,7 @@ export function $level(props) {
   return (
     <div className={`level ${classKebab({ isCurrentLevel })}`} ref={$$levelRef}>
       <div className="number">
-        Level{" "}
-        {shouldUseLevelsZeroPrefix
-          ? zeroPrefix(level.levelNum)
-          : level.levelNum}
+        Level {shouldUseLevelsZeroPrefix ? zeroPrefix(level.levelNum) : level.levelNum}
       </div>
       {_.map(tierNums, (tierNum) => {
         const reward = _.find(level.rewards, { tierNum });
@@ -441,23 +434,22 @@ export function $level(props) {
         let isRewardSelected;
 
         if (selectedReward?.level) {
-          isRewardSelected =
-            reward &&
+          isRewardSelected = reward &&
             selectedReward?.sourceId === reward.sourceId &&
             selectedReward?.level === level;
         } else {
-          isRewardSelected =
-            reward && selectedReward?.sourceId === reward.sourceId;
+          isRewardSelected = reward && selectedReward?.sourceId === reward.sourceId;
         }
 
         return (
           <div
             key={tierNum}
-            className={`reward tier-${tierNum} ${classKebab({
-              isFirstWithTierName:
-                tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
-              hasTierName: Boolean(tierName),
-            })}`}
+            className={`reward tier-${tierNum} ${
+              classKebab({
+                isFirstWithTierName: tierNum === tierNums?.length - 1 && Boolean(tierName), // FIXME this is a hack for Faze reverse bp order
+                hasTierName: Boolean(tierName),
+              })
+            }`}
           >
             <Reward
               isSelected={isRewardSelected}
@@ -553,80 +545,6 @@ export function LockedRewardDialog({ reward, xp, minXp, xpImgSrc }) {
           </div>
         </div>
       </Dialog>
-    </div>
-  );
-}
-
-export function $rewardTooltip({
-  name,
-  description,
-  imageFileObj,
-  premiumAccentColor,
-}) {
-  // const { breakpoint } = useObservables(() => ({
-  //   breakpoint: browser.getBreakpointStream().obs,
-  // }));
-
-  const breakpoint = "desktop";
-
-  const imageUrl =
-    "https://cdn.bio/ugc/collectible/2cb65a70-8449-11ec-a3ff-5ff20225f34b.svg";
-
-  const isMobile = breakpoint === "mobile";
-  return (
-    <div className="c-reward-tooltip">
-      <style>
-        {isMobile
-          ? `
-      .c-reward-tooltip > .title {
-        background: ${premiumAccentColor};
-      }
-
-      .c-reward-tooltip::after {
-        position: absolute;
-        right: calc(50% - 8px);
-        // top: calc(25% - 8px);
-        bottom: -8px;
-        content: '';
-        width: 0;
-        height: 0;
-        z-index: 1;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid ${premiumAccentColor};
-      }`
-          : `
-      .c-reward-tooltip > .title {
-          background: ${premiumAccentColor};
-      }
-
-      .c-reward-tooltip::after {
-        position: absolute;
-        right: -8px;
-        top: calc(25% - 8px);
-        content: '';
-        width: 0;
-        height: 0;
-        z-index: 1;
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-        border-left: 8px solid ${premiumAccentColor};
-      }
-      `}
-      </style>
-      <div className="title">
-        {imageFileObj && (
-          <div className="thumbnail">
-            <ImageByAspectRatio
-              imageUrl={imageUrl}
-              height={24}
-              isCentered={true}
-            />
-          </div>
-        )}
-        <div className="name">{name}</div>
-      </div>
-      <div className="description">{description}</div>
     </div>
   );
 }

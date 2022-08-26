@@ -66,10 +66,6 @@ export default function HomeTab() {
     },
   };
 
-  // reduce jank by showing spinner until we know if they're live or not
-  // other wise the live box loads in later and pushes everything else down
-  const isLive = true;
-  const isLoading = isLive == null;
   return (
     <div className="c-home-tab">
       <div className="header">
@@ -132,17 +128,12 @@ export default function HomeTab() {
         </div>
       </div>
       <div className="tile-grid">
-        {isLoading && <Spinner />}
-        {!isLoading && (
-          <>
-            <IsLive sourceType="youtube">
-              <Watchtime
-                hasChannelPoints={hasChannelPoints}
-                hasBattlePass={hasBattlePass}
-              />
-            </IsLive>
-          </>
-        )}
+        <IsLive sourceType="youtube">
+          <Watchtime
+            hasChannelPoints={hasChannelPoints}
+            hasBattlePass={hasBattlePass}
+          />
+        </IsLive>
         <BattlepassLeaderboardTile />
         <PredictionTile />
         <CPSpentTile />

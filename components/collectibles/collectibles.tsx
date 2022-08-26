@@ -1,19 +1,12 @@
-import {
-  React,
-  gql,
-  useQuery,
-  _,
-  useStyleSheet,
-  useMemo,
-} from "../../deps.ts";
+import { _, gql, React, useMemo, useQuery, useStyleSheet } from "../../deps.ts";
 
 import Collectible from "../collectible/collectible.tsx";
 import { usePageStack } from "../../state/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
-import { useSnackBar, useCurrentTab } from "../../state/mod.ts";
-
+import { useCurrentTab, useSnackBar } from "../../state/mod.ts";
 import { Collectible as CollectibleType } from "../../types/collectible.types.ts";
+import { useCollectibleConnection } from "../../util/mod.ts";
 import { ActivePowerup } from "../../types/active-powerup.types.ts";
 import Button from "../base/button/button.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
@@ -22,46 +15,6 @@ import XPIcon from "../xp-icon/xp-icon.tsx";
 import XpActionsDialog from "../dialogs/xp-actions-dialog/xp-actions-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
-
-const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
-  query CollectibleGetAllByMe {
-    # TODO: fix this hardcoded paging and possibly
-    # convert this query to an "ownedCollectibleConnection"
-    # query instead of "collectibleConnection" so that we're
-    # not grabbing collectibles that the user doesn't own.
-    collectibleConnection(first: 100) {
-      totalCount
-      nodes {
-        id
-        slug
-        name
-        type
-        targetType
-        fileRel {
-          fileObj {
-            cdn
-            data
-            prefix
-            contentType
-            type
-            variations
-            ext
-          }
-        }
-        data {
-          category
-          redeemType
-          redeemButtonText
-          redeemData
-          description
-        }
-        ownedCollectible {
-          count
-        }
-      }
-    }
-  }
-`;
 
 const ACTIVE_POWERUPS_QUERY = gql`
   query ActivePowerupsQuery {
@@ -90,30 +43,21 @@ export default function Collectibles() {
   const { pushPage, popPage } = usePageStack();
 
   // collectibles
-  const [
-    {
-      data: collectibleConnectionData,
-      fetching: isFetchingCollectibles,
-      error: collectibleFetchError,
-    },
-  ] = useQuery({
-    query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
-    context: useMemo(() => ({ additionalTypenames: ["OwnedCollectible"] }), []),
-  });
+  const { collectibleConnectionData, isFetchingCollectibles, collectibleFetchError } =
+    useCollectibleConnection();
 
-  const collectibleConnection =
-    collectibleConnectionData?.collectibleConnection;
+  const collectibleConnection = collectibleConnectionData?.collectibleConnection;
 
   const sortedCollectibles = _.orderBy(
     collectibleConnection?.nodes,
-    (collectible) => collectible.ownedCollectible?.count
+    (collectible) => collectible.ownedCollectible?.count,
   );
   const groups = _.groupBy(sortedCollectibles, "type");
   const groupedCollectibles = _.orderBy(
     _.map(groups, (collectibles, type) => {
       return { type, collectibles };
     }),
-    ORDER_FN
+    ORDER_FN,
   );
 
   // active powerups
@@ -121,12 +65,11 @@ export default function Collectibles() {
     query: ACTIVE_POWERUPS_QUERY,
   });
 
-  const activePowerups =
-    activePowerupData?.activePowerupConnection?.nodes ?? [];
+  const activePowerups = activePowerupData?.activePowerupConnection?.nodes ?? [];
 
   const isEmpty = groupedCollectibles.every((group) =>
     group.collectibles?.every(
-      (collectible) => !shouldShowCollectible(activePowerups, collectible)
+      (collectible) => !shouldShowCollectible(activePowerups, collectible),
     )
   );
 
@@ -168,7 +111,7 @@ export default function Collectibles() {
 
 function shouldShowCollectible(
   activePowerups: ActivePowerup[],
-  collectible: CollectibleType<any>
+  collectible: CollectibleType<any>,
 ) {
   const powerupId = collectible?.data?.redeemData?.powerupId;
   const activePowerup = _.find(activePowerups, {
