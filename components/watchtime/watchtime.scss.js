@@ -6,7 +6,7 @@ export default scss`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  border: 1px solid var(--truffle-color-bg-tertiary);
+  border: 1px solid var(--mm-color-bg-tertiary);
   border-radius: 8px;
   margin-bottom: 24px;
 
@@ -16,7 +16,7 @@ export default scss`
     font-weight: 600;
     box-sizing: border-box;
     padding: 12px 16px;
-    color: var(--truffle-color-text-gradient);
+    color: var(--mm-color-text-gradient);
     background: var(--background);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
