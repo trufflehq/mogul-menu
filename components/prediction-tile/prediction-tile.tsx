@@ -1,4 +1,4 @@
-import { React, useEffect, useMemo, usePollingQuery, useRef, useStyleSheet } from "../../deps.ts";
+import { React, useMemo, usePollingQuery, useStyleSheet } from "../../deps.ts";
 import { ONE_SECOND_MS } from "../../util/general.ts";
 import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
 import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
@@ -14,7 +14,6 @@ const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
 export default function PredictionTile() {
   useStyleSheet(styleSheet);
-  const latestPredictionIdRef = useRef<string>(undefined!);
   const { pushPage } = usePageStack();
 
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
@@ -29,20 +28,6 @@ export default function PredictionTile() {
     [activePollData],
   );
 
-  const hasPollChanged = latestPredictionIdRef.current !== activePoll?.id;
-
-  // TODO implement w/ the closed snackbar
-  // const { enqueueSnackBar, updateDimensions } = useMenu()
-  // useEffect(() => {
-  //   if(latestPredictionIdRef.current && activePoll?.id) {
-  //     updateDimensions()
-  //     // pop active prediction banner
-  //     enqueueSnackBar(<SnackBar message={'New prediction started'} style='flat' />)
-  //   }
-
-  //   latestPredictionIdRef.current = activePoll?.id
-  // }, [hasPollChanged])
-
   const pollMsLeft = useMemo(
     () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
     [activePoll],
@@ -54,24 +39,24 @@ export default function PredictionTile() {
     [activePoll],
   );
 
-  let Content: Function;
+  let Content: React.ReactNode;
 
   if (isPredictionExpired && hasWinner) {
-    Content = () => (
+    Content = (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">The results are in!</div>
       </div>
     );
   } else if (isPredictionExpired) {
-    Content = () => (
+    Content = (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">Submissions closed</div>
       </div>
     );
   } else {
-    Content = () => (
+    Content = (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">
@@ -93,7 +78,7 @@ export default function PredictionTile() {
       headerText="Prediction"
       color="#AB8FE9"
       onClick={() => pushPage(<PredictionPage />)}
-      content={() => <Content />}
+      content={() => Content}
     />
   );
 }

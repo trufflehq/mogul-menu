@@ -1,5 +1,7 @@
-import { Avatar, gql, React, useQuery, useStyleSheet, _ } from "../../deps.ts";
-
+import { _, Avatar, React, useQuery, useStyleSheet } from "../../deps.ts";
+import { User } from "../../types/mod.ts";
+import { OrgUserCounter, OrgUserCounterConnection } from "../../types/org-user-counter.types.ts";
+import { LEADERBOARD_COUNTER_QUERY } from "../../gql/mod.ts";
 import Tile from "../tile/tile.tsx";
 
 import { TROPHY_ICON } from "../../util/icon/paths.ts";
@@ -7,28 +9,6 @@ import { TROPHY_ICON } from "../../util/icon/paths.ts";
 import styleSheet from "./leaderboard-tile.scss.js";
 
 const LEADERBOARD_LIMIT = 3;
-
-const LEADERBOARD_COUNTER_QUERY = gql`
-  query LeaderboardQuery($orgUserCounterTypeId: ID!, $limit: Int) {
-    orgUserCounterConnection(
-      input: { orgUserCounterTypeId: $orgUserCounterTypeId }
-      first: $limit
-    ) {
-      nodes {
-        count
-        orgUser {
-          user {
-            id
-            name
-            avatarImage {
-              data
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 
 export function LeaderboardTile({
   headerText,
@@ -39,46 +19,44 @@ export function LeaderboardTile({
 }) {
   useStyleSheet(styleSheet);
 
-  const [{ data: leaderboardCounterData }] = useQuery({
+  const [{ data: leaderboardCounterData, fetching }] = useQuery({
     query: LEADERBOARD_COUNTER_QUERY,
     variables: {
       limit: LEADERBOARD_LIMIT,
-      orgUserCounterTypeId: orgUserCounterTypeId,
+      orgUserCounterTypeId,
     },
   });
 
-  const leaderboardCounters = leaderboardCounterData?.orgUserCounterConnection;
+  const leaderboardCounters: OrgUserCounterConnection = leaderboardCounterData
+    ?.orgUserCounterConnection;
 
-  let userRanks = _.map(
-    leaderboardCounters?.nodes,
-    (orgUserCounter, i: number) => {
-      return {
-        ...orgUserCounter,
-        count: parseInt(orgUserCounter.count),
-      };
-    }
-  );
+  if (!leaderboardCounters?.nodes) return <></>;
 
-  userRanks = _.orderBy(userRanks, ["count"], ["desc"]);
-  userRanks = _.uniqBy(userRanks, (rank) => rank.orgUser?.user?.id);
-  userRanks = _.map(userRanks, (rank, i) => ({ ...rank, place: i }));
+  let userRanks = leaderboardCounters?.nodes?.map((orgUserCounter) => {
+    orgUserCounter.count = parseInt(`${orgUserCounter.count}`);
 
-  const top3 = _.take(userRanks, 3);
-  const ranks = [
-    {
-      text: "1st",
-      color: "#EBC564",
-    },
-    {
-      text: "2nd",
-      color: "#ADBCCD",
-    },
-    {
-      text: "3rd",
-      color: "#EE8A41",
-    },
-  ];
+    return orgUserCounter;
+  })
+    .sort((a, b) => a.count < b.count ? 1 : 0);
 
+  userRanks = [...new Set(userRanks)];
+  userRanks = userRanks.map((rank, i) => ({ ...rank, place: i }));
+
+  const top3 = userRanks.slice(0, 3);
+
+  return <MemoizedLeaderboardTile headerText={headerText} top3={top3} />;
+}
+
+const MemoizedLeaderboardTile = React.memo(LeaderboardTileBase, (prev, next) => {
+  const prevUserIds = prev.top3.map((ouc) => ouc.orgUser.user.id);
+  const nextUserIds = next.top3.map((ouc) => ouc.orgUser.user.id);
+
+  return JSON.stringify(prevUserIds) === JSON.stringify(nextUserIds);
+});
+
+function LeaderboardTileBase(
+  { headerText, top3 }: { headerText?: string; top3: OrgUserCounter[] },
+) {
   return (
     <Tile
       className="c-leaderboard-tile"
@@ -86,33 +64,69 @@ export function LeaderboardTile({
       headerText={headerText}
       color="#CEDEE3"
       textColor="black"
-      content={() => (
-        <div className="content">
-          {top3.map((contestant, idx) => (
-            <div className="contestant" key={idx}>
-              <div
-                className="avatar"
-                style={{
-                  borderColor: ranks[idx].color,
-                }}
-              >
-                <Avatar user={contestant?.orgUser?.user} size="44px" />
-                <div className="username">
-                  {contestant?.orgUser?.user?.name}
-                </div>
-              </div>
-              <div
-                className="rank"
-                style={{
-                  color: ranks[idx].color,
-                }}
-              >
-                {ranks[idx].text}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      content={() => <Leaderboard top3={top3} />}
     />
+  );
+}
+
+const ranks = [
+  {
+    text: "1st",
+    color: "#EBC564",
+  },
+  {
+    text: "2nd",
+    color: "#ADBCCD",
+  },
+  {
+    text: "3rd",
+    color: "#EE8A41",
+  },
+];
+
+function Leaderboard({ top3 }: { top3: OrgUserCounter[] }) {
+  return (
+    <div className="content">
+      {top3.map((contestant, idx) => (
+        <LeaderboardAvatar
+          key={contestant?.orgUser?.user?.id}
+          user={contestant?.orgUser?.user}
+          place={ranks[idx].text}
+          color={ranks[idx].color}
+        />
+      ))}
+    </div>
+  );
+}
+
+interface LeaderboardAvatarProps {
+  user: User;
+  place: string;
+  color: string;
+}
+
+function LeaderboardAvatar({ user, place, color }: LeaderboardAvatarProps) {
+  return (
+    <div className="contestant">
+      <div
+        className="avatar"
+        style={{
+          borderColor: color,
+        }}
+      >
+        <Avatar user={user} size="44px" />
+        <div className="username">
+          {user?.name}
+        </div>
+      </div>
+      <div
+        className="rank"
+        style={{
+          color: color,
+        }}
+      >
+        {place}
+      </div>
+    </div>
   );
 }

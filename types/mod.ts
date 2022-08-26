@@ -8,4 +8,6 @@ export * from "./product.types.ts";
 export * from "./org-user-counter.types.ts";
 export * from "./poll.types.ts";
 export * from "./dimensions.types.ts";
-export * from './koth.types.ts'
+export * from "./koth.types.ts";
+export * from "./org-user.types.ts";
+export * from "./org-user-counter-type.types.ts";
