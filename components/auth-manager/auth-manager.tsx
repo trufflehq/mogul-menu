@@ -1,5 +1,4 @@
 import {
-  AuthDialog,
   AbsoluteAuthDialog,
   jumper,
   React,
@@ -9,11 +8,7 @@ import {
   useRef,
   useState,
 } from "../../deps.ts";
-import {
-  EXTENSION_TOKEN_SIGNIN_QUERY,
-  LOGIN_TYPE_NAMES,
-  ME_QUERY,
-} from "../../gql/mod.ts";
+import { EXTENSION_TOKEN_SIGNIN_QUERY, LOGIN_TYPE_NAMES, ME_QUERY } from "../../gql/mod.ts";
 import { ExtensionCredentials, MogulTvUser } from "../../types/mod.ts";
 import { isMemberMeUser, setAccessToken } from "../../util/mod.ts";
 import { useActionBanner } from "../../state/mod.ts";
@@ -26,7 +21,7 @@ function useExtensionAuth() {
   });
 
   const [signInResult, executeSigninMutation] = useMutation(
-    EXTENSION_TOKEN_SIGNIN_QUERY
+    EXTENSION_TOKEN_SIGNIN_QUERY,
   );
 
   const [credentials, setCredentials] = useState<ExtensionCredentials>();
@@ -58,7 +53,7 @@ function useExtensionAuth() {
       },
       {
         additionalTypenames: LOGIN_TYPE_NAMES,
-      }
+      },
     );
 
     return result;
@@ -75,7 +70,7 @@ function useExtensionAuth() {
 
 export default function AuthManager() {
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
-  const signInActionBannerIdRef = useRef<string | null | undefined>(null);
+  const signInActionBannerIdRef = useRef<string | undefined>(undefined!);
 
   const { me, isFetchingUser, signInWithToken, refetchMe } = useExtensionAuth();
   const { displayActionBanner, removeActionBanner } = useActionBanner();
@@ -93,7 +88,7 @@ export default function AuthManager() {
           >
             Finish setting up your account
           </ActionBanner>,
-          "sign-in"
+          "sign-in",
         );
       } else if (signInActionBannerIdRef.current) {
         removeActionBanner(signInActionBannerIdRef.current);
@@ -109,7 +104,9 @@ export default function AuthManager() {
     const mogulTvUser: MogulTvUser = signInResult?.data?.mogulTvSignIn;
     setAccessToken(mogulTvUser?.truffleAccessToken);
     await refetchMe({ requestPolicy: "network-only" });
-    removeActionBanner(signInActionBannerIdRef.current);
+    if (signInActionBannerIdRef.current) {
+      removeActionBanner(signInActionBannerIdRef.current);
+    }
   };
 
   return (

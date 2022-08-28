@@ -20,7 +20,7 @@ import {
   getLevelBySeasonPassAndXp,
   getXPBarBySeasonPassAndXp,
 } from "../../util/season-pass/season-pass.js";
-import { useCollectibleConnection } from "../../util/mod.ts";
+import { useOwnedCollectibleConnection } from "../../util/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote-dialog.tsx";
@@ -88,7 +88,7 @@ export default function SeasonPass(props) {
   } = useSeasonPassData();
 
   const seasonPass: SeasonPassType = seasonPassData?.seasonPass;
-  const { reexecuteCollectibleConnQuery } = useCollectibleConnection();
+  const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
 
   const currentLevelNum = seasonPass
     ? getLevelBySeasonPassAndXp(seasonPass, seasonPass?.xp)?.levelNum || 0
@@ -145,7 +145,7 @@ export default function SeasonPass(props) {
   // TODO: detect when user levels up
   useEffect(() => {
     if (!_.isEmpty(seasonPass?.seasonPassProgression?.changesSinceLastViewed)) {
-      reexecuteCollectibleConnQuery({
+      reexecuteOwnedCollectibleConnQuery({
         requestPolicy: "network-only",
         additionalTypenames: [
           "Collectible",

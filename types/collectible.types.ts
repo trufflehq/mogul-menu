@@ -1,3 +1,4 @@
+import { TruffleGQlConnection } from "../deps.ts";
 import { FileRel } from "./file.types.ts";
 
 export type CollectibleType = "emote" | "redeemable" | "ticket";
@@ -8,7 +9,8 @@ export type CollectibleRedeemType =
   | "discordRole"
   | "kingOfTheHill"
   | "alertCustomMessage"
-  | "collectiblePack";
+  | "collectiblePack"
+  | "recipe";
 
 export interface CollectibleData<T> {
   category: CollectibleCategory;
@@ -37,6 +39,8 @@ export interface Collectible<T> {
   ownedCollectible: OwnedCollectible<T>;
 }
 
+export type CollectibleConnection = TruffleGQlConnection<Collectible<CollectibleRedeemData>>;
+
 interface ChatHighlightColor {
   name: string;
   rgba: string;
@@ -62,3 +66,8 @@ export interface ActivePowerupRedeemData {
   category?: CollectibleCategory;
   description?: string;
 }
+
+type CollectibleRedeemData =
+  | ActivePowerupRedeemData
+  | ChatHighlightRedeemData
+  | UsernameGradientRedeemData;
