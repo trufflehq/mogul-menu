@@ -52,8 +52,6 @@ export default function RedeemableDialog(props: RedeemableDialog) {
     ownedCollectible,
   ) => ownedCollectible?.collectible);
 
-  // const collectibles = collectiblesData?.collectibleConnection?.nodes;
-
   const isCollectiblePack = redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
   const ownedCollectible = _.find(collectibles, { id: redeemableCollectible.sourceId })
     ?.ownedCollectible;

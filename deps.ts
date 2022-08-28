@@ -13,14 +13,7 @@ export {
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
 
-// @deno-types="https://npm.tfl.dev/v86/@types/lodash@4.14.184/index.d.ts"
-// @deno-types="https://cdn.skypack.dev/@types/lodash?dts"
-// export { default as _ } from "https://cdn.skypack.dev/lodash-es";
 export { default as _ } from "https://cdn.skypack.dev/lodash?dts";
-
-// export { default as _ } from "https://npm.tfl.dev/lodash-es@4.17.21";
-// export { default as _ } from "https://deno.land/x/lodash@4.17.15-es"
-// export { default as _ } from "https://deno.land/x/lodash@4.17.19/dist/lodash.js";
 
 // @deno-types="https://npm.tfl.dev/v86/@types/react@~18.0/index.d.ts"
 export {
