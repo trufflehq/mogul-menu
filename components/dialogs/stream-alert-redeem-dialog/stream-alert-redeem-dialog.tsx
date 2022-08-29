@@ -1,8 +1,9 @@
 import { React, TextField, useState, useStyleSheet } from "../../../deps.ts";
 import { ActivatePowerupDialog } from "../activate-powerup-dialog/activate-powerup-dialog.tsx";
+import { RedeemableDialog } from '../redeemable-dialog/redeemable-dialog.tsx'
 import styleSheet from "./stream-alert-redeem-dialog.scss.js";
 
-export default function StreamAlertRedeemDialog({ redeemableCollectible }) {
+export default function StreamAlertRedeemDialog({ redeemableCollectible }: RedeemableDialog) {
   useStyleSheet(styleSheet);
 
   const [message, setMessage] = useState("");

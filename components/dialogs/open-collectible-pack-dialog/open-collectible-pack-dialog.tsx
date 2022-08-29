@@ -2,6 +2,8 @@ import { _, gql, Obs, React, useMutation, useObservables, useQuery } from "../..
 import { useCurrentTab } from "../../../state/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
+import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
+import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
@@ -56,7 +58,7 @@ const REDEEM_COLLECTIBLE_MUTATION = gql`
   }
 `;
 
-export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
+export default function OpenCollectiblePackDialog({ redeemableCollectible }: RedeemableDialog) {
   const { pushDialog, popDialog } = useDialog();
 
   // rm this if we're not invalidating cache using jumper
@@ -71,7 +73,9 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
     // TODO: figure out why adding additionalTypes causes an infinite loop
     // context: { additionalTypenames: "OwnedCollectible" },
   });
-  const collectibles = collectiblesData?.collectibleConnection?.nodes;
+  const collectibles: Collectible<ActivePowerupRedeemData>[] = collectiblesData
+    ?.collectibleConnection
+    ?.nodes;
 
   const collectible = redeemableCollectible?.source;
   const [_redeemResult, executeRedeemMutation] = useMutation(
@@ -98,11 +102,12 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
       } else if (redeemError) {
         alert("There was an error redeeming: " + redeemError?.message);
       } else {
-        const collectibleIds = redeemResponse?.collectibleIds;
+        const collectibleIds: string[] = redeemResponse?.collectibleIds;
         const packCollectible = _.find(
           collectibles,
           (collectible) => collectibleIds.includes(collectible?.id),
         );
+        // const packCollectible =
         popDialog();
         pushDialog(
           <OpenedPackCollectibleDialog packCollectible={packCollectible} />,
@@ -139,7 +144,9 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }) {
 }
 
 // shown after opening a collectible pack
-function OpenedPackCollectibleDialog({ packCollectible }) {
+function OpenedPackCollectibleDialog(
+  { packCollectible }: { packCollectible?: Collectible<ActivePowerupRedeemData> },
+) {
   const { popDialog } = useDialog();
   const { setActiveTab } = useCurrentTab();
   const viewCollectionHandler = () => {

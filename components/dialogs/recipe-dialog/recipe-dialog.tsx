@@ -2,9 +2,10 @@ import { createSubject, React, useMemo } from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
+import { RedeemableDialog } from '../redeemable-dialog/redeemable-dialog.tsx'
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
-export default function RecipeDialog({ redeemableCollectible }) {
+export default function RecipeDialog({ redeemableCollectible }: RedeemableDialog) {
   const { popDialog } = useDialog();
 
   const { errorStream } = useMemo(() => {

@@ -16,15 +16,20 @@ const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
 };
 
-interface RedeemableDialog {
+export interface RedeemableDialog {
+  $title?: React.ReactNode;
   redeemableCollectible: {
     sourceId?: string;
-    source: Collectible<ActivePowerupRedeemData>;
+    description?: string;
+    source: Collectible<any>;
   };
+  collectibles: Collectible<any>[];
   $children?: React.ReactNode;
+  headerText?: string;
   primaryText?: string;
   secondaryText?: string;
   highlightBg?: string;
+  onExit?: () => void;
 }
 
 export default function RedeemableDialog(props: RedeemableDialog) {
@@ -107,7 +112,7 @@ export function RedeemedCollectibleDialog({
   redeemableCollectible,
   highlightBg,
   onExit,
-}) {
+}: RedeemableDialog) {
   return (
     <div className="z-unlocked-emote-reward-dialog use-css-vars-creator">
       <ItemDialog

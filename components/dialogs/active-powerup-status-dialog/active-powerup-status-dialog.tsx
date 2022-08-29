@@ -5,7 +5,7 @@ import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
-
+import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 const DELETE_ACTIVE_POWERUP_MUTATION = gql`
   mutation DeleteActivePowerupById($powerupId: ID!) {
     activePowerupDeleteById(input: { id: $powerupId }) {
@@ -16,13 +16,14 @@ const DELETE_ACTIVE_POWERUP_MUTATION = gql`
   }
 `;
 
+interface ActiveRedeemableDialogProps extends RedeemableDialog {
+  activePowerup: ActivePowerup;
+}
+
 export function ActiveRedeemableDialog({
   redeemableCollectible,
   activePowerup,
-}: {
-  redeemableCollectible: { source: Collectible<ActivePowerupRedeemData> };
-  activePowerup: ActivePowerup;
-}) {
+}: ActiveRedeemableDialogProps) {
   const [_deleteResult, executeDeleteActivePowerupMutation] = useMutation(
     DELETE_ACTIVE_POWERUP_MUTATION,
   );
