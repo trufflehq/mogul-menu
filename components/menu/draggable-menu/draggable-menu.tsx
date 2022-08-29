@@ -24,7 +24,7 @@ import {
 import Draggable, { DimensionModifiers, DragInfo, Vector } from "../../draggable/draggable.tsx";
 
 const DEFAULT_MENU_POSITION: MenuPosition = "top-left";
-const DEFAULT_POSITION_ELEMENT_QS = "#chatframe";
+const DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR = "#chatframe";
 const DEFAULT_POSITION_OFFSET = { x: -100, y: 50 };
 
 interface DefaultPositionInfo {
@@ -72,7 +72,7 @@ export default function DraggableMenu({
     } else {
       const defaultPosition = await jumper?.call(
         "layout.getElementBoundingClientRect",
-        { querySelector: DEFAULT_POSITION_ELEMENT_QS },
+        { querySelector: DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR },
       );
 
       const dimensions = INITIAL_MENU_STATE.dimensions;
