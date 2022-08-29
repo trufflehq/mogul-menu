@@ -26,7 +26,7 @@ export function getTopClipPath(
 function getBottomClipPath(
   position: Vector,
   base: Vector,
-  { top, right, bottom, left }: PositionModifiers,
+  { top = 0, right = 0, bottom = 0, left = 0 }: Partial<PositionModifiers>,
 ) {
   return `inset(
     ${position.y + base.y + top}px
@@ -41,7 +41,7 @@ function getBottomClipPath(
 export function createMenuClipPath(
   position: Vector,
   base: Vector,
-  { top, right, bottom, left }: PositionModifiers,
+  { top = 0, right = 0, bottom = 0, left = 0 }: Partial<PositionModifiers>,
   menuPosition: MenuPosition = "top-right",
 ) {
   const verticalPosition = getPositionPrefix(menuPosition);

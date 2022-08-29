@@ -81,7 +81,7 @@ export default function Draggable({
       right,
       bottom,
       left,
-    }: Partial<Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">>,
+    }: Pick<Partial<DimensionModifiers>, "top" | "bottom" | "right" | "left">,
   ) => string;
   dimensions: Dimensions;
   defaultPosition: Vector;
@@ -177,7 +177,7 @@ export default function Draggable({
         clipPath: createClipPath(
           dragInfo.current,
           dimensions.base,
-          dimensions.modifiers ?? { top: 0, right: 0, bottom: 0, left: 0 },
+          dimensions.modifiers,
         ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",
