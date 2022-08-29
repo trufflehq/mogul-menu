@@ -56,20 +56,3 @@ export default function ChannelPointsClaim({
     </div>
   );
 }
-
-function CollapsedChannelPointsButton({ highlightButtonBg }: { highlightButtonBg?: string }) {
-  const darkChannelPointsSrc =
-    "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
-  return (
-    <div
-      className="c-collapsed-channel-points"
-      style={{
-        background: highlightButtonBg,
-      }}
-    >
-      <div className="icon">
-        <img src={darkChannelPointsSrc} width="16" />
-      </div>
-    </div>
-  );
-}

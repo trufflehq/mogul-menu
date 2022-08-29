@@ -3,7 +3,6 @@ import { useCurrentTab, useTabButton, useTabSlug } from "../tabs/mod.ts";
 import { getMenuPosition, useMenu } from "../menu/mod.ts";
 import { useSnackBar } from "../snackbar/mod.ts";
 import Button from "../base/button/button.tsx";
-import { CollapsibleTabButton } from "../tab-bar/tab-bar.tsx";
 import { SnackBar } from "../snackbar/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
@@ -108,12 +107,7 @@ export default function TestTab() {
   const addButtonHandler = () => {
     addButton(
       TAB_BAR_BUTTON,
-      <CollapsibleTabButton
-        onClick={removeButtonHandler}
-        collapsedIcon={<CollapsedTestButton />}
-      >
-        <Button>Remove button</Button>
-      </CollapsibleTabButton>,
+      <Button onClick={removeButtonHandler}>Remove button</Button>
     );
   };
 
@@ -170,25 +164,6 @@ export default function TestTab() {
           ))}
         </Select>
       </div>
-    </div>
-  );
-}
-
-function CollapsedTestButton() {
-  return (
-    <div
-      className="c-collapsed-test-button"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "32px",
-        boxSizing: "border-box",
-        backgroundColor: "var(--mm-color-bg-secondary)",
-        height: "100%",
-      }}
-    >
-      ❌
     </div>
   );
 }
