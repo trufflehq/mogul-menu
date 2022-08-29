@@ -7,7 +7,7 @@ import {
   useObservables,
 } from "../../../deps.ts";
 import AccountAvatar from "../../account-avatar/account-avatar.tsx";
-import SnackBar from "../../base/snack-bar/snack-bar.tsx";
+import { SnackBar } from "../../snackbar/mod.ts";
 
 export function PowerupActivatedSnackBar({ collectible }) {
   const powerupSrc = getSrcByImageObj(collectible?.fileRel?.fileObj);

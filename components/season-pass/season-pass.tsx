@@ -16,11 +16,8 @@ import {
   zeroPrefix,
 } from "../../deps.ts";
 
-import {
-  getLevelBySeasonPassAndXp,
-  getXPBarBySeasonPassAndXp,
-} from "../../util/season-pass/season-pass.js";
-import { useOwnedCollectibleConnection } from "../../util/mod.ts";
+import { SEASON_PASS_QUERY } from "../../shared/mod.ts";
+import { useOwnedCollectibleConnection } from "../../shared/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote-dialog.tsx";
@@ -28,7 +25,7 @@ import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx
 import ItemDialog from "../dialogs/item-dialog/item-dialog.tsx";
 
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
-import { useCurrentTab } from "../../state/mod.ts";
+import { useCurrentTab } from "../tabs/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Button from "../base/button/button.tsx";
 
@@ -37,9 +34,8 @@ import Reward from "../season-pass-reward/season-pass-reward.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
 import SingleRewardLevelUpDialog from "../dialogs/single-reward-level-up-dialog/single-reward-level-up-dialog.tsx";
-import { useSeasonPassData } from "../../util/season-pass/season-pass-data.ts";
 import { SeasonPass as SeasonPassType } from "../../types/season-pass.types.ts";
-
+import { useSeasonPassData } from "./hooks.ts";
 const ME_QUERY = gql`
   query MeQuery {
     me {
@@ -50,6 +46,42 @@ const ME_QUERY = gql`
     }
   }
 `;
+
+export function getLevelBySeasonPassAndXp(seasonPass, xp) {
+  const currentXp = xp?.count ? xp.count : 0;
+
+  const lastLevel = _.findLast(
+    seasonPass.levels,
+    ({ minXp }) => currentXp >= minXp,
+  );
+
+  return lastLevel;
+}
+
+export function getXPBarBySeasonPassAndXp(seasonPass, xp) {
+  const currentXp = xp?.count ? parseInt(xp.count) : 0;
+
+  const floor = _.findLast(seasonPass.levels, ({ minXp }) => currentXp >= minXp) ?? 0;
+
+  const ceiling = _.find(seasonPass.levels, ({ minXp }) => currentXp < minXp);
+
+  if (!ceiling) {
+    const ceiling = seasonPass.levels[seasonPass.levels.length - 1];
+
+    const range = parseInt(ceiling?.minXp) -
+      parseInt(seasonPass.levels[seasonPass.levels.length - 2].minXp);
+    const progress = range;
+
+    return { range, progress };
+  }
+
+  const floorMinXp = floor?.minXp ? parseInt(floor?.minXp) : 0;
+  const range = parseInt(ceiling?.minXp) - floorMinXp;
+
+  const progress = currentXp - floorMinXp;
+
+  return { range, progress };
+}
 
 export default function SeasonPass(props) {
   useStyleSheet(styleSheet);

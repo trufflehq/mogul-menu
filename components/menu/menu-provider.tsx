@@ -1,13 +1,10 @@
 import { _, React } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 
-import {
-  ActionBannerProvider,
-  MenuProvider,
-  PageStackProvider,
-  TabButtonProvider,
-  TabsProvider,
-} from "../../state/mod.ts";
+import { ActionBannerProvider } from "../action-banner/mod.ts";
+import { TabButtonProvider, TabsProvider } from "../tabs/mod.ts";
+import { PageStackProvider } from "../page-stack/mod.ts";
+import { MenuProvider } from "./provider.tsx";
 import { File } from "../../types/mod.ts";
 
 interface MenuProviderProps {

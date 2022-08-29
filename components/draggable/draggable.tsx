@@ -1,11 +1,67 @@
 import { React, useEffect, useState } from "../../deps.ts";
-import { useUpdateDragPosition } from "../../util/mod.ts";
-import {
-  DimensionModifiers,
-  Dimensions,
-  DragInfo,
-  Vector,
-} from "../../types/mod.ts";
+
+export interface Vector {
+  x: number;
+  y: number;
+}
+
+export interface DragInfo {
+  current: Vector;
+  start: Vector;
+  pressed: boolean;
+  draggable: boolean;
+}
+
+export interface DimensionModifiers {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  transition: string;
+}
+
+export interface DimensionsBase extends Vector {
+  width: number;
+  height: number;
+}
+
+export interface Dimensions {
+  base: DimensionsBase;
+  modifiers: DimensionModifiers;
+}
+
+export interface TranslationMods {
+  xMod: number;
+  yMod: number;
+}
+
+
+/**
+ * Updates the dragInfo when the mouse is pressed and being dragged
+ *
+ * @param updateDragInfo function to update the dragInfo state in the Draggable component
+ * @param isPressed whether the mouse is pressed or not
+ */
+export function useUpdateDragPosition(
+  updateDragInfo: (x: number, y: number) => void,
+  isPressed: boolean,
+) {
+  useEffect(() => {
+    const handleWindowMouseMove = (event: MouseEvent) => {
+      updateDragInfo(event.clientX, event.clientY);
+    };
+    if (isPressed) {
+      window.addEventListener("mousemove", handleWindowMouseMove);
+    } else {
+      window.removeEventListener("mousemove", handleWindowMouseMove);
+    }
+    return () => (window.removeEventListener(
+      "mousemove",
+      handleWindowMouseMove,
+    ));
+  }, [isPressed]);
+}
+
 
 export default function Draggable({
   children,
@@ -30,7 +86,7 @@ export default function Draggable({
       right,
       bottom,
       left,
-    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">
+    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
   ) => void;
   dimensions: Dimensions;
   defaultPosition: Vector;
@@ -42,16 +98,16 @@ export default function Draggable({
     updateOnTranslate: (
       x: number,
       y: number,
-      callback?: (dragInfo: DragInfo) => void
-    ) => void
+      callback?: (dragInfo: DragInfo) => void,
+    ) => void,
   ) => void;
   initializePosition?: (
-    setInitialPosition: (current: Vector, start: Vector) => void
+    setInitialPosition: (current: Vector, start: Vector) => void,
   ) => void;
   updateParentPosition?: (dragInfo: DragInfo) => void;
   resizeObserver?: (
     dragInfo: DragInfo,
-    shiftDragPosition: (x: number, y: number) => void
+    shiftDragPosition: (x: number, y: number) => void,
   ) => void;
 }) {
   const [dragInfo, setDragInfo] = useState<DragInfo>({
@@ -92,7 +148,7 @@ export default function Draggable({
   const updateOnTranslate = (
     x: number,
     y: number,
-    callback?: (dragInfo: DragInfo) => void
+    callback?: (dragInfo: DragInfo) => void,
   ) => {
     setDragInfo((old: DragInfo) => {
       callback?.(old);
@@ -126,7 +182,7 @@ export default function Draggable({
         "clip-path": createClipPath(
           dragInfo.current,
           dimensions.base,
-          dimensions.modifiers
+          dimensions.modifiers,
         ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",
@@ -187,19 +243,17 @@ export default function Draggable({
     >
       <div
         className="childr"
-        style={
-          {
-            //set position of child container
-            background: "none",
-            width: "fit-content",
-            position: "absolute",
-            top: dragInfo.current.y + "px",
-            left: dragInfo.current.x + "px",
-            //disable text selection while dragging
-            "user-select": dragInfo.pressed ? "none" : "inherit",
-            "pointer-events": dragInfo.pressed ? "none" : "inherit",
-          } as React.CSSProperties
-        }
+        style={{
+          //set position of child container
+          background: "none",
+          width: "fit-content",
+          position: "absolute",
+          top: dragInfo.current.y + "px",
+          left: dragInfo.current.x + "px",
+          //disable text selection while dragging
+          "user-select": dragInfo.pressed ? "none" : "inherit",
+          "pointer-events": dragInfo.pressed ? "none" : "inherit",
+        } as React.CSSProperties}
       >
         {children}
       </div>

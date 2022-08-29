@@ -8,16 +8,10 @@ import {
   useRef,
   useStyleSheet,
 } from "../../deps.ts";
-import {
-  getIsOpen,
-  TabState,
-  useCurrentTab,
-  useMenu,
-  usePageStack,
-  useTabButton,
-  useTabs,
-} from "../../state/mod.ts";
+import { usePageStack } from "../page-stack/mod.ts";
+import { TabState, useCurrentTab, useTabButton, useTabs } from "../tabs/mod.ts";
 
+import { getIsOpen, useMenu } from "../menu/mod.ts";
 import stylesheet from "./tab-bar.scss.js";
 export default function TabBar() {
   useStyleSheet(stylesheet);

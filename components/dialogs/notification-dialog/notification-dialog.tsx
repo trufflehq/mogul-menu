@@ -10,7 +10,7 @@ import {
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
-import { fromNow } from "../../../util/general.ts";
+import { fromNow } from "../../../shared/mod.ts";
 import styleSheet from "./notification-dialog.scss.js";
 
 const TRANSACTIONS_QUERY = gql`

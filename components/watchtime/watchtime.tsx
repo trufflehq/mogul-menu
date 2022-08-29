@@ -3,22 +3,20 @@ import {
   getSrcByImageObj,
   gql,
   ImageByAspectRatio,
-  useQuery,
   React,
-  useObservables,
-  useStyleSheet,
   useCallback,
+  useObservables,
+  useQuery,
+  useStyleSheet,
 } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
 
 import Timer from "../timer/timer.tsx";
-import { CollapsibleTabButton } from '../tab-bar/tab-bar.tsx'
-import { useWatchtimeCounter } from "../../util/watchtime/watchtime-counter.ts";
-import { useTabButton } from "../../state/mod.ts";
-import { useMenu } from '../../state/mod.ts'
+import { useWatchtimeCounter } from "./watchtime-counter.ts";
+import { useTabButton } from "../tabs/mod.ts";
+import { useMenu } from "../menu/mod.ts";
 import ChannelPoints from "../channel-points/channel-points.tsx";
-// import { useSnackBar } from "../../util/snack-bar/snack-bar.ts";
-import SnackBar from "../base/snack-bar/snack-bar.tsx";
+import { SnackBar } from "../snackbar/mod.ts";
 
 const POINTS_QUERY = gql`
   query {
@@ -61,15 +59,14 @@ export default function Watchtime(props: WatchtimeProps) {
     query: POINTS_QUERY,
   });
 
-  const { setIsClaimable, enqueueSnackBar } = useMenu()
+  const { setIsClaimable, enqueueSnackBar } = useMenu();
   const { addButton, removeButton } = useTabButton();
   // const enqueueSnackBar = useSnackBar();
-  
 
   const creatorName = "Ludwig";
 
   const claimHandler = async () => {
-    setIsClaimable(false)
+    setIsClaimable(false);
     removeButton(CLAIM_BUTTON);
     const { channelPointsClaimed, xpClaimed } = (await claim()) ?? {};
     await reexecutePointsQuery({
@@ -93,13 +90,13 @@ export default function Watchtime(props: WatchtimeProps) {
         <ChannelPointsClaimSnackBar
           channelPointsClaimed={channelPointsClaimed}
           totalChannelPoints={channelPoints?.orgUserCounter?.count || 0}
-        />
+        />,
       );
     enqueueSnackBar(
       <XpClaimSnackBar
         xpClaimed={xpClaimed}
         totalXp={parseInt(seasonPass?.xp?.count || 0)}
-      />
+      />,
     );
   };
 
@@ -116,24 +113,25 @@ export default function Watchtime(props: WatchtimeProps) {
       ],
     });
 
-    
     // want to update dimensions
     addButton(
       CLAIM_BUTTON,
-        <ChannelPoints
-          onClick={claimHandler}
-          hasText
-          hasBattlePass
-          hasChannelPoints
-          highlightButtonBg="var(--truffle-gradient)"
-        />
+      <ChannelPoints
+        onClick={claimHandler}
+        hasText
+        hasBattlePass
+        hasChannelPoints
+        highlightButtonBg="var(--truffle-gradient)"
+      />,
     );
-    
-    setIsClaimable(true)
+
+    setIsClaimable(true);
   }, []);
 
-  const { claim, secondsRemainingSubject, timeWatchedSecondsSubject } =
-    useWatchtimeCounter({ source: "youtube", onFinishedCountdown });
+  const { claim, secondsRemainingSubject, timeWatchedSecondsSubject } = useWatchtimeCounter({
+    source: "youtube",
+    onFinishedCountdown,
+  });
 
   const { secondsRemaining, timeWatchedSeconds } = useObservables(() => ({
     timeWatchedSeconds: timeWatchedSecondsSubject.obs,
@@ -202,7 +200,7 @@ function ChannelPointsClaimSnackBar({
             <div>
               {abbreviateNumber(
                 parseInt(totalChannelPoints) + parseInt(channelPointsClaimed),
-                1
+                1,
               )}
             </div>
             <ImageByAspectRatio

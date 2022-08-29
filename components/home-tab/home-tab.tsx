@@ -3,15 +3,14 @@ import {
   Icon,
   ImageByAspectRatio,
   React,
-  Spinner,
   useQuery,
   useStyleSheet,
 } from "../../deps.ts";
 
 import styleSheet from "./home-tab.scss.js";
 
-import { usePageStack } from "../../state/mod.ts";
-import { USER_INFO_QUERY } from "../../gql/mod.ts";
+import { usePageStack } from "../page-stack/mod.ts";
+import { USER_INFO_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import Watchtime from "../watchtime/watchtime.tsx";

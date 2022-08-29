@@ -1,4 +1,5 @@
 import {
+  _,
   abbreviateNumber,
   classKebab,
   createSubject,
@@ -10,70 +11,18 @@ import {
   pollingQueryObservable,
   React,
   TextField,
-  useEffect,
   useMemo,
   useMutation,
   useObservables,
   useStyleSheet,
-  _,
 } from "../../deps.ts";
 
-import { COIN_ICON_PATH, TROPHY_ICON } from "../../util/icon/paths.ts";
-import { ONE_MINUTE_MS, ONE_SECOND_MS } from "../../util/general.ts";
+import { ACTIVE_POLL_QUERY, CHANNEL_POINTS_QUERY, VOTE_MUTATION } from "./gql.ts";
+import { COIN_ICON_PATH, ONE_MINUTE_MS, ONE_SECOND_MS, TROPHY_ICON } from "../../shared/mod.ts";
 import Time from "../time/time.tsx";
 import Button from "../base/button/button.tsx";
 
 import styleSheet from "./active-prediction.scss.js";
-
-const ACTIVE_POLL_QUERY = gql`
-  query PredictionPoll {
-    pollConnection(first: 50) {
-      nodes {
-        id
-        question
-        options {
-          index
-          text
-          count
-          unique
-        }
-        data
-        time
-        endTime
-        myVote {
-          optionIndex
-          count
-        }
-      }
-    }
-  }
-`;
-
-const CHANNEL_POINTS_QUERY = gql`
-  query ChannelPointsQuery {
-    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
-      orgUserCounter {
-        count
-      }
-    }
-  }
-`;
-
-const VOTE_MUTATION = gql`
-  mutation PollVote($additionalData: JSON!, $voteCount: Float!) {
-    economyTransactionCreate(
-      input: {
-        economyTriggerSlug: "prediction-vote"
-        additionalData: $additionalData
-        amountValue: $voteCount
-      }
-    ) {
-      economyTransaction {
-        id
-      }
-    }
-  }
-`;
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
@@ -95,33 +44,31 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   } = useMemo(() => {
     const activePollConnectionObs = pollingQueryObservable(
       POLL_INTERVAL,
-      ACTIVE_POLL_QUERY
+      ACTIVE_POLL_QUERY,
     ).pipe(op.map(({ data }: any) => data?.pollConnection));
     const activePollObs = activePollConnectionObs.pipe(
       op.map((activePollConnection) => {
         return activePollConnection?.nodes?.find(
-          (poll) => poll?.data?.type === "prediction"
+          (poll) => poll?.data?.type === "prediction",
         );
-      })
+      }),
     );
 
     const orgUserCounterObs = pollingQueryObservable(
       POLL_INTERVAL,
-      CHANNEL_POINTS_QUERY
+      CHANNEL_POINTS_QUERY,
     ).pipe(op.map(({ data }: any) => data?.channelPoints?.orgUserCounter));
 
     const pollMsLeftObs = activePollObs.pipe(
       op.map(
-        (activePoll) =>
-          new Date(activePoll?.endTime || Date.now()).getTime() - Date.now()
-      )
+        (activePoll) => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
+      ),
     );
 
     const msSinceStartObs = activePollObs.pipe(
       op.map(
-        (activePoll) =>
-          (new Date(activePoll?.time || Date.now()).getTime() - Date.now()) * -1
-      )
+        (activePoll) => (new Date(activePoll?.time || Date.now()).getTime() - Date.now()) * -1,
+      ),
     );
 
     return {
@@ -134,7 +81,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
       voteCountStream: createSubject("0"),
       isExpiredObs: pollMsLeftObs.pipe(op.map((msLeft) => msLeft <= 0)),
       myVoteStream: createSubject(
-        activePollObs.pipe(op.map((poll) => poll?.myVote))
+        activePollObs.pipe(op.map((poll) => poll?.myVote)),
       ),
       hiddenPollIdsStream: createSubject([]),
     };
@@ -204,9 +151,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   const isWinner = votedOptionIndex === winningOptionIndex;
   const myVotes = myVote?.count;
   const winningVotes = activePoll?.options[winningOptionIndex]?.count || 1;
-  const myWinningShare = isWinner
-    ? Math.floor((myVotes / winningVotes) * totalVotes)
-    : 0;
+  const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
   const isRefund = activePoll?.data?.isRefund;
 
   return (
@@ -245,8 +190,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                 className="current-amount"
                 title={formatNumber(orgUserCounter?.count)}
               >
-                of {abbreviateNumber(orgUserCounter?.count || 0, 1)} channel
-                points
+                of {abbreviateNumber(orgUserCounter?.count || 0, 1)} channel points
               </div>
             </div>
           </div>
@@ -257,26 +201,24 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
         <div className="options bmargin-24">
           {activePoll.options?.map((option, optionIndex) => {
             const count = option.count || 0;
-            const ratio =
-              count && totalVotes - count
-                ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
-                : 1;
-            const isWinner =
-              activePoll?.data?.winningOptionIndex === optionIndex;
+            const ratio = count && totalVotes - count
+              ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
+              : 1;
+            const isWinner = activePoll?.data?.winningOptionIndex === optionIndex;
             return (
               <div
-                className={`option option${optionIndex + 1} ${classKebab({
-                  isWinner,
-                })}`}
+                className={`option option${optionIndex + 1} ${
+                  classKebab({
+                    isWinner,
+                  })
+                }`}
                 key={optionIndex}
               >
                 <div className="name">{option.text}</div>
                 <div className="stats">
                   <div className="percentage">
                     <div>
-                      {totalVotes
-                        ? formatPercentage((option.count || 0) / totalVotes)
-                        : "0%"}
+                      {totalVotes ? formatPercentage((option.count || 0) / totalVotes) : "0%"}
                     </div>
                   </div>
                   <div className="value">
@@ -292,14 +234,11 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                   {!isExpired && isForm && (
                     <div className="vote">
                       <Button
-                        isDisabled={
-                          isPredicting ||
+                        isDisabled={isPredicting ||
                           !(voteCount > 0) ||
-                          (hasVoted && votedOptionIndex !== optionIndex)
-                        }
+                          (hasVoted && votedOptionIndex !== optionIndex)}
                         style={{
-                          "--background":
-                            optionIndex === 0 ? "#419BEE" : "#EE416B",
+                          "--background": optionIndex === 0 ? "#419BEE" : "#EE416B",
                         }}
                         onClick={() => {
                           return predict({ option, optionIndex });
@@ -349,36 +288,36 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
           {hasVoted && hasWinner && !isWinner && (
             <div className="user-prediction-text">Better luck next time!</div>
           )}
-          {!hasWinner ? (
-            // before the winner is selected
-            <div className="status">
-              <TimeSince msSince={msSinceStart} />
-            </div>
-          ) : // after the winner is selected
-          isWinner ? (
-            // if the user voted for the winner
-            <div className="status">
-              {formatNumber(totalVotes)}{" "}
-              <span>
-                <ChannelPoints />
-              </span>{" "}
-              go to you and{" "}
-              {activePoll?.options[activePoll?.data?.winningOptionIndex]
-                .unique - 1}{" "}
-              others
-            </div>
-          ) : (
-            // if the user voted for the loser
-            <div className="status">
-              {formatNumber(totalVotes)}{" "}
-              <span>
-                <ChannelPoints />
-              </span>{" "}
-              go to{" "}
-              {activePoll?.options[activePoll?.data?.winningOptionIndex].unique}{" "}
-              users
-            </div>
-          )}
+          {!hasWinner
+            ? (
+              // before the winner is selected
+              <div className="status">
+                <TimeSince msSince={msSinceStart} />
+              </div>
+            )
+            : // after the winner is selected
+              isWinner
+              ? (
+                // if the user voted for the winner
+                <div className="status">
+                  {formatNumber(totalVotes)}{" "}
+                  <span>
+                    <ChannelPoints />
+                  </span>{" "}
+                  go to you and {activePoll?.options[activePoll?.data?.winningOptionIndex]
+                    .unique - 1} others
+                </div>
+              )
+              : (
+                // if the user voted for the loser
+                <div className="status">
+                  {formatNumber(totalVotes)}{" "}
+                  <span>
+                    <ChannelPoints />
+                  </span>{" "}
+                  go to {activePoll?.options[activePoll?.data?.winningOptionIndex].unique} users
+                </div>
+              )}
         </div>
       )}
       {hasVoted && isRefund && (

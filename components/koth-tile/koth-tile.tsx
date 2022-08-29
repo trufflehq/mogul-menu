@@ -10,8 +10,8 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
-import { CROWN_ICON } from "../../util/icon/paths.ts";
-import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "../../gql/mod.ts";
+import { CROWN_ICON } from "../../shared/mod.ts";
+import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
 

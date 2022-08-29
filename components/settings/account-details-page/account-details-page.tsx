@@ -8,10 +8,9 @@ import {
   useState,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useSnackBar } from "../../../state/mod.ts";
 import Button from "../../base/button/button.tsx";
-import Page from "../../base/page/page.tsx";
-import SnackBar from "../../base/snack-bar/snack-bar.tsx";
+import { Page } from "../../page-stack/mod.ts";
+import { SnackBar, useSnackBar } from "../../snackbar/mod.ts";
 import styleSheet from "./account-details-page.scss.js";
 
 const INITIAL_DATA_QUERY = gql`
@@ -90,11 +89,12 @@ export default function AccountDetailsPage() {
           message="An error occurred while saving :("
           messageBgColor="var(--mm-color-error)"
           messageTextColor="var(--mm-color-text-error)"
-        ></SnackBar>
+        >
+        </SnackBar>,
       );
     } else {
       enqueueSnackBar(
-        <SnackBar message="Your settings have been saved!"></SnackBar>
+        <SnackBar message="Your settings have been saved!"></SnackBar>,
       );
       setHasChanged(false);
     }

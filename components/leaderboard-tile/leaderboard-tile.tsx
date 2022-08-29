@@ -1,10 +1,10 @@
 import { _, Avatar, React, useQuery, useStyleSheet } from "../../deps.ts";
 import { User } from "../../types/mod.ts";
 import { OrgUserCounter, OrgUserCounterConnection } from "../../types/org-user-counter.types.ts";
-import { LEADERBOARD_COUNTER_QUERY } from "../../gql/mod.ts";
+import { LEADERBOARD_COUNTER_QUERY } from "./gql.ts";
 import Tile from "../tile/tile.tsx";
 
-import { TROPHY_ICON } from "../../util/icon/paths.ts";
+import { TROPHY_ICON } from "../../shared/mod.ts";
 
 import styleSheet from "./leaderboard-tile.scss.js";
 

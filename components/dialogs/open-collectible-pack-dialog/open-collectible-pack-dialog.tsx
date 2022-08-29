@@ -1,51 +1,12 @@
 import { _, gql, Obs, React, useMutation, useObservables, useQuery } from "../../../deps.ts";
-import { useCurrentTab } from "../../../state/mod.ts";
+import { useCurrentTab } from "../../tabs/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
+import { useCollectibleConnection } from '../../../shared/mod.ts'
 import Dialog from "../../base/dialog/dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
-
-const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
-  query CollectibleGetAllByMe {
-    # TODO: fix this hardcoded paging and possibly
-    # convert this query to an "ownedCollectibleConnection"
-    # query instead of "collectibleConnection" so that we're
-    # not grabbing collectibles that the user doesn't own.
-    collectibleConnection(first: 100) {
-      totalCount
-      nodes {
-        id
-        slug
-        name
-        type
-        targetType
-        fileRel {
-          fileObj {
-            cdn
-            data
-            prefix
-            contentType
-            type
-            variations
-            ext
-          }
-        }
-        data {
-          category
-          redeemType
-          redeemButtonText
-          redeemData
-          description
-        }
-        ownedCollectible {
-          count
-        }
-      }
-    }
-  }
-`;
 
 const REDEEM_COLLECTIBLE_MUTATION = gql`
   mutation OwnedCollectibleRedeem($collectibleId: ID!, $additionalData: JSON) {
@@ -63,17 +24,11 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }: Red
 
   // rm this if we're not invalidating cache using jumper
   const { org } = useObservables(() => ({
-    // org: model.org.getMe(),
     org: Obs.from([{}]),
   }));
 
-  // collectibles
-  const [{ data: collectiblesData }] = useQuery({
-    query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
-    // TODO: figure out why adding additionalTypes causes an infinite loop
-    // context: { additionalTypenames: "OwnedCollectible" },
-  });
-  const collectibles: Collectible<ActivePowerupRedeemData>[] = collectiblesData
+  const { collectibleConnectionData } = useCollectibleConnection()
+  const collectibles: Collectible<ActivePowerupRedeemData>[] = collectibleConnectionData
     ?.collectibleConnection
     ?.nodes;
 

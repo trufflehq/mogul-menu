@@ -1,8 +1,8 @@
 import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
-import { useSnackBar } from "../../../state/mod.ts";
-import { RedeemableDialog } from '../redeemable-dialog/redeemable-dialog.tsx'
+import { useSnackBar } from "../../snackbar/mod.ts";
+import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 import { PowerupActivatedSnackBar } from "../../snack-bars/powerup-activated-snack-bar/powerup-activated-snack-bar.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import Button from "../../base/button/button.tsx";
@@ -19,8 +19,8 @@ const REDEEM_COLLECTIBLE_MUTATION = gql`
   }
 `;
 
-interface ActivatePowerupDialog extends RedeemableDialog{
-  additionalData: Record<string, unknown>
+interface ActivatePowerupDialog extends RedeemableDialog {
+  additionalData: Record<string, unknown>;
 }
 
 export function ActivatePowerupDialog({

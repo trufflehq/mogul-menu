@@ -11,7 +11,7 @@ export default function EconomyActionDialog({
 }: {
   title: string;
   economyActions: EconomyAction[];
-  oucIcon: React.Node;
+  oucIcon: React.ReactNode;
   $bottom?: React.ReactNode;
 }) {
   useStyleSheet(styleSheet);
@@ -32,7 +32,7 @@ function EconomyActionRow({
   oucIcon,
 }: {
   economyAction: EconomyAction;
-  oucIcon: React.Node;
+  oucIcon: React.ReactNode;
 }) {
   return (
     <div className="economy-action">

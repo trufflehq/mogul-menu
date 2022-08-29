@@ -1,19 +1,18 @@
 import {
-  React,
+  _,
+  getSrcByImageObj,
   gql,
+  ImageByAspectRatio,
+  op,
   queryObservable,
-  useRef,
+  React,
+  useEffect,
   useMemo,
   useObservables,
-  useEffect,
+  useRef,
   useStyleSheet,
-  _,
-  ImageByAspectRatio,
-  getSrcByImageObj,
-  op,
 } from "../../deps.ts";
-import { useSnackBar } from "../../state/mod.ts";
-import SnackBar from "../base/snack-bar/snack-bar.tsx";
+import { SnackBar, useSnackBar } from "../snackbar/mod.ts";
 import styleSheet from "./connected-accounts.scss.js";
 
 const ACCOUNT_CONNECTIONS_QUERY = gql`
@@ -93,7 +92,7 @@ export default function ConnectedAccounts() {
 
   const { connectionsObs } = useMemo(() => {
     const connectionsObs = queryObservable(ACCOUNT_CONNECTIONS_QUERY).pipe(
-      op.map((result) => result?.data?.connectionConnection?.nodes)
+      op.map((result) => result?.data?.connectionConnection?.nodes),
     );
 
     return {
@@ -104,9 +103,8 @@ export default function ConnectedAccounts() {
   const { oAuthUrlMap, connections, me } = useObservables(() => ({
     oAuthUrlMap: queryObservable(OAUTH_URL_QUERY).pipe(
       op.map(
-        (result) =>
-          result?.data?.connectionGetOAuthUrlsBySourceTypes?.oAuthUrlMap
-      )
+        (result) => result?.data?.connectionGetOAuthUrlsBySourceTypes?.oAuthUrlMap,
+      ),
     ),
     connections: connectionsObs,
     // me: model.user.getMe(),
@@ -114,7 +112,7 @@ export default function ConnectedAccounts() {
 
   const isConnectionsChanged = !_.isEqual(
     connections,
-    lastUpdatedConnectionsRef.current
+    lastUpdatedConnectionsRef.current,
   );
 
   useEffect(() => {
@@ -122,7 +120,7 @@ export default function ConnectedAccounts() {
       const updatedConnections = _.differenceBy(
         connections,
         lastUpdatedConnectionsRef?.current,
-        "id"
+        "id",
       );
 
       if (!_.isEmpty(updatedConnections)) {
@@ -136,7 +134,7 @@ export default function ConnectedAccounts() {
           <AccountConnectedSnackBar
             connectionImgSrc={imgSrc}
             connectionTitle={connectionTitle}
-          />
+          />,
         );
       }
     }
@@ -173,8 +171,7 @@ export default function ConnectedAccounts() {
     }
   };
 
-  const hasConnection = (selectedSource) =>
-    _.find(connections, { sourceType: selectedSource });
+  const hasConnection = (selectedSource) => _.find(connections, { sourceType: selectedSource });
   // we are currently only displaying discord, twitter, and twitch connections.
   // this filters out all of the other connections
   const displayedConnections = connections?.filter((connection) =>
