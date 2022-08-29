@@ -1,5 +1,5 @@
 import { React, useStyleSheet } from "../../../deps.ts";
-import { useCurrentTab } from "../../../state/mod.ts";
+import { useCurrentTab } from "../../tabs/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";

@@ -1,6 +1,5 @@
 import { React, useState, useStyleSheet } from "../../../deps.ts";
 import ColorOption from "../../base/color-option/color-option.tsx";
-import { ChatHighlightRedeemData, Collectible } from "../../../types/mod.ts";
 import Select from "../../base/select/select.tsx";
 import { ActivatePowerupDialog } from "../activate-powerup-dialog/activate-powerup-dialog.tsx";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";

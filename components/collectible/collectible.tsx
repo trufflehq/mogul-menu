@@ -3,7 +3,7 @@ import { classKebab, getSrcByImageObj, React, useStyleSheet } from "../../deps.t
 import Button from "../base/button/button.tsx";
 import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
-import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../util/mod.ts";
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../shared/mod.ts";
 import {
   ActivePowerup,
   ActivePowerupRedeemData,

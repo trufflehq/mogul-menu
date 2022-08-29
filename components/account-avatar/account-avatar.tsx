@@ -1,23 +1,5 @@
-import { Avatar, gql, React, useQuery } from "../../deps.ts";
-
-const ME_QUERY = gql`
-  query {
-    me {
-      id
-      avatarImage {
-        cdn
-        prefix
-        ext
-        variations {
-          postfix
-          width
-          height
-        }
-        aspectRatio
-      }
-    }
-  }
-`;
+import { Avatar, React, useQuery } from "../../deps.ts";
+import { ME_QUERY } from "../../shared/mod.ts";
 
 export default function AccountAvatar({ size = "24px" }: { size?: string }) {
   const [{ data: meData, fetching }] = useQuery({

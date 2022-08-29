@@ -1,9 +1,11 @@
 import { React, useMemo, usePollingQuery, useStyleSheet } from "../../deps.ts";
-import { ONE_SECOND_MS } from "../../util/general.ts";
-import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
-import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
-import { ACTIVE_POLL_QUERY } from "../../gql/mod.ts";
-import { usePageStack } from "../../state/mod.ts";
+import {
+  ACTIVE_POLL_QUERY,
+  CRYSTAL_BALL_ICON,
+  CRYSTAL_BALL_ICON_VIEWBOX,
+  ONE_SECOND_MS,
+} from "../../shared/mod.ts";
+import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import Tile from "../tile/tile.tsx";

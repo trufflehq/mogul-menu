@@ -11,7 +11,7 @@ export default function Powerup({
 }) {
   useStyleSheet(styleSheet);
   const imageSrc = powerup?.componentRels?.[0].props?.imageSrc;
-  if (!imageSrc) return;
+  if (!imageSrc) return <></>;
   return (
     <div className="c-powerup">
       <img src={imageSrc} width={size} />

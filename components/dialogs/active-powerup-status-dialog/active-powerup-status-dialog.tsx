@@ -1,6 +1,6 @@
 import { gql, React, useMutation } from "../../../deps.ts";
-import { fromNow } from "../../../util/general.ts";
-import { ActivePowerup, ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
+import { fromNow } from "../../../shared/mod.ts";
+import { ActivePowerup } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";

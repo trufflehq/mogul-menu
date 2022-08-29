@@ -1,6 +1,6 @@
 import { gql, React, useQuery } from "../../deps.ts";
 import { OrgUserCounterType } from "../../types/mod.ts";
-import { BATTLEPASS_ORG_USER_COUNTER_TYPE_QUERY } from '../../gql/mod.ts'
+import { BATTLEPASS_ORG_USER_COUNTER_TYPE_QUERY } from "./gql.ts";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 
 export default function BattlepassLeaderboardTile() {

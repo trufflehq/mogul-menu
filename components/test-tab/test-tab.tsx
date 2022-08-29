@@ -1,30 +1,24 @@
 import { React, useState } from "../../deps.ts";
-import {
-  getMenuPosition,
-  useActionBanner,
-  useCurrentTab,
-  useMenu,
-  useSnackBar,
-  useTabButton,
-  useTabSlug,
-} from "../../state/mod.ts";
-
+import { useCurrentTab, useTabButton, useTabSlug } from "../tabs/mod.ts";
+import { getMenuPosition, useMenu } from "../menu/mod.ts";
+import { useSnackBar } from "../snackbar/mod.ts";
 import Button from "../base/button/button.tsx";
 import { CollapsibleTabButton } from "../tab-bar/tab-bar.tsx";
-import SnackBar from "../base/snack-bar/snack-bar.tsx";
+import { SnackBar } from "../snackbar/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
 import Option from "../base/option/option.tsx";
 import ColorOption from "../base/color-option/color-option.tsx";
 
-import { usePageStack } from "../../state/mod.ts";
+import { usePageStack } from "../page-stack/mod.ts";
 
 import ActionBanner from "../action-banner/action-banner.tsx";
+import { useActionBanner } from "../action-banner/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 import Switch from "../base/switch/switch.tsx";
 import ChannelPointsClaim from "../channel-points/channel-points.tsx";
-import Page from "../base/page/page.tsx";
+import { Page } from "../page-stack/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -48,7 +42,7 @@ export default function HomeTab() {
   const [selectedValue, setSelectedValue] = useState();
   const { state: menuState, updateMenuPosition } = useMenu();
   const [menuPositionValue, setMenuPositionValue] = useState(
-    getMenuPosition(menuState)
+    getMenuPosition(menuState),
   );
   const additionalData = { value: selectedValue };
 
@@ -64,7 +58,7 @@ export default function HomeTab() {
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />,
     );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
@@ -84,12 +78,10 @@ export default function HomeTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={
-          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
-        }
+        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
       >
         Finish setting up your account
-      </ActionBanner>
+      </ActionBanner>,
     );
   };
 
@@ -107,7 +99,7 @@ export default function HomeTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>
+      </Dialog>,
     );
   };
 
@@ -121,7 +113,7 @@ export default function HomeTab() {
         collapsedIcon={<CollapsedTestButton />}
       >
         <Button>Remove button</Button>
-      </CollapsibleTabButton>
+      </CollapsibleTabButton>,
     );
   };
 

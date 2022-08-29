@@ -2,18 +2,27 @@ import {
   AbsoluteAuthDialog,
   jumper,
   React,
+  setCookie,
   useEffect,
   useMutation,
   useQuery,
   useRef,
   useState,
 } from "../../deps.ts";
-import { EXTENSION_TOKEN_SIGNIN_QUERY, LOGIN_TYPE_NAMES, ME_QUERY } from "../../gql/mod.ts";
-import { ExtensionCredentials, MogulTvUser } from "../../types/mod.ts";
-import { isMemberMeUser, setAccessToken } from "../../util/mod.ts";
-import { useActionBanner } from "../../state/mod.ts";
+import { ME_QUERY } from "../../shared/mod.ts";
+import { EXTENSION_TOKEN_SIGNIN_QUERY, LOGIN_TYPE_NAMES } from "./gql.ts";
+import { ExtensionCredentials, MogulTvUser, MeUser } from "../../types/mod.ts";
 import Button from "../base/button/button.tsx";
-import ActionBanner from "../action-banner/action-banner.tsx";
+import { ActionBanner, useActionBanner } from "../action-banner/mod.ts";
+
+export function setAccessToken(accessToken?: string) {
+  if (accessToken) {
+    setCookie("accessToken", accessToken);
+  }
+}
+
+export const isMemberMeUser = (user: MeUser) => user && (user.email || user.phone);
+
 
 function useExtensionAuth() {
   const [{ data: meRes, fetching: isFetchingUser }, refetchMe] = useQuery({

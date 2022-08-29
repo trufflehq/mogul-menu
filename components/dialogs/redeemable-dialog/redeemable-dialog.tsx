@@ -9,7 +9,7 @@ import ChatHighlightDialog from "../chat-highlight-dialog/chat-highlight-dialog.
 import UsernameGradientDialog from "../username-gradient-dialog/username-gradient-dialog.tsx";
 import RecipeDialog from "../recipe-dialog/recipe-dialog.tsx";
 import StreamAlertRedeemDialog from "../stream-alert-redeem-dialog/stream-alert-redeem-dialog.tsx";
-import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../../util/mod.ts";
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../../shared/mod.ts";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
 // FIXME - we'll need to bring back the jumper invalidation
 const MESSAGE = {

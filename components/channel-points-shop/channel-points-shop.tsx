@@ -1,7 +1,6 @@
 import {
   React,
   getSrcByImageObj,
-  gql,
   useQuery,
   useStyleSheet,
   abbreviateNumber,
@@ -16,7 +15,7 @@ import { Product, OrgUserCounter, File } from "../../types/mod.ts";
 import {
   CHANNEL_POINTS_QUERY,
   CHANNEL_POINTS_SHOP_QUERY,
-} from "../../gql/mod.ts";
+} from "./gql.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";

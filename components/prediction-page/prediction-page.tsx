@@ -8,10 +8,9 @@ import {
   usePollingQuery,
   useStyleSheet,
 } from "../../deps.ts";
-import { CRYSTAL_BALL_ICON } from "../../util/icon/paths.ts";
-import { CRYSTAL_BALL_ICON_VIEWBOX } from "../../util/icon/viewboxes.ts";
-import Page from "../base/page/page.tsx";
-import { usePageStack } from "../../state/mod.ts";
+import { CRYSTAL_BALL_ICON, CRYSTAL_BALL_ICON_VIEWBOX } from "../../shared/mod.ts";
+import { Page, usePageStack } from "../page-stack/mod.ts";
+
 import ActivePrediction from "../active-prediction/active-prediction.tsx";
 import styleSheet from "./prediction-page.scss.js";
 

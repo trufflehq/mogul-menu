@@ -1,10 +1,10 @@
 import { _, React, useStyleSheet } from "../../deps.ts";
 import Collectible from "../collectible/collectible.tsx";
-import { usePageStack } from "../../state/mod.ts";
+import { usePageStack } from "../page-stack/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
-import { useCurrentTab, useSnackBar } from "../../state/mod.ts";
-import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../util/mod.ts";
+import { useCurrentTab } from "../tabs/mod.ts";
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../shared/mod.ts";
 import {
   ActivePowerup,
   ActivePowerupRedeemData,
@@ -12,6 +12,8 @@ import {
   CollectibleType,
   OwnedCollectibleConnection,
 } from "../../types/mod.ts";
+
+import { useSnackBar } from "../snackbar/mod.ts";
 
 import Button from "../base/button/button.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
