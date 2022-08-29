@@ -1,4 +1,4 @@
-import { React, gql, useQuery, _ } from "../../../deps.ts";
+import { _, React } from "../../../deps.ts";
 
 import ItemDialog from "../item-dialog/item-dialog.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -9,82 +9,25 @@ import ChatHighlightDialog from "../chat-highlight-dialog/chat-highlight-dialog.
 import UsernameGradientDialog from "../username-gradient-dialog/username-gradient-dialog.tsx";
 import RecipeDialog from "../recipe-dialog/recipe-dialog.tsx";
 import StreamAlertRedeemDialog from "../stream-alert-redeem-dialog/stream-alert-redeem-dialog.tsx";
-
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../../util/mod.ts";
+import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
+// FIXME - we'll need to bring back the jumper invalidation
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
 };
 
-const CIRCLE_ICON_PATH = `M 0, 12
- a 12,12 0 1,1 24,0 
- a 12,12 0 1,1 -24,0`;
+interface RedeemableDialog {
+  redeemableCollectible: {
+    sourceId?: string;
+    source: Collectible<ActivePowerupRedeemData>;
+  };
+  $children?: React.ReactNode;
+  primaryText?: string;
+  secondaryText?: string;
+  highlightBg?: string;
+}
 
-const REDEEM_COLLECTIBLE_MUTATION = gql`
-  mutation OwnedCollectibleRedeem($collectibleId: ID!, $additionalData: JSON) {
-    ownedCollectibleRedeem(
-      input: { collectibleId: $collectibleId, additionalData: $additionalData }
-    ) {
-      redeemResponse
-      redeemError
-    }
-  }
-`;
-
-const ACTIVE_POWERUPS_QUERY = gql`
-  query ActivePowerupsQuery {
-    activePowerupConnection {
-      nodes {
-        id
-        creationDate
-        powerup {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-const COLLECTIBLE_GET_ALL_BY_ME_QUERY = gql`
-  query CollectibleGetAllByMe {
-    # TODO: fix this hardcoded paging and possibly
-    # convert this query to an "ownedCollectibleConnection"
-    # query instead of "collectibleConnection" so that we're
-    # not grabbing collectibles that the user doesn't own.
-    collectibleConnection(first: 100) {
-      totalCount
-      nodes {
-        id
-        slug
-        name
-        type
-        targetType
-        fileRel {
-          fileObj {
-            cdn
-            data
-            prefix
-            contentType
-            type
-            variations
-            ext
-          }
-        }
-        data {
-          category
-          redeemType
-          redeemButtonText
-          redeemData
-          description
-        }
-        ownedCollectible {
-          count
-        }
-      }
-    }
-  }
-`;
-
-export default function RedeemableDialog(props) {
+export default function RedeemableDialog(props: RedeemableDialog) {
   const {
     redeemableCollectible,
     $children,
@@ -95,39 +38,28 @@ export default function RedeemableDialog(props) {
 
   const { popDialog: onExit } = useDialog();
 
-  const redeemablePowerupId =
-    redeemableCollectible?.source?.data?.redeemData?.powerupId;
+  const redeemablePowerupId = redeemableCollectible?.source?.data?.redeemData?.powerupId;
 
-  // active powerups
-  const [{ data: activePowerupsData }] = useQuery({
-    query: ACTIVE_POWERUPS_QUERY,
-    // TODO: figure out why adding additionalTypes causes an infinite loop
-    // context: { additionalTypenames: ["ActivePowerup"] },
-  });
-  const activePowerups = activePowerupsData?.activePowerupConnection?.nodes;
+  const { activePowerupConnectionData } = useActivePowerupConnection();
+  const activePowerups = activePowerupConnectionData?.activePowerupConnection?.nodes;
   const activePowerup = _.find(activePowerups ?? [], {
     powerup: { id: redeemablePowerupId },
   });
 
-  // collectibles
-  const [{ data: collectiblesData }] = useQuery({
-    query: COLLECTIBLE_GET_ALL_BY_ME_QUERY,
-    // TODO: figure out why adding additionalTypes causes an infinite loop
-    // context: { additionalTypenames: "OwnedCollectible" },
-  });
-  const collectibles = collectiblesData?.collectibleConnection?.nodes;
+  const { ownedCollectibleConnectionData } = useOwnedCollectibleConnection();
 
-  const isCollectiblePack =
-    redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
-  const isOpenedCollectiblePack =
-    isCollectiblePack &&
-    _.find(collectibles, { id: redeemableCollectible.sourceId })
-      ?.ownedCollectible?.count < 1;
-  const isChatHighlightPowerup =
-    redeemableCollectible?.source?.data?.redeemData?.category ===
+  const collectibles = ownedCollectibleConnectionData.ownedCollectibleConnection?.nodes?.map((
+    ownedCollectible,
+  ) => ownedCollectible?.collectible);
+
+  const isCollectiblePack = redeemableCollectible?.source?.data?.redeemType === "collectiblePack";
+  const ownedCollectible = _.find(collectibles, { id: redeemableCollectible.sourceId })
+    ?.ownedCollectible;
+  const isOpenedCollectiblePack = isCollectiblePack && ownedCollectible?.count &&
+    ownedCollectible?.count < 1;
+  const isChatHighlightPowerup = redeemableCollectible?.source?.data?.redeemData?.category ===
     "chatMessageHighlight";
-  const isUsernameGradientPowerup =
-    redeemableCollectible?.source?.data?.redeemData?.category ===
+  const isUsernameGradientPowerup = redeemableCollectible?.source?.data?.redeemData?.category ===
     "chatUsernameGradient";
   const isRecipe = redeemableCollectible?.source?.data?.redeemType === "recipe";
   const isRedeemed = redeemableCollectible?.source?.ownedCollectible?.count < 1;
@@ -184,9 +116,7 @@ export function RedeemedCollectibleDialog({
         $title={$title}
         highlightBg={highlightBg}
         headerText={headerText}
-        primaryText={`${
-          redeemableCollectible?.source?.name ?? ""
-        } has already been redeemed`}
+        primaryText={`${redeemableCollectible?.source?.name ?? ""} has already been redeemed`}
         secondaryTextStyle=""
         buttons={[
           {

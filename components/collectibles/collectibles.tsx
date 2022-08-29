@@ -1,13 +1,18 @@
-import { _, gql, React, useMemo, useQuery, useStyleSheet } from "../../deps.ts";
-
+import { _, React, useStyleSheet } from "../../deps.ts";
 import Collectible from "../collectible/collectible.tsx";
 import { usePageStack } from "../../state/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
 import { useCurrentTab, useSnackBar } from "../../state/mod.ts";
-import { Collectible as CollectibleType } from "../../types/collectible.types.ts";
-import { useCollectibleConnection } from "../../util/mod.ts";
-import { ActivePowerup } from "../../types/active-powerup.types.ts";
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../util/mod.ts";
+import {
+  ActivePowerup,
+  ActivePowerupRedeemData,
+  Collectible as ICollectible,
+  CollectibleType,
+  OwnedCollectibleConnection,
+} from "../../types/mod.ts";
+
 import Button from "../base/button/button.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
@@ -16,22 +21,8 @@ import XpActionsDialog from "../dialogs/xp-actions-dialog/xp-actions-dialog.tsx"
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
 
-const ACTIVE_POWERUPS_QUERY = gql`
-  query ActivePowerupsQuery {
-    activePowerupConnection {
-      nodes {
-        id
-        powerup {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
 const TYPE_ORDER = ["redeemable", "emote"];
-const ORDER_FN = ({ type }) => {
+const ORDER_FN = ({ type }: { type: CollectibleType }) => {
   const order = TYPE_ORDER.indexOf(type);
   return order === -1 ? 9999 : order;
 };
@@ -42,76 +33,82 @@ export default function Collectibles() {
   const enqueueSnackBar = useSnackBar();
   const { pushPage, popPage } = usePageStack();
 
-  // collectibles
-  const { collectibleConnectionData, isFetchingCollectibles, collectibleFetchError } =
-    useCollectibleConnection();
+  const { ownedCollectibleConnectionData } = useOwnedCollectibleConnection();
 
-  const collectibleConnection = collectibleConnectionData?.collectibleConnection;
+  const ownedCollectibleConnection: OwnedCollectibleConnection = ownedCollectibleConnectionData
+    ?.ownedCollectibleConnection;
 
   const sortedCollectibles = _.orderBy(
-    collectibleConnection?.nodes,
-    (collectible) => collectible.ownedCollectible?.count,
+    ownedCollectibleConnection?.nodes,
+    (ownedCollectible) => ownedCollectible?.count,
   );
-  const groups = _.groupBy(sortedCollectibles, "type");
+
+  const collectibles = sortedCollectibles.map((ownedCollectible) => {
+    return {
+      ...ownedCollectible.collectible,
+      ownedCollectible: {
+        count: ownedCollectible.count,
+      },
+    };
+  })
+    .filter((collectible) => Boolean(collectible) && collectible?.type);
+
+  const groups = _.groupBy(collectibles, "type");
+
   const groupedCollectibles = _.orderBy(
-    _.map(groups, (collectibles, type) => {
-      return { type, collectibles };
-    }),
-    ORDER_FN,
+    Object.keys(groups).map((type) => ({
+      type,
+      collectibles: groups[type],
+    }), ORDER_FN),
   );
 
-  // active powerups
-  const [{ data: activePowerupData }] = useQuery({
-    query: ACTIVE_POWERUPS_QUERY,
-  });
+  const { activePowerupConnectionData } = useActivePowerupConnection();
 
-  const activePowerups = activePowerupData?.activePowerupConnection?.nodes ?? [];
+  const activePowerups = activePowerupConnectionData?.activePowerupConnection?.nodes ?? [];
 
-  const isEmpty = groupedCollectibles.every((group) =>
-    group.collectibles?.every(
-      (collectible) => !shouldShowCollectible(activePowerups, collectible),
-    )
-  );
+  const isEmpty = !ownedCollectibleConnection?.nodes?.length;
 
   if (isEmpty) return <NoCollectiblesPlaceholder />;
 
   return (
     <div className="c-collectibles">
-      {_.map(groupedCollectibles, ({ collectibles, type }, idx) => {
-        return (
-          <div key={idx} className="type-section">
-            <div className="type">{type}</div>
-            <div className="collectibles">
-              {_.map(collectibles, (collectible, idx) => {
-                const powerupId = collectible?.data?.redeemData?.powerupId;
-                const activePowerup = _.find(activePowerups, {
-                  powerup: { id: powerupId },
-                });
+      {groupedCollectibles.map(
+        (
+          { collectibles, type },
+          idx,
+        ) => {
+          return (
+            <div key={idx} className="type-section">
+              <div className="type">{type}</div>
+              <div className="collectibles">
+                {_.map(collectibles, (collectible: ICollectible<ActivePowerupRedeemData>, idx) => {
+                  const powerupId = collectible?.data?.redeemData?.powerupId;
+                  const activePowerup = _.find(activePowerups, {
+                    powerup: { id: powerupId },
+                  });
 
-                return (
-                  shouldShowCollectible(activePowerups, collectible) && (
-                    <Collectible
-                      key={idx}
-                      collectible={collectible}
-                      activePowerup={activePowerup}
-                      enqueueSnackBar={enqueueSnackBar}
-                      pushPage={pushPage}
-                      popPage={popPage}
-                    />
-                  )
-                );
-              })}
+                  return (
+                    shouldShowCollectible(activePowerups, collectible) && (
+                      <Collectible
+                        key={idx}
+                        collectible={collectible}
+                        activePowerup={activePowerup}
+                      />
+                    )
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        },
+      )}
     </div>
   );
 }
 
 function shouldShowCollectible(
   activePowerups: ActivePowerup[],
-  collectible: CollectibleType<any>,
+  collectible: ICollectible<ActivePowerupRedeemData>,
 ) {
   const powerupId = collectible?.data?.redeemData?.powerupId;
   const activePowerup = _.find(activePowerups, {

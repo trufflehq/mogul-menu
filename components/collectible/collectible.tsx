@@ -1,36 +1,45 @@
-import {
-  React,
-  getSrcByImageObj,
-  classKebab,
-  useStyleSheet,
-} from "../../deps.ts";
+import { classKebab, getSrcByImageObj, React, useStyleSheet } from "../../deps.ts";
 
 import Button from "../base/button/button.tsx";
 import RedeemableDialog from "../dialogs/redeemable-dialog/redeemable-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
-
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../util/mod.ts";
+import {
+  ActivePowerup,
+  ActivePowerupRedeemData,
+  Collectible as ICollectible,
+} from "../../types/mod.ts";
 import styleSheet from "./collectible.scss.js";
 
-export default function Collectible(props) {
+interface CollectibleProps {
+  collectible: ICollectible<ActivePowerupRedeemData>;
+  activePowerup: ActivePowerup;
+  sizePx?: number;
+}
+
+export default function Collectible(props: CollectibleProps) {
   useStyleSheet(styleSheet);
   const { collectible, activePowerup, sizePx = 60 } = props;
 
   const isOwned = collectible?.ownedCollectible?.count || activePowerup;
 
   const imageUrl = getSrcByImageObj(collectible?.fileRel?.fileObj);
-  const canRedeem =
-    collectible.type === "redeemable" &&
+  const canRedeem = collectible.type === "redeemable" &&
     ["user", "none"].includes(collectible.targetType);
 
-  const { pushDialog, popDialog } = useDialog();
+  const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
+  const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
+  const { pushDialog } = useDialog();
 
   const onRedeemHandler = () => {
+    // refetch ownedCollectibles on redemption
+    reexecuteOwnedCollectibleConnQuery();
+    reexecuteActivePowerupConnQuery();
     pushDialog(
       <RedeemableDialog
         primaryText={collectible.name}
         redeemableCollectible={{ source: collectible }}
-        onExit={popDialog}
-      />
+      />,
     );
   };
 
@@ -48,18 +57,22 @@ export default function Collectible(props) {
       {collectible?.name && (
         <div className="info">
           <div className="name">{collectible?.name}</div>
-          {collectible?.ownedCollectible?.count ? (
-            <div className="count">
-              {`x${collectible?.ownedCollectible?.count}`}
-            </div>
-          ) : null}
+          {collectible?.ownedCollectible?.count
+            ? (
+              <div className="count">
+                {`x${collectible?.ownedCollectible?.count}`}
+              </div>
+            )
+            : null}
         </div>
       )}
       {isOwned && canRedeem && (
         <div
-          className={`button ${classKebab({
-            isActive: Boolean(activePowerup),
-          })}`}
+          className={`button ${
+            classKebab({
+              isActive: Boolean(activePowerup),
+            })
+          }`}
         >
           <Button
             onClick={onRedeemHandler}
@@ -67,9 +80,7 @@ export default function Collectible(props) {
             border={true}
             size="small"
           >
-            {activePowerup ? (
-              <span style={{ color: "var(--mm-color-positive)" }}>Active</span>
-            ) : (
+            {activePowerup ? <span style={{ color: "var(--mm-color-positive)" }}>Active</span> : (
               collectible?.data?.redeemButtonText ?? "Redeem"
             )}
           </Button>
