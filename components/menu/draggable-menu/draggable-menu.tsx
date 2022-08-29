@@ -27,7 +27,7 @@ const DEFAULT_MENU_POSITION: MenuPosition = "top-left";
 const DEFAULT_POSITION_ELEMENT_QS = "#chatframe";
 const DEFAULT_POSITION_OFFSET = { x: -100, y: 50 };
 
-interface DeafultPositionInfo {
+interface DefaultPositionInfo {
   current: Vector;
   start: Vector;
   menuPosition: MenuPosition;
