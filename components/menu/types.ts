@@ -7,7 +7,6 @@ export interface MenuState {
   menuState: string;
   isClaimable: boolean;
   iconImageObj?: File;
-  $$additionalButtonRef: React.MutableRefObject<HTMLDivElement> | null;
   dimensions: {
     base: {
       x: number;
@@ -15,7 +14,7 @@ export interface MenuState {
       width: number;
       height: number;
     };
-    modifiers: DimensionModifiers;
+    modifiers: Partial<DimensionModifiers>;
   };
   menuPosition?: MenuPosition;
   snackBars: React.ReactNode[];
@@ -35,13 +34,6 @@ export type UpdateClaimableStateAction = {
   type: "@@MENU_UPDATE_CLAIMABLE";
   payload: {
     isClaimable: boolean;
-  };
-};
-
-export type UpdateAdditionalButtonRefAction = {
-  type: "@@MENU_ADDITIONAL_BUTTON_REF";
-  payload: {
-    ref: React.MutableRefObject<HTMLDivElement>;
   };
 };
 
@@ -80,7 +72,6 @@ export type MenuDimensionActions = OpenMenuAction | CloseMenuAction;
 export type MenuActions =
   | MenuDimensionActions
   | UpdateClaimableStateAction
-  | UpdateAdditionalButtonRefAction
   | UpdateDimensionsAction
   | EnqueueSnackbarAction
   | PopSnackbarAction

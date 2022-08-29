@@ -12,7 +12,6 @@ import {
 
 const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
-  $$additionalButtonRef: null,
   menuState: "closed",
   menuPosition: undefined,
   snackBars: [],
@@ -37,7 +36,5 @@ export function MenuProvider({
   iconImageObj?: File;
 }) {
   const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
-  return (
-    <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>
-  );
+  return <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>;
 }

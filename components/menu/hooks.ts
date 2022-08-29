@@ -5,7 +5,6 @@ import { getMenuState } from "./getters.ts";
 import {
   enqueueSnackBar,
   popSnackBar,
-  setAdditionalButtonRef,
   setClosed,
   setIsClaimable,
   setOpen,
@@ -37,8 +36,6 @@ export function useMenu() {
     },
     setIsClosed: () => dispatch(setClosed()),
     setIsClaimable: (isClaimable: boolean) => dispatch(setIsClaimable(isClaimable)),
-    setAdditionalButtonRef: (ref: React.MutableRefObject<HTMLDivElement>) =>
-      dispatch(setAdditionalButtonRef(ref)),
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
     popSnackBar: () => dispatch(popSnackBar()),
