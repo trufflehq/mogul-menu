@@ -10,13 +10,14 @@ import PageStack from "../page-stack/page-stack.tsx";
 import { SnackBarContainer } from "../snackbar/mod.ts";
 import { ActionBannerContainer } from "../action-banner/mod.ts";
 import DialogContainer from "../base/dialog-container/dialog-container.tsx";
+import { MogulMenuProps } from "./menu.tsx";
 
-export default function BrowserExtensionMenuBody() {
+export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
   useStyleSheet(styleSheet);
   const $$extensionIconRef = useRef(null);
 
   return (
-    <DraggableMenu>
+    <DraggableMenu {...props}>
       <div className="inner">
         <div className="bottom">
           <TabBar />

@@ -35,8 +35,12 @@ interface DefaultPositionInfo {
 
 export default function DraggableMenu({
   children,
+  defaultPositionElementQuerySelector = DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR,
+  defaultPositionOffset = DEFAULT_POSITION_OFFSET,
 }: {
   children: React.ReactNode;
+  defaultPositionElementQuerySelector?: string;
+  defaultPositionOffset?: Vector;
 }) {
   const { state: tabsState } = useTabs();
   const {
@@ -72,7 +76,7 @@ export default function DraggableMenu({
     } else {
       const defaultPosition = await jumper?.call(
         "layout.getElementBoundingClientRect",
-        { querySelector: DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR },
+        { querySelector: defaultPositionElementQuerySelector },
       );
 
       const dimensions = INITIAL_MENU_STATE.dimensions;
@@ -90,8 +94,8 @@ export default function DraggableMenu({
       );
 
       const defaultPositionVector = {
-        x: defaultPosition.x + translationMods.xMod + DEFAULT_POSITION_OFFSET.x,
-        y: defaultPosition.y + translationMods.yMod + DEFAULT_POSITION_OFFSET.y,
+        x: defaultPosition.x + translationMods.xMod + defaultPositionOffset.x,
+        y: defaultPosition.y + translationMods.yMod + defaultPositionOffset.y,
       };
 
       positionInfo = {
