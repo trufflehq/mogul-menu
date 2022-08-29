@@ -1,15 +1,9 @@
-import {
-  Avatar,
-  getSrcByImageObj,
-  ImageByAspectRatio,
-  Obs,
-  React,
-  useObservables,
-} from "../../../deps.ts";
+import { getSrcByImageObj, ImageByAspectRatio, React } from "../../../deps.ts";
 import AccountAvatar from "../../account-avatar/account-avatar.tsx";
+import { Collectible, ActivePowerupRedeemData } from "../../../types/mod.ts";
 import { SnackBar } from "../../snackbar/mod.ts";
 
-export function PowerupActivatedSnackBar({ collectible }) {
+export function PowerupActivatedSnackBar({ collectible }: { collectible?: Collectible<ActivePowerupRedeemData> }) {
   const powerupSrc = getSrcByImageObj(collectible?.fileRel?.fileObj);
 
   return (

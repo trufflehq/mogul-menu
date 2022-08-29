@@ -1,7 +1,8 @@
-import React from "https://npm.tfl.dev/react";
-import { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+import { formatCountdown, React } from "../../deps.ts";
 
-export default function Timer({ timerSeconds, message }) {
+export default function Timer(
+  { timerSeconds, message }: { timerSeconds?: number; message?: string },
+) {
   return (
     <div className="timer">
       {

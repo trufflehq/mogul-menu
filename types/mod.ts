@@ -10,4 +10,4 @@ export * from "./poll.types.ts";
 export * from "./koth.types.ts";
 export * from "./org-user.types.ts";
 export * from "./org-user-counter-type.types.ts";
-export * from './owned-collectible.types.ts'
+export * from './season-pass.types.ts'

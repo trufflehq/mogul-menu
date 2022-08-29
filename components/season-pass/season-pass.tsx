@@ -16,7 +16,6 @@ import {
   zeroPrefix,
 } from "../../deps.ts";
 
-import { SEASON_PASS_QUERY } from "../../shared/mod.ts";
 import { useOwnedCollectibleConnection } from "../../shared/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
@@ -34,8 +33,9 @@ import Reward from "../season-pass-reward/season-pass-reward.tsx";
 import { LockedIcon } from "../locked-icon/locked-icon.tsx";
 import MultiRewardLevelUpDialog from "../dialogs/multi-reward-level-up-dialog/multi-reward-level-up-dialog.tsx";
 import SingleRewardLevelUpDialog from "../dialogs/single-reward-level-up-dialog/single-reward-level-up-dialog.tsx";
-import { SeasonPass as SeasonPassType } from "../../types/season-pass.types.ts";
+import { SeasonPass as SeasonPassType, OrgUserCounter } from "../../types/mod.ts";
 import { useSeasonPassData } from "./hooks.ts";
+
 const ME_QUERY = gql`
   query MeQuery {
     me {
@@ -47,7 +47,7 @@ const ME_QUERY = gql`
   }
 `;
 
-export function getLevelBySeasonPassAndXp(seasonPass, xp) {
+export function getLevelBySeasonPassAndXp(seasonPass: SeasonPassType, xp: OrgUserCounter) {
   const currentXp = xp?.count ? xp.count : 0;
 
   const lastLevel = _.findLast(
@@ -58,7 +58,7 @@ export function getLevelBySeasonPassAndXp(seasonPass, xp) {
   return lastLevel;
 }
 
-export function getXPBarBySeasonPassAndXp(seasonPass, xp) {
+export function getXPBarBySeasonPassAndXp(seasonPass: SeasonPassType, xp: OrgUserCounter) {
   const currentXp = xp?.count ? parseInt(xp.count) : 0;
 
   const floor = _.findLast(seasonPass.levels, ({ minXp }) => currentXp >= minXp) ?? 0;

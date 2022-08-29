@@ -22,7 +22,7 @@ import { Page } from "../page-stack/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
-export default function HomeTab() {
+export default function TestTab() {
   const enqueueSnackBar = useSnackBar();
   const [count, setCount] = useState(0);
   const [isSelected, setSelected] = useState(false);

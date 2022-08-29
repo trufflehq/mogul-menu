@@ -38,7 +38,6 @@ const CLAIM_BUTTON = "claim-button";
 
 interface WatchtimeProps {
   highlightButtonBg?: string;
-  // creatorName,
   hasChannelPoints: boolean;
   hasBattlePass: boolean;
 }
@@ -47,7 +46,6 @@ export default function Watchtime(props: WatchtimeProps) {
   useStyleSheet(styleSheet);
   const {
     highlightButtonBg,
-    // creatorName,
     hasChannelPoints,
     hasBattlePass,
   } = props;
@@ -61,7 +59,6 @@ export default function Watchtime(props: WatchtimeProps) {
 
   const { setIsClaimable, enqueueSnackBar } = useMenu();
   const { addButton, removeButton } = useTabButton();
-  // const enqueueSnackBar = useSnackBar();
 
   const creatorName = "Ludwig";
 

@@ -89,12 +89,11 @@ export default function AccountDetailsPage() {
           message="An error occurred while saving :("
           messageBgColor="var(--mm-color-error)"
           messageTextColor="var(--mm-color-text-error)"
-        >
-        </SnackBar>,
+        />
       );
     } else {
       enqueueSnackBar(
-        <SnackBar message="Your settings have been saved!"></SnackBar>,
+        <SnackBar message="Your settings have been saved!" />,
       );
       setHasChanged(false);
     }
