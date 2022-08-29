@@ -1,25 +1,17 @@
-import { _, React, useQuery, useStyleSheet } from "../../deps.ts";
-// import _ from "https://cdn.skypack.dev/lodash?dts";
+import { _, React, useStyleSheet } from "../../deps.ts";
 import Collectible from "../collectible/collectible.tsx";
 import { usePageStack } from "../../state/mod.ts";
 
 import styleSheet from "./collectibles.scss.js";
 import { useCurrentTab, useSnackBar } from "../../state/mod.ts";
-import {
-  useActivePowerupConnection,
-  useCollectibleConnection,
-  useOwnedCollectibleConnection,
-} from "../../util/mod.ts";
+import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../util/mod.ts";
 import {
   ActivePowerup,
   ActivePowerupRedeemData,
   Collectible as ICollectible,
-  CollectibleConnection,
-  CollectibleRedeemType,
   CollectibleType,
   OwnedCollectibleConnection,
 } from "../../types/mod.ts";
-import { ACTIVE_POWERUPS_QUERY } from "../../gql/mod.ts";
 
 import Button from "../base/button/button.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
@@ -62,11 +54,12 @@ export default function Collectibles() {
     .filter((collectible) => Boolean(collectible) && collectible?.type);
 
   const groups = _.groupBy(collectibles, "type");
+
   const groupedCollectibles = _.orderBy(
-    _.map(groups, (collectibles, type) => {
-      return { type, collectibles };
-    }),
-    ORDER_FN,
+    Object.keys(groups).map((type) => ({
+      type,
+      collectibles: groups[type],
+    }), ORDER_FN),
   );
 
   const { activePowerupConnectionData } = useActivePowerupConnection();
@@ -88,7 +81,7 @@ export default function Collectibles() {
             <div key={idx} className="type-section">
               <div className="type">{type}</div>
               <div className="collectibles">
-                {_.map(collectibles, (collectible, idx) => {
+                {_.map(collectibles, (collectible: ICollectible<ActivePowerupRedeemData>, idx) => {
                   const powerupId = collectible?.data?.redeemData?.powerupId;
                   const activePowerup = _.find(activePowerups, {
                     powerup: { id: powerupId },
