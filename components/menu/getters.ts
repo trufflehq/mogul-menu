@@ -24,10 +24,6 @@ export function getIsClaimable(state: MenuState) {
   return state.isClaimable;
 }
 
-export function getAdditionalButtonsWidth(state: MenuState) {
-  return state.$$additionalButtonRef?.current.offsetWidth || 0;
-}
-
 export function getSnackBars(state: MenuState) {
   return state.snackBars;
 }
@@ -44,18 +40,18 @@ export function getMenuPosition(state: MenuState) {
   return state.menuPosition;
 }
 
-export function getModifiersByPosition(position?: MenuPosition, additionalButtonsWidth = 0) {
+export function getModifiersByPosition(position?: MenuPosition) {
   const modifier = position === "bottom-right"
     ? {
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT,
-      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
     }
     : position === "bottom-left"
     ? {
       top: 0 - DEFAULT_MENU_ICON_HEIGHT,
-      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
       bottom: 0 - BASE_MENU_HEIGHT,
       left: 0,
     }
@@ -64,12 +60,12 @@ export function getModifiersByPosition(position?: MenuPosition, additionalButton
       top: 0 - BASE_MENU_HEIGHT,
       right: 0,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
-      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      left: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
     }
     : position === "top-left"
     ? {
       top: 0 - BASE_MENU_HEIGHT,
-      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH + additionalButtonsWidth,
+      right: 0 - BASE_MENU_WIDTH + DEFAULT_MENU_ICON_WIDTH,
       bottom: 0 - BASE_MENU_HEIGHT + DEFAULT_MENU_ICON_HEIGHT,
       left: 0,
     }
@@ -85,8 +81,7 @@ export function getModifiersByPosition(position?: MenuPosition, additionalButton
 }
 export function getClosedModifiers(state: MenuState) {
   const position = getMenuPosition(state);
-  const additionalButtonsWidth = getAdditionalButtonsWidth(state);
-  return getModifiersByPosition(position, additionalButtonsWidth);
+  return getModifiersByPosition(position);
 }
 
 export function getOpenModifiers(state: MenuState) {

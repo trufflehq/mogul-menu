@@ -5,7 +5,6 @@ import {
   MenuPosition,
   OpenMenuAction,
   PopSnackbarAction,
-  UpdateAdditionalButtonRefAction,
   UpdateClaimableStateAction,
   UpdateDimensionsAction,
   UpdateMenuPosition,
@@ -26,15 +25,6 @@ export const setIsClaimable = (isClaimable: boolean): UpdateClaimableStateAction
   type: "@@MENU_UPDATE_CLAIMABLE",
   payload: {
     isClaimable,
-  },
-});
-
-export const setAdditionalButtonRef = (
-  ref: React.MutableRefObject<HTMLDivElement>,
-): UpdateAdditionalButtonRefAction => ({
-  type: "@@MENU_ADDITIONAL_BUTTON_REF",
-  payload: {
-    ref,
   },
 });
 

@@ -5,7 +5,6 @@ import {
   React,
   Ripple,
   useLayoutEffect,
-  useRef,
   useStyleSheet,
 } from "../../deps.ts";
 import { usePageStack } from "../page-stack/mod.ts";
@@ -15,28 +14,17 @@ import { getIsOpen, useMenu } from "../menu/mod.ts";
 import stylesheet from "./tab-bar.scss.js";
 export default function TabBar() {
   useStyleSheet(stylesheet);
-  const $$additionalButtonRef = useRef<HTMLDivElement>(undefined!);
-  const previousTabButtonLengthRef = useRef<number>(0);
   const tabButtonManager = useTabButton();
   const additionalTabButtons = tabButtonManager.buttonMap;
   const { state: tabsState } = useTabs();
-  const { state: menuState, setAdditionalButtonRef, updateDimensions } = useMenu();
+  const { state: menuState, updateDimensions } = useMenu();
   const { setActiveTab } = useCurrentTab();
   const { clearPageStack } = usePageStack();
   const isMenuOpen = getIsOpen(menuState);
 
-  const hasTabButtonsLengthChanged =
-    previousTabButtonLengthRef.current !== Object.keys(additionalTabButtons)?.length;
   useLayoutEffect(() => {
     updateDimensions();
-    if (hasTabButtonsLengthChanged) {
-      previousTabButtonLengthRef.current = Object.keys(additionalTabButtons)?.length;
-    }
-  }, [isMenuOpen, hasTabButtonsLengthChanged]);
-
-  useLayoutEffect(() => {
-    setAdditionalButtonRef($$additionalButtonRef);
-  }, [$$additionalButtonRef.current]);
+  }, [isMenuOpen]);
 
   return (
     <div
@@ -46,7 +34,7 @@ export default function TabBar() {
         })
       }`}
     >
-      <div ref={$$additionalButtonRef} className="additional-tab-buttons">
+      <div className="additional-tab-buttons">
         {Object.values(additionalTabButtons)}
       </div>
       {_.map(Object.entries(tabsState.tabs), ([id, tabState]: [string, TabState]) => {

@@ -37,12 +37,6 @@ export const menuStateReducer = (state: MenuState, { type, payload }: MenuAction
         isClaimable: payload.isClaimable,
       };
     }
-    case "@@MENU_ADDITIONAL_BUTTON_REF": {
-      return {
-        ...state,
-        $$additionalButtonRef: payload.ref,
-      };
-    }
     case "@@MENU_UPDATE_DIMENSIONS": {
       const isOpen = getIsOpen(state);
       return {

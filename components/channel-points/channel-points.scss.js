@@ -7,6 +7,7 @@ export default scss`
   width: 100%;
   height: 100%;
   flex: 1;
+  cursor: pointer;
 
   align-items: center;
   border-right: none;
@@ -31,16 +32,6 @@ export default scss`
     border-right: none;
 
     // background-color: red; 
-
-    &.is-visible {
-      opacity: 1;
-      transition: all 0.5s;
-	    animation: gleam 3s ease infinite;
-
-      > .points {
-        animation: fade-in-then-out 4s ease infinite;
-      }
-    }
   }
 
   > .channel-points {
@@ -66,9 +57,7 @@ export default scss`
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    opacity: .5;
     pointer-events: none;
-    transform: skew(-20deg) translateX(70%) scale(0%, 100%) ;
     height: 100%;
     z-index: 0;
     font-size: 14px;
@@ -82,18 +71,6 @@ export default scss`
 
     padding: 12px 10px;
     transition: all .75s cubic-bezier(.25,.14,.5,1.0);
-
-    &.is-visible {
-      transform: skew(0deg) translateX(0%) scale(100%, 100%) ;
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    &.has-text {
-      > .icon {
-        margin-right: 8px;
-      }
-    }
 
     > .icon {
       animation: claim-shake 2s infinite cubic-bezier(.36,.07,.19,.97) both;
