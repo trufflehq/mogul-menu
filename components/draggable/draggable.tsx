@@ -27,14 +27,13 @@ export interface DimensionsBase extends Vector {
 
 export interface Dimensions {
   base: DimensionsBase;
-  modifiers: DimensionModifiers;
+  modifiers: Partial<DimensionModifiers>;
 }
 
 export interface TranslationMods {
   xMod: number;
   yMod: number;
 }
-
 
 /**
  * Updates the dragInfo when the mouse is pressed and being dragged
@@ -55,13 +54,9 @@ export function useUpdateDragPosition(
     } else {
       window.removeEventListener("mousemove", handleWindowMouseMove);
     }
-    return () => (window.removeEventListener(
-      "mousemove",
-      handleWindowMouseMove,
-    ));
+    return () => window.removeEventListener("mousemove", handleWindowMouseMove);
   }, [isPressed]);
 }
-
 
 export default function Draggable({
   children,
@@ -86,8 +81,8 @@ export default function Draggable({
       right,
       bottom,
       left,
-    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
-  ) => void;
+    }: Partial<Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">>,
+  ) => string;
   dimensions: Dimensions;
   defaultPosition: Vector;
   requiredClassName?: string;
@@ -179,10 +174,10 @@ export default function Draggable({
         background: "none",
         width: "100%",
         height: "100%",
-        "clip-path": createClipPath(
+        clipPath: createClipPath(
           dragInfo.current,
           dimensions.base,
-          dimensions.modifiers,
+          dimensions.modifiers ?? { top: 0, right: 0, bottom: 0, left: 0 },
         ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",

@@ -10,7 +10,7 @@ import {
   DEFAULT_MENU_ICON_WIDTH,
 } from "./constants.ts";
 
-const INITIAL_MENU_STATE: MenuState = {
+export const INITIAL_MENU_STATE: MenuState = {
   isClaimable: false,
   menuState: "closed",
   menuPosition: undefined,
