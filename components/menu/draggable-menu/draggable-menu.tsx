@@ -61,7 +61,7 @@ export default function DraggableMenu({
     const positionFromStorage = await jumper?.call("storage.get", {
       key: MOGUL_MENU_POSITION_KEY,
     });
-    let positionInfo: DeafultPositionInfo;
+    let positionInfo: DefaultPositionInfo;
 
     // load the previously saved position
     if (positionFromStorage) {
