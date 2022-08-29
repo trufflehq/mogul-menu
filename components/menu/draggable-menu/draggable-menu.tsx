@@ -5,29 +5,51 @@ import {
   getIsOpen,
   getMenuPosition,
   getModifiersByPosition,
+  INITIAL_MENU_STATE,
+  MenuPosition,
   updateDimensions as updateDimensionsAction,
   useMenu,
 } from "../mod.ts";
 import {
   createMenuClipPath,
   getMenuMousePosition,
+  getMenuPositionFromCoordinates,
+  getTranslationMods,
   MOGUL_MENU_POSITION_KEY,
   persistMenuPosition,
   useTranslate,
   useUpdateDraggableMenuPosition,
   useWindowResizeObserver,
 } from "./mod.ts";
-import { DimensionModifiers, DragInfo, Vector } from "../../draggable/draggable.tsx";
-import Draggable from "../../draggable/draggable.tsx";
+import Draggable, { DimensionModifiers, DragInfo, Vector } from "../../draggable/draggable.tsx";
+
+const DEFAULT_MENU_POSITION: MenuPosition = "top-left";
+const DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR = "#chatframe";
+const DEFAULT_POSITION_OFFSET = { x: -100, y: 50 };
+
+interface DefaultPositionInfo {
+  current: Vector;
+  start: Vector;
+  menuPosition: MenuPosition;
+}
 
 export default function DraggableMenu({
   children,
+  defaultPositionElementQuerySelector = DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR,
+  defaultPositionOffset = DEFAULT_POSITION_OFFSET,
 }: {
   children: React.ReactNode;
+  defaultPositionElementQuerySelector?: string;
+  defaultPositionOffset?: Vector;
 }) {
   const { state: tabsState } = useTabs();
-  const { state: menuState, dispatch, updateMenuPosition, updateDimensions, setIsClosed } =
-    useMenu();
+  const {
+    state: menuState,
+    dispatch,
+    updateMenuPosition,
+    updateDimensions,
+    setIsClosed,
+  } = useMenu();
   const hasNotification = getHasNotification(tabsState);
   const isOpen = getIsOpen(menuState);
   const menuPosition = getMenuPosition(menuState);
@@ -40,17 +62,53 @@ export default function DraggableMenu({
   const initializePosition = async (
     setInitialPosition: (current: Vector, start: Vector) => void,
   ) => {
-    const positionFromStorage = await jumper?.call("storage.get", { key: MOGUL_MENU_POSITION_KEY });
-    const position = JSON.parse(positionFromStorage || "{}");
-    const current = position?.current;
-    const start = position?.start;
-    if (position?.menuPosition) {
-      updateMenuPosition(position.menuPosition);
+    const positionFromStorage = await jumper?.call("storage.get", {
+      key: MOGUL_MENU_POSITION_KEY,
+    });
+    let positionInfo: DefaultPositionInfo;
+
+    // load the previously saved position
+    if (positionFromStorage) {
+      positionInfo = JSON.parse(positionFromStorage);
+
+      // if this is the first time loading the icon
+      // give it the default position
     } else {
-      // initialize to the top left
-      updateMenuPosition("top-left");
-      dispatch(updateDimensionsAction(getModifiersByPosition("top-left")));
+      const defaultPosition = await jumper?.call(
+        "layout.getElementBoundingClientRect",
+        { querySelector: defaultPositionElementQuerySelector },
+      );
+
+      const dimensions = INITIAL_MENU_STATE.dimensions;
+      const menuPosition = getMenuPositionFromCoordinates(
+        defaultPosition.x,
+        defaultPosition.y,
+      );
+
+      // simulate moving it from the top-left (the default)
+      // to where ever it's going to get positioned
+      const translationMods = getTranslationMods(
+        DEFAULT_MENU_POSITION,
+        menuPosition,
+        dimensions,
+      );
+
+      const defaultPositionVector = {
+        x: defaultPosition.x + translationMods.xMod + defaultPositionOffset.x,
+        y: defaultPosition.y + translationMods.yMod + defaultPositionOffset.y,
+      };
+
+      positionInfo = {
+        current: defaultPositionVector,
+        start: defaultPositionVector,
+        menuPosition,
+      };
     }
+
+    const { current, start, menuPosition } = positionInfo ?? {};
+
+    updateMenuPosition(menuPosition);
+    dispatch(updateDimensionsAction(getModifiersByPosition(menuPosition)));
 
     // lazily reenable the transition after the mount so it's not janky
     setTimeout(() => {
@@ -61,6 +119,11 @@ export default function DraggableMenu({
 
     if (current && start) {
       setInitialPosition(current, start);
+      persistMenuPosition(
+        menuPosition ?? DEFAULT_MENU_POSITION,
+        current,
+        start,
+      );
     }
   };
 
@@ -70,13 +133,17 @@ export default function DraggableMenu({
 
     const menuPosition = getMenuMousePosition(e);
 
-    persistMenuPosition(menuPosition, {
-      x: dragInfo.current.x,
-      y: dragInfo.current.y,
-    }, {
-      x: dragInfo.start.x,
-      y: dragInfo.start.y,
-    });
+    persistMenuPosition(
+      menuPosition,
+      {
+        x: dragInfo.current.x,
+        y: dragInfo.current.y,
+      },
+      {
+        x: dragInfo.start.x,
+        y: dragInfo.start.y,
+      },
+    );
 
     // re-enable the transition
     setTimeout(() => {
@@ -101,7 +168,7 @@ export default function DraggableMenu({
       right,
       bottom,
       left,
-    }: Pick<DimensionModifiers, "top" | "bottom" | "right" | "left">,
+    }: Pick<Partial<DimensionModifiers>, "top" | "bottom" | "right" | "left">,
   ) => {
     return createMenuClipPath(
       position,
