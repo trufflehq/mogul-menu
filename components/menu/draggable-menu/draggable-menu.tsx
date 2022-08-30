@@ -77,11 +77,15 @@ export default function DraggableMenu({
       const defaultPosition = await jumper?.call(
         "layout.getElementBoundingClientRect",
         { querySelector: defaultPositionElementQuerySelector },
-      );
+      ) || {};
 
       const dimensions = INITIAL_MENU_STATE.dimensions;
-      defaultPosition.x = defaultPosition?.x || 0;
-      defaultPosition.y = defaultPosition?.y || 0;
+      if (!defaultPosition?.x && !defaultPosition?.y) {
+        defaultPosition.x = defaultPosition?.x || 0;
+        defaultPosition.y = defaultPosition?.y || 0;
+        defaultPositionOffset.x = 0;
+        defaultPositionOffset.y = 0;
+      }
 
       const menuPosition = getMenuPositionFromCoordinates(
         defaultPosition?.x,
