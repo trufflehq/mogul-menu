@@ -9,40 +9,46 @@ export default scss`
   min-height: 30px;
   max-height: 40px;
 
+  > .inner {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    background: rgba(33, 33, 33, 0.98);
 
-  > .coin {
-    margin-right: 5px;
-  }
-
-  > .timer {
-    margin-right: 8px;
-  }
-
-  > .points {
-    padding-right: 16px;
-    font-size: 12px;
-    font-family: var(--mm-font-family);
-
-    @media (prefers-color-scheme: dark) {
+    > .coin {
+      margin-right: 5px;
+    }
+  
+    > .timer {
+      margin-right: 8px;
+    }
+  
+    > .points {
+      padding-right: 8px;
+      font-size: 12px;
+      font-family: var(--mm-font-family);
       color: var(--mm-color-text-bg-primary);
+    }
+  
+    > .claim {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 2px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      background-color: var(--truffle-gradient);
+  
+      animation: claim-shake 2s infinite cubic-bezier(.36,.07,.19,.97) both;
+      backface-visibility: hidden;
+      transform-origin: bottom;
     }
   }
 
-  > .claim {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 2px;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    background-color: var(--truffle-gradient);
 
-    animation: claim-shake 2s infinite cubic-bezier(.36,.07,.19,.97) both;
-    backface-visibility: hidden;
-    transform-origin: bottom;
-  }
 
   @keyframes claim-shake {
     0% { transform: rotate(0); }
