@@ -5,12 +5,12 @@ import SeasonPassTab from "../../components/season-pass-tab/season-pass-tab.tsx"
 import ChannelPointsShopTab from "../../components/channel-points-shop-tab/channel-points-shop-tab.tsx";
 
 export const DEFAULT_TABS = [
-  {
-    text: "Test",
-    slug: "test",
-    imgUrl: "",
-    $el: TestTab,
-  },
+  // {
+  //   text: "Test",
+  //   slug: "test",
+  //   imgUrl: "",
+  //   $el: TestTab,
+  // },
   {
     text: "Home",
     slug: "home",
