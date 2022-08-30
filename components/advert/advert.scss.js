@@ -7,6 +7,7 @@ export default scss`
   overflow: hidden;
   box-sizing: border-box;
   display: flex;
+  grid-column-end: span 2;
 
   >.image {
     flex: 0 1 153px;

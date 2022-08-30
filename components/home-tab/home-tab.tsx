@@ -46,15 +46,23 @@ export default function HomeTab() {
   const adverts: Record<string, AdvertProps> = {
     ludwig: {
       className: "base-ad-tile",
-      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/ludwig_mondays.jpg",
+      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/mogul_munchies.png?1",
       hashtag: "#announcement",
-      tagline: "Ludwig Mondays featuring Fortnite",
-      buttonHref: "https://twitter.com/LudwigAhgren/status/1513659955663888385",
+      tagline: "New merch: Mogul Munchies",
+      buttonHref: "https://ludwig.gg/",
       // buttonOnClick,
-      buttonText: "Learn more",
-      buttonBgColor: "var(--mm-color-secondary)",
-      buttonBgColorHover: "var(--mm-color-secondary)",
-      buttonTextColor: "var(--mm-color-text-secondary)",
+      buttonText: "Visit shop",
+      buttonStyle: "secondary",
+    },
+    dev: {
+      className: "base-ad-tile",
+      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/mogul_munchies.png?1",
+      hashtag: "#announcement",
+      tagline: "New merch: Mogul Munchies",
+      buttonHref: "https://ludwig.gg/",
+      // buttonOnClick,
+      buttonText: "Visit shop",
+      buttonStyle: "secondary",
     },
   };
 
