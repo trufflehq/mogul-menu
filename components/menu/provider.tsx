@@ -11,7 +11,6 @@ import {
 } from "./constants.ts";
 
 export const INITIAL_MENU_STATE: MenuState = {
-  isClaimable: false,
   menuState: "closed",
   menuPosition: undefined,
   snackBars: [],

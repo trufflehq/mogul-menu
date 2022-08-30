@@ -5,7 +5,6 @@ export type MenuPosition = "top-right" | "top-left" | "bottom-right" | "bottom-l
 
 export interface MenuState {
   menuState: string;
-  isClaimable: boolean;
   iconImageObj?: File;
   dimensions: {
     base: {
@@ -28,13 +27,6 @@ export type OpenMenuAction = {
 export type CloseMenuAction = {
   type: "@@MENU_DIMENSION_CLOSE";
   payload: Record<never, never>;
-};
-
-export type UpdateClaimableStateAction = {
-  type: "@@MENU_UPDATE_CLAIMABLE";
-  payload: {
-    isClaimable: boolean;
-  };
 };
 
 export type EnqueueSnackbarAction = {
@@ -71,7 +63,6 @@ export type MenuDimensionActions = OpenMenuAction | CloseMenuAction;
 
 export type MenuActions =
   | MenuDimensionActions
-  | UpdateClaimableStateAction
   | UpdateDimensionsAction
   | EnqueueSnackbarAction
   | PopSnackbarAction

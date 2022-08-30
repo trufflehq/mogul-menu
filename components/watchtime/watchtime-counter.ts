@@ -15,7 +15,7 @@ import {
 } from "../../deps.ts";
 
 import { ECONOMY_ACTION_QUERY } from "./gql.ts";
-import { getIsClaimable, useMenu } from "../menu/mod.ts";
+
 const WATCH_TIME_INCREMENT_MUTATION = gql`
   mutation ($secondsWatched: Int, $sourceType: String) {
     watchTimeIncrement(
@@ -63,9 +63,13 @@ function secondsSinceBySeconds(minuend: number, subtrahend: number) {
 export function useWatchtimeCounter({
   onFinishedCountdown,
   source,
+  isClaimable,
+  setIsClaimable
 }: {
   onFinishedCountdown?: () => void;
   source: string;
+  isClaimable: boolean
+  setIsClaimable: (isClaimable: boolean) => void
 }) {
   const [_incrementWatchtimeResult, executeIncrementWatchtimeMutation] = useMutation(
     WATCH_TIME_INCREMENT_MUTATION,
@@ -74,9 +78,6 @@ export function useWatchtimeCounter({
   const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
     WATCH_TIME_CLAIM_MUTATION,
   );
-
-  const { state: menuState } = useMenu();
-  const isClaimable = getIsClaimable(menuState);
 
   const intervalRef = useRef(null);
   const lastUpdateTimeRef = useRef(null);
@@ -254,6 +255,7 @@ export function useWatchtimeCounter({
     if (secondsRemaining <= 0 && !isClaimable) {
       isClaimButtonVisibleSubject.next(true);
       onFinishedCountdown?.();
+      setIsClaimable(true);
     }
   };
 
@@ -291,6 +293,10 @@ export function useWatchtimeCounter({
     }
   };
 
+  const resetTimer = () => {
+    decrementStartTimeSubject.next(Date.now());
+  }
+
   lastUpdateTimeRef.current = lastUpdateTime;
   decrementStartTimeRef.current = decrementStartTime;
   initialTimeRef.current = initialTime;
@@ -319,5 +325,5 @@ export function useWatchtimeCounter({
     };
   }, [claimTimerCountdownSeconds, isClaimable]);
 
-  return { claim, timeWatchedSecondsSubject, secondsRemainingSubject };
+  return { claim, timeWatchedSecondsSubject, secondsRemainingSubject, resetTimer };
 }

@@ -1,5 +1,5 @@
 import { gql, React, useMutation } from "../../../deps.ts";
-import { fromNow } from "../../../shared/mod.ts";
+import { fromNow, invalidateExtensionUser } from "../../../shared/mod.ts";
 import { ActivePowerup } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -45,8 +45,7 @@ export function ActiveRedeemableDialog({
         { powerupId: activePowerup.id },
         { additionalTypenames: ["ActivePowerup"] },
       );
-      // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
-      // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
+      invalidateExtensionUser()
     }
   };
   return (

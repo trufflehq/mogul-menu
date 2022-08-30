@@ -8,6 +8,7 @@ import {
   useStyleSheet,
 } from "../../../deps.ts";
 import { useCurrentTab } from "../../tabs/mod.ts";
+import { invalidateExtensionUser } from '../../../shared/mod.ts'
 import { File, Product } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -74,8 +75,7 @@ export default function ConfirmPurchaseDialog({
     //   economyTriggerSlug: "channel-points-store-purchase",
     //   amountSourceId: collectibleItem.id,
     // });
-    // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
-    // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
+    invalidateExtensionUser()
     // // close confirmation dialog
     // overlay.close();
     // // open purchase notification dialog

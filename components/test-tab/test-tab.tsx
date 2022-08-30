@@ -16,7 +16,6 @@ import { useActionBanner } from "../action-banner/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 import Switch from "../base/switch/switch.tsx";
-import ChannelPointsClaim from "../channel-points/channel-points.tsx";
 import { Page } from "../page-stack/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
@@ -140,15 +139,6 @@ export default function TestTab() {
             </ColorOption>
           ))}
         </Select>
-      </div>
-      <div>
-        <ChannelPointsClaim
-          hasText
-          hasChannelPoints
-          hasBattlePass
-          highlightButtonBg="var(--mm-gradient)"
-          onClick={() => null}
-        />
       </div>
       <div>
         <Select onOptionChanged={menuPositionHandler}>

@@ -5,7 +5,6 @@ import {
   MenuPosition,
   OpenMenuAction,
   PopSnackbarAction,
-  UpdateClaimableStateAction,
   UpdateDimensionsAction,
   UpdateMenuPosition,
 } from "./types.ts";
@@ -19,13 +18,6 @@ export const setOpen = (): OpenMenuAction => ({
 export const setClosed = (): CloseMenuAction => ({
   type: "@@MENU_DIMENSION_CLOSE",
   payload: {},
-});
-
-export const setIsClaimable = (isClaimable: boolean): UpdateClaimableStateAction => ({
-  type: "@@MENU_UPDATE_CLAIMABLE",
-  payload: {
-    isClaimable,
-  },
 });
 
 export const updateDimensions = (mods?: Partial<DimensionModifiers>): UpdateDimensionsAction => ({

@@ -58,3 +58,4 @@ export { default as AuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.0/compon
 export { default as AbsoluteAuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.4/components/absolute-auth-dialog/absolute-auth-dialog.tag.ts";
 export { default as FocusTrap } from "https://npm.tfl.dev/focus-trap-react@9.0.2?bundle";
 export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+export { default as globalContext } from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
