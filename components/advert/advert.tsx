@@ -4,16 +4,14 @@ import Button from "../base/button/button.tsx";
 import styleSheet from "./advert.scss.js";
 
 export interface AdvertProps {
-  className: string
-  imageSrc: string
-  hashtag: string
-  tagline: string
-  buttonHref: string
-  buttonOnClick?: () => void
-  buttonText: string
-  buttonBgColor: string
-  buttonTextColor: string
-  buttonBgColorHover: string
+  className: string;
+  imageSrc: string;
+  hashtag: string;
+  tagline: string;
+  buttonHref: string;
+  buttonOnClick?: () => void;
+  buttonText: string;
+  buttonStyle: string;
 }
 
 export default function Advert(props: AdvertProps) {
@@ -26,10 +24,12 @@ export default function Advert(props: AdvertProps) {
     buttonHref,
     buttonOnClick,
     buttonText,
-    buttonBgColor,
-    buttonTextColor,
-    buttonBgColorHover,
+    buttonStyle,
   } = props;
+
+  const hrefHandler = () => {
+    window.open(buttonHref, "_blank", "noopener");
+  };
 
   return (
     <div className={`c-advert ${className}`}>
@@ -43,7 +43,7 @@ export default function Advert(props: AdvertProps) {
           <div className="tagline">{tagline}</div>
         </div>
         <div className="actions">
-          <Button onClick={buttonOnClick}>{buttonText}</Button>
+          <Button style={buttonStyle} onClick={hrefHandler ?? buttonOnClick}>{buttonText}</Button>
         </div>
       </div>
     </div>
