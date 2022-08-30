@@ -80,9 +80,12 @@ export default function DraggableMenu({
       );
 
       const dimensions = INITIAL_MENU_STATE.dimensions;
+      defaultPosition.x = defaultPosition?.x || 0;
+      defaultPosition.y = defaultPosition?.y || 0;
+
       const menuPosition = getMenuPositionFromCoordinates(
-        defaultPosition.x,
-        defaultPosition.y,
+        defaultPosition?.x,
+        defaultPosition?.y,
       );
 
       // simulate moving it from the top-left (the default)

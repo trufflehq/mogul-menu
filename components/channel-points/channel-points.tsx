@@ -85,26 +85,28 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
   return (
     <div className="c-channel-points">
       <ThemeComponent />
-      <div className="coin">
-        <ChannelPointsIcon />
-      </div>
-      {isInitialized && (
-        <div className="points">
-          {channelPoints}
+      <div className="inner">
+        <div className="coin">
+          <ChannelPointsIcon />
         </div>
-      )}
-      {isClaimable &&
-        (
-          <div
-            className="claim"
-            style={{
-              background: highlightButtonBg,
-            }}
-            onClick={onClick}
-          >
-            <ChannelPointsIcon size={16} variant="dark" />
+        {isInitialized && (
+          <div className="points">
+            {channelPoints}
           </div>
         )}
+        {isClaimable &&
+          (
+            <div
+              className="claim"
+              style={{
+                background: highlightButtonBg,
+              }}
+              onClick={onClick}
+            >
+              <ChannelPointsIcon size={16} variant="dark" />
+            </div>
+          )}
+      </div>
     </div>
   );
 }
