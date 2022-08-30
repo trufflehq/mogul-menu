@@ -1,18 +1,11 @@
-import {
-  abbreviateNumber,
-  jumper,
-  React,
-  useEffect,
-  useObservables,
-  useState,
-  useStyleSheet,
-} from "../../deps.ts";
+import { abbreviateNumber, jumper, React, useEffect, useState, useStyleSheet } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
 import { MESSAGES, useExtensionAuth } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
 import stylesheet from "./channel-points.scss.js";
+import IsLive from "../is-live/is-live.tsx";
 
 const CHANNEL_POINTS_STYLES = {
   width: "140px",
@@ -94,18 +87,20 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
             {channelPoints}
           </div>
         )}
-        {isClaimable &&
-          (
-            <div
-              className="claim"
-              style={{
-                background: highlightButtonBg,
-              }}
-              onClick={onClick}
-            >
-              <ChannelPointsIcon size={16} variant="dark" />
-            </div>
-          )}
+        <IsLive sourceType="youtubeLive">
+          {isClaimable &&
+            (
+              <div
+                className="claim"
+                style={{
+                  background: highlightButtonBg,
+                }}
+                onClick={onClick}
+              >
+                <ChannelPointsIcon size={16} variant="dark" />
+              </div>
+            )}
+        </IsLive>
       </div>
     </div>
   );
