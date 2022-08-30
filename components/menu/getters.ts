@@ -20,10 +20,6 @@ export function getIsOpen(state: MenuState) {
   return state.menuState === "open";
 }
 
-export function getIsClaimable(state: MenuState) {
-  return state.isClaimable;
-}
-
 export function getSnackBars(state: MenuState) {
   return state.snackBars;
 }

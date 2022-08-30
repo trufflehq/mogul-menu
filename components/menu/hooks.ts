@@ -6,7 +6,6 @@ import {
   enqueueSnackBar,
   popSnackBar,
   setClosed,
-  setIsClaimable,
   setOpen,
   updateDimensions,
   updateMenuPosition,
@@ -35,7 +34,6 @@ export function useMenu() {
       return menuState === "open" ? dispatch(setClosed()) : dispatch(setOpen());
     },
     setIsClosed: () => dispatch(setClosed()),
-    setIsClaimable: (isClaimable: boolean) => dispatch(setIsClaimable(isClaimable)),
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
     popSnackBar: () => dispatch(popSnackBar()),

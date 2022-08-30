@@ -1,5 +1,6 @@
 import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
+import { invalidateExtensionUser } from '../../../shared/mod.ts'
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { useSnackBar } from "../../snackbar/mod.ts";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
@@ -74,8 +75,7 @@ export function ActivatePowerupDialog({
         enqueueSnackBar(<PowerupActivatedSnackBar collectible={collectible} />);
       }
 
-      // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
-      // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
+      invalidateExtensionUser()
     } catch (err) {
       console.log("err", err);
       alert("There was an error redeeming: " + err?.info || err?.message);

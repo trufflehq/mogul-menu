@@ -1,58 +1,110 @@
-import { _, classKebab, getSrcByImageObj, React, useStyleSheet } from "../../deps.ts";
-import { FileRel } from "../../types/mod.ts";
-import styleSheet from "./channel-points.scss.js";
+import {
+  abbreviateNumber,
+  jumper,
+  React,
+  useEffect,
+  useObservables,
+  useState,
+  useStyleSheet,
+} from "../../deps.ts";
+import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
+import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
+import { MESSAGES, useExtensionAuth } from "../../shared/mod.ts";
+import { useChannelPoints } from "./hooks.ts";
+import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
+import stylesheet from "./channel-points.scss.js";
 
-// TODO: simplify this by using slug=timer component
-// we could probably add something for timer to count up too?
-export default function ChannelPointsClaim({
-  hasText,
-  hasChannelPoints,
-  hasBattlePass,
-  darkChannelPointsImageObj,
-  highlightButtonBg,
-  onClick,
-}: {
-  hasText?: boolean;
-  hasChannelPoints?: boolean;
-  hasBattlePass?: boolean;
-  darkChannelPointsImageObj?: FileRel;
-  highlightButtonBg?: string;
-  onClick?: () => void;
-}) {
-  useStyleSheet(styleSheet);
+const CHANNEL_POINTS_STYLES = {
+  width: "140px",
+  height: "30px",
+  background: "transparent",
+  position: "absolute",
+  bottom: "0px",
+  left: "8px",
+  "z-index": "999",
+};
 
-  const darkChannelPointsSrc = (darkChannelPointsImageObj &&
-    getSrcByImageObj(darkChannelPointsImageObj)) ||
-    "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
-  const fullTitle = hasChannelPoints && hasBattlePass
-    ? "Claim points & XP"
-    : hasChannelPoints
-    ? "Claim points"
-    : hasBattlePass
-    ? "Claim XP"
-    : "Claim";
+export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg?: string }) {
+  useStyleSheet(stylesheet);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isClaimable, setIsClaimable] = useState(false);
+  const { me, refetchMe } = useExtensionAuth();
+  const { channelPointsData, isFetchingChannelPoints, reexecuteChannelPointsQuery } =
+    useChannelPoints();
 
-  const shortTitle = hasChannelPoints ? "Claim points" : hasBattlePass ? "Claim XP" : "Claim";
+  useEffect(() => {
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [isFetchingChannelPoints]);
+
+  useEffect(() => {
+    jumper.call("comms.onMessage", (message: string) => {
+      if (message === MESSAGES.INVALIDATE_USER) {
+        refetchMe({ requestPolicy: "network-only" });
+      } else if (message === MESSAGES.INVALIDATE_CHANNEL_POINTS) {
+        reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
+      }
+    });
+
+    // set styles for this iframe within YouTube's site
+    jumper.call("layout.applyLayoutConfigSteps", {
+      layoutConfigSteps: [
+        { action: "useSubject" }, // start with our iframe
+        { action: "setStyle", value: CHANNEL_POINTS_STYLES },
+      ],
+    });
+  }, []);
+
+  const onClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsClaimable(false);
+
+    await claim();
+    jumper.call("comms.postMessage", MESSAGES.INVALIDATE_USER);
+    jumper.call("comms.postMessage", MESSAGES.RESET_TIMER);
+  };
+
+  const channelPoints = abbreviateNumber(
+    channelPointsData?.orgUserCounterType?.orgUserCounter?.count || 0,
+    2,
+  );
+
+  const onFinishedCountdown = () => {
+    setIsClaimable(true);
+  };
+
+  const { claim } = useWatchtimeCounter({
+    source: "youtube",
+    onFinishedCountdown,
+    isClaimable,
+    setIsClaimable,
+  });
 
   return (
-    <div className={`c-channel-points`} onClick={onClick} title={fullTitle}>
-      {
-        <div
-          className={`claim ${
-            classKebab({
-              hasText,
-            })
-          }`}
-          style={{
-            background: highlightButtonBg,
-          }}
-        >
-          <div className="icon">
-            <img src={darkChannelPointsSrc} width="16" />
-          </div>
-          {hasText && <div className="title">{shortTitle}</div>}
+    <div className="c-channel-points">
+      <ThemeComponent />
+      <div className="coin">
+        <ChannelPointsIcon />
+      </div>
+      {isInitialized && (
+        <div className="points">
+          {channelPoints}
         </div>
-      }
+      )}
+      {isClaimable &&
+        (
+          <div
+            className="claim"
+            style={{
+              background: highlightButtonBg,
+            }}
+            onClick={onClick}
+          >
+            <ChannelPointsIcon size={16} variant="dark" />
+          </div>
+        )}
     </div>
   );
 }

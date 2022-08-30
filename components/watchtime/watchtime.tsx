@@ -1,22 +1,18 @@
 import {
-  abbreviateNumber,
-  getSrcByImageObj,
   gql,
-  ImageByAspectRatio,
+  jumper,
   React,
   useCallback,
+  useEffect,
   useObservables,
   useQuery,
+  useState,
   useStyleSheet,
 } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
-
+import { MESSAGES } from "../../shared/mod.ts";
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "./watchtime-counter.ts";
-import { useTabButton } from "../tabs/mod.ts";
-import { useMenu } from "../menu/mod.ts";
-import ChannelPoints from "../channel-points/channel-points.tsx";
-import { SnackBar } from "../snackbar/mod.ts";
 
 const POINTS_QUERY = gql`
   query {
@@ -34,8 +30,6 @@ const POINTS_QUERY = gql`
   }
 `;
 
-const CLAIM_BUTTON = "claim-button";
-
 interface WatchtimeProps {
   highlightButtonBg?: string;
   hasChannelPoints: boolean;
@@ -49,6 +43,7 @@ export default function Watchtime(props: WatchtimeProps) {
     hasChannelPoints,
     hasBattlePass,
   } = props;
+  const [isClaimable, setIsClaimable] = useState(false);
 
   const [
     { data: pointsData, fetching: isFetchingPoints },
@@ -57,48 +52,9 @@ export default function Watchtime(props: WatchtimeProps) {
     query: POINTS_QUERY,
   });
 
-  const { setIsClaimable, enqueueSnackBar } = useMenu();
-  const { addButton, removeButton } = useTabButton();
-
   const creatorName = "Ludwig";
 
-  const claimHandler = async () => {
-    setIsClaimable(false);
-    removeButton(CLAIM_BUTTON);
-    const { channelPointsClaimed, xpClaimed } = (await claim()) ?? {};
-    await reexecutePointsQuery({
-      requestPolicy: "network-only",
-      additionalTypenames: [
-        "OrgUserCounter",
-        "OwnedCollectible",
-        "SeasonPassProgression",
-        "ActivePowerup",
-        "EconomyTransaction",
-        "Org",
-        "OrgConfig",
-      ],
-    });
-
-    const { channelPoints, seasonPass } = pointsData ?? {};
-
-    // display a couple of snack bars to notify them of their rewards
-    hasChannelPoints &&
-      enqueueSnackBar(
-        <ChannelPointsClaimSnackBar
-          channelPointsClaimed={channelPointsClaimed}
-          totalChannelPoints={channelPoints?.orgUserCounter?.count || 0}
-        />,
-      );
-    enqueueSnackBar(
-      <XpClaimSnackBar
-        xpClaimed={xpClaimed}
-        totalXp={parseInt(seasonPass?.xp?.count || 0)}
-      />,
-    );
-  };
-
   const onFinishedCountdown = useCallback(async () => {
-    // console.log('countdown finished')
     await reexecutePointsQuery({
       requestPolicy: "network-only",
       additionalTypenames: [
@@ -109,25 +65,24 @@ export default function Watchtime(props: WatchtimeProps) {
         "EconomyTransaction",
       ],
     });
-
-    // want to update dimensions
-    addButton(
-      CLAIM_BUTTON,
-      <ChannelPoints
-        onClick={claimHandler}
-        hasText
-        hasBattlePass
-        hasChannelPoints
-        highlightButtonBg="var(--truffle-gradient)"
-      />,
-    );
-
+    jumper.call("comms.postMessage", MESSAGES.INVALIDATE_CHANNEL_POINTS);
     setIsClaimable(true);
   }, []);
 
-  const { claim, secondsRemainingSubject, timeWatchedSecondsSubject } = useWatchtimeCounter({
+  useEffect(() => {
+    jumper.call("comms.onMessage", (message: string) => {
+      if (message === MESSAGES.RESET_TIMER) {
+        setIsClaimable(false);
+        resetTimer();
+      }
+    });
+  }, []);
+
+  const { resetTimer, secondsRemainingSubject, timeWatchedSecondsSubject } = useWatchtimeCounter({
     source: "youtube",
     onFinishedCountdown,
+    isClaimable,
+    setIsClaimable,
   });
 
   const { secondsRemaining, timeWatchedSeconds } = useObservables(() => ({
@@ -170,83 +125,5 @@ export default function Watchtime(props: WatchtimeProps) {
         </div>
       </div>
     </div>
-  );
-}
-
-function ChannelPointsClaimSnackBar({
-  channelPointsClaimed = 20,
-  totalChannelPoints = 0,
-  channelPointsImageObj,
-  darkChannelPointsImageObj,
-}: {
-  channelPointsClaimed: number;
-  totalChannelPoints: number;
-  channelPointsImageObj?: any;
-  darkChannelPointsImageObj?: any;
-}) {
-  // const channelPointsSrc = channelPointsImageObj ? getModel().image.getSrcByImageObj(channelPointsImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/channel-points.svg'
-  const darkChannelPointsSrc = channelPointsImageObj
-    ? getSrcByImageObj(darkChannelPointsImageObj)
-    : "https://cdn.bio/assets/images/features/browser_extension/channel-points-default-dark.svg";
-  return (
-    <SnackBar
-      {...{
-        message: `${channelPointsClaimed} channel points added!`,
-        value: (
-          <>
-            <div>
-              {abbreviateNumber(
-                parseInt(totalChannelPoints) + parseInt(channelPointsClaimed),
-                1,
-              )}
-            </div>
-            <ImageByAspectRatio
-              imageUrl={darkChannelPointsSrc}
-              aspectRatio={1}
-              width={16}
-              height={16}
-            />
-          </>
-        ),
-      }}
-    />
-  );
-}
-
-function XpClaimSnackBar({
-  xpClaimed = 1,
-  totalXp = 0,
-  xpImageObj,
-  darkXpImageObj,
-}: {
-  xpClaimed: number;
-  totalXp: number;
-  xpImageObj?: any;
-  darkXpImageObj?: any;
-}) {
-  // const xpSrc = xpImageObj ? getModel().image.getSrcByImageObj(xpImageObj) : 'https://cdn.bio/assets/images/features/browser_extension/xp.svg'
-  const darkXpSrc = xpImageObj
-    ? getSrcByImageObj(darkXpImageObj)
-    : "https://cdn.bio/assets/images/features/browser_extension/xp-dark.svg";
-
-  return (
-    <SnackBar
-      {...{
-        message: `${xpClaimed} XP earned!`,
-        value: (
-          <>
-            <div>
-              {abbreviateNumber(parseInt(totalXp) + parseInt(xpClaimed), 1)}
-            </div>
-            <ImageByAspectRatio
-              imageUrl={darkXpSrc}
-              aspectRatio={1}
-              width={20}
-              height={20}
-            />
-          </>
-        ),
-      }}
-    />
   );
 }

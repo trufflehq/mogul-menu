@@ -4,7 +4,7 @@ import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
-import { useCollectibleConnection } from '../../../shared/mod.ts'
+import { useCollectibleConnection, invalidateExtensionUser } from '../../../shared/mod.ts'
 import Dialog from "../../base/dialog/dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
@@ -69,8 +69,7 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }: Red
         );
       }
 
-      // browserComms.call("user.invalidateSporeUser", { orgId: org?.id });
-      // browserComms.call("comms.postMessage", MESSAGE.INVALIDATE_USER);
+      invalidateExtensionUser()
     } catch (err) {
       console.log("err", err);
       alert("There was an error redeeming: " + err?.info || err?.message);

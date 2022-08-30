@@ -31,12 +31,6 @@ export const menuStateReducer = (state: MenuState, { type, payload }: MenuAction
         },
       };
     }
-    case "@@MENU_UPDATE_CLAIMABLE": {
-      return {
-        ...state,
-        isClaimable: payload.isClaimable,
-      };
-    }
     case "@@MENU_UPDATE_DIMENSIONS": {
       const isOpen = getIsOpen(state);
       return {

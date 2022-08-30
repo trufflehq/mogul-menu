@@ -1,16 +1,8 @@
-import {
-  abbreviateNumber,
-  Icon,
-  ImageByAspectRatio,
-  React,
-  useQuery,
-  useStyleSheet,
-} from "../../deps.ts";
+import { abbreviateNumber, Icon, ImageByAspectRatio, React, useStyleSheet } from "../../deps.ts";
 
 import styleSheet from "./home-tab.scss.js";
 
 import { usePageStack } from "../page-stack/mod.ts";
-import { USER_INFO_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import Watchtime from "../watchtime/watchtime.tsx";
@@ -19,6 +11,7 @@ import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
 import { AdvertProps } from "../advert/advert.tsx";
+import { useUserInfo } from "../../shared/mod.ts";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import BattlepassLeaderboardTile from "../battlepass-leaderboard-tile/battlepass-leaderboard-tile.tsx";
@@ -27,12 +20,12 @@ import CPSpentTile from "../cp-spent-tile/cp-spent-tile.tsx";
 
 export default function HomeTab() {
   useStyleSheet(styleSheet);
-  const [{ data: userInfoData }] = useQuery({ query: USER_INFO_QUERY });
-
+  const { userInfoData } = useUserInfo();
   const me = userInfoData?.me;
   const org = userInfoData?.org;
   const activePowerups = userInfoData?.activePowerupConnection?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
+
   const xp = userInfoData?.seasonPass?.xp?.count;
   const hasChannelPoints = true;
   const hasBattlePass = true;
@@ -87,7 +80,7 @@ export default function HomeTab() {
                     />
                   </div>
                   <div className="amount">
-                    {abbreviateNumber(channelPoints?.count || 0, 1)}
+                    {abbreviateNumber(channelPoints?.count || 0, 2)}
                   </div>
                 </div>
               )}
