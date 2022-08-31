@@ -14,6 +14,7 @@ export default function PageStack({
 
   const handleEscape = (ev: KeyboardEvent) => {
     if (ev.key === "Escape") {
+      console.log('page stack escape')
       popPage();
     }
   };
@@ -31,14 +32,12 @@ export default function PageStack({
         ? <></>
         : (
           <div className="c-page-stack" style={{ "--background": background }}>
-            <div className="container">
-              {pageStack.map((Component, idx) => (
-                <div key={idx} className="page">
-                  {/* {typeof Component === "function" ? <Component /> : Component} */}
-                  {Component}
-                </div>
-              ))}
-            </div>
+            {pageStack.map((Component, idx) => (
+              <div key={idx} className="page">
+                {/* {typeof Component === "function" ? <Component /> : Component} */}
+                {Component}
+              </div>
+            ))}
           </div>
         )}
     </>

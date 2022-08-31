@@ -30,7 +30,7 @@ const ACCOUNT_CONNECTIONS_QUERY = gql`
 const OAUTH_URL_QUERY = gql`
   query {
     connectionGetOAuthUrlsBySourceTypes(
-      input: { sourceTypes: ["discord", "twitch", "twitter"] }
+      input: { sourceTypes: ["discord", "twitch", "twitter", "youtube"] }
     ) {
       oAuthUrlMap
     }
@@ -110,6 +110,8 @@ export default function ConnectedAccounts() {
     // me: model.user.getMe(),
   }));
 
+  console.log("oAuthUrlMap", oAuthUrlMap);
+
   const isConnectionsChanged = !_.isEqual(
     connections,
     lastUpdatedConnectionsRef.current,
@@ -183,7 +185,7 @@ export default function ConnectedAccounts() {
       <div className="connections">
         {logos
           .filter((logo) => !hasConnection(logo.sourceType))
-          .filter((logo) => logo.sourceType !== "youtube") // bring this back when google approvess
+          // .filter((logo) => logo.sourceType !== "youtube") // bring this back when google approvess
           .map((logo, idx) => (
             <a
               className="connection"
