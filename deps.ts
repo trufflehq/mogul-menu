@@ -30,7 +30,7 @@ export {
 } from "https://npm.tfl.dev/react";
 export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.ts";
-export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts";
+export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.5/format/wc/react/index.ts";
 export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
 export {
   abbreviateNumber,
