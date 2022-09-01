@@ -29,7 +29,7 @@ VALUES
   (
     ba0dc230-2897-11ed-b4d3-09601920a412, 'youtubeLive', 
     'UCrPseYLGpNygVi34QpGNqpA', 8e35b570-6c2f-11ec-bade-b32a8d305590, da5a7f10-2897-11ed-b4d3-09601920a412, 
-    '[{"action": "querySelector","value": "#show-hide-button"},{"action": "setStyle","value":"{\"position\":\"relative\"}"},{"action":"appendSubject"}]', 
+    '[{"action": "querySelector","value": "#chatframe"},{"action": "getIframeDocument"},{"action": "querySelector","value": "#picker-buttons"},{"action": "appendSubject"}]', 
     NULL, '3.3.0', 'channel-points', 
     'experimental', '{"iframeUrl": "https://new.ludwig.social/channel-points" }'
   );

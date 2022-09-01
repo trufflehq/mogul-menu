@@ -11,9 +11,6 @@ const CHANNEL_POINTS_STYLES = {
   width: "140px",
   height: "30px",
   background: "transparent",
-  position: "absolute",
-  bottom: "0px",
-  left: "8px",
   "z-index": "999",
 };
 
