@@ -5,7 +5,6 @@ import {
   createSubject,
   formatNumber,
   formatPercentage,
-  gql,
   Icon,
   op,
   pollingQueryObservable,
@@ -39,7 +38,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     voteCountStream,
     isExpiredObs,
     hiddenPollIdsStream,
-    myVoteStream,
+    myVoteObs,
     msSinceStartObs,
   } = useMemo(() => {
     const activePollConnectionObs = pollingQueryObservable(
@@ -80,9 +79,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
       isPredictingStream: createSubject(false),
       voteCountStream: createSubject("0"),
       isExpiredObs: pollMsLeftObs.pipe(op.map((msLeft) => msLeft <= 0)),
-      myVoteStream: createSubject(
-        activePollObs.pipe(op.map((poll) => poll?.myVote)),
-      ),
+      myVoteObs: activePollObs.pipe(op.map((poll) => poll?.myVote)),
       hiddenPollIdsStream: createSubject([]),
     };
   }, []);
@@ -106,7 +103,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     hiddenPollIds: hiddenPollIdsStream.obs,
     voteCount: voteCountStream.obs,
     isPredicting: isPredictingStream.obs,
-    myVote: myVoteStream.obs,
+    myVote: myVoteObs,
     pollMsLeft: pollMsLeftObs,
     msSinceStart: msSinceStartObs,
   }));
@@ -153,6 +150,8 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   const winningVotes = activePoll?.options[winningOptionIndex]?.count || 1;
   const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
   const isRefund = activePoll?.data?.isRefund;
+
+  console.log({ votedOptionIndex, hasVoted, myVote, activePoll });
 
   return (
     <div className="c-active-prediction">
@@ -205,6 +204,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
               ? Math.round(100 * (1 + (totalVotes - count) / count)) / 100
               : 1;
             const isWinner = activePoll?.data?.winningOptionIndex === optionIndex;
+            const hasVotedOnOtherOption = (hasVoted && votedOptionIndex !== optionIndex);
             return (
               <div
                 className={`option option${optionIndex + 1} ${
@@ -235,10 +235,10 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                     <div className="vote">
                       <Button
                         isDisabled={isPredicting ||
-                          !(voteCount > 0) ||
-                          (hasVoted && votedOptionIndex !== optionIndex)}
+                          !(voteCount > 0)}
                         style={{
                           "--background": optionIndex === 0 ? "#419BEE" : "#EE416B",
+                          "visibility": hasVotedOnOtherOption ? "hidden" : "visible",
                         }}
                         onClick={() => {
                           return predict({ option, optionIndex });
