@@ -151,8 +151,6 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
   const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
   const isRefund = activePoll?.data?.isRefund;
 
-  console.log({ votedOptionIndex, hasVoted, myVote, activePoll });
-
   return (
     <div className="c-active-prediction">
       <div className="question-banner">
