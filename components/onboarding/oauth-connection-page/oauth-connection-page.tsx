@@ -48,15 +48,9 @@ function OAuthButton(
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
-    console.log(
-      "MENU SET ACCESS TOKEN message received",
-      oauthResponse?.type,
-      oauthResponse?.truffleAccessToken,
-      oauthResponse?.userName,
-    );
     popPage();
     setAccessTokenAndClear(oauthResponse.truffleAccessToken);
-    persistTruffleAccessToken(oauthResponse.truffleAccessToken)
+    persistTruffleAccessToken(oauthResponse.truffleAccessToken);
 
     pushPage(
       <ChatSettingsPage
