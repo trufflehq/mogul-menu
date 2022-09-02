@@ -3,7 +3,8 @@ import styleSheet from "./button.scss.js";
 
 type Styles = Record<string, string>;
 
-const buttonStyles: Record<string, Styles> = {
+type ButtonStyles = 'primary' | 'secondary' | 'gradient' | 'error' | 'positive' | 'bg-primary' | 'bg-secondary' | 'bg-tertiary'
+const buttonStyles: Record<ButtonStyles, Styles> = {
   primary: {
     "--background": "var(--mm-color-primary)",
     "--text-color": "var(--mm-color-text-primary)",
@@ -44,7 +45,6 @@ const buttonStyles: Record<string, Styles> = {
     "--text-color": "var(--mm-color-text-bg-tertiary)",
     "--border-color": "var(--mm-color-primary)",
   },
-  undefined: {},
 };
 
 const sizeStyles = {
@@ -70,10 +70,10 @@ export default function Button({
   onClick = () => null,
   size = "normal",
 }: {
-  className?: string
+  className?: string;
   children?: React.ReactNode;
   shouldHandleLoading?: boolean;
-  style?: keyof typeof buttonStyles | Styles;
+  style?: keyof typeof buttonStyles;
   border?: boolean;
   isDisabled?: boolean;
   onClick?: () => void;

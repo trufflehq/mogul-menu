@@ -110,8 +110,6 @@ export default function ConnectedAccounts() {
     // me: model.user.getMe(),
   }));
 
-  console.log("oAuthUrlMap", oAuthUrlMap);
-
   const isConnectionsChanged = !_.isEqual(
     connections,
     lastUpdatedConnectionsRef.current,

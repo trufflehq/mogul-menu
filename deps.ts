@@ -1,6 +1,7 @@
 // utils
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
 export {
+  _clearCache,
   gql,
   pollingQueryObservable,
   query,
@@ -28,6 +29,7 @@ export {
   useRef,
   useState,
 } from "https://npm.tfl.dev/react";
+export * as ReactDom from "https://npm.tfl.dev/react-dom";
 export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.ts";
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.5/format/wc/react/index.ts";
@@ -59,3 +61,8 @@ export { default as AbsoluteAuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.
 export { default as FocusTrap } from "https://npm.tfl.dev/focus-trap-react@9.0.2?bundle";
 export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
 export { default as globalContext } from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
+export {
+  OAuthIframe,
+  useHandleTruffleOAuth,
+} from "https://tfl.dev/@truffle/third-party-oauth@^0.0.13/components/oauth-iframe/mod.ts";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.13/components/oauth-iframe/mod.ts";

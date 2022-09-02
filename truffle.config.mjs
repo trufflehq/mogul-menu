@@ -8,5 +8,5 @@ export default {
   apiUrl: "https://mycelium.truffle.vip/graphql",
 
   // localhost
-  apiUrl: 'http://10.0.0.120:50420/graphql'
+  // apiUrl: 'http://172.16.100.130:50420/graphql'
 };

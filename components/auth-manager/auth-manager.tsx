@@ -14,70 +14,24 @@ import { MeUser, MogulTvUser } from "../../types/mod.ts";
 import Button from "../base/button/button.tsx";
 import {
   EXTENSION_TOKEN_SIGNIN_QUERY,
+  hasConnection,
   invalidateExtensionUser,
   LOGIN_TYPE_NAMES,
+  loginFromExtension,
   ME_QUERY,
   setAccessToken,
+  useMeConnectionQuery,
   useUserInfo,
 } from "../../shared/mod.ts";
 import { ExtensionCredentials } from "../../types/mod.ts";
-import { OAuthConnectionPage } from "../onboarding/mod.ts";
+import { BasePage, ChatSettingsPage, OAuthConnectionPage } from "../onboarding/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { ActionBanner, useActionBanner } from "../action-banner/mod.ts";
 
-interface MeConnectionUser extends MeUser {
-  connectionConnection: {
-    nodes: {
-      id: string;
-      sourceType: "youtube" | "twitch";
-    }[];
-  };
-}
-
-export const ME_CONNECTIONS_QUERY = gql`
-  query {
-    me {
-      id
-      name
-      email
-      phone
-      avatarImage {
-        cdn
-        prefix
-        ext
-        variations {
-          postfix
-          width
-          height
-        }
-        aspectRatio
-      }
-      connectionConnection(sourceTypes: ["youtube", "twitch"]) {
-        nodes {
-          id
-          sourceType
-        }
-      }
-    }
-  }
-`;
-
-function hasConnection(meUser: MeConnectionUser, sourceType: "youtube" | "twitch") {
-  console.log("hasConnection", meUser);
-  return meUser?.connectionConnection?.nodes.map((connection) => connection.sourceType).includes(
-    sourceType,
-  );
-}
-
 export function useExtensionAuth() {
-  const [{ data: meRes, fetching: isFetchingUser }, refetchMe] = useQuery({
-    query: ME_CONNECTIONS_QUERY,
-  });
+  const { me, isFetchingUser, refetchMeConnections } = useMeConnectionQuery();
 
-  const { pushPage } = usePageStack();
-
-  const me: MeConnectionUser = meRes?.data;
-  // console.log("meRes", meRes);
+  const { pushPage, clearPageStack } = usePageStack();
 
   const [signInResult, executeSigninMutation] = useMutation(
     EXTENSION_TOKEN_SIGNIN_QUERY,
@@ -85,48 +39,18 @@ export function useExtensionAuth() {
 
   const [credentials, setCredentials] = useState<ExtensionCredentials>();
 
-  // useEffect(() => {
-  //   const fetchCredentials = async () => {
-  //     const credentials = await jumper.call("context.getCredentials");
-  //     setCredentials(credentials);
-
-  //     if (credentials?.sourceType === "youtube" && credentials?.token) {
-  //       const result = await signInWithToken(false);
-  //       const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
-  //       setAccessToken(mogulTvUser?.truffleAccessToken);
-  //       await refetchMe({ requestPolicy: "network-only" });
-  //     }
-
-  //     // FIXME - add for twitch
-  //     // if (credentials?.sourceType === "twitch" && credentials?.token) {}
-  //   };
-
-  //   fetchCredentials();
-  // }, []);
-
+  console.log("me", me, isFetchingUser);
   useEffect(() => {
     const fetchCredentials = async () => {
       const credentials = await jumper.call("context.getCredentials");
       setCredentials(credentials);
 
-      pushPage(<OAuthConnectionPage sourceType={"youtube"} />);
-
-      if (credentials?.sourceType === "youtube") {
-        if (!hasConnection(me, "youtube")) {
-          console.log("missing connection!!!!!!!!");
-
-          pushPage(<OAuthConnectionPage sourceType={"youtube"} />);
-          // pop up the onboarding page
-        } else {
-          console.log("HAS CONNECTION");
-        }
-
-        // const result = await signInWithToken(false);
-        // const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
-        // setAccessToken(mogulTvUser?.truffleAccessToken);
-        // await refetchMe({ requestPolicy: "network-only" });
-      } else {
-        console.log("not youtube or twitch");
+      // TODO reenable this guy
+      // if (credentials?.sourceType === "youtube") {
+      if (!hasConnection(me, "youtube") && !isFetchingUser) {
+        console.log("missing connection!!!!!!!!");
+        pushPage(<BasePage />);
+        pushPage(<OAuthConnectionPage sourceType={"youtube"} />);
       }
 
       // FIXME - add for twitch
@@ -134,7 +58,7 @@ export function useExtensionAuth() {
     };
 
     fetchCredentials();
-  }, [JSON.stringify(meRes?.data)]);
+  }, [JSON.stringify(me), isFetchingUser]);
 
   async function signInWithToken(isTransfer = false) {
     const result = await executeSigninMutation(
@@ -149,7 +73,7 @@ export function useExtensionAuth() {
 
     const mogulTvUser: MogulTvUser = result?.data?.mogulTvSignIn;
     setAccessToken(mogulTvUser?.truffleAccessToken);
-    await refetchMe({ requestPolicy: "network-only" });
+    await refetchMeConnections({ requestPolicy: "network-only" });
 
     invalidateExtensionUser();
 
@@ -157,63 +81,51 @@ export function useExtensionAuth() {
   }
 
   return {
-    me: meRes?.me,
+    me,
     isFetchingUser,
     credentials,
     signInWithToken,
-    refetchMe,
+    refetchMeConnections,
   };
 }
 
+export const hasName = (user: MeUser) => user && user?.name;
 export const isMemberMeUser = (user: MeUser) => user && (user.email || user.phone);
 
 export default function AuthManager() {
   const [isAuthDialogHidden, setIsAuthDialogHidden] = useState(true);
   const signInActionBannerIdRef = useRef<string | undefined>(undefined!);
   const { reexecuteUserInfoQuery } = useUserInfo();
-  const { me, isFetchingUser, signInWithToken, refetchMe } = useExtensionAuth();
+  const { me, isFetchingUser, signInWithToken } = useExtensionAuth();
   const { displayActionBanner, removeActionBanner } = useActionBanner();
 
   useEffect(() => {
-    if (!isFetchingUser) {
-      if (!isMemberMeUser(me)) {
-        signInActionBannerIdRef.current = displayActionBanner(
-          <ActionBanner
-            action={
-              <Button onClick={() => setIsAuthDialogHidden(false)}>
-                Sign in
-              </Button>
-            }
-          >
-            Finish setting up your account
-          </ActionBanner>,
-          "sign-in",
-        );
-      } else if (signInActionBannerIdRef.current) {
-        removeActionBanner(signInActionBannerIdRef.current);
-      }
-    }
-  }, [JSON.stringify(me), isFetchingUser]);
+    loginFromExtension();
+  }, []);
 
-  const onAuthClose = async () => {
-    setIsAuthDialogHidden(true);
-    await refetchMe({ requestPolicy: "network-only" });
-    const signInResult = await signInWithToken(true);
-
-    const mogulTvUser: MogulTvUser = signInResult?.data?.mogulTvSignIn;
-    setAccessToken(mogulTvUser?.truffleAccessToken);
-    await refetchMe({ requestPolicy: "network-only" });
-    await reexecuteUserInfoQuery({ requestPolicy: "network-only" });
-    if (signInActionBannerIdRef.current) {
-      removeActionBanner(signInActionBannerIdRef.current);
-    }
-  };
+  // useEffect(() => {
+  //   if (!isFetchingUser) {
+  //     if (!isMemberMeUser(me)) {
+  //       signInActionBannerIdRef.current = displayActionBanner(
+  //         <ActionBanner
+  //           action={
+  //             <Button onClick={() => setIsAuthDialogHidden(false)}>
+  //               Sign in
+  //             </Button>
+  //           }
+  //         >
+  //           Finish setting up your account
+  //         </ActionBanner>,
+  //         "sign-in",
+  //       );
+  //     } else if (signInActionBannerIdRef.current) {
+  //       removeActionBanner(signInActionBannerIdRef.current);
+  //     }
+  //   }
+  // }, [JSON.stringify(me), isFetchingUser]);
 
   return (
     <div className="c-auth-manager">
-      {!isAuthDialogHidden && (
-        <AbsoluteAuthDialog hidden={isAuthDialogHidden} onclose={onAuthClose} />
-      )}
     </div>
   );
 }

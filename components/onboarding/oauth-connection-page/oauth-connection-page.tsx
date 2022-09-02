@@ -1,10 +1,22 @@
-import { ImageByAspectRatio, React, useStyleSheet } from "../../../deps.ts";
+import {
+  globalContext,
+  ImageByAspectRatio,
+  OAuthIframe,
+  OAuthResponse,
+  React,
+  useHandleTruffleOAuth,
+  useStyleSheet,
+} from "../../../deps.ts";
+import {
+  getAccessToken,
+  persistTruffleAccessToken,
+  setAccessTokenAndClear,
+} from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
-import Button from "../../base/button/button.tsx";
+import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
-const getTitle = (sourceType: "youtube" | "twitch") =>
-  sourceType === "youtube" ? "YouTube" : "Twitch";
+
 export default function OAuthConnectionPage(
   { sourceType = "youtube" }: { sourceType?: "youtube" | "twitch" },
 ) {
@@ -28,20 +40,49 @@ export default function OAuthConnectionPage(
   );
 }
 
-function getSourceTypeTitle(sourceType: "youtube" | "twitch") {
-  return sourceType === "youtube" ? "YouTube" : "Twitch";
-}
+function OAuthButton(
+  { sourceType = "youtube" }: {
+    sourceType?: "youtube" | "twitch";
+  },
+) {
+  const { clearPageStack, pushPage, popPage } = usePageStack();
 
-function OAuthButton({ sourceType = "youtube" }: { sourceType?: "youtube" | "twitch" }) {
+  const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+    console.log(
+      "MENU SET ACCESS TOKEN message received",
+      oauthResponse?.type,
+      oauthResponse?.truffleAccessToken,
+      oauthResponse?.userName,
+    );
+    popPage();
+    setAccessTokenAndClear(oauthResponse.truffleAccessToken);
+    persistTruffleAccessToken(oauthResponse.truffleAccessToken)
+
+    pushPage(
+      <ChatSettingsPage
+        defaultName={oauthResponse?.userName}
+        onContinue={clearPageStack}
+      />,
+    );
+  };
+
+  useHandleTruffleOAuth(onSetAccessToken);
+
+  const accessToken = getAccessToken();
+  const context = globalContext.getStore();
+  const orgId = context?.orgId;
+
   return (
-    <Button className={`${sourceType} oauth-button`}>
-      <ImageByAspectRatio
-        imageUrl="https://cdn.bio/assets/images/features/browser_extension/youtube.svg"
-        widthPx={24}
-        height={24}
-        aspectRatio={1}
-      />
-      {`Link your ${getSourceTypeTitle(sourceType)} account`}
-    </Button>
+    <OAuthIframe
+      sourceType={sourceType}
+      accessToken={accessToken}
+      orgId={orgId}
+      styles={{
+        width: "308px",
+        height: "42px",
+        margin: "20px auto",
+        border: "none",
+      }}
+    />
   );
 }

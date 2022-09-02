@@ -23,3 +23,14 @@ export interface MeUser {
   phone?: string;
   avatarImage: AvatarImage;
 }
+
+
+export interface MeConnectionUser extends MeUser {
+  connectionConnection: {
+    nodes: {
+      id: string;
+      sourceType: "youtube" | "twitch";
+    }[];
+  };
+}
+

@@ -26,7 +26,9 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   &.is-full {
     z-index: 1001;
     top: -40px;
+    height: calc(100% + 40px);
   }
+  
   > .header {
     display: flex;
     justify-content: space-between;
@@ -66,6 +68,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   > .content {
     overflow-y: auto;
     flex: 1;
+    height: 100%;
   }
 }
 `;

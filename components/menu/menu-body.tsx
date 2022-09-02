@@ -14,7 +14,6 @@ import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 import { MogulMenuProps } from "./menu.tsx";
 export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
   useStyleSheet(styleSheet);
-  const $$extensionIconRef = useRef(null);
   useInvalidate();
 
   return (
@@ -23,7 +22,7 @@ export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
         <div className="bottom">
           <TabBar />
           <div className="extension-icon-placeholder"></div>
-          <ExtensionIcon $$extensionIconRef={$$extensionIconRef} />
+          <ExtensionIcon />
         </div>
         <div className="body">
           <AuthManager />

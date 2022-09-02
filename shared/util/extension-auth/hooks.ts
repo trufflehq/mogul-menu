@@ -1,12 +1,13 @@
 import { jumper, useEffect, useMutation, useQuery, useState } from "../../../deps.ts";
 import {
   EXTENSION_TOKEN_SIGNIN_QUERY,
+  invalidateExtensionUser,
   LOGIN_TYPE_NAMES,
+  ME_CONNECTIONS_QUERY,
   ME_QUERY,
   setAccessToken,
-  invalidateExtensionUser
 } from "../../mod.ts";
-import { ExtensionCredentials, MogulTvUser } from "../../../types/mod.ts";
+import { ExtensionCredentials, MeConnectionUser, MogulTvUser } from "../../../types/mod.ts";
 
 const MESSAGE = {
   INVALIDATE_USER: "user.invalidate",
@@ -57,7 +58,7 @@ export function useExtensionAuth() {
     setAccessToken(mogulTvUser?.truffleAccessToken);
     await refetchMe({ requestPolicy: "network-only" });
 
-    invalidateExtensionUser()
+    invalidateExtensionUser();
 
     return result;
   }
@@ -69,4 +70,12 @@ export function useExtensionAuth() {
     signInWithToken,
     refetchMe,
   };
+}
+
+export function useMeConnectionQuery() {
+  const [{ data: meRes, fetching: isFetchingUser }, refetchMeConnections] = useQuery({
+    query: ME_CONNECTIONS_QUERY,
+  });
+
+  return { me: meRes?.me as MeConnectionUser, isFetchingUser, refetchMeConnections };
 }
