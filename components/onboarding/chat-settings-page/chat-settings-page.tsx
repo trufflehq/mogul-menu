@@ -3,11 +3,12 @@ import {
   ImageByAspectRatio,
   React,
   TextField,
+  useEffect,
   useMutation,
   useState,
   useStyleSheet,
 } from "../../../deps.ts";
-
+import { useMeConnectionQuery } from "../../../shared/mod.ts";
 import { Page } from "../../page-stack/mod.ts";
 import Button from "../../base/button/button.tsx";
 import stylesheet from "./chat-settings-page.scss.js";
@@ -24,9 +25,19 @@ const USER_UPSERT_MUTATION = gql`
 export default function ChatSettingsPage(
   { defaultName, onContinue }: { defaultName?: string; onContinue?: () => void },
 ) {
+  const { me } = useMeConnectionQuery();
+
   const [userUpsertResult, executeUserUpsert] = useMutation(USER_UPSERT_MUTATION);
-  const [userName, setUsername] = useState(defaultName);
+  const [userName, setUsername] = useState<string>();
   useStyleSheet(stylesheet);
+
+  // we want to prepopulate the chat username with the invalidated user connection after
+  // the user connects their YouTube account in step 1 of the onboarding flow
+  useEffect(() => {
+    if (me?.name && !userName) {
+      setUsername(me.name);
+    }
+  }, [me?.name]);
 
   const onClick = async () => {
     if (userName && userName !== defaultName) {

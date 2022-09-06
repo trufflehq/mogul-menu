@@ -54,7 +54,6 @@ function OAuthButton(
 
     pushPage(
       <ChatSettingsPage
-        defaultName={oauthResponse?.userName}
         onContinue={clearPageStack}
       />,
     );
@@ -78,5 +77,9 @@ function OAuthButton(
         border: "none",
       }}
     />
+    // <iframe
+    //   src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
+    //   style={DEFAULT_STYLES}
+    // />
   );
 }

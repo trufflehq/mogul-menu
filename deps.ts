@@ -64,5 +64,5 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^0.0.13/components/oauth-iframe/mod.ts";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.13/components/oauth-iframe/mod.ts";
+} from "https://tfl.dev/@truffle/third-party-oauth@^0.0.19/components/oauth-iframe/mod.ts";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.19/components/oauth-iframe/mod.ts";
