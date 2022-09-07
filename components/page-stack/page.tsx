@@ -15,6 +15,10 @@ interface PageProps {
 export default function Page(props: PageProps) {
   useStyleSheet(styleSheet);
   const { shouldShowHeader } = props;
+
+  // We split out into two separate child components because the FocusTrap requires there to
+  // be at least one element in the child tree that's focusable, which isn't the case if it's not
+  // rendering the Page header.
   return (
     shouldShowHeader ? <FocusedTrappedPage {...props} /> : <RawPage {...props} />
   );

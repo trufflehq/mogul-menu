@@ -41,7 +41,7 @@ export default function ChatSettingsPage(
     // TODO - add chat color here
   };
 
-  // we want to prepopulate the chat username with the user that was logged in during the 3rd party OAuth
+  // we want to prepopulate the chat username with the username of the user that was logged in during the prior 3rd party OAuth
   // login step
   useEffect(() => {
     if (meWithConnections?.name && !userName) {
