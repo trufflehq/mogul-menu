@@ -35,7 +35,6 @@ function RawPage(props: PageProps) {
 
   const { popPage } = usePageStack();
   const handleKeyPress = (ev: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log('shouldDisableEscape', shouldDisableEscape)
     if (!shouldDisableEscape) {
       if ((ev.key === "Escape" || ev.key === "Enter" || ev.key === "ArrowLeft")) {
         onBack?.() ?? popPage();

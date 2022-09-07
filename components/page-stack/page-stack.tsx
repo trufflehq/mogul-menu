@@ -35,7 +35,6 @@ export default function PageStack({
           <div className="c-page-stack" style={{ "--background": background }}>
             {pageStack.map(({ Component }, idx) => (
               <div key={idx} className="page">
-                {/* {typeof Component === "function" ? <Component /> : Component} */}
                 {Component}
               </div>
             ))}

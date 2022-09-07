@@ -27,13 +27,22 @@ export default function ChatSettingsPage(
   { onContinue }: { onContinue?: () => void },
 ) {
   const { meWithConnections } = useMeConnectionQuery();
-
   const [_, executeUserUpsert] = useMutation(USER_UPSERT_MUTATION);
   const [userName, setUsername] = useState<string>();
   useStyleSheet(stylesheet);
 
-  // we want to prepopulate the chat username with the invalidated user connection after
-  // the user connects their YouTube account in step 1 of the onboarding flow
+  const updateUserInfo = async () => {
+    if (userName) {
+      await executeUserUpsert({
+        name: userName,
+      }, { additionalTypenames: ["MeUser", "User", "Connection", "ConnectionConnection"] });
+    }
+
+    // TODO - add chat color here
+  };
+
+  // we want to prepopulate the chat username with the user that was logged in during the 3rd party OAuth
+  // login step
   useEffect(() => {
     if (meWithConnections?.name && !userName) {
       setUsername(meWithConnections.name);
@@ -41,12 +50,7 @@ export default function ChatSettingsPage(
   }, [meWithConnections?.name]);
 
   const onClick = async () => {
-    if (userName) {
-      await executeUserUpsert({
-        name: userName,
-      }, { additionalTypenames: ["MeUser", "User", "Connection", "ConnectionConnection"] });
-    }
-
+    await updateUserInfo();
     onContinue?.();
   };
   return (

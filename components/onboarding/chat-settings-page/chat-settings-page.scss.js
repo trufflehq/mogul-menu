@@ -1,18 +1,23 @@
 import { scss } from "../../../deps.ts";
 
 export default scss`
-.c-chat-settings-page{
+@mixin flex-column {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.c-chat-settings-page {
+  @include flex-column;
+
   height: 100%;
   box-sizing: border-box;
   padding: 48px 74px;
 
 
   > .hero {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
+
     align-items: center;
     justify-content: center; 
     text-align: center;
@@ -35,13 +40,11 @@ export default scss`
       font-weight: 400;
       font-size: 16px;
     }
-
   }
   
   > .settings {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    @include flex-column;
+    
     width: 100%;
     margin-top: 40px;
 
