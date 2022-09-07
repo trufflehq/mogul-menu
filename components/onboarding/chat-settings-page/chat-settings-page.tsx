@@ -22,26 +22,27 @@ const USER_UPSERT_MUTATION = gql`
     }
   }
 `;
-export default function ChatSettingsPage(
-  { defaultName, onContinue }: { defaultName?: string; onContinue?: () => void },
-) {
-  const { me } = useMeConnectionQuery();
 
-  const [userUpsertResult, executeUserUpsert] = useMutation(USER_UPSERT_MUTATION);
+export default function ChatSettingsPage(
+  { onContinue }: { onContinue?: () => void },
+) {
+  const { meWithConnections } = useMeConnectionQuery();
+
+  const [_, executeUserUpsert] = useMutation(USER_UPSERT_MUTATION);
   const [userName, setUsername] = useState<string>();
   useStyleSheet(stylesheet);
 
   // we want to prepopulate the chat username with the invalidated user connection after
   // the user connects their YouTube account in step 1 of the onboarding flow
   useEffect(() => {
-    if (me?.name && !userName) {
-      setUsername(me.name);
+    if (meWithConnections?.name && !userName) {
+      setUsername(meWithConnections.name);
     }
-  }, [me?.name]);
+  }, [meWithConnections?.name]);
 
   const onClick = async () => {
-    if (userName && userName !== defaultName) {
-      const result = await executeUserUpsert({
+    if (userName) {
+      await executeUserUpsert({
         name: userName,
       }, { additionalTypenames: ["MeUser", "User", "Connection", "ConnectionConnection"] });
     }
@@ -59,7 +60,9 @@ export default function ChatSettingsPage(
             height={60}
           />
           <div className="title">Poggies!</div>
-          <div className="welcome">{defaultName ? `Welcome; ${defaultName}!` : "Welcome!"}</div>
+          <div className="welcome">
+            {meWithConnections?.name ? `Welcome; ${meWithConnections?.name}!` : "Welcome!"}
+          </div>
           <div className="info">Go ahead, change your chat username and color if you'd like</div>
         </div>
         <div className="settings">

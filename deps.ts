@@ -2,14 +2,17 @@
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
 export {
   _clearCache,
+  _setAccessTokenAndClear,
+  getAccessToken,
   gql,
   pollingQueryObservable,
   query,
   queryObservable,
+  setAccessToken,
   useMutation,
   usePollingQuery,
   useQuery,
-} from "https://tfl.dev/@truffle/api@^0.1.0/client.ts";
+} from "https://tfl.dev/@truffle/api@~0.1.0/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
@@ -29,7 +32,6 @@ export {
   useRef,
   useState,
 } from "https://npm.tfl.dev/react";
-export * as ReactDom from "https://npm.tfl.dev/react-dom";
 export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.ts";
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.5/format/wc/react/index.ts";
@@ -47,7 +49,11 @@ export {
   hexOpacity,
   rgb2rgba,
 } from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
-
+export { getConnectionSourceType } from "https://tfl.dev/@truffle/utils@~0.0.7/embed/mod.ts";
+export type {
+  ConnectionSourceType,
+  PageIdentifier,
+} from "https://tfl.dev/@truffle/utils@~0.0.7/embed/mod.ts";
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";

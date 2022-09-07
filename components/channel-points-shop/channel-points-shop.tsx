@@ -25,10 +25,6 @@ import styleSheet from "./channel-points-shop.scss.js";
 // TODO pull from EconomyTrigger model once we set that up
 const CP_PURCHASE_ECONOMY_TRIGGER_ID = "4246f070-6f68-11ec-b706-956d4fcf75c0";
 
-const MESSAGE = {
-  INVALIDATE_USER: "user.invalidate",
-};
-
 export default function ChannelPointsShop() {
   useStyleSheet(styleSheet);
   const { pushDialog } = useDialog();

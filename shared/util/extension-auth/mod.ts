@@ -1,3 +1,3 @@
-export * from './gql.ts'
-export * from './hooks.ts'
-export * from './util.ts'
+export * from "./gql.ts";
+export * from "./hooks.tsx";
+export * from "./util.ts";

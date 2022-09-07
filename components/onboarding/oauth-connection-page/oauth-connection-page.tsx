@@ -1,24 +1,24 @@
 import {
+  _setAccessTokenAndClear,
+  ConnectionSourceType,
+  getAccessToken,
   globalContext,
   ImageByAspectRatio,
+  jumper,
   OAuthIframe,
   OAuthResponse,
   React,
   useHandleTruffleOAuth,
   useStyleSheet,
 } from "../../../deps.ts";
-import {
-  getAccessToken,
-  persistTruffleAccessToken,
-  setAccessTokenAndClear,
-} from "../../../shared/mod.ts";
+import { JUMPER_MESSAGES } from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
 export default function OAuthConnectionPage(
-  { sourceType = "youtube" }: { sourceType?: "youtube" | "twitch" },
+  { sourceType = "youtube" }: { sourceType: ConnectionSourceType },
 ) {
   useStyleSheet(stylesheet);
 
@@ -42,16 +42,15 @@ export default function OAuthConnectionPage(
 
 function OAuthButton(
   { sourceType = "youtube" }: {
-    sourceType?: "youtube" | "twitch";
+    sourceType: ConnectionSourceType;
   },
 ) {
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
     popPage();
-    setAccessTokenAndClear(oauthResponse.truffleAccessToken);
-    persistTruffleAccessToken(oauthResponse.truffleAccessToken);
-
+    _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
+    jumper.call("comms.postMessage", JUMPER_MESSAGES.CLEAR_CACHE);
     pushPage(
       <ChatSettingsPage
         onContinue={clearPageStack}
@@ -77,9 +76,5 @@ function OAuthButton(
         border: "none",
       }}
     />
-    // <iframe
-    //   src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
-    //   style={DEFAULT_STYLES}
-    // />
   );
 }

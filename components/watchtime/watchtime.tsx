@@ -10,7 +10,7 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
-import { MESSAGES } from "../../shared/mod.ts";
+import { JUMPER_MESSAGES } from "../../shared/mod.ts";
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "./watchtime-counter.ts";
 
@@ -65,13 +65,13 @@ export default function Watchtime(props: WatchtimeProps) {
         "EconomyTransaction",
       ],
     });
-    jumper.call("comms.postMessage", MESSAGES.INVALIDATE_CHANNEL_POINTS);
+    jumper.call("comms.postMessage", JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS);
     setIsClaimable(true);
   }, []);
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
-      if (message === MESSAGES.RESET_TIMER) {
+      if (message === JUMPER_MESSAGES.RESET_TIMER) {
         setIsClaimable(false);
         resetTimer();
       }
