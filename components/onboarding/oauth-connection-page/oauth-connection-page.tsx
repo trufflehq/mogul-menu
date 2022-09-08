@@ -10,8 +10,8 @@ import {
   React,
   useHandleTruffleOAuth,
   useStyleSheet,
+  GLOBAL_JUMPER_MESSAGES
 } from "../../../deps.ts";
-import { JUMPER_MESSAGES } from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 
@@ -53,7 +53,7 @@ function OAuthButton(
 
     // let other embeds know that the user has changed and they need to
     // reset their api client and cache
-    jumper.call("comms.postMessage", JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
+    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
 
     pushPage(
       <ChatSettingsPage

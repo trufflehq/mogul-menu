@@ -1,6 +1,5 @@
-import { jumper, useEffect } from "../../../deps.ts";
+import { GLOBAL_JUMPER_MESSAGES, jumper, useEffect } from "../../../deps.ts";
 import {
-  JUMPER_MESSAGES,
   useActivePowerupConnection,
   useOwnedCollectibleConnection,
   useSeasonPassData,
@@ -18,7 +17,7 @@ export function useInvalidateAllQueriesListener() {
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
-      if (message === JUMPER_MESSAGES.INVALIDATE_USER) {
+      if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
         reexecuteUserInfoQuery();
         reexecuteActivePowerupConnQuery();
         reexecuteOwnedCollectibleConnQuery();

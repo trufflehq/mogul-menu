@@ -51,8 +51,9 @@ export {
 } from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
 export {
   getConnectionSourceType,
+  GLOBAL_JUMPER_MESSAGES,
   useExtensionInfo,
-} from "https://tfl.dev/@truffle/utils@~0.0.11/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@~0.0.12/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,

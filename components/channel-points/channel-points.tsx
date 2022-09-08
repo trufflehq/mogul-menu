@@ -1,6 +1,7 @@
 import {
   _clearCache,
   abbreviateNumber,
+  GLOBAL_JUMPER_MESSAGES,
   jumper,
   React,
   useEffect,
@@ -9,7 +10,7 @@ import {
 } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
-import { JUMPER_MESSAGES, useMeConnectionQuery } from "../../shared/mod.ts";
+import { MOGUL_MENU_JUMPER_MESSAGES, useMeConnectionQuery } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
 import stylesheet from "./channel-points.scss.js";
@@ -30,11 +31,11 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
-      if (message === JUMPER_MESSAGES.INVALIDATE_USER) {
+      if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
         refetchMeConnections({ requestPolicy: "network-only" });
-      } else if (message === JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
+      } else if (message === MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
-      } else if (message === JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
+      } else if (message === GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
         // reset the api client w/ the updated user and refetch user/channel points info
         _clearCache();
         refetchMeConnections({ requestPolicy: "network-only" });
@@ -57,8 +58,8 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
     setIsClaimable(false);
 
     await claim();
-    jumper.call("comms.postMessage", JUMPER_MESSAGES.INVALIDATE_USER);
-    jumper.call("comms.postMessage", JUMPER_MESSAGES.RESET_TIMER);
+    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
+    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
   };
 
   const channelPoints = abbreviateNumber(

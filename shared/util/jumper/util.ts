@@ -1,8 +1,7 @@
-import { globalContext, jumper } from "../../../deps.ts";
-import { JUMPER_MESSAGES } from './messages.ts'
+import { globalContext, jumper, GLOBAL_JUMPER_MESSAGES } from "../../../deps.ts";
 
 export function invalidateExtensionUser() {
   const context = globalContext.getStore();
   jumper.call("user.invalidateSporeUser", { orgId: context?.orgId });
-  jumper.call("comms.postMessage", JUMPER_MESSAGES.INVALIDATE_USER);
+  jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
 }

@@ -1,6 +1,4 @@
-export enum JUMPER_MESSAGES {
-  INVALIDATE_USER = "user.invalidate",
+export enum MOGUL_MENU_JUMPER_MESSAGES {
   RESET_TIMER = "claim.resetTimer",
   INVALIDATE_CHANNEL_POINTS = "orgUserCounter.channelPoints",
-  ACCESS_TOKEN_UPDATED = "user.accessTokenUpdated",
 }
