@@ -65,7 +65,7 @@ export default function ChatSettingsPage(
           />
           <div className="title">Poggies!</div>
           <div className="welcome">
-            {meWithConnections?.name ? `Welcome; ${meWithConnections?.name}!` : "Welcome!"}
+            {meWithConnections?.name ? `Welcome; ${meWithConnections.name}!` : "Welcome!"}
           </div>
           <div className="info">Go ahead, change your chat username if you'd like</div>
         </div>

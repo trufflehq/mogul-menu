@@ -1,3 +1,4 @@
+import { ConnectionSourceType } from "../deps.ts";
 export interface User {
   id?: string;
   name?: string;
@@ -24,13 +25,11 @@ export interface MeUser {
   avatarImage: AvatarImage;
 }
 
-
 export interface MeConnectionUser extends MeUser {
   connectionConnection: {
     nodes: {
       id: string;
-      sourceType: "youtube" | "twitch";
+      sourceType: ConnectionSourceType;
     }[];
   };
 }
-

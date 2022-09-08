@@ -14,7 +14,7 @@ export default function PageStack({
 
   const handleEscape = (ev: KeyboardEvent) => {
     const top = peekPage();
-    const isEscapeDisabled = top?.isEscapeDisabled;
+    const isEscapeDisabled = top && top.isEscapeDisabled;
     if (ev.key === "Escape" && !isEscapeDisabled) {
       popPage();
     }

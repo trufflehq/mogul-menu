@@ -15,7 +15,7 @@ export function useOnboarding() {
 
   useEffect(() => {
     const connectionSourceType = extensionInfo?.pageInfo
-      ? getConnectionSourceType(extensionInfo?.pageInfo)
+      ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
     if (!hasConnection(meWithConnections, connectionSourceType) && !isFetchingUser) {

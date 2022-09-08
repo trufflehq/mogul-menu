@@ -6,7 +6,7 @@ export default function BasePage() {
   useStyleSheet(stylesheet);
 
   return (
-    <Page isFull={true} shouldShowHeader={false} shouldDisableEscape={true}>
+    <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-base-page">
       </div>
     </Page>
