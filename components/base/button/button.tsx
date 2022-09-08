@@ -73,7 +73,7 @@ export default function Button({
   className?: string;
   children?: React.ReactNode;
   shouldHandleLoading?: boolean;
-  style?: ButtonStyle;
+  style?: ButtonStyle | Styles;
   border?: boolean;
   isDisabled?: boolean;
   onClick?: () => void;
