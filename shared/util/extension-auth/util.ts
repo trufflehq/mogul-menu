@@ -1,9 +1,9 @@
 import { ConnectionSourceType } from "../../../deps.ts";
-import { MeConnectionUser } from "../../../types/mod.ts";
+import { OrgUserConnections } from "../../../types/mod.ts";
 
-export function hasConnection(meUser: MeConnectionUser, sourceType: ConnectionSourceType) {
-  if (!sourceType || !meUser?.connectionConnection?.nodes?.length) return false;
-  return meUser.connectionConnection.nodes.map((connection) => connection.sourceType).includes(
+export function hasConnection(orgUser: OrgUserConnections, sourceType: ConnectionSourceType) {
+  if (!sourceType || !orgUser?.connectionConnection?.nodes?.length) return false;
+  return orgUser.connectionConnection.nodes.map((connection) => connection.sourceType).includes(
     sourceType,
   );
 }

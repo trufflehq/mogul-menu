@@ -57,6 +57,10 @@ export default scss`
         font-size: 14px;
       }
     }
+
+    .name-color-input {
+      margin-top: 8px;
+    }
   }
 
   > footer {

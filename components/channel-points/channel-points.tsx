@@ -10,7 +10,7 @@ import {
 } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
-import { MOGUL_MENU_JUMPER_MESSAGES, useMeConnectionQuery } from "../../shared/mod.ts";
+import { MOGUL_MENU_JUMPER_MESSAGES, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
 import stylesheet from "./channel-points.scss.js";
@@ -26,19 +26,19 @@ const CHANNEL_POINTS_STYLES = {
 export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg?: string }) {
   useStyleSheet(stylesheet);
   const [isClaimable, setIsClaimable] = useState(false);
-  const { refetchMeConnections } = useMeConnectionQuery();
+  const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
   const { channelPointsData, reexecuteChannelPointsQuery } = useChannelPoints();
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
       if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
-        refetchMeConnections({ requestPolicy: "network-only" });
+        refetchOrgUserConnections({ requestPolicy: "network-only" });
       } else if (message === MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       } else if (message === GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
         // reset the api client w/ the updated user and refetch user/channel points info
         _clearCache();
-        refetchMeConnections({ requestPolicy: "network-only" });
+        refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       }
     });

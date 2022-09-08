@@ -1,4 +1,4 @@
-import { globalContext, jumper, GLOBAL_JUMPER_MESSAGES } from "../../../deps.ts";
+import { GLOBAL_JUMPER_MESSAGES, globalContext, jumper } from "../../../deps.ts";
 
 export function invalidateExtensionUser() {
   const context = globalContext.getStore();

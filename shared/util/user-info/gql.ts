@@ -6,6 +6,9 @@ export const USER_INFO_QUERY = gql`
       id
       name
     }
+    orgUser {
+      name
+    }
     org {
       id
       slug
@@ -36,10 +39,12 @@ export const USER_INFO_QUERY = gql`
   }
 `;
 
-export const ME_CONNECTIONS_QUERY = gql`
+export const ORG_USER_CONNECTIONS_QUERY = gql`
   query {
-    me {
+    orgUser {
+      id
       name
+      userId
       connectionConnection(sourceTypes: ["youtube", "twitch"]) {
         nodes {
           id

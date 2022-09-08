@@ -1,58 +1,41 @@
 import {
-  gql,
   ImageByAspectRatio,
   React,
   TextField,
   useEffect,
-  useMutation,
   useState,
   useStyleSheet,
 } from "../../../deps.ts";
-import { useMeConnectionQuery } from "../../../shared/mod.ts";
+import { useOrgUserChatSettings, useSaveOrgUserSettings } from "../../../shared/mod.ts";
 import { Page } from "../../page-stack/mod.ts";
 import Button from "../../base/button/button.tsx";
 import stylesheet from "./chat-settings-page.scss.js";
 
-const USER_UPSERT_MUTATION = gql`
-  mutation UserUpsert($name: String) {
-    userUpsert(input: { name: $name }) {
-      user {
-        id
-      }
-    }
-  }
-`;
-
 export default function ChatSettingsPage(
   { onContinue }: { onContinue?: () => void },
 ) {
-  const { meWithConnections } = useMeConnectionQuery();
-  const [_, executeUserUpsert] = useMutation(USER_UPSERT_MUTATION);
+  const { orgUser } = useOrgUserChatSettings();
   const [userName, setUsername] = useState<string>();
+  const [nameColor, setNameColor] = useState<string>();
   useStyleSheet(stylesheet);
 
-  const updateUserInfo = async () => {
-    if (userName) {
-      await executeUserUpsert({
-        name: userName,
-      }, { additionalTypenames: ["MeUser", "User", "Connection", "ConnectionConnection"] });
-    }
-
-    // TODO - add chat color upsert here
-  };
+  const { saveOrgUserSettings } = useSaveOrgUserSettings();
 
   // we want to prepopulate the chat username with the username of the user that was logged in during the prior 3rd party OAuth
   // login step
   useEffect(() => {
-    if (meWithConnections?.name && !userName) {
-      setUsername(meWithConnections.name);
-    }
-  }, [meWithConnections?.name]);
+    const username = orgUser?.name;
+    const nameColor = orgUser?.keyValue?.value;
+
+    setUsername(username);
+    setNameColor(nameColor);
+  }, [orgUser]);
 
   const onClick = async () => {
-    await updateUserInfo();
+    await saveOrgUserSettings(orgUser.user?.id, userName, nameColor);
     onContinue?.();
   };
+
   return (
     <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-chat-settings-page">
@@ -65,7 +48,7 @@ export default function ChatSettingsPage(
           />
           <div className="title">Poggies!</div>
           <div className="welcome">
-            {meWithConnections?.name ? `Welcome; ${meWithConnections.name}!` : "Welcome!"}
+            {orgUser?.name ? `Welcome; ${orgUser.name}!` : "Welcome!"}
           </div>
           <div className="info">Go ahead, change your chat username if you'd like</div>
         </div>
@@ -77,6 +60,17 @@ export default function ChatSettingsPage(
               placeholder="Chat username"
               value={userName}
               onInput={(e: any) => setUsername(e.target?.value)}
+            />
+          </div>
+          <div className="name-color-input input">
+            <div className="label mm-text-body-2">Name color</div>
+            <input
+              type="color"
+              onInput={(e) => {
+                setNameColor(e?.target?.value);
+              }}
+              tabIndex={0}
+              value={nameColor}
             />
           </div>
         </div>

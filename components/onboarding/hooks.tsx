@@ -1,5 +1,5 @@
 import { getConnectionSourceType, React, useEffect, useExtensionInfo } from "../../deps.ts";
-import { hasConnection, useMeConnectionQuery } from "../../shared/mod.ts";
+import { hasConnection, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "./mod.ts";
 
@@ -9,7 +9,7 @@ import { BasePage, OAuthConnectionPage } from "./mod.ts";
  * doesn't exist.
  */
 export function useOnboarding() {
-  const { meWithConnections, isFetchingUser } = useMeConnectionQuery();
+  const { orgUser, isFetchingOrgUser } = useOrgUserConnectionsQuery();
   const { pushPage } = usePageStack();
   const { extensionInfo } = useExtensionInfo();
 
@@ -18,9 +18,9 @@ export function useOnboarding() {
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
-    if (!hasConnection(meWithConnections, connectionSourceType) && !isFetchingUser) {
+    if (!hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser) {
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);
     }
-  }, [JSON.stringify(meWithConnections), isFetchingUser, extensionInfo]);
+  }, [JSON.stringify(orgUser), isFetchingOrgUser, extensionInfo]);
 }
