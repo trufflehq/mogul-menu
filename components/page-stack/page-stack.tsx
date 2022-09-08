@@ -7,13 +7,15 @@ export default function PageStack({
 }: {
   background?: string;
 }) {
-  const { pageStack, popPage } = usePageStack();
+  const { pageStack, popPage, peekPage } = usePageStack();
   useStyleSheet(styleSheet);
 
   const isPageStackEmpty = !pageStack || pageStack.length === 0;
 
   const handleEscape = (ev: KeyboardEvent) => {
-    if (ev.key === "Escape") {
+    const top = peekPage();
+    const isEscapeDisabled = top && top.isEscapeDisabled;
+    if (ev.key === "Escape" && !isEscapeDisabled) {
       popPage();
     }
   };
@@ -24,21 +26,18 @@ export default function PageStack({
     return () => {
       document.removeEventListener("keydown", handleEscape, false);
     };
-  }, []);
+  }, [JSON.stringify(pageStack)]);
   return (
     <>
       {isPageStackEmpty
         ? <></>
         : (
           <div className="c-page-stack" style={{ "--background": background }}>
-            <div className="container">
-              {pageStack.map((Component, idx) => (
-                <div key={idx} className="page">
-                  {/* {typeof Component === "function" ? <Component /> : Component} */}
-                  {Component}
-                </div>
-              ))}
-            </div>
+            {pageStack.map(({ Component }, idx) => (
+              <div key={idx} className="page">
+                {Component}
+              </div>
+            ))}
           </div>
         )}
     </>

@@ -1,7 +1,34 @@
 import { scss } from "../../deps.ts";
 
 export default scss`
+$ease-function: cubic-bezier(.4,.71,.18,.99);
+
 .c-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: var(--background);
+  animation: animatebottom 0.4s $ease-function;
+  z-index: 5;
+
+  @keyframes animatebottom{
+    from {
+      transform: translateY(100px);
+      opacity:0
+    }
+
+    to {
+      transform: translateY(0);
+      opacity:1
+    }
+  }
+
+  &.is-full-size {
+    z-index: 1001;
+    top: -40px;
+    height: calc(100% + 40px);
+  }
+  
   > .header {
     display: flex;
     justify-content: space-between;
@@ -41,6 +68,7 @@ export default scss`
   > .content {
     overflow-y: auto;
     flex: 1;
+    height: 100%;
   }
 }
 `;

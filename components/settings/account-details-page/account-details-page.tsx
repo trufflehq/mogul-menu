@@ -1,102 +1,54 @@
-import {
-  gql,
-  React,
-  TextField,
-  useEffect,
-  useMutation,
-  useQuery,
-  useState,
-  useStyleSheet,
-} from "../../../deps.ts";
+import { React, TextField, useEffect, useState, useStyleSheet } from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
 import { Page } from "../../page-stack/mod.ts";
+import { useOrgUserChatSettings, useSaveOrgUserSettings } from "../../../shared/mod.ts";
 import { SnackBar, useSnackBar } from "../../snackbar/mod.ts";
 import styleSheet from "./account-details-page.scss.js";
-
-const INITIAL_DATA_QUERY = gql`
-  query {
-    me {
-      id
-      name
-    }
-
-    orgUser {
-      keyValue(input: { key: "nameColor" }) {
-        key
-        value
-      }
-    }
-  }
-`;
-
-const SAVE_MUTATION = gql`
-  mutation ($username: String, $nameColor: String, $userId: String) {
-    userUpsert(input: { name: $username }) {
-      user {
-        id
-      }
-    }
-
-    keyValueUpsert(
-      input: {
-        sourceType: "user"
-        sourceId: $userId
-        key: "nameColor"
-        value: $nameColor
-      }
-    ) {
-      keyValue {
-        key
-        value
-      }
-    }
-  }
-`;
 
 export default function AccountDetailsPage() {
   useStyleSheet(styleSheet);
 
   const enqueueSnackBar = useSnackBar();
 
-  const [usernameState, setUsernameState] = useState();
-  const [nameColorState, setNameColorState] = useState();
+  const [username, setUsername] = useState<string>();
+  const [nameColor, setNameColor] = useState();
   const [hasChanged, setHasChanged] = useState(false);
 
-  const [{ data: initialData }] = useQuery({ query: INITIAL_DATA_QUERY });
-  const me = initialData?.me;
+  const { orgUser } = useOrgUserChatSettings();
   useEffect(() => {
-    const username = me?.name;
-    const nameColor = initialData?.orgUser?.keyValue?.value;
+    const username = orgUser?.name;
+    const nameColor = orgUser?.keyValue?.value;
 
-    setUsernameState(username);
-    setNameColorState(nameColor);
-  }, [initialData]);
+    setUsername(username);
+    setNameColor(nameColor);
+  }, [orgUser]);
 
-  const [_saveResult, saveSettings] = useMutation(SAVE_MUTATION);
+  const onSaveError = () => {
+    enqueueSnackBar(
+      <SnackBar
+        message="An error occurred while saving :("
+        messageBgColor="var(--mm-color-error)"
+        messageTextColor="var(--mm-color-text-error)"
+      />,
+    );
+  };
+
+  const onSave = () => {
+    enqueueSnackBar(
+      <SnackBar message="Your settings have been saved!" />,
+    );
+    setHasChanged(false);
+  };
+
+  const { saveOrgUserSettings } = useSaveOrgUserSettings(onSave, onSaveError);
 
   const save = async () => {
     if (!hasChanged) return;
-    const { error } = await saveSettings({
-      userId: me?.id,
-      nameColor: nameColorState,
-      username: usernameState,
-    });
-
-    if (error) {
-      console.error(error);
-      enqueueSnackBar(
-        <SnackBar
-          message="An error occurred while saving :("
-          messageBgColor="var(--mm-color-error)"
-          messageTextColor="var(--mm-color-text-error)"
-        />
-      );
-    } else {
-      enqueueSnackBar(
-        <SnackBar message="Your settings have been saved!" />,
-      );
-      setHasChanged(false);
-    }
+    await saveOrgUserSettings(
+      orgUser.user?.id,
+      username,
+      nameColor,
+    );
   };
 
   return (
@@ -108,9 +60,9 @@ export default function AccountDetailsPage() {
           <TextField
             onInput={(e) => {
               setHasChanged(true);
-              setUsernameState(e?.target?.value);
+              setUsername(e?.target?.value);
             }}
-            value={usernameState}
+            value={username}
           />
         </div>
         <div className="name-color-input input">
@@ -119,10 +71,10 @@ export default function AccountDetailsPage() {
             type="color"
             onInput={(e) => {
               setHasChanged(true);
-              setNameColorState(e?.target?.value);
+              setNameColor(e?.target?.value);
             }}
             tabIndex={0}
-            value={nameColorState}
+            value={nameColor}
           />
         </div>
         <Button style="primary" isDisabled={!hasChanged} onClick={save}>

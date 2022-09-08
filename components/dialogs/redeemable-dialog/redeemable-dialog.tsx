@@ -10,11 +10,7 @@ import UsernameGradientDialog from "../username-gradient-dialog/username-gradien
 import RecipeDialog from "../recipe-dialog/recipe-dialog.tsx";
 import StreamAlertRedeemDialog from "../stream-alert-redeem-dialog/stream-alert-redeem-dialog.tsx";
 import { useActivePowerupConnection, useOwnedCollectibleConnection } from "../../../shared/mod.ts";
-import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
-// FIXME - we'll need to bring back the jumper invalidation
-const MESSAGE = {
-  INVALIDATE_USER: "user.invalidate",
-};
+import { Collectible } from "../../../types/mod.ts";
 
 export interface RedeemableDialog {
   $title?: React.ReactNode;

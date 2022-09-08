@@ -1,7 +1,16 @@
-import { abbreviateNumber, jumper, React, useEffect, useState, useStyleSheet } from "../../deps.ts";
+import {
+  _clearCache,
+  abbreviateNumber,
+  GLOBAL_JUMPER_MESSAGES,
+  jumper,
+  React,
+  useEffect,
+  useState,
+  useStyleSheet,
+} from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
-import { MESSAGES, useExtensionAuth } from "../../shared/mod.ts";
+import { MOGUL_MENU_JUMPER_MESSAGES, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
 import stylesheet from "./channel-points.scss.js";
@@ -16,23 +25,20 @@ const CHANNEL_POINTS_STYLES = {
 
 export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg?: string }) {
   useStyleSheet(stylesheet);
-  const [isInitialized, setIsInitialized] = useState(false);
   const [isClaimable, setIsClaimable] = useState(false);
-  const { me, refetchMe } = useExtensionAuth();
-  const { channelPointsData, isFetchingChannelPoints, reexecuteChannelPointsQuery } =
-    useChannelPoints();
-
-  useEffect(() => {
-    if (!isInitialized) {
-      setIsInitialized(true);
-    }
-  }, [isFetchingChannelPoints]);
+  const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
+  const { channelPointsData, reexecuteChannelPointsQuery } = useChannelPoints();
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
-      if (message === MESSAGES.INVALIDATE_USER) {
-        refetchMe({ requestPolicy: "network-only" });
-      } else if (message === MESSAGES.INVALIDATE_CHANNEL_POINTS) {
+      if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
+        refetchOrgUserConnections({ requestPolicy: "network-only" });
+      } else if (message === MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
+        reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
+      } else if (message === GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
+        // reset the api client w/ the updated user and refetch user/channel points info
+        _clearCache();
+        refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       }
     });
@@ -52,8 +58,8 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
     setIsClaimable(false);
 
     await claim();
-    jumper.call("comms.postMessage", MESSAGES.INVALIDATE_USER);
-    jumper.call("comms.postMessage", MESSAGES.RESET_TIMER);
+    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
+    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
   };
 
   const channelPoints = abbreviateNumber(
@@ -79,11 +85,11 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
         <div className="coin">
           <ChannelPointsIcon />
         </div>
-        {isInitialized && (
+        {
           <div className="points">
             {channelPoints}
           </div>
-        )}
+        }
         <IsLive sourceType="youtubeLive">
           {isClaimable &&
             (

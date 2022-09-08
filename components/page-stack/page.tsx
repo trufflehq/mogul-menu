@@ -1,26 +1,49 @@
-import { Icon, React, useEffect, useRef, useStyleSheet } from "../../deps.ts";
+import { classKebab, Icon, React, useEffect, useRef, useStyleSheet } from "../../deps.ts";
 import { usePageStack } from "./mod.ts";
 import FocusTrap from "../focus-trap/focus-trap.tsx";
 import styleSheet from "./page.scss.js";
 
-export default function Page({
-  title,
-  headerTopRight,
-  onBack,
-  children,
-}: {
+interface PageProps {
   title?: React.ReactNode;
   headerTopRight?: React.ReactNode;
   onBack?: () => void;
   children?: React.ReactNode;
-}) {
-  const $$backIconRef = useRef<HTMLDivElement>(null);
+  shouldShowHeader?: boolean;
+  // some pages we don't want the user to be able to dismiss, e.g the onboarding flow
+  shouldDisableEscape?: boolean;
+  isFullSize?: boolean;
+}
+export default function Page(props: PageProps) {
   useStyleSheet(styleSheet);
+  const { shouldShowHeader } = props;
+
+  // We split out into two separate child components because the FocusTrap requires there to
+  // be at least one element in the child tree that's focusable, which isn't the case if it's not
+  // rendering the Page header.
+  return (
+    shouldShowHeader ? <FocusedTrappedPage {...props} /> : <PageBase {...props} />
+  );
+}
+
+function PageBase(props: PageProps) {
+  const {
+    title,
+    headerTopRight,
+    onBack,
+    children,
+    shouldShowHeader = true,
+    shouldDisableEscape = false,
+    isFullSize = false,
+  } = props;
+
+  const $$backIconRef = useRef<HTMLDivElement>(null);
 
   const { popPage } = usePageStack();
   const handleKeyPress = (ev: React.KeyboardEvent<HTMLDivElement>) => {
-    if ((ev.key === "Escape" || ev.key === "Enter" || ev.key === "ArrowLeft")) {
-      onBack?.() ?? popPage();
+    if (!shouldDisableEscape) {
+      if ((ev.key === "Escape" || ev.key === "Enter" || ev.key === "ArrowLeft")) {
+        onBack?.() ?? popPage();
+      }
     }
   };
   useEffect(() => {
@@ -36,8 +59,14 @@ export default function Page({
   };
 
   return (
-    <FocusTrap>
-      <div className="c-page">
+    <div
+      className={`c-page ${
+        classKebab({
+          isFullSize,
+        })
+      }`}
+    >
+      {shouldShowHeader && (
         <div className="header">
           <div className="left">
             <div
@@ -57,8 +86,19 @@ export default function Page({
           </div>
           {headerTopRight && <div className="right">{headerTopRight}</div>}
         </div>
-        <div className="content">{children}</div>
-      </div>
+      )}
+      <div className="content">{children}</div>
+    </div>
+  );
+}
+
+export function FocusedTrappedPage(props: PageProps) {
+  const { children } = props;
+  return (
+    <FocusTrap>
+      <PageBase {...props}>
+        {children}
+      </PageBase>
     </FocusTrap>
   );
 }

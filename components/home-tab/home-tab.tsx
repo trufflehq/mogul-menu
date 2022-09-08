@@ -21,7 +21,7 @@ import CPSpentTile from "../cp-spent-tile/cp-spent-tile.tsx";
 export default function HomeTab() {
   useStyleSheet(styleSheet);
   const { userInfoData } = useUserInfo();
-  const me = userInfoData?.me;
+  const name = userInfoData?.orgUser?.name;
   const org = userInfoData?.org;
   const activePowerups = userInfoData?.activePowerupConnection?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
@@ -73,7 +73,7 @@ export default function HomeTab() {
           <AccountAvatar size="72px" />
           <div className="info">
             <div className="top">
-              <div className="name">{me?.name}</div>
+              <div className="name">{name}</div>
               <ActivePowerups activePowerups={activePowerups} />
             </div>
             <div className="amounts">

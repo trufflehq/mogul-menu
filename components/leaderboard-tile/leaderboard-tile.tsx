@@ -91,6 +91,7 @@ function Leaderboard({ top3 }: { top3: OrgUserCounter[] }) {
         <LeaderboardAvatar
           key={contestant?.orgUser?.user?.id}
           user={contestant?.orgUser?.user}
+          name={contestant?.orgUser?.name ?? contestant?.orgUser?.user?.name}
           place={ranks[idx].text}
           color={ranks[idx].color}
         />
@@ -101,11 +102,12 @@ function Leaderboard({ top3 }: { top3: OrgUserCounter[] }) {
 
 interface LeaderboardAvatarProps {
   user: User;
+  name: string;
   place: string;
   color: string;
 }
 
-function LeaderboardAvatar({ user, place, color }: LeaderboardAvatarProps) {
+function LeaderboardAvatar({ user, name, place, color }: LeaderboardAvatarProps) {
   return (
     <div className="contestant">
       <div
@@ -116,7 +118,7 @@ function LeaderboardAvatar({ user, place, color }: LeaderboardAvatarProps) {
       >
         <Avatar user={user} size="44px" />
         <div className="username">
-          {user?.name}
+          {name}
         </div>
       </div>
       <div

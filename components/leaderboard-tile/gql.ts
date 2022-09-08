@@ -9,6 +9,7 @@ export const LEADERBOARD_COUNTER_QUERY = gql`
       nodes {
         count
         orgUser {
+          name
           user {
             id
             name

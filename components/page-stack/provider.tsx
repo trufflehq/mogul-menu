@@ -1,10 +1,20 @@
 import { React, useState } from "../../deps.ts";
 import { PageStackContext } from "./context.ts";
-export function PageStackProvider({ children }: { children: React.ReactNode }) {
-  const [pageStack, setPageStack] = useState<React.ReactNode[]>([]);
 
-  const pushPage = (Component: React.ReactNode) => {
-    setPageStack((pageStack) => pageStack.concat(Component));
+export interface PageState {
+  Component: React.ReactNode;
+  isEscapeDisabled: boolean;
+}
+export function PageStackProvider({ children }: { children: React.ReactNode }) {
+  const [pageStack, setPageStack] = useState<PageState[]>([]);
+
+  const pushPage = (PageComponent: React.ReactNode, isEscapeDisabled = false) => {
+    setPageStack((pageStack) => pageStack.concat([{ Component: PageComponent, isEscapeDisabled }]));
+  };
+
+  const peekPage = () => {
+    const page = pageStack[0];
+    return page;
   };
 
   const popPage = () => {
@@ -22,6 +32,7 @@ export function PageStackProvider({ children }: { children: React.ReactNode }) {
         pushPage,
         popPage,
         clearPageStack,
+        peekPage,
       }}
     >
       {children}

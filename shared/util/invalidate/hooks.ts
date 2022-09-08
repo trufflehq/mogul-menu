@@ -1,13 +1,15 @@
-import { jumper, useEffect } from "../../../deps.ts";
+import { GLOBAL_JUMPER_MESSAGES, jumper, useEffect } from "../../../deps.ts";
 import {
-  MESSAGES,
   useActivePowerupConnection,
   useOwnedCollectibleConnection,
   useSeasonPassData,
   useUserInfo,
 } from "../mod.ts";
 
-export function useInvalidate() {
+/**
+ * Listens for invalidate messages from jumper and invalidates all of the extension user's urql queries
+ */
+export function useInvalidateAllQueriesListener() {
   const { reexecuteUserInfoQuery } = useUserInfo();
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
@@ -15,7 +17,7 @@ export function useInvalidate() {
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
-      if (message === MESSAGES.INVALIDATE_USER) {
+      if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
         reexecuteUserInfoQuery();
         reexecuteActivePowerupConnQuery();
         reexecuteOwnedCollectibleConnQuery();
