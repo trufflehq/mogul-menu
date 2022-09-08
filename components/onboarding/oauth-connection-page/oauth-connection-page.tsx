@@ -50,7 +50,11 @@ function OAuthButton(
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
-    jumper.call("comms.postMessage", JUMPER_MESSAGES.CLEAR_CACHE);
+
+    // let other embeds know that the user has changed and they need to
+    // reset their api client and cache
+    jumper.call("comms.postMessage", JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
+
     pushPage(
       <ChatSettingsPage
         onContinue={clearPageStack}
@@ -58,6 +62,9 @@ function OAuthButton(
     );
   };
 
+  // listens for a post message from the OAuthIframe component
+  // and call onSetAccessToken when a user logs in using a 3rd party connection
+  // and the user's truffle access token is returned
   useHandleTruffleOAuth(onSetAccessToken);
 
   const accessToken = getAccessToken();

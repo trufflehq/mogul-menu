@@ -1,43 +1,26 @@
 import {
   getConnectionSourceType,
-  jumper,
   React,
   useEffect,
+  useExtensionInfo,
   useQuery,
-  useState,
 } from "../../../deps.ts";
 import { ME_CONNECTIONS_QUERY } from "../../mod.ts";
 import { usePageStack } from "../../../components/page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "../../../components/onboarding/mod.ts";
-import { ExtensionInfo, MeConnectionUser } from "../../../types/mod.ts";
+import { MeConnectionUser } from "../../../types/mod.ts";
 import { hasConnection } from "../../mod.ts";
 
 /**
- * This hook will grab the extension info on mount
+ * Checks if the logged in user has the appropriate connection for the source the embed is
+ * being injected into (YouTube or Twitch) and starts the onboarding process if the connection
+ * doesn't exist.
  */
-export function useExtensionInfo() {
-  const [extensionInfo, setExtensionInfo] = useState<ExtensionInfo>();
-
-  useEffect(() => {
-    const fetchExtensionInfo = async () => {
-      // grabs credentials from the extension so the embed knows the source of
-      // where it's being injected
-      const extensionInfo: ExtensionInfo | undefined = await jumper.call(
-        "context.getInfo",
-      );
-      setExtensionInfo(extensionInfo);
-    };
-
-    fetchExtensionInfo();
-  }, []);
-
-  return { extensionInfo };
-}
-
 export function useOnboarding() {
   const { meWithConnections, isFetchingUser } = useMeConnectionQuery();
   const { pushPage } = usePageStack();
   const { extensionInfo } = useExtensionInfo();
+
   useEffect(() => {
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo?.pageInfo)

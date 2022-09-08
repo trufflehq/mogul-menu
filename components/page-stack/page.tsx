@@ -9,6 +9,7 @@ interface PageProps {
   onBack?: () => void;
   children?: React.ReactNode;
   shouldShowHeader?: boolean;
+  // some pages we don't want the user to be able to dismiss, e.g the onboarding flow
   shouldDisableEscape?: boolean;
   isFull?: boolean;
 }

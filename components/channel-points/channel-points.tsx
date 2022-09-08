@@ -34,8 +34,11 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
         refetchMeConnections({ requestPolicy: "network-only" });
       } else if (message === JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
-      } else if (message === JUMPER_MESSAGES.CLEAR_CACHE) {
+      } else if (message === JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
+        // reset the api client w/ the updated user and refetch user/channel points info
         _clearCache();
+        refetchMeConnections({ requestPolicy: "network-only" });
+        reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       }
     });
 

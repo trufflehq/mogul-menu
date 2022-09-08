@@ -49,7 +49,10 @@ export {
   hexOpacity,
   rgb2rgba,
 } from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
-export { getConnectionSourceType } from "https://tfl.dev/@truffle/utils@~0.0.7/embed/mod.ts";
+export {
+  getConnectionSourceType,
+  useExtensionInfo,
+} from "https://tfl.dev/@truffle/utils@~0.0.11/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
