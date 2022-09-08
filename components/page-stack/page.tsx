@@ -11,7 +11,7 @@ interface PageProps {
   shouldShowHeader?: boolean;
   // some pages we don't want the user to be able to dismiss, e.g the onboarding flow
   shouldDisableEscape?: boolean;
-  isFull?: boolean;
+  isFullSize?: boolean;
 }
 export default function Page(props: PageProps) {
   useStyleSheet(styleSheet);
@@ -33,7 +33,7 @@ function RawPage(props: PageProps) {
     children,
     shouldShowHeader = true,
     shouldDisableEscape = false,
-    isFull = false,
+    isFullSize = false,
   } = props;
 
   const $$backIconRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ function RawPage(props: PageProps) {
     <div
       className={`c-page ${
         classKebab({
-          isFull,
+          isFullSize,
         })
       }`}
     >

@@ -23,7 +23,7 @@ export default function OAuthConnectionPage(
   useStyleSheet(stylesheet);
 
   return (
-    <Page isFull={true} shouldShowHeader={false} shouldDisableEscape={true}>
+    <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-oauth-connection-page">
         <ImageByAspectRatio
           imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"

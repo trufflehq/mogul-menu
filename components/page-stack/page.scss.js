@@ -23,7 +23,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     }
   }
 
-  &.is-full {
+  &.is-full-size {
     z-index: 1001;
     top: -40px;
     height: calc(100% + 40px);

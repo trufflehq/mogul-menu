@@ -38,7 +38,7 @@ export default function ChatSettingsPage(
       }, { additionalTypenames: ["MeUser", "User", "Connection", "ConnectionConnection"] });
     }
 
-    // TODO - add chat color here
+    // TODO - add chat color upsert here
   };
 
   // we want to prepopulate the chat username with the username of the user that was logged in during the prior 3rd party OAuth
@@ -54,7 +54,7 @@ export default function ChatSettingsPage(
     onContinue?.();
   };
   return (
-    <Page isFull={true} shouldShowHeader={false} shouldDisableEscape={true}>
+    <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-chat-settings-page">
         <div className="hero">
           <ImageByAspectRatio
@@ -67,7 +67,7 @@ export default function ChatSettingsPage(
           <div className="welcome">
             {meWithConnections?.name ? `Welcome; ${meWithConnections?.name}!` : "Welcome!"}
           </div>
-          <div className="info">Go ahead, change your chat username and color if you'd like</div>
+          <div className="info">Go ahead, change your chat username if you'd like</div>
         </div>
         <div className="settings">
           <div className="username">
@@ -81,7 +81,7 @@ export default function ChatSettingsPage(
           </div>
         </div>
         <footer className="footer">
-          <Button style="primary" shouldHandleLoading={true} onClick={onClick}>
+          <Button style="primary" shouldHandleLoading onClick={onClick}>
             Continue
           </Button>
         </footer>
