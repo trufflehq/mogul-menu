@@ -21,11 +21,11 @@ export default function Page(props: PageProps) {
   // be at least one element in the child tree that's focusable, which isn't the case if it's not
   // rendering the Page header.
   return (
-    shouldShowHeader ? <FocusedTrappedPage {...props} /> : <RawPage {...props} />
+    shouldShowHeader ? <FocusedTrappedPage {...props} /> : <PageBase {...props} />
   );
 }
 
-function RawPage(props: PageProps) {
+function PageBase(props: PageProps) {
   const {
     title,
     headerTopRight,
@@ -96,9 +96,9 @@ export function FocusedTrappedPage(props: PageProps) {
   const { children } = props;
   return (
     <FocusTrap>
-      <RawPage {...props}>
+      <PageBase {...props}>
         {children}
-      </RawPage>
+      </PageBase>
     </FocusTrap>
   );
 }
