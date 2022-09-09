@@ -27,7 +27,10 @@ export const SAVE_ORG_USER_SETTINGS_MUTATION = gql`
 export const ORG_USER_CHAT_SETTINGS_QUERY = gql`
   query {
     orgUser {
+      id
       name
+      userId
+      orgId
       keyValue(input: { key: "nameColor" }) {
         key
         value
