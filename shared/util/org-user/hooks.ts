@@ -13,6 +13,7 @@ export function useSaveOrgUserSettings(
     username?: string,
     nameColor?: string,
   ) => {
+    console.log('saveOrgUserSettings', orgUser, username, nameColor);
     const { error } = await saveSettings({
       orgUserId: orgUser.id,
       userId: orgUser.user.id,
