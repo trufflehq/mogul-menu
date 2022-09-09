@@ -19,15 +19,17 @@ export function useOnboarding() {
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
-    if(extensionInfo?.pageInfo) {
+    if (extensionInfo?.pageInfo) {
       console.log(
         "getConnectionSourceType(extensionInfo.pageInfo)",
         getConnectionSourceType(extensionInfo.pageInfo),
       );
     }
     console.log("connectionSourceType", connectionSourceType);
-    if (connectionSourceType && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser) {
-      console.log('missing connection sourceType')
+    if (
+      extensionInfo?.pageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
+    ) {
+      console.log("missing connection sourceType");
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);
     }
