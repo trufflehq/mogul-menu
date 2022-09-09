@@ -48,6 +48,7 @@ function OAuthButton(
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+    console.log("onSetAccessToken", oauthResponse);
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
 
