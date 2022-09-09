@@ -48,7 +48,6 @@ function OAuthButton(
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
-    console.log("onSetAccessToken", oauthResponse);
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
 
@@ -71,23 +70,13 @@ function OAuthButton(
   const accessToken = getAccessToken();
   const context = globalContext.getStore();
   const orgId = context?.orgId;
-  console.log("orgId", orgId);
+
   return (
-    // <OAuthIframe
-    //   sourceType={sourceType}
-    //   accessToken={accessToken}
-    //   orgId={orgId}
-    //   styles={{
-    //     width: "308px",
-    //     height: "42px",
-    //     margin: "20px auto",
-    //     border: "none",
-    //   }}
-    // />
-    <iframe
-      // src={`https://third-party-oauth.truffle.vip/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
-      src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
-      style={{
+    <OAuthIframe
+      sourceType={sourceType}
+      accessToken={accessToken}
+      orgId={orgId}
+      styles={{
         width: "308px",
         height: "42px",
         margin: "20px auto",

@@ -1,4 +1,10 @@
-import { getConnectionSourceType, React, useEffect, useExtensionInfo, globalContext } from "../../deps.ts";
+import {
+  getConnectionSourceType,
+  globalContext,
+  React,
+  useEffect,
+  useExtensionInfo,
+} from "../../deps.ts";
 import { hasConnection, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "./mod.ts";
@@ -14,9 +20,6 @@ export function useOnboarding() {
   const { extensionInfo } = useExtensionInfo();
 
   console.log("orgUser", orgUser, isFetchingOrgUser, extensionInfo);
-  const context = globalContext.getStore();
-  console.log('context', context)
-  const orgId = context?.orgId;
   useEffect(() => {
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo.pageInfo)
@@ -28,7 +31,9 @@ export function useOnboarding() {
         getConnectionSourceType(extensionInfo.pageInfo),
       );
     }
-    const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV ? extensionInfo?.pageInfo : true;
+    const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
+      ? extensionInfo?.pageInfo
+      : true;
     console.log("connectionSourceType", connectionSourceType);
     if (
       hasPageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
