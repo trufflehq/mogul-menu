@@ -53,7 +53,7 @@ export {
   getConnectionSourceType,
   GLOBAL_JUMPER_MESSAGES,
   useExtensionInfo,
-} from "https://tfl.dev/@truffle/utils@~0.0.12/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@~0.0.13/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
