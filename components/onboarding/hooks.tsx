@@ -13,11 +13,13 @@ export function useOnboarding() {
   const { pushPage } = usePageStack();
   const { extensionInfo } = useExtensionInfo();
 
+  console.log('orgUser', orgUser, isFetchingOrgUser, extensionInfo);
   useEffect(() => {
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
+    console.log('connectionSourceType', connectionSourceType)
     if (!hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser) {
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);

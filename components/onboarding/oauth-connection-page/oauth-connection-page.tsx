@@ -2,6 +2,7 @@ import {
   _setAccessTokenAndClear,
   ConnectionSourceType,
   getAccessToken,
+  GLOBAL_JUMPER_MESSAGES,
   globalContext,
   ImageByAspectRatio,
   jumper,
@@ -10,7 +11,6 @@ import {
   React,
   useHandleTruffleOAuth,
   useStyleSheet,
-  GLOBAL_JUMPER_MESSAGES
 } from "../../../deps.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
@@ -48,6 +48,7 @@ function OAuthButton(
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+    console.log("onSetAccessToken", oauthResponse);
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
 
