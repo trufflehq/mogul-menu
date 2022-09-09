@@ -13,14 +13,21 @@ export function useOnboarding() {
   const { pushPage } = usePageStack();
   const { extensionInfo } = useExtensionInfo();
 
-  console.log('orgUser', orgUser, isFetchingOrgUser, extensionInfo);
+  console.log("orgUser", orgUser, isFetchingOrgUser, extensionInfo);
   useEffect(() => {
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
-    console.log('connectionSourceType', connectionSourceType)
-    if (!hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser) {
+    if(extensionInfo?.pageInfo) {
+      console.log(
+        "getConnectionSourceType(extensionInfo.pageInfo)",
+        getConnectionSourceType(extensionInfo.pageInfo),
+      );
+    }
+    console.log("connectionSourceType", connectionSourceType);
+    if (connectionSourceType && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser) {
+      console.log('missing connection sourceType')
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);
     }
