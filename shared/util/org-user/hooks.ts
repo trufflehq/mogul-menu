@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "../../../deps.ts";
+import { OrgUserChatSettings } from "../../../types/mod.ts";
 import { ORG_USER_CHAT_SETTINGS_QUERY, SAVE_ORG_USER_SETTINGS_MUTATION } from "./gql.ts";
 
 export function useSaveOrgUserSettings(
@@ -8,12 +9,13 @@ export function useSaveOrgUserSettings(
   const [, saveSettings] = useMutation(SAVE_ORG_USER_SETTINGS_MUTATION);
 
   const saveOrgUserSettings = async (
-    userId?: string,
+    orgUser: OrgUserChatSettings,
     username?: string,
     nameColor?: string,
   ) => {
     const { error } = await saveSettings({
-      userId,
+      orgUserId: orgUser.id,
+      userId: orgUser.user.id,
       username,
       nameColor,
     }, {
@@ -37,7 +39,7 @@ export function useOrgUserChatSettings() {
   });
 
   return {
-    orgUser: data?.orgUser,
+    orgUser: data?.orgUser as OrgUserChatSettings,
     isFetching: fetching,
   };
 }

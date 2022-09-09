@@ -11,7 +11,7 @@ export default function AccountDetailsPage() {
   const enqueueSnackBar = useSnackBar();
 
   const [username, setUsername] = useState<string>();
-  const [nameColor, setNameColor] = useState();
+  const [nameColor, setNameColor] = useState<string>();
   const [hasChanged, setHasChanged] = useState(false);
 
   const { orgUser } = useOrgUserChatSettings();
@@ -45,7 +45,7 @@ export default function AccountDetailsPage() {
   const save = async () => {
     if (!hasChanged) return;
     await saveOrgUserSettings(
-      orgUser.user?.id,
+      orgUser,
       username,
       nameColor,
     );

@@ -1,4 +1,10 @@
-import { getConnectionSourceType, React, useEffect, useExtensionInfo } from "../../deps.ts";
+import {
+  getConnectionSourceType,
+  globalContext,
+  React,
+  useEffect,
+  useExtensionInfo,
+} from "../../deps.ts";
 import { hasConnection, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "./mod.ts";
@@ -25,9 +31,12 @@ export function useOnboarding() {
         getConnectionSourceType(extensionInfo.pageInfo),
       );
     }
+    const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
+      ? extensionInfo?.pageInfo
+      : true;
     console.log("connectionSourceType", connectionSourceType);
     if (
-      extensionInfo?.pageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
+      hasPageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
     ) {
       console.log("missing connection sourceType");
       pushPage(<BasePage />);

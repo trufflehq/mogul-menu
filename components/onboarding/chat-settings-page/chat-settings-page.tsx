@@ -32,7 +32,7 @@ export default function ChatSettingsPage(
   }, [orgUser]);
 
   const onClick = async () => {
-    await saveOrgUserSettings(orgUser.user?.id, userName, nameColor);
+    await saveOrgUserSettings(orgUser, userName, nameColor);
     onContinue?.();
   };
 

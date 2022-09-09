@@ -1,8 +1,8 @@
 import { gql } from "../../../deps.ts";
 
 export const SAVE_ORG_USER_SETTINGS_MUTATION = gql`
-  mutation ($username: String, $nameColor: String, $userId: String) {
-    orgUserUpsert(input: { name: $username }) {
+  mutation ($orgUserId: ID, $username: String, $nameColor: String, $userId: String) {
+    orgUserUpsert(input: { id: $orgUserId, name: $username }) {
       orgUser {
         id
       }
