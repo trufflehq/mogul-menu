@@ -42,6 +42,7 @@ export {
   formatPercentage,
   zeroPrefix,
 } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+export type { DeepPick } from "https://npm.tfl.dev/ts-deep-pick";
 export { default as jumper } from "https://tfl.dev/@truffle/utils@0.0.3/jumper/jumper.ts";
 export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@~0.0.2/cookie/cookie.ts";
 export {
