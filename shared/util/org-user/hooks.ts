@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "../../../deps.ts";
 import { OrgUserChatSettings } from "../../../types/mod.ts";
+import { invalidateExtensionUser } from "../jumper/util.ts";
 import { ORG_USER_CHAT_SETTINGS_QUERY, SAVE_ORG_USER_SETTINGS_MUTATION } from "./gql.ts";
 
 export function useSaveOrgUserSettings(
@@ -13,7 +14,7 @@ export function useSaveOrgUserSettings(
     username?: string,
     nameColor?: string,
   ) => {
-    console.log('saveOrgUserSettings', orgUser, username, nameColor);
+    console.log("saveOrgUserSettings", orgUser, username, nameColor);
     const { error } = await saveSettings({
       orgUserId: orgUser.id,
       userId: orgUser.user.id,
@@ -22,6 +23,8 @@ export function useSaveOrgUserSettings(
     }, {
       additionalTypenames: ["MeUser", "User", "OrgUser", "Connection", "ConnectionConnection"],
     });
+
+    invalidateExtensionUser();
 
     if (error) {
       console.error(error);
