@@ -16,7 +16,7 @@ import { MogulMenuProps } from "./menu.tsx";
 export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
   useStyleSheet(styleSheet);
   useInvalidateAllQueriesListener();
-  // useOnboarding();
+  useOnboarding();
 
   return (
     <DraggableMenu {...props}>
