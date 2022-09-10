@@ -24,15 +24,16 @@ export const DEFAULT_TABS = [
     $el: CollectionTab,
   },
   {
-    text: "Battle Pass",
-    slug: "battle-pass",
-    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
-    $el: SeasonPassTab,
-  },
-  {
     text: "Shop",
     slug: "shop",
     imgUrl: "https://cdn.bio/assets/images/features/browser_extension/store.svg",
     $el: ChannelPointsShopTab,
   },
 ];
+
+export const SEASON_PASS_TAB = {
+  text: "Battle Pass",
+  slug: "battle-pass",
+  imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
+  $el: SeasonPassTab,
+};

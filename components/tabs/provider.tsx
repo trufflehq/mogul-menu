@@ -2,9 +2,14 @@ import { React } from "../../deps.ts";
 import { useTabsReducer } from "./hooks.ts";
 import { TabsContext, TabSlugContext } from "./context.ts";
 import { DEFAULT_TABS } from "./constants.ts";
+import { TabDefinition } from "./mod.ts";
 
-export function TabsProvider({ children }: { children: React.ReactNode }) {
-  const tabStateManager = useTabsReducer(DEFAULT_TABS);
+export function TabsProvider(
+  { tabs, children }: { tabs?: TabDefinition[]; children: React.ReactNode },
+) {
+  if (!tabs) return;
+
+  const tabStateManager = useTabsReducer(tabs);
   return (
     <TabsContext.Provider value={tabStateManager}>
       {children}
