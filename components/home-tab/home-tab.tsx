@@ -28,7 +28,7 @@ export default function HomeTab() {
 
   const xp = userInfoData?.seasonPass?.xp?.count;
   const hasChannelPoints = true;
-  const hasBattlePass = true;
+  const hasBattlePass = xp !== undefined;
 
   const { pushPage } = usePageStack();
   const { pushDialog } = useDialog();
@@ -92,17 +92,20 @@ export default function HomeTab() {
                   </div>
                 </div>
               )}
-              <div className="amount">
-                <div className="icon">
-                  <ImageByAspectRatio
-                    imageUrl={xpSrc}
-                    aspectRatio={1}
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div className="amount">{abbreviateNumber(xp || 0, 1)}</div>
-              </div>
+              {hasBattlePass &&
+                (
+                  <div className="amount">
+                    <div className="icon">
+                      <ImageByAspectRatio
+                        imageUrl={xpSrc}
+                        aspectRatio={1}
+                        width={24}
+                        height={24}
+                      />
+                    </div>
+                    <div className="amount">{abbreviateNumber(xp || 0, 1)}</div>
+                  </div>
+                )}
             </div>
           </div>
         </div>
