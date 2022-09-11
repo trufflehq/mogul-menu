@@ -28,13 +28,21 @@ export default function OAuthConnectionPage(
         <ImageByAspectRatio
           imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
           widthPx={576}
-          height={327}
+          height={300}
         />
         <div className="info">
-          Start earning channel points, unlocking rewards, and participating in polls and
-          predictions
+          Connect your YouTube account to share your name and channel ID to start earning channel
+          points, unlocking rewards, and participating in polls and predictions through Truffle.
         </div>
         <OAuthButton sourceType={sourceType} />
+        <a
+          className="policies mm-text-link"
+          target={"_blank"}
+          href={"https://truffle.vip/policies"}
+          rel="noreferrer"
+        >
+          Privacy Policies
+        </a>
       </div>
     </Page>
   );

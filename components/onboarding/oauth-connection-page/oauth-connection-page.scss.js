@@ -19,7 +19,7 @@ export default scss`
     align-items: center;
     justify-content: center; 
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     margin-top: 40px;
     font-weight: bold;
     color: var(--mm-color-text-bg-primary);
@@ -38,6 +38,10 @@ export default scss`
 
   .youtube {
     background: rgba(235, 50, 25, 1);
+  }
+
+  .policies {
+    margin: 0 auto;
   }
 }
 `;
