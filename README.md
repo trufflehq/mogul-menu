@@ -1,40 +1,59 @@
-# Create Ultra App
+# `@truffle/mogul-menu` 🍄
 
-```sh
-git clone https://github.com/exhibitionist-digital/create-ultra-app
-cd create-ultra-app
-deno task dev
+The main menu used in the Truffle.TV browser extension.
+
+### Installation
+
+To get started you will need a Truffle Development org and API key. If you don't have one, reach out in the [Truffle Dev Platform Discord](https://discord.gg/SkA6QXBQ) and we'll get you setup if you're interested in contributing.
+
+* Run through the first step in the [Get Started guide](https://docs.truffle.vip/the-basics/get-started) to get setup with `truffle-cli`.
+
+* Fork this package to your development org:
+```shell
+truffle-cli fork @truffle/mogul-menu mogul-menu
 ```
 
-Requires Deno 1.20.6+
-
-### Dev
-
-`deno task dev` will start a local server on port 8000.
-
-### Vendor
-
-`deno task vendor` will create a vendored import map: `vendorMap.json`.
-
-You can plug this back into Ultra in the `deno.json` config file.
-
-```javascript
-{
-  "tasks": {
-    // tasks omitted for clarity
-  },
-  "importMap": "vendorMap.json" // use either importMap.json or vendorMap.json
-}
+* Update `truffle.config.mjs` to:
+```js
+export default {
+  name: "@<dev-org>/mogul-menu",
+  version: "<mogul-menu version>",
+  apiUrl: "https://mycelium.staging.bio/graphql",
+};
 ```
 
-> Note: You will need to restart the server when swapping import maps.
+* Run `truffle-cli deploy`
 
-### Start
+### Development
+* Start the local dev server with `truffle-cli dev`.
+* Event though `truffle-dev-server` technically runs on Node 18, we still recommend using the [Deno VSCode Extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno) during development to help 
+with url imports, intellisense, and formatting.
 
-`deno task start` will run the server in production mode. Cached ESM imports,
-and no websocket reloader. Uses whichever import map you have defined.
+### Project Structure
 
-### Cache
+* `routes/` there are two routes you can use for local development:
+  * `/home` loads in the menu.
+  * `/claim` loads in the channel points widget that appears under chat.
+* `components/` all of the project React components
+* `shared/`
+  * `shared/gql/` shared GraphQL fragments
+  * `shared/util/` shared hooks, functions, and other utilities
+* `types/`
+  * Shared types for components and the Truffle API. Plan on bringing this over to the `shared/` folder.
+* `truffle.config.mjs` the Truffle package config.
+* `truffle.secret.mjs` package API key.
 
-`deno task cache` will refresh the cache for `server.ts`. This can be useful if
-you run into any issues when swapping in between vendored and CDN import maps.
+### Usage
+To import `mogul-menu`into another Truffle project, you can import via url with:
+```tsx
+import MogulMenu from "https://tfl.dev/@truffle/mogul-menu@^0.1.84/components/menu/menu.tsx";
+
+...
+
+return (
+       <MogulMenu
+        iconImageObj={...}
+        tabs={...}
+      />
+)
+```
