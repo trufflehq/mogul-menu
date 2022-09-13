@@ -14,6 +14,7 @@ export interface PollVote {
 }
 
 export interface Poll {
+  __typename: "Poll";
   id: string;
   question: string;
   options: PollOption[];
