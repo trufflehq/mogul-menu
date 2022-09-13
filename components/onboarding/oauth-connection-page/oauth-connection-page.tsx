@@ -31,8 +31,11 @@ export default function OAuthConnectionPage(
           height={300}
         />
         <div className="info">
-          Connect your YouTube account to share your name and channel ID to start earning channel
-          points, unlocking rewards, and participating in polls and predictions through Truffle.
+          <div className="title">
+            Let's get started
+          </div>
+          Connect your Youtube account to start earning channel points, unlocking rewards, and
+          participating in polls and predictions through Truffle
         </div>
         <OAuthButton sourceType={sourceType} />
         <a
@@ -85,9 +88,9 @@ function OAuthButton(
       accessToken={accessToken}
       orgId={orgId}
       styles={{
-        width: "148px",
+        width: "236px",
         height: "42px",
-        margin: "20px auto",
+        margin: "20px auto 8px auto",
         border: "none",
       }}
     />
