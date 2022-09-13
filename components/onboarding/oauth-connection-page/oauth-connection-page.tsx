@@ -85,7 +85,7 @@ function OAuthButton(
       accessToken={accessToken}
       orgId={orgId}
       styles={{
-        width: "308px",
+        width: "148px",
         height: "42px",
         margin: "20px auto",
         border: "none",
