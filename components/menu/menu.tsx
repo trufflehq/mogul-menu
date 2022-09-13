@@ -1,4 +1,4 @@
-import { React } from "../../deps.ts";
+import { globalContext, React } from "../../deps.ts";
 import MenuBody from "./menu-body.tsx";
 import MenuProvider from "./menu-provider.tsx";
 import { File } from "../../types/mod.ts";
@@ -13,9 +13,10 @@ export interface MogulMenuProps {
 }
 export default function Menu(props: MogulMenuProps) {
   const tabs = useDynamicTabs();
-
   // wait until we have loaded the tabs
   if (!tabs) return <></>;
+  const context = globalContext.getStore();
+  console.log("orgId", context.orgId);
 
   props = { ...props, tabs };
 

@@ -7,8 +7,8 @@ export default {
   // apiUrl: "https://mycelium.staging.bio/graphql",
 
   // prod
-  apiUrl: "https://mycelium.truffle.vip/graphql",
+  // apiUrl: "https://mycelium.truffle.vip/graphql",
 
   // localhost
-  // apiUrl: 'http://localhost:50420/graphql'
+  apiUrl: 'http://localhost:50420/graphql'
 };

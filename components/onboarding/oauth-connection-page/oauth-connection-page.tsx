@@ -83,11 +83,20 @@ function OAuthButton(
   const orgId = context?.orgId;
 
   return (
-    <OAuthIframe
-      sourceType={sourceType}
-      accessToken={accessToken}
-      orgId={orgId}
-      styles={{
+    // <OAuthIframe
+    //   sourceType={sourceType}
+    //   accessToken={accessToken}
+    //   orgId={orgId}
+    //   styles={{
+    //     width: "308px",
+    //     height: "42px",
+    //     margin: "20px auto",
+    //     border: "none",
+    //   }}
+    // />
+    <iframe
+      src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
+      style={{
         width: "236px",
         height: "42px",
         margin: "20px auto 8px auto",
