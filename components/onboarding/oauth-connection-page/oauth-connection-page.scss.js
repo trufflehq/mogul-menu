@@ -12,6 +12,7 @@ export default scss`
   
   box-sizing: border-box;
   padding: 48px 32px;
+  
 
   > .info {
     @include flex-column;
@@ -21,8 +22,12 @@ export default scss`
     text-align: center;
     font-size: 16px;
     margin-top: 40px;
-    font-weight: bold;
     color: var(--mm-color-text-bg-primary);
+
+    > .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
   }
 
   .oauth-button {
@@ -30,7 +35,7 @@ export default scss`
     align-items: center;
     max-width: 308px;
     box-sizing: border-box;
-    margin: 20px auto;
+    margin: 20px auto 8px auto;
     padding: 12px, 20px, 12px, 20px;
     height: 42px;
     gap: 8px;
