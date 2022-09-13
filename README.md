@@ -32,8 +32,8 @@ with url imports, intellisense, and formatting.
 ### Project Structure
 
 * `routes/` there are two routes you can use for local development:
-  * `/home` loads in the menu.
-  * `/claim` loads in the channel points widget that appears under chat.
+  * `home/` loads in the menu.
+  * `claim/` loads in the channel points widget that appears under chat.
 * `components/` all of the project React components
 * `shared/`
   * `shared/gql/` shared GraphQL fragments
