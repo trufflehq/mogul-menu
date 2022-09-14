@@ -21,7 +21,11 @@ export function useFcmTokenManager() {
   // listen to the notification permission state and get an
   // fcm token if the user granted notification permissions
   useEffect(() => {
-    if (notificationPermission === "granted" && firebaseApp) {
+    if (
+      firebaseApp &&
+      swRegistration &&
+      notificationPermission === "granted"
+    ) {
       const messaging = getFCMMessaging(firebaseApp);
       getFCMToken(messaging, {
         vapidKey: TRUFFLE_FIREBASE_CONFIG.vapidKey,
@@ -30,7 +34,7 @@ export function useFcmTokenManager() {
         setFcmToken(token);
       });
     }
-  }, [notificationPermission, firebaseApp]);
+  }, [notificationPermission, firebaseApp, swRegistration]);
 
   return { requestNotificationPermission, notificationPermission, fcmToken };
 }
