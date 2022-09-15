@@ -1,5 +1,8 @@
 import { React, useEffect } from "../../../deps.ts";
+import { useGoogleFontLoader } from "./hooks.ts";
 const DEFAULT_FONT_FAMILY = "Poppins";
+const SECONDARY_FONT_FAMILY = "Roboto";
+
 function ThemeComponent({
   colorBgPrimary = "#050D13",
   colorBgSecondary = "#161F2C",
@@ -24,15 +27,10 @@ function ThemeComponent({
   colorTextPositive = "#000000",
   colorDemphasizedText = "rgba(255, 255, 255, 0.76)",
   fontFamily = DEFAULT_FONT_FAMILY,
+  secondaryFontFamily = SECONDARY_FONT_FAMILY,
 }) {
-  useEffect(() => {
-    const font = document.createElement("link");
-    font.href =
-      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
-    font.rel = "stylesheet";
-    document.head.appendChild(font);
-  }, []);
-
+  useGoogleFontLoader(() => [fontFamily, secondaryFontFamily], [fontFamily, secondaryFontFamily]);
+  
   return (
     <>
       <style>
@@ -77,6 +75,8 @@ function ThemeComponent({
 
           /* font family */
           --mm-font-family: ${fontFamily};
+          --mm-secondary-font-family: ${secondaryFontFamily};
+
 
           /* Truffle UI overrides */
           --tfl-color-surface-border-selected: var(--mm-color-primary);
