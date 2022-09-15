@@ -1,21 +1,36 @@
-import { React, useMemo, usePollingQuery, useStyleSheet } from "../../deps.ts";
+import { jumper, React, useEffect, useMemo, usePollingQuery, useStyleSheet } from "../../deps.ts";
 import {
   ACTIVE_POLL_QUERY,
   CRYSTAL_BALL_ICON,
   CRYSTAL_BALL_ICON_VIEWBOX,
+  MOGUL_MENU_JUMPER_MESSAGES,
   ONE_SECOND_MS,
 } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
+import { useMenu } from "../menu/mod.ts";
 import Tile from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
+// listens for messages through jumper to open the prediction page
+function useListenForOpenPrediction(showPredictionPage: () => void) {
+  useEffect(() => {
+    jumper.call("comms.onMessage", (message: string) => {
+      if (message === MOGUL_MENU_JUMPER_MESSAGES.OPEN_PREDICTION) {
+        console.log("showing prediction page");
+        showPredictionPage();
+      }
+    });
+  }, []);
+}
+
 export default function PredictionTile() {
   useStyleSheet(styleSheet);
+  const { setIsOpen } = useMenu();
   const { pushPage } = usePageStack();
 
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
@@ -69,6 +84,13 @@ export default function PredictionTile() {
       </div>
     );
   }
+
+  const showPredictionPage = () => {
+    setIsOpen();
+    pushPage(<PredictionPage />);
+  };
+
+  useListenForOpenPrediction(showPredictionPage);
 
   if (!activePoll) return <></>;
 
