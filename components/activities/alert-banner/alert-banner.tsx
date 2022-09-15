@@ -6,7 +6,7 @@ import RaidBanner from "./raid-banner.tsx";
 import stylesheet from "./alert-banner.scss.js";
 
 const AlertBanner = (
-  { activity }: ActivityBannerProps<Alert>,
+  { activity }: ActivityBannerProps<Alert<any>>,
 ) => {
   useStyleSheet(stylesheet);
   console.log("rendering alert banner");

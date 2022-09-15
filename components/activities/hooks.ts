@@ -53,7 +53,9 @@ query AlertsReadyByType($status: String, $type: String)
 }
 `;
 
-export function useFetchLatestActivityAlert<T>(interval = 2000) {
+export function useFetchLatestActivityAlert<ActivityType, SourceType extends string>(
+  interval = 2000,
+) {
   const result = usePollingQuery(interval, {
     query: ACTIVITY_CONNECTION_QUERY,
     variables: {
@@ -62,7 +64,8 @@ export function useFetchLatestActivityAlert<T>(interval = 2000) {
     },
   });
 
-  const activityConnection: ActivityConnection<T> = result?.data?.alertConnection;
+  const activityConnection: ActivityConnection<ActivityType, SourceType> = result?.data
+    ?.alertConnection;
 
   return activityConnection?.nodes?.[0];
 }
