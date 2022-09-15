@@ -43,3 +43,8 @@ export function fromNow(date: Date, suffix = "") {
   const seconds = Math.abs((Date.now() - date.getTime()) / 1000);
   return fromNowSeconds(seconds, suffix);
 }
+
+
+export const secondsSince = (date: Date) => {
+  return Math.floor((Date.now() - date.getTime()) / 1000);
+};
