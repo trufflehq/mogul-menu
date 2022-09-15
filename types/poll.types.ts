@@ -18,7 +18,11 @@ export interface Poll {
   id: string;
   question: string;
   options: PollOption[];
-  data: Record<string, unknown>;
+  data: {
+    type?: "prediction";
+    winningOptionIndex?: number;
+    isRefund?: boolean;
+  };
   time: Date;
   endTime: Date;
   myVote?: PollVote;
