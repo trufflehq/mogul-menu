@@ -4,7 +4,13 @@ import { getFCMMessaging, getFCMToken } from "../../../deps.ts";
 import { TRUFFLE_FIREBASE_CONFIG } from "./config.js";
 import { useFirebase } from "./app.ts";
 
-export function useFcmTokenManager() {
+interface UseFcmTokenResult {
+  requestNotificationPermission: () => Promise<void>;
+  fcmToken: string;
+  notificationPermission: NotificationPermission;
+}
+
+export function useFcmTokenManager(): UseFcmTokenResult {
   const { swRegistration } = useServiceWorker();
   const [fcmToken, setFcmToken] = useState();
   const [notificationPermission, setNotificationPermission] = useState(() =>
