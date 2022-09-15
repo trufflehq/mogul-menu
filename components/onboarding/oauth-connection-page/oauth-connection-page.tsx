@@ -88,11 +88,21 @@ function OAuthButton(
       accessToken={accessToken}
       orgId={orgId}
       styles={{
-        width: "236px",
+        width: "308px",
         height: "42px",
-        margin: "20px auto 8px auto",
+        margin: "20px auto",
         border: "none",
       }}
     />
+    // For local development
+    // <iframe
+    //   src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
+    //   style={{
+    //     width: "236px",
+    //     height: "42px",
+    //     margin: "20px auto 8px auto",
+    //     border: "none",
+    //   }}
+    // />
   );
 }
