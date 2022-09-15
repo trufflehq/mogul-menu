@@ -16,7 +16,7 @@ export function useServiceWorker() {
 
           // otherwise, register our service worker
         } else {
-          navigator.serviceWorker.register(SERVICE_WORKER_PATH, { type: "module" }).then(
+          navigator.serviceWorker.register(SERVICE_WORKER_PATH).then(
             (registration) => {
               setSwRegistration(registration);
 
