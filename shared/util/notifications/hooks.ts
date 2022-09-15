@@ -87,6 +87,7 @@ export function useDesktopNotificationSetting() {
       if (notificationPermission === "default") {
         // TODO: make this a prettier dialog
         alert("Please allow notifications in your browser first.");
+        return;
       } else if (notificationPermission === "denied") {
         // TODO: make this a prettier dialog
         alert(
