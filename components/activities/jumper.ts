@@ -1,3 +1,4 @@
+import { jumper } from '../../deps.ts';
 export type ActivityBannerStyleVariants = "open" | "closed";
 
 export const BASE_IFRAME_STYLES = {
@@ -38,4 +39,26 @@ export function getVariantStyles(variant: ActivityBannerStyleVariants) {
         "clip-path": getClipPath(52, 4),
       };
   }
+}
+
+export function setJumperOpen() {
+  const styles = getIframeStyles(
+    "open",
+  );
+  jumper.call("layout.applyLayoutConfigSteps", {
+    layoutConfigSteps: [
+      { action: "useSubject" }, // start with our iframe
+      { action: "setStyle", value: styles },
+    ],
+  });
+}
+
+export function setJumperClosed() {
+  const styles = getIframeStyles("closed");
+  jumper.call("layout.applyLayoutConfigSteps", {
+    layoutConfigSteps: [
+      { action: "useSubject" }, // start with our iframe
+      { action: "setStyle", value: styles },
+    ],
+  });
 }

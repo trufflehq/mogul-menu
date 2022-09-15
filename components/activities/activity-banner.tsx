@@ -11,7 +11,7 @@ import {
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { CRYSTAL_BALL_ICON, getPollInfo, isActiveActivity } from "../../shared/mod.ts";
-import { getIframeStyles } from "./jumper.ts";
+import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { useActivityBanner, useFetchLatestActivityAlert } from "./hooks.ts";
 import { ActivityBannerProvider } from "./provider.tsx";
 import { ActivityAlert, Alert, Poll } from "../../types/mod.ts";
@@ -26,20 +26,21 @@ export interface ActivityBannerProps<T> {
 }
 
 type ActivitySourceType = "poll" | "alert" | string;
-export interface ActivityBannerManagerProps<T> {
-  banners: Record<ActivitySourceType, (props: ActivityBannerProps<T>) => JSX.Element>;
+export interface ActivityBannerManagerProps<BannerTypes> {
+  // banners: Record<ActivitySourceType, (props: ActivityBannerProps<BannerTypes>) => JSX.Element>;
+  // banners: {
+  //   [K in keyof BannerTypes]: (props: ActivityBannerProps<BannerTypes[K]>) => JSX.Element;
+  // }
+  banners: BannerMap<BannerTypes>;
 }
 
-type BannerMap<Banners> = {
-  [K in keyof Banners]: (props: ActivityBannerProps<Banners[K]>) => JSX.Element;
+type BannerMap<BannerTypes> = {
+  [K in keyof BannerTypes]: (props: ActivityBannerProps<BannerTypes[K]>) => JSX.Element;
 };
 
-export const DEFAULT_BANNERS: Record<
-  ActivitySourceType,
-  (props: ActivityBannerProps<any>) => JSX.Element
-> = {
+export const DEFAULT_BANNERS = {
   poll: PollBanner,
-  alert: AlertBanner,
+  alert: PollBanner,
 };
 
 // export const DEFAULT_BANNERS: BannerMap<{
@@ -67,31 +68,13 @@ export function ActivityBannerEmbed<T>(
   );
 }
 
-function setJumperOpen() {
-  const styles = getIframeStyles(
-    "open",
-  );
-  jumper.call("layout.applyLayoutConfigSteps", {
-    layoutConfigSteps: [
-      { action: "useSubject" }, // start with our iframe
-      { action: "setStyle", value: styles },
-    ],
-  });
-}
-
-function setJumperClosed() {
-  const styles = getIframeStyles("closed");
-  jumper.call("layout.applyLayoutConfigSteps", {
-    layoutConfigSteps: [
-      { action: "useSubject" }, // start with our iframe
-      { action: "setStyle", value: styles },
-    ],
-  });
-}
-
-export function ActivityBannerManager<T>(props: ActivityBannerManagerProps<T>) {
-  const activityAlert = useFetchLatestActivityAlert<T>();
-  const lastActivityAlertRef = useRef<ActivityAlert<T> | undefined>(undefined!);
+export function ActivityBannerManager<
+  BannerTypes,
+  SourceType extends keyof BannerTypes,
+  ActivityType extends BannerTypes[SourceType],
+>(props: ActivityBannerManagerProps<BannerTypes>) {
+  const activityAlert = useFetchLatestActivityAlert<ActivityType>();
+  const lastActivityAlertRef = useRef<ActivityAlert<ActivityType> | undefined>(undefined!);
   const { isBannerOpen, setIsBannerOpen } = useActivityBanner();
 
   useEffect(() => {
@@ -100,11 +83,9 @@ export function ActivityBannerManager<T>(props: ActivityBannerManagerProps<T>) {
       setIsBannerOpen(true);
       lastActivityAlertRef.current = activityAlert;
       setJumperOpen();
-      console.log("activity changed");
     } else if (!isActiveActivity(activityAlert)) {
       setIsBannerOpen(false);
       setJumperClosed();
-      console.log("activity closed");
     }
   }, [activityAlert]);
 
@@ -112,8 +93,12 @@ export function ActivityBannerManager<T>(props: ActivityBannerManagerProps<T>) {
 
   const Component = useMemo(
     () => {
-      const activityType = activityAlert?.sourceType;
-      return activityType ? props?.banners[activityType] : null;
+      const activityType = activityAlert?.sourceType as SourceType;
+      return activityType
+        ? props?.banners[activityType] as (
+          props: ActivityBannerProps<BannerTypes[SourceType]>,
+        ) => JSX.Element
+        : null;
     },
     [activityAlert],
   );
