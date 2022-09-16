@@ -5,7 +5,7 @@ import { isActiveActivity } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { useActivityBanner, useFetchLatestActivityAlert } from "./hooks.ts";
 import { ActivityBannerProvider } from "./provider.tsx";
-import { ActivityAlert, Poll } from "../../types/mod.ts";
+import { ActivityAlert, Alert, Poll } from "../../types/mod.ts";
 import PollBanner from "./poll-banner/poll-banner.tsx";
 import AlertBanner from "./alert-banner/alert-banner.tsx";
 
@@ -29,7 +29,7 @@ export const DEFAULT_BANNERS = {
 export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
-    alert: ActivityAlert<unknown, string>;
+    alert: Alert<string, any>;
   }>,
 >(
   props: ActivityBannerManagerProps<BannerTypes>,

@@ -9,13 +9,7 @@ const AlertBanner = (
   { activity }: ActivityBannerProps<Alert<string, any>>,
 ) => {
   useStyleSheet(stylesheet);
-  return (
-    <>
-      {
-        isRaid(activity) ? <RaidBanner activity={activity} /> : null // TODO add a base banner for alerts
-      }
-    </>
-  );
+  return isRaid(activity) ? <RaidBanner activity={activity} /> : <></>; // TODO add a base banner for alerts
 };
 
 export default AlertBanner;

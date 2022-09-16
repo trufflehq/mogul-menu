@@ -16,6 +16,9 @@ import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 
+// NOTE: we don't currently have a way to clean up onMessage listeners
+// in the extension so we'll need to be cognizant that the prediction tile
+// component will be mounted for the lifetime of the embed
 // listens for messages through jumper to open the prediction page
 function useListenForOpenPrediction(showPredictionPage: () => void) {
   useEffect(() => {
