@@ -44,12 +44,22 @@ export default scss`
 }
 
 .c-activity-banner-info {
-  display: flex;
+  // display: flex;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
   align-items: center;
   flex: 1;
   font-size: 14px;
   color: var(--mm-color-text-bg-primary);
   gap: 4px;
+
+  > .content {
+    margin-left: 4px;
+  }
+
+
 }
 
 .c-activity-banner-secondary-info {

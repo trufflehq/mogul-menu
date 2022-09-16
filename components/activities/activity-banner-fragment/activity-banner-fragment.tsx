@@ -61,9 +61,9 @@ export function ContinueActionIcon({ onContinue }: { onContinue: () => void }) {
 
 export function ActivityBannerSecondaryInfo({ text }: { text: string }) {
   return (
-    <div className="c-activity-banner-secondary-info">
+    <span className="c-activity-banner-secondary-info">
       {text}
-    </div>
+    </span>
   );
 }
 
@@ -72,12 +72,12 @@ export function ActivityBannerInfo(
 ) {
   return (
     <div className="c-activity-banner-info">
-      <div className="text">
+      <span className="text">
         {text}
-      </div>
-      <div className="content">
+      </span>
+      <span className="content">
         {children}
-      </div>
+      </span>
     </div>
   );
 }

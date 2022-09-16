@@ -4,6 +4,7 @@ export default scss`
   .c-activity-banner {
     display: flex;
     position: relative;
+    overflow: hidden;
     width: 100%;
     background: var(--mm-color-bg-primary);
     box-sizing: border-box;
