@@ -32,6 +32,7 @@ export function getPollInfo(poll: Poll) {
   const winningOption = typeof winningOptionIndex !== "undefined"
     ? poll?.options?.find((option) => option?.index === winningOptionIndex)
     : undefined;
+  const hasWinningOption = Boolean(winningOption);
   const winningVotes = typeof winningOptionIndex !== "undefined"
     ? poll?.options[winningOptionIndex]?.count
     : 1;
@@ -52,6 +53,7 @@ export function getPollInfo(poll: Poll) {
   return {
     hasPollEnded,
     winningOption,
+    hasWinningOption,
     pollQuestion,
     pollStartTime,
     pollEndTime,
