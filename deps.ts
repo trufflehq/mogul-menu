@@ -77,3 +77,4 @@ export {
   useHandleTruffleOAuth,
 } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.20/components/oauth-iframe/mod.ts";
 export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.20/components/oauth-iframe/mod.ts";
+export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";

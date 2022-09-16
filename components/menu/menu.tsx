@@ -13,7 +13,6 @@ export interface MogulMenuProps {
 }
 export default function Menu(props: MogulMenuProps) {
   const tabs = useDynamicTabs();
-
   // wait until we have loaded the tabs
   if (!tabs) return <></>;
 

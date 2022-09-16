@@ -18,6 +18,7 @@ import {
 
 import { ACTIVE_POLL_QUERY, CHANNEL_POINTS_QUERY, VOTE_MUTATION } from "./gql.ts";
 import { COIN_ICON_PATH, ONE_MINUTE_MS, ONE_SECOND_MS, TROPHY_ICON } from "../../shared/mod.ts";
+import { Poll, PollConnection } from "../../types/mod.ts";
 import Time from "../time/time.tsx";
 import Button from "../base/button/button.tsx";
 
@@ -44,11 +45,14 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     const activePollConnectionObs = pollingQueryObservable(
       POLL_INTERVAL,
       ACTIVE_POLL_QUERY,
-    ).pipe(op.map(({ data }: any) => data?.pollConnection));
+      {},
+    ).pipe(
+      op.map(({ data }: { data: { pollConnection?: PollConnection } }) => data?.pollConnection),
+    );
     const activePollObs = activePollConnectionObs.pipe(
       op.map((activePollConnection) => {
         return activePollConnection?.nodes?.find(
-          (poll) => poll?.data?.type === "prediction",
+          (poll: Poll) => poll?.data?.type === "prediction",
         );
       }),
     );
@@ -56,6 +60,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     const orgUserCounterObs = pollingQueryObservable(
       POLL_INTERVAL,
       CHANNEL_POINTS_QUERY,
+      {},
     ).pipe(op.map(({ data }: any) => data?.channelPoints?.orgUserCounter));
 
     const pollMsLeftObs = activePollObs.pipe(
@@ -116,17 +121,6 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     console.log("predict", option, optionIndex, voteCount);
     try {
       errorStream.next(null);
-      // await model.economyTransaction.create({
-      //   // TODO: pull from slug instead of hardcoded
-      //   // channel points prediction
-      //   // economyActionId: '6c985980-7fb3-11ec-a5c9-01fed7cc1cdc', // ludwig
-      //   economyTriggerSlug: "prediction-vote",
-      //   additionalData: {
-      //     optionIndex,
-      //     pollId: activePoll.id,
-      //   },
-      //   amountValue: -1 * parseInt(voteCount),
-      // });
       await executeVoteMutation({
         voteCount: -1 * parseInt(voteCount),
         additionalData: {
