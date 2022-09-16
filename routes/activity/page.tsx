@@ -4,9 +4,9 @@ import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.5/format/wc/rea
 import {
   ActivityBannerEmbed,
   ActivityBannerProps,
-} from "../../components/activities/activity-banner.tsx";
-import { PollBanner } from "../../components/activities/poll-banner/mod.ts";
-import AlertBanner from "../../components/activities/alert-banner/alert-banner.tsx";
+  PollBanner,
+  AlertBanner
+} from "../../components/activities/mod.ts";
 
 type Foo = {
   bar: string;
