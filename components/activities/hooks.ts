@@ -18,6 +18,7 @@ query AlertsReadyByType($status: String, $type: String)
                 status
                 type
                 sourceType
+                sourceId
                 data
                 time
                 activity {
