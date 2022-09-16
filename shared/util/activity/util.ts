@@ -14,8 +14,10 @@ export function isActiveActivity<ActivityType, SourceType extends string>(
   if (!activityAlert?.activity) return false;
   // if it's a poll, check if the poll has ended and if so whether the poll has been closed longer than the default timeout
   if (isPollActivity(activityAlert)) {
-    const { hasPollEnded, pollEndTime } = getPollInfo(activityAlert.activity);
-    return hasPollEnded ? secondsSince(new Date(pollEndTime)) < ACTIVITY_TIMEOUT_SECONDS : true;
+    const { hasPollEnded, hasWinningOption, pollEndTime } = getPollInfo(activityAlert.activity);
+    return hasPollEnded && hasWinningOption
+      ? secondsSince(new Date(pollEndTime)) < ACTIVITY_TIMEOUT_SECONDS
+      : true;
 
     // default all other activities to a default timeout
   } else {
