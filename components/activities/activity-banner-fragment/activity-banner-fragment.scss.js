@@ -44,24 +44,32 @@ export default scss`
 }
 
 .c-activity-banner-info {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;  
+  display: flex;
   overflow: hidden;
   align-items: center;
   flex: 1;
+  min-width: 0;
   font-size: 14px;
   color: var(--mm-color-text-bg-primary);
   gap: 4px;
   
   > .text {
-    display: inline-flex;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0px;
   }
 
   > .content {
     display: inline-flex;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 0px;
+    text-overflow: ellipsis;
     align-items: center;
-    margin-left: 4px;
     gap: 4px;
   }
 }
