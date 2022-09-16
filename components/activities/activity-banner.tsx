@@ -1,7 +1,7 @@
 import { _, classKebab, React, useEffect, useMemo, useRef, useStyleSheet } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { isActiveActivity } from "../../shared/mod.ts";
+import { isActiveActivity,  useLoginListener } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { useActivityBanner, useFetchLatestActivityAlert } from "./hooks.ts";
 import { ActivityBannerProvider } from "./provider.tsx";
@@ -36,6 +36,8 @@ export function ActivityBannerEmbed<
 ) {
   useStyleSheet(stylesheet);
   props = { ...props, banners: props.banners ?? DEFAULT_BANNERS };
+  useLoginListener();
+
   return (
     <ActivityBannerProvider>
       <ThemeComponent />
