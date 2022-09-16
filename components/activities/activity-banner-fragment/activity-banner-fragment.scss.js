@@ -44,7 +44,6 @@ export default scss`
 }
 
 .c-activity-banner-info {
-  // display: flex;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;  
@@ -58,8 +57,6 @@ export default scss`
   > .content {
     margin-left: 4px;
   }
-
-
 }
 
 .c-activity-banner-secondary-info {
