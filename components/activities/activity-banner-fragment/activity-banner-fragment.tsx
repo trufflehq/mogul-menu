@@ -58,12 +58,11 @@ export function ContinueActionIcon({ onContinue }: { onContinue: () => void }) {
   );
 }
 
-
 export function ActivityBannerSecondaryInfo({ text }: { text: string }) {
   return (
-    <span className="c-activity-banner-secondary-info">
+    <div className="c-activity-banner-secondary-info">
       {text}
-    </span>
+    </div>
   );
 }
 
@@ -72,16 +71,15 @@ export function ActivityBannerInfo(
 ) {
   return (
     <div className="c-activity-banner-info">
-      <span className="text">
+      <div className="text">
         {text}
-      </span>
-      <span className="content">
+      </div>
+      <div className="content">
         {children}
-      </span>
+      </div>
     </div>
   );
 }
-
 
 export default function ActivityBannerFragment(
   { icon, color = "#AF7AF2", title, startTime, endTime, action, children }: {

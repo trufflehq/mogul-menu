@@ -53,9 +53,16 @@ export default scss`
   font-size: 14px;
   color: var(--mm-color-text-bg-primary);
   gap: 4px;
+  
+  > .text {
+    display: inline-flex;
+  }
 
   > .content {
+    display: inline-flex;
+    align-items: center;
     margin-left: 4px;
+    gap: 4px;
   }
 }
 
