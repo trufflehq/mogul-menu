@@ -70,7 +70,6 @@ export default scss`
     min-width: 0px;
     text-overflow: ellipsis;
     align-items: center;
-    margin-left: 4px;
     gap: 4px;
   }
 }
