@@ -72,7 +72,7 @@ function PredictionEndedNoVote(
 ) {
   return (
     <ActivityBannerInfo text={pollQuestion}>
-      {winningOption ? <ActivityBannerSecondaryInfo text={winningOption?.text} /> : null}
+      {winningOption ? <ActivityBannerSecondaryInfo text={winningOption?.text} /> : <ActivityBannerSecondaryInfo text={'Awaiting results'} />}
     </ActivityBannerInfo>
   );
 }
