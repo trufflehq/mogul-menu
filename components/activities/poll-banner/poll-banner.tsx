@@ -11,6 +11,8 @@ const PollBanner = (
   { activity }: ActivityBannerProps<Poll>,
 ) => {
   useStyleSheet(stylesheet);
+  if (!activity) return <></>;
+
   return isPrediction(activity)
     ? <PredictionBanner poll={activity} />
     : <BasePollBanner poll={activity} />;
