@@ -32,6 +32,7 @@ export function useMenu() {
       const menuState = getMenuState(state);
       return menuState === "open" ? dispatch(setClosed()) : dispatch(setOpen());
     },
+    setIsOpen: () => dispatch(setOpen()),
     setIsClosed: () => dispatch(setClosed()),
     updateDimensions: (mods?: Partial<DimensionModifiers>) => dispatch(updateDimensions(mods)),
     enqueueSnackBar: (snackbar: React.ReactNode) => dispatch(enqueueSnackBar(snackbar)),
