@@ -25,7 +25,6 @@ export function useMenuReducer(initialState: MenuState) {
 
 export function useMenu() {
   const { state, dispatch } = useContext(MenuContext);
-  console.log();
   return {
     state,
     dispatch,

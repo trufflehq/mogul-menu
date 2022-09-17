@@ -1,4 +1,4 @@
-import { React, useState } from "../../deps.ts";
+import { React, useState, useEffect } from "../../deps.ts";
 import { useCurrentTab, useTabButton, useTabSlug } from "../tabs/mod.ts";
 import { getMenuPosition, useMenu } from "../menu/mod.ts";
 import { useSnackBar } from "../snackbar/mod.ts";
@@ -17,6 +17,7 @@ import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DefaultDialogContentFragment from "../dialogs/content-fragments/default/default-dialog-content-fragment.tsx";
 import Switch from "../base/switch/switch.tsx";
 import { Page } from "../page-stack/mod.ts";
+import { useFcmTokenManager } from "../../shared/util/firebase/fcm.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -40,7 +41,7 @@ export default function TestTab() {
   const [selectedValue, setSelectedValue] = useState();
   const { state: menuState, updateMenuPosition } = useMenu();
   const [menuPositionValue, setMenuPositionValue] = useState(
-    getMenuPosition(menuState),
+    getMenuPosition(menuState)
   );
   const additionalData = { value: selectedValue };
 
@@ -56,7 +57,7 @@ export default function TestTab() {
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />,
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
     );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
@@ -76,10 +77,12 @@ export default function TestTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
+        action={
+          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
+        }
       >
         Finish setting up your account
-      </ActionBanner>,
+      </ActionBanner>
     );
   };
 
@@ -97,7 +100,7 @@ export default function TestTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>,
+      </Dialog>
     );
   };
 
@@ -109,6 +112,11 @@ export default function TestTab() {
       <Button onClick={removeButtonHandler}>Remove button</Button>
     );
   };
+
+  const { requestNotificationPermission, fcmToken } = useFcmTokenManager();
+  useEffect(() => {
+    console.log("[mm] new fcm token", fcmToken);
+  }, [fcmToken]);
 
   return (
     <div className="z-home-tab">
@@ -124,6 +132,9 @@ export default function TestTab() {
         <Button onClick={actionBannerHandler}>Show action banner</Button>
         <Button onClick={toggleDialogHandler}>Show dialog</Button>
         <Button onClick={addButtonHandler}>Add tab bar button</Button>
+        <Button onClick={requestNotificationPermission}>
+          Request notification perms
+        </Button>
       </div>
       <div>
         <Switch value={true} />

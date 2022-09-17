@@ -77,4 +77,13 @@ export {
   useHandleTruffleOAuth,
 } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.20/components/oauth-iframe/mod.ts";
 export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.20/components/oauth-iframe/mod.ts";
+
+export {
+  getApp as getFirebaseApp,
+  initializeApp as initializeFirebaseApp,
+} from "https://npm.tfl.dev/firebase@9.9.4/app";
+export {
+  getMessaging as getFCMMessaging,
+  getToken as getFCMToken,
+} from "https://npm.tfl.dev/firebase@9.9.4/messaging";
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
