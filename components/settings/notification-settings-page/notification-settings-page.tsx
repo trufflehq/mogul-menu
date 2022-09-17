@@ -4,13 +4,29 @@ import { useDesktopNotificationSetting } from "../../../shared/mod.ts";
 import Switch from "../../base/switch/switch.tsx";
 import Page from "../../page-stack/page.tsx";
 import styleSheet from "./notification-settings-page.scss.js";
+import { NotificationTopic } from "../../../types/notification.types.ts";
 
 export default function NotificationSettingsPage() {
   useStyleSheet(styleSheet);
 
-  const { notificationTopics } = useNotificationTopics();
+  const {
+    notificationTopics,
+    subscribeToNotificationTopic,
+    unSubscribeFromNotificationTopic,
+  } = useNotificationTopics();
   const { isDesktopNotificationsEnabled, setDesktopNotificationPref } =
     useDesktopNotificationSetting();
+
+  const subscriptionSwitchToggleHandler = async (
+    topic: NotificationTopic,
+    subscribe: boolean
+  ) => {
+    if (subscribe) {
+      await subscribeToNotificationTopic(topic);
+    } else {
+      await unSubscribeFromNotificationTopic(topic);
+    }
+  };
 
   return (
     <Page title="Notifications">
@@ -39,7 +55,12 @@ export default function NotificationSettingsPage() {
               <div className="row">
                 <div className="name">{topic.name}</div>
                 <div className="input">
-                  <Switch />
+                  <Switch
+                    value={topic.isSubscribed}
+                    onChange={(enabled: boolean) =>
+                      subscriptionSwitchToggleHandler(topic, enabled)
+                    }
+                  />
                 </div>
               </div>
             ))}

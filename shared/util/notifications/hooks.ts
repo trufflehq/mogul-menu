@@ -1,76 +1,82 @@
-import { useEffect, useState } from "../../../deps.ts";
+import { useEffect, useMemo, useMutation, useQuery } from "../../../deps.ts";
+import { NotificationTopic } from "../../../types/notification.types.ts";
+import {
+  DELETE_FCM_TOKEN_MUTATION,
+  FCM_TOKEN_QUERY,
+  UPSERT_FCM_TOKEN_MUTATION,
+} from "../../gql/fcm-token.ts";
+import {
+  NOTIFICATION_TOPIC_QUERY,
+  UPSERT_NOTIFICATION_SUBSCRIPTION_MUTATION,
+} from "../../gql/notifications.gql.ts";
 import { useFcmTokenManager } from "../../mod.ts";
 
 export function useNotificationTopics() {
-  // TODO: query this info from mycelium
+  const [{ data: notificationTopicData, fetching }] = useQuery({ query: NOTIFICATION_TOPIC_QUERY });
+  const notificationTopics: NotificationTopic[] = useMemo(
+    () => notificationTopicData?.notificationTopicConnection?.nodes,
+    [notificationTopicData],
+  );
 
-  const fetching = false;
-  const notificationTopics = [
-    {
-      id: "1",
-      slug: "stream-live",
-      name: "Stream live",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-    {
-      id: "2",
-      slug: "stream-pre-chat",
-      name: "Stream pre-chat",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-    {
-      id: "3",
-      slug: "ludwig-main-new-video",
-      name: "Ludwig Main: new video",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-    {
-      id: "4",
-      slug: "ludwig-clips-new-video",
-      name: "Ludwig Clips: new video",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-    {
-      id: "5",
-      slug: "yard-new-video",
-      name: "The Yard: new video",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-    {
-      id: "6",
-      slug: "updates",
-      name: "Updates",
-      mediumId: "fcmId",
-      isSubscribed: true,
-    },
-  ];
-  return { notificationTopics, fetching };
+  const [_upsertResults, upsertNotificationSubscription] = useMutation(
+    UPSERT_NOTIFICATION_SUBSCRIPTION_MUTATION,
+  );
+  const subscribeToNotificationTopic = async (topic: NotificationTopic) => {
+    await upsertNotificationSubscription({
+      subscriptions: [{
+        notificationTopicId: topic.id,
+        isSubscribed: true,
+      }],
+    }, { additionalTypenames: ["NotificationTopicConnection"] });
+  };
+  const unSubscribeFromNotificationTopic = async (topic: NotificationTopic) => {
+    await upsertNotificationSubscription({
+      subscriptions: [{
+        notificationTopicId: topic.id,
+        isSubscribed: false,
+      }],
+    }, { additionalTypenames: ["NotificationTopicConnection"] });
+  };
+
+  return {
+    notificationTopics,
+    fetching,
+    subscribeToNotificationTopic,
+    unSubscribeFromNotificationTopic,
+  };
 }
 
 export function useFcmNotificationMediumConfig(token: string | undefined) {
-  // TODO: wire up to mycelium so that it reads from and saves to
-  // a NotificationMediumUserConfig
-  const [isTokenRegistered, setIsTokenRegistered] = useState(false);
-  const registerToken = () => {
+  const [{ data: fcmTokenData, fetching }] = useQuery({
+    query: FCM_TOKEN_QUERY,
+    variables: { token },
+    context: useMemo(() => ({
+      additionalTypenames: ["NotificationMediumUserConfig"],
+    }), []),
+  });
+
+  const isTokenRegistered = useMemo(() => Boolean(fcmTokenData?.notificationMediumUserConfig), [
+    fcmTokenData,
+  ]);
+
+  const [_upsertResult, upsertFcmToken] = useMutation(UPSERT_FCM_TOKEN_MUTATION);
+  const [_deleteResult, deleteFcmToken] = useMutation(DELETE_FCM_TOKEN_MUTATION);
+
+  const registerToken = async () => {
     if (token) {
       console.log("registering fcmToken with mycelium");
-      setIsTokenRegistered(true);
+      await upsertFcmToken({ token });
     }
   };
 
-  const unregisterToken = () => {
+  const unregisterToken = async () => {
     if (token) {
       console.log("unregistering fcmToken with mycelium");
-      setIsTokenRegistered(false);
+      await deleteFcmToken({ token });
     }
   };
 
-  return { isTokenRegistered, registerToken, unregisterToken };
+  return { isTokenRegistered, registerToken, unregisterToken, fetching };
 }
 
 export function useDesktopNotificationSetting() {
@@ -78,6 +84,10 @@ export function useDesktopNotificationSetting() {
   const { isTokenRegistered, registerToken, unregisterToken } = useFcmNotificationMediumConfig(
     fcmToken,
   );
+
+  useEffect(() => {
+    console.log("fcm token", fcmToken);
+  }, [fcmToken]);
 
   const isDesktopNotificationsEnabled = isTokenRegistered && notificationPermission === "granted";
   const setDesktopNotificationPref = (enable: boolean) => {
