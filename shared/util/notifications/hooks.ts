@@ -1,4 +1,9 @@
-import { useEffect, useState } from "../../../deps.ts";
+import { useEffect, useMemo, useMutation, useQuery } from "../../../deps.ts";
+import {
+  DELETE_FCM_TOKEN_MUTATION,
+  FCM_TOKEN_QUERY,
+  UPSERT_FCM_TOKEN_MUTATION,
+} from "../../gql/fcm-token.ts";
 import { useFcmTokenManager } from "../../mod.ts";
 
 export function useNotificationTopics() {
@@ -55,22 +60,36 @@ export function useNotificationTopics() {
 export function useFcmNotificationMediumConfig(token: string | undefined) {
   // TODO: wire up to mycelium so that it reads from and saves to
   // a NotificationMediumUserConfig
-  const [isTokenRegistered, setIsTokenRegistered] = useState(false);
-  const registerToken = () => {
+
+  const [{ data: fcmTokenData, fetching }] = useQuery({
+    query: FCM_TOKEN_QUERY,
+    variables: { token },
+    context: useMemo(() => ({
+      additionalTypenames: ["NotificationMediumUserConfig"],
+    }), []),
+  });
+  const isTokenRegistered = useMemo(() => Boolean(fcmTokenData?.notificationMediumUserConfig), [
+    fcmTokenData,
+  ]);
+
+  const [_upsertResult, upsertFcmToken] = useMutation(UPSERT_FCM_TOKEN_MUTATION);
+  const [_deleteResult, deleteFcmToken] = useMutation(DELETE_FCM_TOKEN_MUTATION);
+
+  const registerToken = async () => {
     if (token) {
       console.log("registering fcmToken with mycelium");
-      setIsTokenRegistered(true);
+      await upsertFcmToken({ token });
     }
   };
 
-  const unregisterToken = () => {
+  const unregisterToken = async () => {
     if (token) {
       console.log("unregistering fcmToken with mycelium");
-      setIsTokenRegistered(false);
+      await deleteFcmToken({ token });
     }
   };
 
-  return { isTokenRegistered, registerToken, unregisterToken };
+  return { isTokenRegistered, registerToken, unregisterToken, fetching };
 }
 
 export function useDesktopNotificationSetting() {
@@ -78,6 +97,10 @@ export function useDesktopNotificationSetting() {
   const { isTokenRegistered, registerToken, unregisterToken } = useFcmNotificationMediumConfig(
     fcmToken,
   );
+
+  useEffect(() => {
+    console.log("fcm token", fcmToken);
+  }, [fcmToken]);
 
   const isDesktopNotificationsEnabled = isTokenRegistered && notificationPermission === "granted";
   const setDesktopNotificationPref = (enable: boolean) => {
