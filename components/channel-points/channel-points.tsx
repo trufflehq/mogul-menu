@@ -1,10 +1,12 @@
 import {
   _clearCache,
   abbreviateNumber,
+  formatCountdown,
   GLOBAL_JUMPER_MESSAGES,
   jumper,
   React,
   useEffect,
+  useObservables,
   useState,
   useStyleSheet,
 } from "../../deps.ts";
@@ -71,15 +73,25 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
     setIsClaimable(true);
   };
 
-  const { claim } = useWatchtimeCounter({
+  const { claim, secondsRemainingSubject } = useWatchtimeCounter({
     source: "youtube",
     onFinishedCountdown,
     isClaimable,
     setIsClaimable,
   });
 
+  const { secondsRemaining } = useObservables(() => ({
+    secondsRemaining: secondsRemainingSubject.obs,
+  }));
+
+  const getCountdownTime = () => {
+    return secondsRemaining !== undefined
+      ? formatCountdown(secondsRemaining, { shouldAlwaysShowHours: false })
+      : "";
+  };
+
   return (
-    <div className="c-channel-points">
+    <div className="c-channel-points" data-title={getCountdownTime()}>
       <ThemeComponent />
       <div className="inner">
         <div className="coin">

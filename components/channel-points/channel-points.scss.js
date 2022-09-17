@@ -6,15 +6,33 @@ export default scss`
   align-items: center;
   flex: 1;
   width: 100%;
+  position: relative;
   min-height: 30px;
   max-height: 40px;
+  --yt-dark-bg: rgba(33, 33, 33, 0.98);
+
+  &:hover:after {
+    background: var(--mm-color-bg-primary);
+    border: 1px solid var(--mm-color-primary);
+    content: attr(data-title);
+    display: block;
+    position: absolute;
+    font-family: var(--mm-font-family);
+    border-radius: 2px;
+    padding: 2px 4px;
+    left: 8px;
+    top: 2px;
+    font-size: 12px;
+    color: var(--mm-color-text-bg-primary);
+    z-index: 999;
+  }
 
   > .inner {
     display: flex;
     align-items: center;
     padding: 4px;
     border-radius: 4px;
-    background: rgba(33, 33, 33, 0.98);
+    background: var(--yt-dark-bg);
 
     > .coin {
       margin-right: 5px;
