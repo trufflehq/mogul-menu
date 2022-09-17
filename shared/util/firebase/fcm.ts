@@ -1,7 +1,7 @@
 import { useEffect, useState } from "../../../deps.ts";
 import { useServiceWorker } from "../mod.ts";
 import { getFCMMessaging, getFCMToken } from "../../../deps.ts";
-import { TRUFFLE_FIREBASE_CONFIG } from "./config.js";
+import { TRUFFLE_FIREBASE_CONFIG } from "./config.ts";
 import { useFirebase } from "./app.ts";
 
 interface UseFcmTokenResult {

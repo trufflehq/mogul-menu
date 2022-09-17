@@ -1,6 +1,7 @@
 import { useEffect, useState } from "../../../deps.ts";
 
-const SERVICE_WORKER_PATH = "/shared/util/service-worker/service-worker.js";
+// NOTE: any site that uses mogul menu needs this file placed at the root of the site.
+const SERVICE_WORKER_PATH = "/service-worker.js";
 
 export function useServiceWorker() {
   const [swRegistration, setSwRegistration] = useState();
