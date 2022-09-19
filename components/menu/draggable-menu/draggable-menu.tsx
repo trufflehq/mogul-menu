@@ -190,8 +190,7 @@ export default function DraggableMenu({
 
   return (
     <Draggable
-      requiredClassName="extension-icon"
-      ignoreClassName="c-browser-extension-menu"
+      requiredClassName="c-extension-icon"
       dimensions={dimensions}
       defaultPosition={defaultPosition}
       onPressedMouseUp={onPressedMouseUp}
