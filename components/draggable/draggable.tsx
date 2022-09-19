@@ -64,7 +64,6 @@ export default function Draggable({
   defaultPosition,
   createClipPath,
   requiredClassName,
-  ignoreClassName,
   initializePosition,
   onPressedMouseUp,
   onDragStart,
@@ -85,7 +84,7 @@ export default function Draggable({
   ) => string;
   dimensions: Dimensions;
   defaultPosition: Vector;
-  requiredClassName?: string;
+  requiredClassName: string;
   ignoreClassName?: string;
   onPressedMouseUp?: (e: React.MouseEvent, dragInfo: DragInfo) => void;
   onDragStart?: (e: React.MouseEvent) => void;
@@ -187,21 +186,9 @@ export default function Draggable({
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
-        if (!classes || !classes?.includes) return;
-        //multiple events are fired for some reason, this ignores all events triggered by a certain classname
-        if (
-          !classes ||
-          (ignoreClassName && classes?.includes(ignoreClassName))
-        ) {
+        if (!classes?.includes || !classes?.includes(requiredClassName)) {
+          setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
           return;
-        }
-        // check if requireClassName is set and if it is, only drag if the event target has that name
-        if (requiredClassName && !classes?.includes(requiredClassName)) {
-          setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
-        }
-        //prevent dragging by links and prevent-drag tag
-        if (target.tagName === "A" || classes?.includes("prevent-drag")) {
-          setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
         }
       }}
       onDragStart={(e) => {
