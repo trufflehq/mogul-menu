@@ -1,46 +1,21 @@
-import { useEffect, useState } from "../../../deps.ts";
-import { useServiceWorker } from "../mod.ts";
-import { getFCMMessaging, getFCMToken } from "../../../deps.ts";
-import { TRUFFLE_FIREBASE_CONFIG } from "./config.ts";
-import { useFirebase } from "./app.ts";
+import { jumper, useEffect, useState } from "../../../deps.ts";
 
 interface UseFcmTokenResult {
-  requestNotificationPermission: () => Promise<void>;
-  fcmToken: string;
-  notificationPermission: NotificationPermission;
+  fcmToken: string | undefined;
 }
 
 export function useFcmTokenManager(): UseFcmTokenResult {
-  const { swRegistration } = useServiceWorker();
   const [fcmToken, setFcmToken] = useState();
-  const [notificationPermission, setNotificationPermission] = useState(() =>
-    Notification.permission
-  );
-  const { firebaseApp } = useFirebase();
-
-  const requestNotificationPermission = async () => {
-    // make sure we have browser-level notification perms
-    const permission = await Notification.requestPermission();
-    setNotificationPermission(permission);
-  };
 
   // listen to the notification permission state and get an
   // fcm token if the user granted notification permissions
   useEffect(() => {
-    if (
-      firebaseApp &&
-      swRegistration &&
-      notificationPermission === "granted"
-    ) {
-      const messaging = getFCMMessaging(firebaseApp);
-      getFCMToken(messaging, {
-        vapidKey: TRUFFLE_FIREBASE_CONFIG.vapidKey,
-        serviceWorkerRegistration: swRegistration,
-      }).then((token: string) => {
+    jumper.call("extension.getFCMToken").then((token: string | undefined) => {
+      if (token) {
         setFcmToken(token);
-      });
-    }
-  }, [notificationPermission, firebaseApp, swRegistration]);
+      }
+    });
+  }, []);
 
-  return { requestNotificationPermission, notificationPermission, fcmToken };
+  return { fcmToken };
 }

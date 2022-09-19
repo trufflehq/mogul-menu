@@ -80,7 +80,7 @@ export function useFcmNotificationMediumConfig(token: string | undefined) {
 }
 
 export function useDesktopNotificationSetting() {
-  const { fcmToken, requestNotificationPermission, notificationPermission } = useFcmTokenManager();
+  const { fcmToken } = useFcmTokenManager();
   const { isTokenRegistered, registerToken, unregisterToken } = useFcmNotificationMediumConfig(
     fcmToken,
   );
@@ -89,23 +89,13 @@ export function useDesktopNotificationSetting() {
     console.log("fcm token", fcmToken);
   }, [fcmToken]);
 
-  const isDesktopNotificationsEnabled = isTokenRegistered && notificationPermission === "granted";
+  const isDesktopNotificationsEnabled = isTokenRegistered;
   const setDesktopNotificationPref = (enable: boolean) => {
+    // don't try to register an undefined token
+    if (!fcmToken) return;
+
     // enable desktop notifications
     if (enable) {
-      // alert them if they haven't enabled browser notification perms
-      if (notificationPermission === "default") {
-        // TODO: make this a prettier dialog
-        alert("Please allow notifications in your browser first.");
-        return;
-      } else if (notificationPermission === "denied") {
-        // TODO: make this a prettier dialog
-        alert(
-          "It looks like you have explicitly denied notifications for this site. Please enable them in your browser settings.",
-        );
-        return;
-      }
-
       registerToken();
 
       // disable desktop notifications
@@ -113,13 +103,6 @@ export function useDesktopNotificationSetting() {
       unregisterToken();
     }
   };
-
-  // prompt the user to enable desktop notifications if they haven't done so
-  useEffect(() => {
-    if (notificationPermission === "default") {
-      requestNotificationPermission();
-    }
-  }, [notificationPermission]);
 
   return { isDesktopNotificationsEnabled, setDesktopNotificationPref };
 }
