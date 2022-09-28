@@ -76,6 +76,7 @@ export function ActivityBannerManager<
     if (hasActivityChanged && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlertRef.current = activityAlert;
+      hasClosedRef.current = false;
 
       // if the activity isn't active, close the banner
     } else if (!hasClosedRef.current) {
