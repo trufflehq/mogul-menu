@@ -1,7 +1,7 @@
 import { _, classKebab, React, useEffect, useMemo, useRef, useStyleSheet } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { isActiveActivity,  useLoginListener } from "../../shared/mod.ts";
+import { isActiveActivity, useLoginListener } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { useActivityBanner, useFetchLatestActivityAlert } from "./hooks.ts";
 import { ActivityBannerProvider } from "./provider.tsx";
@@ -57,6 +57,7 @@ export function ActivityBannerManager<
   const lastActivityAlertRef = useRef<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
   );
+  const hasClosedRef = useRef(false);
   const { isBannerOpen, setIsBannerOpen } = useActivityBanner();
 
   const openBanner = () => {
@@ -75,9 +76,11 @@ export function ActivityBannerManager<
     if (hasActivityChanged && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlertRef.current = activityAlert;
+      hasClosedRef.current = false;
 
       // if the activity isn't active, close the banner
-    } else if (!isActiveActivity(activityAlert)) {
+    } else if (!hasClosedRef.current) {
+      hasClosedRef.current = true;
       closeBanner();
     }
   }, [activityAlert]);
