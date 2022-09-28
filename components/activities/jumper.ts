@@ -41,6 +41,7 @@ export function getVariantBannerStyles(variant: ActivityBannerStyleVariants) {
 }
 
 export function setJumperOpen() {
+  console.log("setJumperOpen");
   const styles = getBannerIframeStyles(
     "open",
   );
@@ -53,6 +54,7 @@ export function setJumperOpen() {
 }
 
 export function setJumperClosed() {
+  console.log("setJumperClosed");
   const styles = getBannerIframeStyles("closed");
   jumper.call("layout.applyLayoutConfigSteps", {
     layoutConfigSteps: [

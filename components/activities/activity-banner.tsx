@@ -63,11 +63,13 @@ export function ActivityBannerManager<
   const openBanner = () => {
     setIsBannerOpen(true);
     setJumperOpen();
+    console.log("open banner");
   };
 
   const closeBanner = () => {
     setIsBannerOpen(false);
     setJumperClosed();
+    console.log("closing banner");
   };
 
   useEffect(() => {
@@ -79,7 +81,7 @@ export function ActivityBannerManager<
       hasClosedRef.current = false;
 
       // if the activity isn't active, close the banner
-    } else if (!hasClosedRef.current) {
+    } else if (!isActiveActivity(activityAlert) && !hasClosedRef.current) {
       hasClosedRef.current = true;
       closeBanner();
     }
