@@ -70,7 +70,6 @@ export function useFetchLatestActivityAlert<ActivityType, SourceType extends str
 
   const activityConnection: ActivityConnection<ActivityType, SourceType> = result?.data
     ?.alertConnection;
-  console.log('useFetchLatestActivityAlert activityConnection', activityConnection)
   return activityConnection?.nodes?.[0];
 }
 

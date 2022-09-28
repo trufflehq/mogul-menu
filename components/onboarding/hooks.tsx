@@ -21,6 +21,7 @@ export function useOnboarding() {
     const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
       ? extensionInfo?.pageInfo
       : true;
+    console.log("onboarding", orgUser, connectionSourceType, isFetchingOrgUser);
     if (
       hasPageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
     ) {
