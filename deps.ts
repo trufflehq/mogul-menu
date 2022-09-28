@@ -1,5 +1,5 @@
 // utils
-export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/image.ts";
+export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/image.ts";
 export {
   _clearCache,
   _setAccessTokenAndClear,
@@ -15,7 +15,7 @@ export {
 } from "https://tfl.dev/@truffle/api@~0.1.0/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
-export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
 
 export { default as _ } from "https://cdn.skypack.dev/lodash?dts";
 
@@ -33,19 +33,19 @@ export {
   useState,
 } from "https://npm.tfl.dev/react";
 export { default as semver } from "https://npm.tfl.dev/semver@7.3.7";
-export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/use-observables-react.ts";
-export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.3/css/css.ts";
+export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
+export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.17/css/css.ts";
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.5/format/wc/react/index.ts";
-export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/class-kebab.ts";
+export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/class-kebab.ts";
 export {
   abbreviateNumber,
   formatNumber,
   formatPercentage,
   zeroPrefix,
-} from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+} from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/format/format.ts";
 export type { DeepPick } from "https://npm.tfl.dev/ts-deep-pick";
-export { default as jumper } from "https://tfl.dev/@truffle/utils@0.0.3/jumper/jumper.ts";
-export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@~0.0.2/cookie/cookie.ts";
+export { default as jumper } from "https://tfl.dev/@truffle/utils@~0.0.17/jumper/jumper.ts";
+export { getCookie, setCookie } from "https://tfl.dev/@truffle/utils@~0.0.17/cookie/cookie.ts";
 export {
   default as cssVars,
   hexOpacity,
@@ -55,11 +55,11 @@ export {
   getConnectionSourceType,
   GLOBAL_JUMPER_MESSAGES,
   useExtensionInfo,
-} from "https://tfl.dev/@truffle/utils@~0.0.13/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@~0.0.17/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
-} from "https://tfl.dev/@truffle/utils@~0.0.11/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@~0.0.17/embed/mod.ts";
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
@@ -71,7 +71,7 @@ export { default as TextField } from "https://tfl.dev/@truffle/ui@~0.1.0/compone
 export { default as AuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.0/components/auth-dialog/auth-dialog.tag.ts";
 export { default as AbsoluteAuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.4/components/absolute-auth-dialog/absolute-auth-dialog.tag.ts";
 export { default as FocusTrap } from "https://npm.tfl.dev/focus-trap-react@9.0.2?bundle";
-export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.2/legacy/format/format.ts";
+export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/format/format.ts";
 export { default as globalContext } from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
 export {
   OAuthIframe,

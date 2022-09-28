@@ -1,5 +1,5 @@
 import { JSX } from "https://npm.tfl.dev/react";
-import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.2/obs/subject.ts";
+import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
 
 interface DialogStackItem {
   element: JSX.Element;
