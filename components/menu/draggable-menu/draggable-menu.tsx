@@ -23,7 +23,7 @@ import {
 } from "./mod.ts";
 import Draggable, { DimensionModifiers, DragInfo, Vector } from "../../draggable/draggable.tsx";
 
-const DEFAULT_MENU_POSITION: MenuPosition = "top-left";
+const DEFAULT_MENU_POSITION: MenuPosition = "top-right";
 const DEFAULT_POSITION_ELEMENT_QUERY_SELECTOR = "#chatframe";
 const DEFAULT_POSITION_OFFSET = { x: -100, y: 50 };
 
@@ -74,10 +74,9 @@ export default function DraggableMenu({
       // if this is the first time loading the icon
       // give it the default position
     } else {
-      const defaultPosition = await jumper?.call(
-        "layout.getElementBoundingClientRect",
-        { querySelector: defaultPositionElementQuerySelector },
-      ) || {};
+      const defaultPosition = (await jumper?.call("layout.getElementBoundingClientRect", {
+        querySelector: defaultPositionElementQuerySelector,
+      })) || {};
 
       const dimensions = INITIAL_MENU_STATE.dimensions;
       if (!defaultPosition?.x && !defaultPosition?.y) {
