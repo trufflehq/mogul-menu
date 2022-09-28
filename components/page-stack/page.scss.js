@@ -10,6 +10,8 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   background: var(--background);
   animation: animatebottom 0.4s $ease-function;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
 
   @keyframes animatebottom{
     from {
@@ -68,7 +70,6 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   > .content {
     overflow-y: auto;
     flex: 1;
-    height: 100%;
   }
 }
 `;
