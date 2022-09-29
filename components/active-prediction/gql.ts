@@ -35,7 +35,7 @@ query ChannelPointsQuery {
 
 export const VOTE_MUTATION = gql`
 mutation PollVote($additionalData: JSON!, $voteCount: Float!) {
-  economyTransactionCreate(
+  economyTransactionCreateLegacy(
     input: {
       economyTriggerSlug: "prediction-vote"
       additionalData: $additionalData
