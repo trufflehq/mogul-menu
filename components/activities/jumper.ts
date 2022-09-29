@@ -7,6 +7,7 @@ export const BASE_BANNER_IFRAME_STYLES = {
   background: "transparent",
   "z-index": 2000,
   overflow: "hidden",
+  "margin-top": "4px",
   transition: "clip-path .25s cubic-bezier(.4,.71,.18,.99)",
 };
 
