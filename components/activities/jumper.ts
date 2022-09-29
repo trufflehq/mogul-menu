@@ -2,7 +2,6 @@ import { jumper } from "../../deps.ts";
 export type ActivityBannerStyleVariants = "open" | "closed";
 
 export const BASE_BANNER_IFRAME_STYLES = {
-  height: "52px",
   width: "100%",
   background: "transparent",
   "z-index": 2000,
@@ -29,14 +28,19 @@ export function getVariantBannerStyles(variant: ActivityBannerStyleVariants) {
     case "open":
       return {
         "clip-path": getClipPath(52, 4),
+        height: "52px",
+
       };
     case "closed":
       return {
         "clip-path": getClipPath(0, 0),
+        height: "0px",
+
       };
     default:
       return {
         "clip-path": getClipPath(52, 4),
+        height: "0px",
       };
   }
 }
