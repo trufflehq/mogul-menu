@@ -6,11 +6,9 @@ import { usePageStack } from "../page-stack/mod.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import AccountAvatar from "../account-avatar/account-avatar.tsx";
 import Watchtime from "../watchtime/watchtime.tsx";
-import Advert from "../advert/advert.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
-import { AdvertProps } from "../advert/advert.tsx";
 import { useUserInfo } from "../../shared/mod.ts";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -22,7 +20,6 @@ export default function HomeTab() {
   useStyleSheet(styleSheet);
   const { userInfoData } = useUserInfo();
   const name = userInfoData?.orgUser?.name;
-  const org = userInfoData?.org;
   const activePowerups = userInfoData?.activePowerupConnection?.nodes;
   const channelPoints = userInfoData?.channelPoints?.orgUserCounter;
 
@@ -39,31 +36,6 @@ export default function HomeTab() {
 
   const handleOpenNotificationDialog = () => {
     pushDialog(<BrowserExtensionNotificationDialog />);
-  };
-
-  // TODO: home tab should be "components" component that accepts other components
-  // so creators would add the advert component and set the props on that
-  const adverts: Record<string, AdvertProps> = {
-    ludwig: {
-      className: "base-ad-tile",
-      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/mogul_munchies.png?1",
-      hashtag: "#announcement",
-      tagline: "New merch: Mogul Munchies",
-      buttonHref: "https://ludwig.gg/",
-      // buttonOnClick,
-      buttonText: "Visit shop",
-      buttonStyle: "secondary",
-    },
-    dev: {
-      className: "base-ad-tile",
-      imageSrc: "https://cdn.bio/assets/images/creators/ludwig/mogul_munchies.png?1",
-      hashtag: "#announcement",
-      tagline: "New merch: Mogul Munchies",
-      buttonHref: "https://ludwig.gg/",
-      // buttonOnClick,
-      buttonText: "Visit shop",
-      buttonStyle: "secondary",
-    },
   };
 
   return (
@@ -141,7 +113,6 @@ export default function HomeTab() {
         <PredictionTile />
         <CPSpentTile />
         <KothTile />
-        {adverts[org?.slug] ? <Advert {...adverts[org.slug]} /> : null}
       </div>
     </div>
   );
