@@ -47,7 +47,7 @@ VALUES
   (
     ba07f880-360e-11ed-86ac-d144e8711ee9, 'youtubeLive', 
     'UCrPseYLGpNygVi34QpGNqpA', 8e35b570-6c2f-11ec-bade-b32a8d305590, bf2c31a0-360e-11ed-86ac-d144e8711ee9, 
-    '[{"action": "querySelector","value": "#chatframe"},{"action": "getIframeDocument"},{"action": "querySelector","value": "yt-live-chat-banner-manager > #visible-banners"},{"action": "appendSubject"}]', 
+    '[{"action": "querySelector","value": "#chatframe"},{"action": "getIframeDocument"},{"action": "querySelector","value": "yt-live-chat-banner-manager"},{"action": "appendSubject"}]', 
     NULL, '3.3.0', 'activity-banner', 
     'experimental', '{"iframeUrl": "https://new.ludwig.social/activity-banner" }'
   );

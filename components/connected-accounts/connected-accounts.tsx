@@ -1,24 +1,38 @@
 import {
   _,
-  getSrcByImageObj,
   gql,
   ImageByAspectRatio,
-  op,
-  queryObservable,
   React,
+  TruffleGQlConnection,
   useEffect,
-  useMemo,
-  useObservables,
+  useQuerySignal,
   useRef,
+  useSignal,
   useStyleSheet,
+  useUrqlQuerySignal,
 } from "../../deps.ts";
+import NewWindow from "../new-window/new-window.tsx";
 import { SnackBar, useSnackBar } from "../snackbar/mod.ts";
+
 import styleSheet from "./connected-accounts.scss.js";
 
-const ACCOUNT_CONNECTIONS_QUERY = gql`
+interface Connection {
+  id: string;
+  sourceType: string;
+  sourceId: string;
+  secondarySourceId: string;
+}
+
+type ConnectionConnection = TruffleGQlConnection<Connection>;
+
+const ACCOUNT_CONNECTIONS_QUERY = gql<
+  { connectionConnection: ConnectionConnection },
+  Record<string, unknown>
+>`
   query {
     connectionConnection {
       nodes {
+        id
         sourceType
         sourceId
         secondarySourceId
@@ -27,7 +41,13 @@ const ACCOUNT_CONNECTIONS_QUERY = gql`
   }
 `;
 
-const OAUTH_URL_QUERY = gql`
+const OAUTH_URL_QUERY = gql<{
+  connectionGetOAuthUrlsBySourceTypes: {
+    oAuthUrlMap: {
+      [key: string]: string;
+    };
+  };
+}, Record<string, unknown>>`
   query {
     connectionGetOAuthUrlsBySourceTypes(
       input: { sourceTypes: ["discord", "twitch", "twitter"] }
@@ -40,9 +60,14 @@ const OAUTH_URL_QUERY = gql`
 export default function ConnectedAccounts() {
   useStyleSheet(styleSheet);
   const enqueueSnackBar = useSnackBar();
-  const lastUpdatedConnectionsRef = useRef(null);
+  const { signal$: connections$, reexecuteQuery: refetchConnections } = useUrqlQuerySignal(
+    ACCOUNT_CONNECTIONS_QUERY,
+  );
+  const oAuthUrlMap$ = useQuerySignal(OAUTH_URL_QUERY);
+  const isOpen$ = useSignal(false);
+  const oAuthUrl$ = useSignal("");
+  const lastUpdatedConnectionsRef = useRef<Connection[] | undefined>(undefined!);
 
-  // need hasConnection to stem from the connections obs
   const logos = [
     {
       sourceType: "discord",
@@ -90,25 +115,8 @@ export default function ConnectedAccounts() {
     },
   ];
 
-  const { connectionsObs } = useMemo(() => {
-    const connectionsObs = queryObservable(ACCOUNT_CONNECTIONS_QUERY).pipe(
-      op.map((result) => result?.data?.connectionConnection?.nodes),
-    );
-
-    return {
-      connectionsObs,
-    };
-  }, []);
-
-  const { oAuthUrlMap, connections, me } = useObservables(() => ({
-    oAuthUrlMap: queryObservable(OAUTH_URL_QUERY).pipe(
-      op.map(
-        (result) => result?.data?.connectionGetOAuthUrlsBySourceTypes?.oAuthUrlMap,
-      ),
-    ),
-    connections: connectionsObs,
-    // me: model.user.getMe(),
-  }));
+  const connections = connections$.value.data?.get!()?.connectionConnection.nodes;
+  const oAuthUrlMap = oAuthUrlMap$.value.connectionGetOAuthUrlsBySourceTypes.oAuthUrlMap.get!();
 
   const isConnectionsChanged = !_.isEqual(
     connections,
@@ -143,43 +151,41 @@ export default function ConnectedAccounts() {
   }, [connections]);
 
   const openOAuth = (sourceType: string) => {
-    // await model.user.requestLoginIfGuest(me, overlay, {
-    //   props: {
-    //     source: "ways-to-earn",
-    //   },
-    // });
-
-    let openedWindowInterval;
-    useEffect(() => {
-      return () => {
-        clearInterval(openedWindowInterval);
-      };
-    });
-
     if (!hasConnection(sourceType)) {
       const oAuthUrl = oAuthUrlMap[sourceType];
-      // listen for this window to close and invalidate cache
-      const openedWindow = window.open(oAuthUrl);
-      clearInterval(openedWindowInterval);
-      openedWindowInterval = setInterval(() => {
-        if (openedWindow?.closed) {
-          console.log("window closed");
-          clearInterval(openedWindowInterval);
-          // model.graphqlClient.invalidateAll();
-        }
-      });
+      isOpen$.value = true;
+      oAuthUrl$.value = oAuthUrl;
     }
   };
 
-  const hasConnection = (selectedSource) => _.find(connections, { sourceType: selectedSource });
+  const hasConnection = (selectedSource: string) =>
+    _.find(connections, { sourceType: selectedSource });
   // we are currently only displaying discord, twitter, and twitch connections.
   // this filters out all of the other connections
   const displayedConnections = connections?.filter((connection) =>
     logos.map((logo) => logo.sourceType).includes(connection.sourceType)
   );
 
+  const onWindowClose = () => {
+    oAuthUrl$.value = "";
+
+    refetchConnections({ requestPolicy: "network-only" });
+  };
+
   return (
     <div className="c-browser-extension-earn-xp">
+      {isOpen$.get() && oAuthUrl$.get() && (
+        <NewWindow
+          onClose={onWindowClose}
+          url={oAuthUrl$.get()}
+          width={450}
+          height={600}
+          top={200}
+          left={400}
+          right={0}
+          bottom={0}
+        />
+      )}
       <div className="connections">
         {logos
           .filter((logo) => !hasConnection(logo.sourceType))
@@ -189,15 +195,14 @@ export default function ConnectedAccounts() {
               className="connection"
               target={"_blank"}
               key={idx}
-              // href={oAuthUrlMap?.[logo?.sourceType] || null}
               onClick={() => openOAuth(logo?.sourceType)}
               rel="noreferrer"
             >
-              <img src={logo?.imgUrl ?? getSrcByImageObj(logo?.imgFileObj)} />
+              <img src={logo?.imgUrl} />
             </a>
           ))}
       </div>
-      {displayedConnections?.length > 0 && <hr />}
+      {displayedConnections && displayedConnections?.length > 0 && <hr />}
       <div className="connected-connections">
         {logos
           .filter((logo) => hasConnection(logo.sourceType))
@@ -208,7 +213,7 @@ export default function ConnectedAccounts() {
               key={idx}
             >
               <div className="left">
-                <img src={logo?.imgUrl ?? getSrcByImageObj(logo?.imgFileObj)} />
+                <img src={logo?.imgUrl} />
                 <div className="name">{logo.data.title}</div>
                 <div className="connected">Connected</div>
               </div>
@@ -219,7 +224,9 @@ export default function ConnectedAccounts() {
   );
 }
 
-function AccountConnectedSnackBar({ connectionImgSrc, connectionTitle }) {
+function AccountConnectedSnackBar(
+  { connectionImgSrc, connectionTitle }: { connectionImgSrc?: string; connectionTitle?: string },
+) {
   return (
     <SnackBar
       style="flat"
