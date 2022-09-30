@@ -1,7 +1,7 @@
 import { gql } from "../../deps.ts";
 export const ACTIVE_POLL_QUERY = gql`
 query PredictionPoll {
-  pollConnection(first: 1, input: { type: "prediction" }) {
+  pollConnection(first: 1, input: { type: prediction }) {
     nodes {
       id
       question

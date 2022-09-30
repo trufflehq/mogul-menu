@@ -10,9 +10,11 @@ import {
   pollingQueryObservable,
   React,
   TextField,
+  useEffect,
   useMemo,
   useMutation,
   useObservables,
+  useRef,
   useState,
   useStyleSheet,
 } from "../../deps.ts";
@@ -36,7 +38,6 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     activePollObs,
     orgUserCounterObs,
     pollMsLeftObs,
-    isPredictingStream,
     voteCountStream,
     isExpiredObs,
     hiddenPollIdsStream,
@@ -97,7 +98,6 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     isExpired,
     hiddenPollIds,
     voteCount,
-    isPredicting,
     myVote,
     pollMsLeft,
     msSinceStart,
@@ -108,13 +108,31 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     isExpired: isExpiredObs,
     hiddenPollIds: hiddenPollIdsStream.obs,
     voteCount: voteCountStream.obs,
-    isPredicting: isPredictingStream.obs,
     myVote: myVoteObs,
     pollMsLeft: pollMsLeftObs,
     msSinceStart: msSinceStartObs,
   }));
 
-  const [predictionLock, setPredictionLock] = useState(false);
+  const totalVotes = _.sumBy(activePoll?.options ?? [], "count");
+  const votedOptionIndex = myVote?.optionIndex;
+  const hasVoted = votedOptionIndex !== undefined;
+  const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
+  const winningOptionIndex = activePoll?.data?.winningOptionIndex;
+  const isWinner = votedOptionIndex === winningOptionIndex;
+  const myVotes = myVote?.count;
+  const winningVotes = activePoll?.options[winningOptionIndex]?.count || 1;
+  const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
+  const isRefund = activePoll?.data?.isRefund;
+
+  const predictionLock = useRef(false);
+  const [isPredicting, setIsPredicting] = useState(false);
+
+  // reset isPredicting when the active poll gets updated
+  useEffect(() => {
+    if (!predictionLock.current && hasVoted) {
+      setIsPredicting(false);
+    }
+  }, [myVote]);
 
   if (!activePoll || hiddenPollIds.indexOf(activePoll.id) !== -1) {
     return [];
@@ -122,8 +140,9 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
 
   const predict = async ({ option, optionIndex }) => {
     // prevent accidental double clicking
-    if (predictionLock) return;
-    setPredictionLock(true);
+    if (predictionLock.current) return;
+    predictionLock.current = true;
+    setIsPredicting(true);
 
     console.log("predict", option, optionIndex, voteCount);
     try {
@@ -141,19 +160,8 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     }
 
     // release the prediction lock
-    setPredictionLock(false);
+    predictionLock.current = false;
   };
-
-  const totalVotes = _.sumBy(activePoll.options, "count");
-  const votedOptionIndex = myVote?.optionIndex;
-  const hasVoted = votedOptionIndex !== undefined;
-  const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
-  const winningOptionIndex = activePoll?.data?.winningOptionIndex;
-  const isWinner = votedOptionIndex === winningOptionIndex;
-  const myVotes = myVote?.count;
-  const winningVotes = activePoll?.options[winningOptionIndex]?.count || 1;
-  const myWinningShare = isWinner ? Math.floor((myVotes / winningVotes) * totalVotes) : 0;
-  const isRefund = activePoll?.data?.isRefund;
 
   return (
     <div className="c-active-prediction">
@@ -233,10 +241,10 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                     {abbreviateNumber(option.unique || 0)}
                   </div>
                   <div className="label">total voters</div>
-                  {!isExpired && isForm && (
+                  {!isPredicting && !isExpired && isForm && (
                     <div className="vote">
                       <Button
-                        isDisabled={predictionLock || isPredicting || !(voteCount > 0)}
+                        isDisabled={!(voteCount > 0)}
                         style={{
                           "--background": optionIndex === 0 ? "#419BEE" : "#EE416B",
                           "visibility": hasVotedOnOtherOption ? "hidden" : "visible",
@@ -252,6 +260,15 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                       </Button>
                     </div>
                   )}
+                  {isPredicting &&
+                    (
+                      <div
+                        className="loading"
+                        style={{ visibility: hasVotedOnOtherOption ? "hidden" : "visible" }}
+                      >
+                        . . .
+                      </div>
+                    )}
                 </div>
                 <div className="winner-container">
                   {hasWinner && <Winner isWinner={isWinner} />}

@@ -199,6 +199,11 @@ $option-2-color: #EE416B;
           }
 
         }
+
+        .loading {
+          grid-column: 1 / span 2;
+          text-align: center;
+        }
       }
 
       >.winner-container {
