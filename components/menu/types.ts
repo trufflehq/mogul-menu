@@ -6,6 +6,7 @@ export type MenuPosition = "top-right" | "top-left" | "bottom-right" | "bottom-l
 export interface MenuState {
   menuState: string;
   iconImageObj?: File;
+  creatorName: string;
   dimensions: {
     base: {
       x: number;

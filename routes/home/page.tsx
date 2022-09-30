@@ -30,7 +30,7 @@ const iconImageObj = {
 function HomePage() {
   return (
     <>
-      <Menu iconImageObj={iconImageObj} />
+      <Menu iconImageObj={iconImageObj} creatorName={"Ludwig"} />
     </>
   );
 }

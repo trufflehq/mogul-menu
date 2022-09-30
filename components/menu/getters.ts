@@ -32,6 +32,10 @@ export function getMenuIconImageObj(state: MenuState) {
   return state.iconImageObj;
 }
 
+export function getCreatorName(state: MenuState) {
+  return state.creatorName;
+}
+
 export function getMenuPosition(state: MenuState) {
   return state.menuPosition;
 }

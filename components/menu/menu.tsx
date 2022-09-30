@@ -1,14 +1,15 @@
-import { React, enableLegendStateReact } from "../../deps.ts";
+import { enableLegendStateReact, React } from "../../deps.ts";
 import MenuBody from "./menu-body.tsx";
 import MenuProvider from "./menu-provider.tsx";
 import { File } from "../../types/mod.ts";
 import { Vector } from "../draggable/draggable.tsx";
 import { TabDefinition, useDynamicTabs } from "../tabs/mod.ts";
 
-enableLegendStateReact()
+enableLegendStateReact();
 
 export interface MogulMenuProps {
-  tabs: TabDefinition[];
+  tabs?: TabDefinition[];
+  creatorName: string;
   iconImageObj: File;
   defaultPositionElementQuerySelector?: string;
   defaultPositionOffset?: Vector;
