@@ -10,6 +10,7 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
+import { getCreatorName, useMenu } from "../menu/mod.ts";
 import { MOGUL_MENU_JUMPER_MESSAGES } from "../../shared/mod.ts";
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "./watchtime-counter.ts";
@@ -38,6 +39,8 @@ interface WatchtimeProps {
 
 export default function Watchtime(props: WatchtimeProps) {
   useStyleSheet(styleSheet);
+  const { state: menuState } = useMenu();
+  const creatorName = getCreatorName(menuState);
   const {
     highlightButtonBg,
     hasChannelPoints,
@@ -51,8 +54,6 @@ export default function Watchtime(props: WatchtimeProps) {
   ] = useQuery({
     query: POINTS_QUERY,
   });
-
-  const creatorName = "Ludwig";
 
   const onFinishedCountdown = useCallback(async () => {
     await reexecutePointsQuery({

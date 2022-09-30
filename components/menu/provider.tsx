@@ -14,6 +14,7 @@ export const INITIAL_MENU_STATE: MenuState = {
   menuState: "closed",
   menuPosition: undefined,
   snackBars: [],
+  creatorName: "",
   dimensions: {
     base: {
       x: BASE_MENU_WIDTH,
@@ -30,10 +31,12 @@ export const INITIAL_MENU_STATE: MenuState = {
 export function MenuProvider({
   children,
   iconImageObj,
+  creatorName,
 }: {
   children: React.ReactNode;
   iconImageObj?: File;
+  creatorName: string;
 }) {
-  const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj });
+  const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj, creatorName });
   return <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>;
 }
