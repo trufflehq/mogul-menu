@@ -8,7 +8,7 @@ import {
   useStyleSheet,
 } from "../../../deps.ts";
 import { useCurrentTab } from "../../tabs/mod.ts";
-import { invalidateExtensionUser } from '../../../shared/mod.ts'
+import { invalidateExtensionUser } from "../../../shared/mod.ts";
 import { File, Product } from "../../../types/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -21,7 +21,7 @@ import styleSheet from "./confirm-cp-purchase-dialog.scss.js";
 
 const CHANNEL_POINTS_SHOP_PURCHASE_MUTATION = gql`
   mutation ChannelPointsShopPurchase($productId: String!) {
-    economyTransactionCreate(
+    economyTransactionCreateLegacy(
       input: {
         economyTriggerSlug: "channel-points-store-purchase"
         amountSourceId: $productId
@@ -75,7 +75,7 @@ export default function ConfirmPurchaseDialog({
     //   economyTriggerSlug: "channel-points-store-purchase",
     //   amountSourceId: collectibleItem.id,
     // });
-    invalidateExtensionUser()
+    invalidateExtensionUser();
     // // close confirmation dialog
     // overlay.close();
     // // open purchase notification dialog

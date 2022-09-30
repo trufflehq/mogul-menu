@@ -13,6 +13,7 @@ import {
   useMemo,
   useMutation,
   useObservables,
+  useState,
   useStyleSheet,
 } from "../../deps.ts";
 
@@ -113,11 +114,17 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     msSinceStart: msSinceStartObs,
   }));
 
+  const [predictionLock, setPredictionLock] = useState(false);
+
   if (!activePoll || hiddenPollIds.indexOf(activePoll.id) !== -1) {
     return [];
   }
 
   const predict = async ({ option, optionIndex }) => {
+    // prevent accidental double clicking
+    if (predictionLock) return;
+    setPredictionLock(true);
+
     console.log("predict", option, optionIndex, voteCount);
     try {
       errorStream.next(null);
@@ -132,6 +139,9 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     } catch (err) {
       errorStream.next(err?.info || "There was an error submitting");
     }
+
+    // release the prediction lock
+    setPredictionLock(false);
   };
 
   const totalVotes = _.sumBy(activePoll.options, "count");
@@ -226,8 +236,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
                   {!isExpired && isForm && (
                     <div className="vote">
                       <Button
-                        isDisabled={isPredicting ||
-                          !(voteCount > 0)}
+                        isDisabled={predictionLock || isPredicting || !(voteCount > 0)}
                         style={{
                           "--background": optionIndex === 0 ? "#419BEE" : "#EE416B",
                           "visibility": hasVotedOnOtherOption ? "hidden" : "visible",
