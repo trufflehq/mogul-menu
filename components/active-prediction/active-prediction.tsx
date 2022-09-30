@@ -140,9 +140,9 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
 
   const predict = async ({ option, optionIndex }) => {
     // prevent accidental double clicking
-    if (predictionLock.current) return;
-    predictionLock.current = true;
-    setIsPredicting(true);
+    // if (predictionLock.current) return;
+    // predictionLock.current = true;
+    // setIsPredicting(true);
 
     console.log("predict", option, optionIndex, voteCount);
     try {
@@ -160,7 +160,7 @@ export default function ActivePrediction({ isForm }: { isForm: boolean }) {
     }
 
     // release the prediction lock
-    predictionLock.current = false;
+    // predictionLock.current = false;
   };
 
   return (
