@@ -1,11 +1,11 @@
-import { GLOBAL_JUMPER_MESSAGES, jumper, _clearCache, useEffect } from "../../../deps.ts";
+import { _clearCache, GLOBAL_JUMPER_MESSAGES, jumper, useEffect } from "../../../deps.ts";
 import {
   useActivePowerupConnection,
+  useOrgKothConfigQuery$,
+  useOrgUserConnectionsQuery,
   useOwnedCollectibleConnection,
   useSeasonPassData,
   useUserInfo,
-  useOrgUserConnectionsQuery,
-  useOrgKothConfigQuery$
 } from "../mod.ts";
 
 /**
@@ -16,7 +16,7 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
-  const {reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
+  const { reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
@@ -35,7 +35,7 @@ export function useInvalidateAllQueriesListener() {
  * Listens for a login message from jumper and resets the urql client and refetches the org user.
  * Need this so the activity banner has the updated user to pull in their data in different activities (e.g points won/lost in predictions)
  */
- export function useLoginListener() {
+export function useLoginListener() {
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
 
   useEffect(() => {
