@@ -1,7 +1,7 @@
-import { gql } from '../../deps.ts'
+import { gql } from "../../deps.ts";
 export const CHANNEL_POINTS_SHOP_QUERY = gql`
   query ChannelPointsShopQuery {
-    productConnection(input: { sourceType: "collectible" }) {
+    productConnection(first: 50, input: { sourceType: "collectible" }) {
       nodes {
         id
         source
