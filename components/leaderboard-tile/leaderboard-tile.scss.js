@@ -31,32 +31,34 @@ export default scss`
 }
 
 .c-leaderboard-tile {
-  > .content {
-    padding: 14px 21px;
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    max-width: 250px;
-    margin: 0 auto;
+  > .inner {
+    > .content {
+      padding: 14px 21px;
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+      max-width: 250px;
+      margin: 0 auto;
 
-    > .contestant {
-      position: relative;
+      > .contestant {
+        position: relative;
 
-      > .avatar {
-        border-radius: 100%;
-        border-width: 1px;
-        border-style: solid;
-        box-sizing: border-box;
-        margin-bottom: 4px;
+        > .avatar {
+          border-radius: 100%;
+          border-width: 1px;
+          border-style: solid;
+          box-sizing: border-box;
+          margin-bottom: 4px;
 
-        @include username-tooltip;
-      }
+          @include username-tooltip;
+        }
 
-      > .rank {
-        font-weight: 500;
-        font-size: 12px;
-        text-align: center;
-        letter-spacing: 0.004em;
+        > .rank {
+          font-weight: 500;
+          font-size: 12px;
+          text-align: center;
+          letter-spacing: 0.004em;
+        }
       }
     }
   }
