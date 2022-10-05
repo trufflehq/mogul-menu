@@ -93,7 +93,6 @@ export {
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.18.0/react";
-export type { Observable, ObservableObject } from "https://npm.tfl.dev/@legendapp/state@~0.18.0";
 export {
 useQuerySignal,
 useSignal,

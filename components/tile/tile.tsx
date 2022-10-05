@@ -15,18 +15,18 @@ export default function Tile(props) {
     shouldHandleLoading,
     removeTooltip,
   } = props;
-  const isRemoveLoading$ = useSignal(false);
+  const isRemovingLoading$ = useSignal(false);
   let { textColor } = props;
   if (!textColor) textColor = "var(--mm-color-text-bg-primary)";
   const removeHandler = async () => {
     if (shouldHandleLoading) {
-      isRemoveLoading$.value = true;
+      isRemovingLoading$.value = true;
     }
 
     await onRemove();
 
     if (shouldHandleLoading) {
-      isRemoveLoading$.set(false);
+      isRemovingLoading$.set(false);
     }
   };
 
@@ -62,7 +62,7 @@ export default function Tile(props) {
                 {removeTooltip}
               </div>
             )}
-          {isRemoveLoading$.get!() ? "..." : (
+          {isRemovingLoading$.get!() ? "..." : (
             <Icon
               icon="close"
               color={"var(--error-red)"}
