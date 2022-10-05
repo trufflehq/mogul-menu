@@ -1,7 +1,11 @@
-import { useMutation, useQuery } from "../../../deps.ts";
+import { useMutation, useQuery, useQuerySignal } from "../../../deps.ts";
 import { OrgUserChatSettings } from "../../../types/mod.ts";
 import { invalidateExtensionUser } from "../jumper/util.ts";
-import { ORG_USER_CHAT_SETTINGS_QUERY, SAVE_ORG_USER_SETTINGS_MUTATION } from "./gql.ts";
+import {
+  ORG_USER_CHAT_SETTINGS_QUERY,
+  ORG_USER_WITH_ROLES_QUERY,
+  SAVE_ORG_USER_SETTINGS_MUTATION,
+} from "./gql.ts";
 
 export function useSaveOrgUserSettings(
   onSave?: () => void,
@@ -46,4 +50,10 @@ export function useOrgUserChatSettings() {
     orgUser: data?.orgUser as OrgUserChatSettings,
     isFetching: fetching,
   };
+}
+
+export function useOrgUserWithRoles$() {
+  const orgUserWithRoles$ = useQuerySignal(ORG_USER_WITH_ROLES_QUERY);
+
+  return orgUserWithRoles$;
 }

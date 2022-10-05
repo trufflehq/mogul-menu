@@ -1,4 +1,4 @@
-import { React, useStyleSheet, Icon, Ripple, classKebab } from "../../deps.ts";
+import { classKebab, Icon, React, Ripple, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./tile.scss.js";
 
 export default function Tile(props) {
@@ -11,6 +11,8 @@ export default function Tile(props) {
     className,
     color,
     onClick,
+    onRemove,
+    removeTooltip,
   } = props;
 
   let { textColor } = props;
@@ -18,9 +20,11 @@ export default function Tile(props) {
 
   return (
     <div
-      className={`c-tile ${className} ${classKebab({
-        clickable: !!onClick,
-      })}`}
+      className={`c-tile ${className} ${
+        classKebab({
+          clickable: !!onClick,
+        })
+      }`}
       onClick={onClick}
     >
       <TileHeader
@@ -34,6 +38,20 @@ export default function Tile(props) {
       />
       <Content />
       {onClick && <Ripple color={color} />}
+      {onRemove && (
+        <div className="remove">
+          {removeTooltip && (
+            <div className="text">
+              {removeTooltip}
+            </div>
+          )}
+          <Icon
+            icon="close"
+            color={"var(--error-red)"}
+            onclick={onRemove}
+          />
+        </div>
+      )}
     </div>
   );
 }
