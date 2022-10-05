@@ -39,7 +39,7 @@ export default function KothTile() {
   useEffect(() => {
     const id = setInterval(() => {
       reexecuteKothConfigQuery({ requestPolicy: "network-only" });
-    }, 1000);
+    }, 10000);
 
     return () => clearInterval(id);
   }, []);
