@@ -13,3 +13,5 @@ export * from "./org-user/mod.ts";
 export * from "./notifications/mod.ts";
 export * from "./firebase/mod.ts";
 export * from "./poll/mod.ts";
+export * from "./permissions/mod.ts";
+export * from "./koth/mod.ts";

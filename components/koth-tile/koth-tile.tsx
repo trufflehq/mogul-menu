@@ -1,51 +1,79 @@
 import {
   Avatar,
+  gql,
   React,
   useEffect,
-  useMemo,
-  usePollingQuery,
-  useQuery,
-  useRef,
-  useState,
+  useMutation,
+  useQuerySignal,
+  useSelector,
   useStyleSheet,
 } from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
-import { CROWN_ICON } from "../../shared/mod.ts";
-import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "./gql.ts";
+import {
+  CROWN_ICON,
+  hasPermission,
+  useOrgKothConfigQuery$,
+  useOrgUserWithRoles$,
+} from "../../shared/mod.ts";
+import { KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile from "../tile/tile.tsx";
 
 import styleSheet from "./koth-tile.scss.js";
 
+const DELETE_KOTH_MUTATION = gql`
+mutation {
+  orgConfigUpsert(input: { data: { kingOfTheHill: { userId: "" } } }) {
+    orgConfig {
+      data
+    }
+  }
+}
+`;
+
 export default function KothTile() {
   useStyleSheet(styleSheet);
-
-  const kothUserIdRef = useRef<string>(undefined!);
-  const [kothUserId, setKothUserId] = useState("");
-  const orgKothConfigResponse = usePollingQuery(10000, { query: KOTH_ORG_CONFIG_QUERY });
-  const orgKothConfig = orgKothConfigResponse?.data;
-
-  const [{ data: kothUser }] = useQuery({
-    query: KOTH_USER_QUERY,
-    variables: {
-      userId: kothUserId,
-    },
-    requestPolicy: "network-only",
-    context: useMemo(() => ({ additionalTypenames: ["Org", "OrgConfig"] }), []),
-  });
-
-  kothUserIdRef.current = orgKothConfig?.org?.orgConfig?.data?.kingOfTheHill?.userId;
-
+  const orgUserWithRoles$ = useOrgUserWithRoles$();
+  const { orgKothConfig$, reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
+  const [_deleteKOTHResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
   useEffect(() => {
-    setKothUserId(kothUserIdRef.current);
-  }, [kothUserIdRef.current]);
+    const id = setInterval(() => {
+      reexecuteKothConfigQuery({ requestPolicy: "network-only" });
+    }, 1000);
 
-  const kothOrgUser = kothUser?.orgUser;
+    return () => clearInterval(id);
+  }, []);
 
-  if (!kothOrgUser) return <></>;
+  const kothUserId = useSelector(() =>
+    orgKothConfig$.value.get!()?.data?.org?.orgConfig?.data?.kingOfTheHill?.userId
+  );
 
-  return <MemoizedTile kothOrgUser={kothOrgUser} />;
+  const hasKothDeletePermission = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$?.value.orgUser.get!(),
+      actions: ["update"],
+      filters: {
+        orgConfig: { isAll: true, rank: 0 },
+      },
+    })
+  );
+
+  const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
+  const kothOrgUser = useSelector(() => kothUser$.value.orgUser.get!());
+  const onDelete = async () => {
+    await executeDeleteKothResult();
+  };
+
+  if (!kothUserId || !kothOrgUser) return <></>;
+
+  return (
+    <MemoizedTile
+      kothOrgUser={kothOrgUser}
+      onRemove={hasKothDeletePermission ? onDelete : undefined}
+    />
+  );
 }
+
 function arePropsEqual(prevProps: OrgUserTileProps, nextProps: OrgUserTileProps) {
   return prevProps?.kothOrgUser?.user?.id === nextProps?.kothOrgUser?.user?.id;
 }
@@ -59,7 +87,9 @@ const MemoizedTile = React.memo(
   arePropsEqual,
 );
 
-function OrgUserTile({ kothOrgUser }: { kothOrgUser?: KOTHOrgUser }) {
+function OrgUserTile(
+  { kothOrgUser, onRemove }: { kothOrgUser?: KOTHOrgUser; onRemove?: () => void },
+) {
   const activePowerups = kothOrgUser?.activePowerupConnection?.nodes;
 
   return (
@@ -68,6 +98,8 @@ function OrgUserTile({ kothOrgUser }: { kothOrgUser?: KOTHOrgUser }) {
       icon={CROWN_ICON}
       headerText="King of the Hill"
       color="#E0BB72"
+      onRemove={onRemove}
+      removeTooltip="Remove"
       content={() => (
         <div className="content">
           <div className="avatar">

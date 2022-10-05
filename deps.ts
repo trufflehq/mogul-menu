@@ -59,7 +59,7 @@ export {
 export type {
   ConnectionSourceType,
   PageIdentifier,
-} from "https://tfl.dev/@truffle/utils@~0.0.17/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@0.0.17/embed/types.ts";
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
@@ -88,7 +88,11 @@ export {
   getToken as getFCMToken,
 } from "https://npm.tfl.dev/firebase@9.9.4/messaging";
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
-export { enableLegendStateReact } from "https://npm.tfl.dev/@legendapp/state@~0.17.0/react";
+export {
+  enableLegendStateReact,
+  useObserve,
+  useSelector,
+} from "https://npm.tfl.dev/@legendapp/state@~0.18.0/react";
 export {
   useQuerySignal,
   useSignal,

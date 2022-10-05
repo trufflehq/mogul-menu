@@ -11,6 +11,8 @@ export default function Tile(props) {
     className,
     color,
     onClick,
+    onRemove,
+    removeTooltip
   } = props;
 
   let { textColor } = props;
@@ -34,6 +36,16 @@ export default function Tile(props) {
       />
       <Content />
       {onClick && <Ripple color={color} />}
+      {onRemove &&           <div className="remove">
+            {removeTooltip && <div className="text">
+              {removeTooltip}
+            </div>}
+            <Icon
+              icon="close"
+              color={"var(--error-red)"}
+              onclick={onRemove}
+            />
+          </div>}
     </div>
   );
 }

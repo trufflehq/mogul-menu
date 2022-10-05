@@ -4,7 +4,8 @@ import {
   useOwnedCollectibleConnection,
   useSeasonPassData,
   useUserInfo,
-  useOrgUserConnectionsQuery
+  useOrgUserConnectionsQuery,
+  useOrgKothConfigQuery$
 } from "../mod.ts";
 
 /**
@@ -15,6 +16,7 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
+  const {reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
@@ -23,6 +25,7 @@ export function useInvalidateAllQueriesListener() {
         reexecuteActivePowerupConnQuery();
         reexecuteOwnedCollectibleConnQuery();
         reexecuteSeasonPassQuery();
+        reexecuteKothConfigQuery();
       }
     });
   }, []);
