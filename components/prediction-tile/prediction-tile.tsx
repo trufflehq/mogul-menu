@@ -15,7 +15,7 @@ import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
-
+const RESULTS_TIMOUT = 100 * ONE_SECOND_MS;
 // NOTE: we don't currently have a way to clean up onMessage listeners
 // in the extension so we'll need to be cognizant that the prediction tile
 // component will be mounted for the lifetime of the embed
@@ -52,23 +52,44 @@ export default function PredictionTile() {
     () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
     [activePoll],
   );
-  const isPredictionExpired = useMemo(() => pollMsLeft <= 0, [pollMsLeft]);
+
+  const hasPredictionEnded = useMemo(() => pollMsLeft <= 0, [pollMsLeft]);
 
   const hasWinner = useMemo(
     () => activePoll?.data?.winningOptionIndex !== undefined,
     [activePoll],
   );
 
+  const timeSinceWinnerSelection = useMemo(
+    () =>
+      activePoll?.data?.winnerSelectedTime
+        ? new Date(activePoll?.data?.winnerSelectedTime).getTime() - Date.now()
+        : undefined,
+    [activePoll],
+  );
+
+  const hasResultsExpired = hasWinner && timeSinceWinnerSelection
+    ? RESULTS_TIMOUT + timeSinceWinnerSelection < 0
+    : false;
+
   let Content: React.ReactNode;
 
-  if (isPredictionExpired && hasWinner) {
+  if (hasResultsExpired) {
+    Content = (
+      <div className="content">
+        <div className="primary-text">
+          No current prediction
+        </div>
+      </div>
+    );
+  } else if (hasPredictionEnded && hasWinner) {
     Content = (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
         <div className="secondary-text">The results are in!</div>
       </div>
     );
-  } else if (isPredictionExpired) {
+  } else if (hasPredictionEnded) {
     Content = (
       <div className="content">
         <div className="primary-text">{activePoll?.question}</div>
@@ -104,7 +125,7 @@ export default function PredictionTile() {
       iconViewBox={CRYSTAL_BALL_ICON_VIEWBOX}
       headerText="Prediction"
       color="#AB8FE9"
-      onClick={() => pushPage(<PredictionPage />)}
+      onClick={hasResultsExpired ? null : () => pushPage(<PredictionPage />)}
       content={() => Content}
     />
   );
