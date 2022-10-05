@@ -46,7 +46,7 @@ export default function KothTile() {
   }, []);
 
   const kothUserId = useSelector(() =>
-    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId
+    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId.get!()
   );
 
   const hasKothDeletePermission = useSelector(() =>
@@ -60,11 +60,6 @@ export default function KothTile() {
   );
 
   const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
-  console.log(
-    kothUser$.value.orgUser,
-    kothUser$.value.orgUser?.user?.id,
-    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId,
-  );
   const kothOrgUser = useSelector(() => kothUser$.value.orgUser.get!());
   const onDelete = async () => {
     await executeDeleteKothResult();
