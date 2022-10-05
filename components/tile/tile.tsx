@@ -26,7 +26,7 @@ export default function Tile(props) {
     await onRemove();
 
     if (shouldHandleLoading) {
-      isRemovingLoading$.set(false);
+      isRemovingLoading$.value = false;
     }
   };
 
