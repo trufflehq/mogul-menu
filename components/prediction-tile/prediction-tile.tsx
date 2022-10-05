@@ -1,4 +1,4 @@
-import { jumper, React, useEffect, useMemo, usePollingQuery, useStyleSheet } from "../../deps.ts";
+import { jumper, React, useEffect, usePollingQuery, useStyleSheet } from "../../deps.ts";
 import {
   ACTIVE_POLL_QUERY,
   CRYSTAL_BALL_ICON,
@@ -40,33 +40,19 @@ export default function PredictionTile() {
     query: ACTIVE_POLL_QUERY,
   });
 
-  const activePoll: Poll = useMemo(
-    () =>
-      activePollData?.pollConnection?.nodes?.find(
-        (poll: Poll) => poll?.data?.type === "prediction",
-      ),
-    [activePollData],
+  const activePoll: Poll = activePollData?.pollConnection?.nodes?.find(
+    (poll: Poll) => poll?.data?.type === "prediction",
   );
 
-  const pollMsLeft = useMemo(
-    () => new Date(activePoll?.endTime || Date.now()).getTime() - Date.now(),
-    [activePoll],
-  );
+  const pollMsLeft = new Date(activePoll?.endTime || Date.now()).getTime() - Date.now();
 
-  const hasPredictionEnded = useMemo(() => pollMsLeft <= 0, [pollMsLeft]);
+  const hasPredictionEnded = pollMsLeft <= 0;
 
-  const hasWinner = useMemo(
-    () => activePoll?.data?.winningOptionIndex !== undefined,
-    [activePoll],
-  );
+  const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
 
-  const timeSinceWinnerSelection = useMemo(
-    () =>
-      activePoll?.data?.winnerSelectedTime
-        ? new Date(activePoll?.data?.winnerSelectedTime).getTime() - Date.now()
-        : undefined,
-    [activePoll],
-  );
+  const timeSinceWinnerSelection = activePoll?.data?.winnerSelectedTime
+    ? new Date(activePoll?.data?.winnerSelectedTime).getTime() - Date.now()
+    : undefined;
 
   const hasResultsExpired = hasWinner && timeSinceWinnerSelection
     ? RESULTS_TIMOUT + timeSinceWinnerSelection < 0
