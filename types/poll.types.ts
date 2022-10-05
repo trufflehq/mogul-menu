@@ -21,6 +21,7 @@ export interface Poll {
   data: {
     type?: "prediction";
     winningOptionIndex?: number;
+    winnerSelectedTime?: Date;
     isRefund?: boolean;
   };
   time: Date;
