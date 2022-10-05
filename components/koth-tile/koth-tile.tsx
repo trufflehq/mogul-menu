@@ -31,26 +31,27 @@ mutation {
 }
 `;
 
+const KOTH_POLL_INTERVAL = 10000;
 export default function KothTile() {
   useStyleSheet(styleSheet);
   const orgUserWithRoles$ = useOrgUserWithRoles$();
   const { orgKothConfig$, reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
-  const [_deleteKOTHResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
+  const [_deleteKothResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
   useEffect(() => {
     const id = setInterval(() => {
       reexecuteKothConfigQuery({ requestPolicy: "network-only" });
-    }, 10000);
+    }, KOTH_POLL_INTERVAL);
 
     return () => clearInterval(id);
   }, []);
 
   const kothUserId = useSelector(() =>
-    orgKothConfig$.value.get!()?.data?.org?.orgConfig?.data?.kingOfTheHill?.userId
+    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId
   );
 
   const hasKothDeletePermission = useSelector(() =>
     hasPermission({
-      orgUser: orgUserWithRoles$?.value.orgUser.get!(),
+      orgUser: orgUserWithRoles$.value.orgUser.get!(),
       actions: ["update"],
       filters: {
         orgConfig: { isAll: true, rank: 0 },
@@ -59,6 +60,11 @@ export default function KothTile() {
   );
 
   const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
+  console.log(
+    kothUser$.value.orgUser,
+    kothUser$.value.orgUser?.user?.id,
+    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId,
+  );
   const kothOrgUser = useSelector(() => kothUser$.value.orgUser.get!());
   const onDelete = async () => {
     await executeDeleteKothResult();
