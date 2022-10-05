@@ -93,7 +93,7 @@ export default scss`
     right: 8px;
     width: 32px;
     height: 32px;
-    z-index: 999;
+    z-index: 1;
     color: var(--error-red);
     border-radius: 50%;
     box-sizing: border-box;
