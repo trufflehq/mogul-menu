@@ -19,13 +19,12 @@ import {
   hasPermission,
   OrgUserQuerySignal,
   TROPHY_ICON,
-  useLeaderboardDisplay$,
+  usePollingLeaderboardDisplay$,
 } from "../../shared/mod.ts";
 
 import styleSheet from "./leaderboard-tile.scss.js";
 
 const LEADERBOARD_LIMIT = 3;
-const LEADERBOARD_DISPLAY_POLL_INTERVAL = 10000;
 const LEADERBOARD_DISPLAY_UPSERT_MUTATION = gql`
   mutation LeaderboardDisplayKeyValueUpsert($sourceId: String, $key: String, $value: String) {
     keyValueUpsert(input: { sourceType: "org" sourceId: $sourceId, key: $key, value: $value }) {
@@ -64,27 +63,20 @@ export function LeaderboardTile({
 }) {
   useStyleSheet(styleSheet);
 
-  const [{ data: leaderboardCounterData, fetching }] = useQuery({
+  const [{ data: leaderboardCounterData }] = useQuery({
     query: LEADERBOARD_COUNTER_QUERY,
     variables: {
       limit: LEADERBOARD_LIMIT,
       orgUserCounterTypeId,
     },
   });
-  const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = useLeaderboardDisplay$(
+
+  const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = usePollingLeaderboardDisplay$(
     displayKey,
   );
   const [, executeBattlepassLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
 
-  useEffect(() => {
-    reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
 
-    const id = setInterval(() => {
-      reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
-    }, LEADERBOARD_DISPLAY_POLL_INTERVAL);
-
-    return () => clearInterval(id);
-  }, []);
   const hasTogglePermission = useSelector(() =>
     hasPermission({
       orgUser: orgUserWithRoles$.value.orgUser.get!(),
