@@ -4,12 +4,12 @@ export default scss`
 @mixin tooltip {
   .text {
     position: absolute;
-    bottom: -28px;
-    left: 50%;
+    top: -28px;
+    left: 0;
     transform: translate(-50%, 0);
     padding: 2px 10px;
-    background-color: var(--mm-color-bg-secondary);
-    border: 1px solid var(--mm-color-bg-tertiary);
+    background-color: var(--mm-color-bg-tertiary);
+    color: var(--mm-color-text-bg-tertiary);
     border-radius: 4px;
     font-weight: 500;
     font-size: 12px;
@@ -50,6 +50,10 @@ export default scss`
       cursor: pointer;
     }
 
+    &.is-hidden {
+      filter: brightness(40%);
+    }
+
     > .header {
       display: flex;
       justify-content: space-between;
@@ -60,9 +64,9 @@ export default scss`
       border-top-right-radius: $border-radius;
       box-sizing: border-box;
       margin-bottom: 20px;
+      position: relative;
 
       > .icon {
-        background-color: var(--mm-color-bg-primary);
         border-radius: 100%;
         width: 40px;
         height: 40px;
@@ -84,20 +88,28 @@ export default scss`
     }
   }
 
-  > .remove {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  > .action {
     position: absolute;
     bottom: 12px;
     right: 8px;
+    z-index: 1;
+  }
+  
+  > .c-action-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     width: 32px;
     height: 32px;
-    z-index: 1;
-    color: var(--error-red);
+
     border-radius: 50%;
     box-sizing: border-box;
-    border: 1px solid var(--error-red);
+    color: var(--error-red);
+
+    &:hover {
+      background-color: var(--mm-color-bg-tertiary);
+    }
 
     @include tooltip;
   }

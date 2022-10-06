@@ -1,6 +1,19 @@
-import { classKebab, Icon, React, Ripple, useSignal, useState, useStyleSheet } from "../../deps.ts";
+import {
+  classKebab,
+  Icon,
+  ImageByAspectRatio,
+  React,
+  Ripple,
+  useSignal,
+  useStyleSheet,
+} from "../../deps.ts";
 import styleSheet from "./tile.scss.js";
 
+const TRASH_ICON_URL = "https://cdn.bio/assets/images/features/browser_extension/trash-red.svg";
+const EYE_OPEN_ICON_URL =
+  "https://cdn.bio/assets/images/features/browser_extension/eye-open-red.svg";
+const EYE_CLOSED_ICON_URL =
+  "https://cdn.bio/assets/images/features/browser_extension/eye-closed-red.svg";
 export default function Tile(props) {
   useStyleSheet(styleSheet);
   const {
@@ -11,24 +24,11 @@ export default function Tile(props) {
     className,
     color,
     onClick,
-    onRemove,
-    shouldHandleLoading,
-    removeTooltip,
+    action,
+    isHidden,
   } = props;
-  const isRemovingLoading$ = useSignal(false);
   let { textColor } = props;
   if (!textColor) textColor = "var(--mm-color-text-bg-primary)";
-  const removeHandler = async () => {
-    if (shouldHandleLoading) {
-      isRemovingLoading$.value = true;
-    }
-
-    await onRemove();
-
-    if (shouldHandleLoading) {
-      isRemovingLoading$.value = false;
-    }
-  };
 
   return (
     <div
@@ -37,6 +37,7 @@ export default function Tile(props) {
       <div
         className={`inner ${
           classKebab({
+            isHidden: isHidden,
             clickable: !!onClick,
           })
         }`}
@@ -50,27 +51,90 @@ export default function Tile(props) {
           iconViewBox={iconViewBox}
           iconColor={color}
           text={headerText}
+          isHidden={isHidden}
         />
         <Content />
         {onClick && <Ripple color={color} />}
       </div>
-      {onRemove && (
-        <div className="remove">
-          {removeTooltip &&
-            (
-              <div className="text">
-                {removeTooltip}
-              </div>
-            )}
-          {isRemovingLoading$.get!() ? "..." : (
-            <Icon
-              icon="close"
-              color={"var(--error-red)"}
-              onclick={removeHandler}
-            />
-          )}
-        </div>
+      {action}
+    </div>
+  );
+}
+
+export function RemoveButton(
+  { onRemove, removeTooltip, shouldHandleLoading }: {
+    onRemove: () => void;
+    removeTooltip?: string;
+    shouldHandleLoading: boolean;
+  },
+) {
+  const isRemovingLoading$ = useSignal(false);
+  const removeHandler = async () => {
+    if (shouldHandleLoading) {
+      isRemovingLoading$.value = true;
+    }
+
+    await onRemove();
+
+    if (shouldHandleLoading) {
+      isRemovingLoading$.value = false;
+    }
+  };
+
+  return (
+    <div className="action c-action-button remove" onClick={removeHandler}>
+      {removeTooltip &&
+        (
+          <div className="text">
+            {removeTooltip}
+          </div>
+        )}
+      {isRemovingLoading$.get!() ? "..." : (
+        <ImageByAspectRatio
+          imageUrl={TRASH_ICON_URL}
+          aspectRatio={1}
+          width={20}
+          height={20}
+        />
       )}
+    </div>
+  );
+}
+
+export function HideShowButton(
+  { onToggle, isToggled }: { onToggle: () => void; isToggled: boolean },
+) {
+  return (
+    <ToggleButton
+      onToggle={onToggle}
+      text={isToggled ? "Hide" : "Unhide"}
+      isToggled={isToggled}
+      toggledSrc={EYE_OPEN_ICON_URL}
+      untoggledSrc={EYE_CLOSED_ICON_URL}
+    />
+  );
+}
+
+export function ToggleButton(
+  { onToggle, text, isToggled, toggledSrc, untoggledSrc }: {
+    onToggle: () => void;
+    text: string;
+    isToggled: boolean;
+    toggledSrc: string;
+    untoggledSrc: string;
+  },
+) {
+  return (
+    <div className={`action c-action-button`} onClick={onToggle}>
+      <div className="text">
+        {text}
+      </div>
+      <ImageByAspectRatio
+        imageUrl={isToggled ? toggledSrc : untoggledSrc}
+        aspectRatio={1}
+        width={20}
+        height={20}
+      />
     </div>
   );
 }
@@ -83,6 +147,7 @@ function TileHeader({
   icon,
   iconViewBox,
   iconColor,
+  isHidden,
 }: {
   backgroundColor: string;
   textColor: string;
@@ -91,6 +156,7 @@ function TileHeader({
   icon: string;
   iconViewBox: number;
   iconColor: string;
+  isHidden: boolean;
 }) {
   return (
     <div

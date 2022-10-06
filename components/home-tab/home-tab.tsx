@@ -9,7 +9,7 @@ import Watchtime from "../watchtime/watchtime.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
-import { useUserInfo, useOrgUserWithRoles$ } from "../../shared/mod.ts";
+import { useOrgUserWithRoles$, useUserInfo } from "../../shared/mod.ts";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import BattlepassLeaderboardTile from "../battlepass-leaderboard-tile/battlepass-leaderboard-tile.tsx";
@@ -110,9 +110,9 @@ export default function HomeTab() {
             hasBattlePass={hasBattlePass}
           />
         </IsLive>
-        <BattlepassLeaderboardTile />
+        <BattlepassLeaderboardTile orgUserWithRoles$={orgUserWithRoles$} />
         <PredictionTile orgUserWithRoles$={orgUserWithRoles$} />
-        <CPSpentTile />
+        <CPSpentTile orgUserWithRoles$={orgUserWithRoles$} />
         <KothTile orgUserWithRoles$={orgUserWithRoles$} />
       </div>
     </div>

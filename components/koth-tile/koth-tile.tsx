@@ -12,12 +12,12 @@ import { KOTHOrgUser } from "../../types/mod.ts";
 import {
   CROWN_ICON,
   hasPermission,
+  OrgUserQuerySignal,
   useOrgKothConfigQuery$,
-  OrgUserQuerySignal
 } from "../../shared/mod.ts";
 import { KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
-import Tile from "../tile/tile.tsx";
+import Tile, { RemoveButton } from "../tile/tile.tsx";
 
 import styleSheet from "./koth-tile.scss.js";
 
@@ -35,7 +35,6 @@ const KOTH_POLL_INTERVAL = 10000;
 export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal }) {
   useStyleSheet(styleSheet);
   const { orgKothConfig$, reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
-  const [_deleteKothResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
   useEffect(() => {
     const id = setInterval(() => {
       reexecuteKothConfigQuery({ requestPolicy: "network-only" });
@@ -60,16 +59,13 @@ export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: Org
 
   const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
   const kothOrgUser = useSelector(() => kothUser$.value.orgUser.get!());
-  const onDelete = async () => {
-    await executeDeleteKothResult();
-  };
 
   if (!kothUserId || !kothOrgUser) return <></>;
 
   return (
     <MemoizedTile
       kothOrgUser={kothOrgUser}
-      onRemove={hasKothDeletePermission ? onDelete : undefined}
+      hasDeletePermission={hasKothDeletePermission}
     />
   );
 }
@@ -88,8 +84,15 @@ const MemoizedTile = React.memo(
 );
 
 function OrgUserTile(
-  { kothOrgUser, onRemove }: { kothOrgUser?: KOTHOrgUser; onRemove?: () => void },
+  { kothOrgUser, hasDeletePermission }: {
+    kothOrgUser?: KOTHOrgUser;
+    hasDeletePermission?: boolean;
+  },
 ) {
+  const [_deleteKothResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
+  const onDelete = async () => {
+    await executeDeleteKothResult();
+  };
   const activePowerups = kothOrgUser?.activePowerupConnection?.nodes;
 
   return (
@@ -98,7 +101,6 @@ function OrgUserTile(
       icon={CROWN_ICON}
       headerText="King of the Hill"
       color="#E0BB72"
-      onRemove={onRemove}
       removeTooltip="Remove"
       content={() => (
         <div className="content">
@@ -112,6 +114,13 @@ function OrgUserTile(
             </div>
           </div>
         </div>
+      )}
+      action={hasDeletePermission && (
+        <RemoveButton
+          onRemove={onDelete}
+          shouldHandleLoading={true}
+          removeTooltip="Dethrone"
+        />
       )}
     />
   );
