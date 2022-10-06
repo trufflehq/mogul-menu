@@ -6,10 +6,12 @@ import {
   React,
   TruffleGQlConnection,
   useEffect,
+  useQuerySignal,
   useRef,
+  useSignal,
   useStyleSheet,
+  useUrqlQuerySignal,
 } from "../../deps.ts";
-import { useQuerySignal, useSignal, useUrqlQuerySignal } from "../../shared/mod.ts";
 import NewWindow from "../new-window/new-window.tsx";
 import { SnackBar, useSnackBar } from "../snackbar/mod.ts";
 

@@ -1,11 +1,18 @@
-import { Avatar, gql, React, useMutation, useSelector, useStyleSheet } from "../../deps.ts";
+import {
+  Avatar,
+  gql,
+  React,
+  useMutation,
+  useQuerySignal,
+  useSelector,
+  useStyleSheet,
+} from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
 import {
   CROWN_ICON,
   hasPermission,
   OrgUserQuerySignal,
   usePollingOrgKothConfigQuery$,
-  useQuerySignal,
 } from "../../shared/mod.ts";
 import { KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";

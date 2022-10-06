@@ -1,5 +1,4 @@
-import { gql, useEffect } from "../../../deps.ts";
-import { useUrqlQuerySignal } from "../mod.ts";
+import { gql, useEffect, useUrqlQuerySignal } from "../../../deps.ts";
 
 interface KothOrgConfig {
   org: {

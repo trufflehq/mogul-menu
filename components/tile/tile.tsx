@@ -1,5 +1,12 @@
-import { classKebab, Icon, ImageByAspectRatio, React, Ripple, useStyleSheet } from "../../deps.ts";
-import { useSignal } from "../../shared/mod.ts";
+import {
+  classKebab,
+  Icon,
+  ImageByAspectRatio,
+  React,
+  Ripple,
+  useSignal,
+  useStyleSheet,
+} from "../../deps.ts";
 import styleSheet from "./tile.scss.js";
 
 const TRASH_ICON_URL = "https://cdn.bio/assets/images/features/browser_extension/trash-red.svg";
