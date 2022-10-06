@@ -1,12 +1,5 @@
-import {
-  classKebab,
-  Icon,
-  ImageByAspectRatio,
-  React,
-  Ripple,
-  useSignal,
-  useStyleSheet,
-} from "../../deps.ts";
+import { classKebab, Icon, ImageByAspectRatio, React, Ripple, useStyleSheet } from "../../deps.ts";
+import { useSignal } from "../../shared/mod.ts";
 import styleSheet from "./tile.scss.js";
 
 const TRASH_ICON_URL = "https://cdn.bio/assets/images/features/browser_extension/trash-red.svg";
@@ -70,13 +63,13 @@ export function RemoveButton(
   const isRemovingLoading$ = useSignal(false);
   const removeHandler = async () => {
     if (shouldHandleLoading) {
-      isRemovingLoading$.value = true;
+      isRemovingLoading$.set(true);
     }
 
     await onRemove();
 
     if (shouldHandleLoading) {
-      isRemovingLoading$.value = false;
+      isRemovingLoading$.set(false);
     }
   };
 

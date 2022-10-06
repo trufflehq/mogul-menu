@@ -64,7 +64,7 @@ export default function PredictionTile(
 
   const hasPollDeletePermission = useSelector(() =>
     hasPermission({
-      orgUser: orgUserWithRoles$.value.orgUser.get!(),
+      orgUser: orgUserWithRoles$.orgUser.get!(),
       actions: ["delete"],
       filters: {
         poll: { isAll: true, rank: 0 },

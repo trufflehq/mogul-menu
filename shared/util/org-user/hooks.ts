@@ -1,11 +1,12 @@
-import { TruffleQuerySignal, useMutation, useQuery, useQuerySignal } from "../../../deps.ts";
-import { OrgUserChatSettings, OrgUser } from "../../../types/mod.ts";
+import { useMutation, useQuery } from "../../../deps.ts";
+import { OrgUser, OrgUserChatSettings } from "../../../types/mod.ts";
 import { invalidateExtensionUser } from "../jumper/util.ts";
 import {
   ORG_USER_CHAT_SETTINGS_QUERY,
   ORG_USER_WITH_ROLES_QUERY,
   SAVE_ORG_USER_SETTINGS_MUTATION,
 } from "./gql.ts";
+import { TruffleQuerySignal, useQuerySignal } from "../mod.ts";
 
 export function useSaveOrgUserSettings(
   onSave?: () => void,

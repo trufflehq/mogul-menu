@@ -2,15 +2,14 @@ import {
   _,
   gql,
   ImageByAspectRatio,
+  observer,
   React,
   TruffleGQlConnection,
   useEffect,
-  useQuerySignal,
   useRef,
-  useSignal,
   useStyleSheet,
-  useUrqlQuerySignal,
 } from "../../deps.ts";
+import { useQuerySignal, useSignal, useUrqlQuerySignal } from "../../shared/mod.ts";
 import NewWindow from "../new-window/new-window.tsx";
 import { SnackBar, useSnackBar } from "../snackbar/mod.ts";
 
@@ -57,7 +56,7 @@ const OAUTH_URL_QUERY = gql<{
   }
 `;
 
-export default function ConnectedAccounts() {
+function ConnectedAccounts() {
   useStyleSheet(styleSheet);
   const enqueueSnackBar = useSnackBar();
   const { signal$: connections$, reexecuteQuery: refetchConnections } = useUrqlQuerySignal(
@@ -115,8 +114,9 @@ export default function ConnectedAccounts() {
     },
   ];
 
-  const connections = connections$.value.data?.get!()?.connectionConnection.nodes;
-  const oAuthUrlMap = oAuthUrlMap$.value.connectionGetOAuthUrlsBySourceTypes.oAuthUrlMap.get!();
+  const connections = connections$.data?.get!()?.connectionConnection.nodes;
+  const oAuthUrlMap = oAuthUrlMap$.connectionGetOAuthUrlsBySourceTypes.oAuthUrlMap.get!();
+  const oAuthUrlMapError = oAuthUrlMap$.error.get();
 
   const isConnectionsChanged = !_.isEqual(
     connections,
@@ -153,8 +153,8 @@ export default function ConnectedAccounts() {
   const openOAuth = (sourceType: string) => {
     if (!hasConnection(sourceType)) {
       const oAuthUrl = oAuthUrlMap[sourceType];
-      isOpen$.value = true;
-      oAuthUrl$.value = oAuthUrl;
+      isOpen$.set(true);
+      oAuthUrl$.set(oAuthUrl);
     }
   };
 
@@ -167,7 +167,7 @@ export default function ConnectedAccounts() {
   );
 
   const onWindowClose = () => {
-    oAuthUrl$.value = "";
+    oAuthUrl$.set("");
 
     refetchConnections({ requestPolicy: "network-only" });
   };
@@ -244,3 +244,5 @@ function AccountConnectedSnackBar(
     />
   );
 }
+
+export default observer(ConnectedAccounts);

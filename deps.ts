@@ -59,7 +59,7 @@ export {
 export type {
   ConnectionSourceType,
   PageIdentifier,
-} from "https://tfl.dev/@truffle/utils@0.0.17/embed/types.ts";
+} from "https://tfl.dev/@truffle/utils@0.0.17/embed/mod.ts";
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
@@ -90,12 +90,12 @@ export {
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
 export {
   enableLegendStateReact,
-  useObserve,
+  observer,
   useSelector,
-} from "https://npm.tfl.dev/@legendapp/state@~0.18.0/react";
-export {
-  useQuerySignal,
-  useSignal,
-  useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/utils@~0.0.18/signals/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/utils@~0.0.18/signals/mod.ts";
+} from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
+// export {
+//   useQuerySignal,
+//   useSignal,
+//   useUrqlQuerySignal,
+// } from "https://tfl.dev/@truffle/utils@~0.0.18/signals/mod.ts";
+// export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/utils@~0.0.18/signals/mod.ts";
