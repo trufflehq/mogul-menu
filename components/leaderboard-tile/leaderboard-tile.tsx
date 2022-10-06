@@ -74,8 +74,7 @@ export function LeaderboardTile({
   const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = usePollingLeaderboardDisplay$(
     displayKey,
   );
-  const [, executeBattlepassLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
-
+  const [, executeLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
 
   const hasTogglePermission = useSelector(() =>
     hasPermission({
@@ -95,7 +94,7 @@ export function LeaderboardTile({
   const orgId = useSelector(() => leaderboardDisplay$.value.data?.get!()?.org.id);
 
   const onToggle = async () => {
-    await executeBattlepassLeaderboardKVUpsert({
+    await executeLeaderboardKVUpsert({
       sourceId: orgId,
       key: displayKey,
       value: `${!shouldDisplay}`,
