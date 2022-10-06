@@ -1,37 +1,42 @@
-import { _, Avatar, React, useQuery, useStyleSheet } from "../../deps.ts";
+import {
+  _,
+  Avatar,
+  gql,
+  React,
+  useEffect,
+  useMutation,
+  useQuery,
+  useSelector,
+  useStyleSheet,
+} from "../../deps.ts";
 import { User } from "../../types/mod.ts";
+
 import { OrgUserCounter, OrgUserCounterConnection } from "../../types/org-user-counter.types.ts";
 import { LEADERBOARD_COUNTER_QUERY } from "./gql.ts";
-import Tile from "../tile/tile.tsx";
+import Tile, { HideShowButton } from "../tile/tile.tsx";
 
-import { TROPHY_ICON } from "../../shared/mod.ts";
+import {
+  hasPermission,
+  OrgUserQuerySignal,
+  TROPHY_ICON,
+  usePollingLeaderboardDisplay$,
+} from "../../shared/mod.ts";
 
 import styleSheet from "./leaderboard-tile.scss.js";
 
 const LEADERBOARD_LIMIT = 3;
+const LEADERBOARD_DISPLAY_UPSERT_MUTATION = gql`
+  mutation LeaderboardDisplayKeyValueUpsert($sourceId: String, $key: String, $value: String) {
+    keyValueUpsert(input: { sourceType: "org" sourceId: $sourceId, key: $key, value: $value }) {
+      keyValue {
+        key
+        value
+      }
+    }
+  }
+`;
 
-export function LeaderboardTile({
-  headerText,
-  orgUserCounterTypeId,
-}: {
-  headerText: string;
-  orgUserCounterTypeId: string;
-}) {
-  useStyleSheet(styleSheet);
-
-  const [{ data: leaderboardCounterData, fetching }] = useQuery({
-    query: LEADERBOARD_COUNTER_QUERY,
-    variables: {
-      limit: LEADERBOARD_LIMIT,
-      orgUserCounterTypeId,
-    },
-  });
-
-  const leaderboardCounters: OrgUserCounterConnection = leaderboardCounterData
-    ?.orgUserCounterConnection;
-
-  if (!leaderboardCounters?.nodes) return <></>;
-
+function getTop3(leaderboardCounters: OrgUserCounterConnection) {
   let userRanks = leaderboardCounters?.nodes?.map((orgUserCounter) => {
     orgUserCounter.count = parseInt(`${orgUserCounter.count}`);
 
@@ -42,29 +47,113 @@ export function LeaderboardTile({
   userRanks = [...new Set(userRanks)];
   userRanks = userRanks.map((rank, i) => ({ ...rank, place: i }));
 
-  const top3 = userRanks.slice(0, 3);
+  return userRanks.slice(0, 3);
+}
 
-  return <MemoizedLeaderboardTile headerText={headerText} top3={top3} />;
+export function LeaderboardTile({
+  orgUserWithRoles$,
+  headerText,
+  orgUserCounterTypeId,
+  displayKey,
+}: {
+  orgUserWithRoles$: OrgUserQuerySignal;
+  headerText: string;
+  orgUserCounterTypeId: string;
+  displayKey: string;
+}) {
+  useStyleSheet(styleSheet);
+
+  const [{ data: leaderboardCounterData }] = useQuery({
+    query: LEADERBOARD_COUNTER_QUERY,
+    variables: {
+      limit: LEADERBOARD_LIMIT,
+      orgUserCounterTypeId,
+    },
+  });
+
+  const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = usePollingLeaderboardDisplay$(
+    displayKey,
+  );
+  const [, executeLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
+
+  const hasTogglePermission = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$.value.orgUser.get!(),
+      actions: ["update"],
+      filters: {
+        keyValue: { isAll: true, rank: 0 },
+      },
+    })
+  );
+
+  // default to showing the leaderboard if the value is not set
+  const shouldDisplay = useSelector(() => {
+    const displayValue = leaderboardDisplay$.value.data?.get!()?.org.keyValue?.value;
+    return typeof displayValue !== "undefined" ? displayValue === "true" : true;
+  });
+  const orgId = useSelector(() => leaderboardDisplay$.value.data?.get!()?.org.id);
+
+  const onToggle = async () => {
+    await executeLeaderboardKVUpsert({
+      sourceId: orgId,
+      key: displayKey,
+      value: `${!shouldDisplay}`,
+    });
+
+    await reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
+  };
+
+  const leaderboardCounters: OrgUserCounterConnection = leaderboardCounterData
+    ?.orgUserCounterConnection;
+
+  if (!leaderboardCounters?.nodes) return <></>;
+
+  const top3 = getTop3(leaderboardCounters);
+
+  if (!hasTogglePermission && !shouldDisplay) return <></>;
+  return (
+    <MemoizedLeaderboardTile
+      headerText={headerText}
+      top3={top3}
+      hasTogglePermission={hasTogglePermission}
+      shouldDisplay={shouldDisplay}
+      onToggle={onToggle}
+    />
+  );
 }
 
 const MemoizedLeaderboardTile = React.memo(LeaderboardTileBase, (prev, next) => {
   const prevUserIds = prev.top3.map((ouc) => ouc.orgUser.user.id);
   const nextUserIds = next.top3.map((ouc) => ouc.orgUser.user.id);
 
-  return JSON.stringify(prevUserIds) === JSON.stringify(nextUserIds);
+  return JSON.stringify(prevUserIds) === JSON.stringify(nextUserIds) &&
+    prev.shouldDisplay === next.shouldDisplay;
 });
 
 function LeaderboardTileBase(
-  { headerText, top3 }: { headerText?: string; top3: OrgUserCounter[] },
+  { headerText, top3, hasTogglePermission, shouldDisplay, onToggle }: {
+    headerText?: string;
+    top3: OrgUserCounter[];
+    hasTogglePermission: boolean;
+    shouldDisplay: boolean;
+    onToggle?: () => void;
+  },
 ) {
   return (
     <Tile
       className="c-leaderboard-tile"
+      isHidden={hasTogglePermission && !shouldDisplay}
       icon={TROPHY_ICON}
       headerText={headerText}
       color="#CEDEE3"
       textColor="black"
       content={() => <Leaderboard top3={top3} />}
+      action={hasTogglePermission && onToggle && (
+        <HideShowButton
+          onToggle={onToggle}
+          isToggled={shouldDisplay}
+        />
+      )}
     />
   );
 }
@@ -88,7 +177,7 @@ function Leaderboard({ top3 }: { top3: OrgUserCounter[] }) {
   return (
     <div className="content">
       {top3.map((contestant, idx) => (
-        <LeaderboardAvatar
+        <MemoizedLeaderboardAvatar
           key={contestant?.orgUser?.user?.id}
           user={contestant?.orgUser?.user}
           name={contestant?.orgUser?.name ?? contestant?.orgUser?.user?.name}
@@ -132,3 +221,7 @@ function LeaderboardAvatar({ user, name, place, color }: LeaderboardAvatarProps)
     </div>
   );
 }
+
+const MemoizedLeaderboardAvatar = React.memo(LeaderboardAvatar, (prev, next) => {
+  return prev.user.id === next.user.id;
+});

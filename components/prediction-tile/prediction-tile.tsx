@@ -21,7 +21,7 @@ import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import { useMenu } from "../menu/mod.ts";
-import Tile from "../tile/tile.tsx";
+import Tile, { RemoveButton } from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
@@ -149,9 +149,16 @@ export default function PredictionTile(
       color="#AB8FE9"
       shouldHandleLoading={true}
       removeTooltip="Delete"
-      onRemove={hasPollDeletePermission && !hasResultsExpired ? onDelete : undefined}
       onClick={hasResultsExpired ? null : () => pushPage(<PredictionPage />)}
       content={() => Content}
+      action={hasPollDeletePermission && !hasResultsExpired &&
+        (
+          <RemoveButton
+            onRemove={onDelete}
+            shouldHandleLoading={true}
+            removeTooltip="Delete"
+          />
+        )}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { gql, React, useQuery } from "../../deps.ts";
+import { OrgUserQuerySignal } from "../../shared/mod.ts";
 import { LeaderboardTile } from "../leaderboard-tile/leaderboard-tile.tsx";
 
 const CP_SPENT_ORG_USER_COUNTER_TYPE_QUERY = gql`
@@ -6,10 +7,13 @@ const CP_SPENT_ORG_USER_COUNTER_TYPE_QUERY = gql`
     orgUserCounterType(input: { slug: "channel-points-spent" }) {
       id
     }
-  }
+  } 
 `;
+const CHANNEL_POINTS_SPENT_LEADERBOARD_DISPLAY_KV_KEY = `mogulMenu:cpSpentLeaderboardDisplay`;
 
-export default function CPSpentTile() {
+export default function CPSpentTile(
+  { orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal },
+) {
   const [{ data: cpSpentOUCTypeData }] = useQuery({
     query: CP_SPENT_ORG_USER_COUNTER_TYPE_QUERY,
   });
@@ -21,6 +25,8 @@ export default function CPSpentTile() {
     <LeaderboardTile
       headerText="Channel Points Spent"
       orgUserCounterTypeId={orgUserCounterTypeId}
+      orgUserWithRoles$={orgUserWithRoles$}
+      displayKey={CHANNEL_POINTS_SPENT_LEADERBOARD_DISPLAY_KV_KEY}
     />
   );
 }
