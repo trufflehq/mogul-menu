@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQuerySignal } from "../../../deps.ts";
-import { OrgUserChatSettings } from "../../../types/mod.ts";
+import { TruffleQuerySignal, useMutation, useQuery, useQuerySignal } from "../../../deps.ts";
+import { OrgUserChatSettings, OrgUser } from "../../../types/mod.ts";
 import { invalidateExtensionUser } from "../jumper/util.ts";
 import {
   ORG_USER_CHAT_SETTINGS_QUERY,
@@ -57,3 +57,5 @@ export function useOrgUserWithRoles$() {
 
   return orgUserWithRoles$;
 }
+
+export type OrgUserQuerySignal = TruffleQuerySignal<{ orgUser: OrgUser }>;

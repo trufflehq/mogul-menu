@@ -1,4 +1,4 @@
-import { classKebab, Icon, React, Ripple, useStyleSheet } from "../../deps.ts";
+import { classKebab, Icon, React, Ripple, useSignal, useState, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./tile.scss.js";
 
 export default function Tile(props) {
@@ -12,44 +12,63 @@ export default function Tile(props) {
     color,
     onClick,
     onRemove,
+    shouldHandleLoading,
     removeTooltip,
   } = props;
-
+  const isRemovingLoading$ = useSignal(false);
   let { textColor } = props;
   if (!textColor) textColor = "var(--mm-color-text-bg-primary)";
+  const removeHandler = async () => {
+    if (shouldHandleLoading) {
+      isRemovingLoading$.value = true;
+    }
+
+    await onRemove();
+
+    if (shouldHandleLoading) {
+      isRemovingLoading$.value = false;
+    }
+  };
 
   return (
     <div
-      className={`c-tile ${className} ${
-        classKebab({
-          clickable: !!onClick,
-        })
-      }`}
-      onClick={onClick}
+      className={`c-tile ${className}`}
     >
-      <TileHeader
-        backgroundColor={color}
-        textColor={textColor}
-        borderColor={color}
-        icon={icon}
-        iconViewBox={iconViewBox}
-        iconColor={color}
-        text={headerText}
-      />
-      <Content />
-      {onClick && <Ripple color={color} />}
+      <div
+        className={`inner ${
+          classKebab({
+            clickable: !!onClick,
+          })
+        }`}
+        onClick={onClick}
+      >
+        <TileHeader
+          backgroundColor={color}
+          textColor={textColor}
+          borderColor={color}
+          icon={icon}
+          iconViewBox={iconViewBox}
+          iconColor={color}
+          text={headerText}
+        />
+        <Content />
+        {onClick && <Ripple color={color} />}
+      </div>
       {onRemove && (
         <div className="remove">
-          {removeTooltip && (
-            <div className="text">
-              {removeTooltip}
-            </div>
+          {removeTooltip &&
+            (
+              <div className="text">
+                {removeTooltip}
+              </div>
+            )}
+          {isRemovingLoading$.get!() ? "..." : (
+            <Icon
+              icon="close"
+              color={"var(--error-red)"}
+              onclick={removeHandler}
+            />
           )}
-          <Icon
-            icon="close"
-            color={"var(--error-red)"}
-            onclick={onRemove}
-          />
         </div>
       )}
     </div>

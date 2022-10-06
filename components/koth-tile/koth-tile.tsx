@@ -13,7 +13,7 @@ import {
   CROWN_ICON,
   hasPermission,
   useOrgKothConfigQuery$,
-  useOrgUserWithRoles$,
+  OrgUserQuerySignal
 } from "../../shared/mod.ts";
 import { KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
@@ -32,9 +32,8 @@ mutation {
 `;
 
 const KOTH_POLL_INTERVAL = 10000;
-export default function KothTile() {
+export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal }) {
   useStyleSheet(styleSheet);
-  const orgUserWithRoles$ = useOrgUserWithRoles$();
   const { orgKothConfig$, reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
   const [_deleteKothResult, executeDeleteKothResult] = useMutation(DELETE_KOTH_MUTATION);
   useEffect(() => {

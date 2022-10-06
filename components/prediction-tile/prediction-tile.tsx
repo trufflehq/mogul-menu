@@ -1,10 +1,21 @@
-import { jumper, React, useEffect, usePollingQuery, useStyleSheet } from "../../deps.ts";
+import {
+  gql,
+  jumper,
+  React,
+  useEffect,
+  useMutation,
+  usePollingQuery,
+  useSelector,
+  useStyleSheet,
+} from "../../deps.ts";
 import {
   ACTIVE_POLL_QUERY,
   CRYSTAL_BALL_ICON,
   CRYSTAL_BALL_ICON_VIEWBOX,
+  hasPermission,
   MOGUL_MENU_JUMPER_MESSAGES,
   ONE_SECOND_MS,
+  OrgUserQuerySignal,
 } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
@@ -13,6 +24,16 @@ import { useMenu } from "../menu/mod.ts";
 import Tile from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
+
+const DELETE_POLL_MUTATION = gql`
+mutation PollDeleteByIdMutation($id: ID!) {
+  pollDeleteById(input: { id: $id }) {
+    poll {
+      id
+    }
+  }
+}
+`;
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 const RESULTS_TIMOUT = 100 * ONE_SECOND_MS;
@@ -24,25 +45,40 @@ function useListenForOpenPrediction(showPredictionPage: () => void) {
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
       if (message === MOGUL_MENU_JUMPER_MESSAGES.OPEN_PREDICTION) {
-        console.log("showing prediction page");
         showPredictionPage();
       }
     });
   }, []);
 }
 
-export default function PredictionTile() {
+export default function PredictionTile(
+  { orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal },
+) {
   useStyleSheet(styleSheet);
   const { setIsOpen } = useMenu();
   const { pushPage } = usePageStack();
-
+  const [_deletePollResult, executeDeletePollResult] = useMutation(DELETE_POLL_MUTATION);
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
     query: ACTIVE_POLL_QUERY,
   });
 
+  const hasPollDeletePermission = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$.value.orgUser.get!(),
+      actions: ["delete"],
+      filters: {
+        poll: { isAll: true, rank: 0 },
+      },
+    })
+  );
+
   const activePoll: Poll = activePollData?.pollConnection?.nodes?.find(
     (poll: Poll) => poll?.data?.type === "prediction",
   );
+
+  const onDelete = async () => {
+    await executeDeletePollResult({ id: activePoll.id });
+  };
 
   const pollMsLeft = new Date(activePoll?.endTime || Date.now()).getTime() - Date.now();
 
@@ -111,6 +147,9 @@ export default function PredictionTile() {
       iconViewBox={CRYSTAL_BALL_ICON_VIEWBOX}
       headerText="Prediction"
       color="#AB8FE9"
+      shouldHandleLoading={true}
+      removeTooltip="Delete"
+      onRemove={hasPollDeletePermission && !hasResultsExpired ? onDelete : undefined}
       onClick={hasResultsExpired ? null : () => pushPage(<PredictionPage />)}
       content={() => Content}
     />
