@@ -67,6 +67,7 @@ export default scss`
       position: relative;
 
       > .icon {
+        background-color: var(--mm-color-bg-primary);
         border-radius: 100%;
         width: 40px;
         height: 40px;
@@ -94,24 +95,24 @@ export default scss`
     right: 8px;
     z-index: 1;
   }
-  
-  > .c-action-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
 
-    width: 32px;
-    height: 32px;
+.c-action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    border-radius: 50%;
-    box-sizing: border-box;
-    color: var(--error-red);
+  width: 32px;
+  height: 32px;
 
-    &:hover {
-      background-color: var(--mm-color-bg-tertiary);
-    }
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: var(--error-red);
 
-    @include tooltip;
+  &:hover {
+    background-color: var(--mm-color-bg-tertiary);
   }
+
+  @include tooltip;
 }
 `;

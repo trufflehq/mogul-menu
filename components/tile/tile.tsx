@@ -51,12 +51,11 @@ export default function Tile(props) {
           iconViewBox={iconViewBox}
           iconColor={color}
           text={headerText}
-          isHidden={isHidden}
         />
         <Content />
         {onClick && <Ripple color={color} />}
       </div>
-      {action}
+      {action && <div className="action">{action}</div>}
     </div>
   );
 }
@@ -82,7 +81,7 @@ export function RemoveButton(
   };
 
   return (
-    <div className="action c-action-button remove" onClick={removeHandler}>
+    <div className="c-action-button remove" onClick={removeHandler}>
       {removeTooltip &&
         (
           <div className="text">
@@ -125,7 +124,7 @@ export function ToggleButton(
   },
 ) {
   return (
-    <div className={`action c-action-button`} onClick={onToggle}>
+    <div className="c-action-button" onClick={onToggle}>
       <div className="text">
         {text}
       </div>
@@ -147,7 +146,6 @@ function TileHeader({
   icon,
   iconViewBox,
   iconColor,
-  isHidden,
 }: {
   backgroundColor: string;
   textColor: string;
@@ -156,7 +154,6 @@ function TileHeader({
   icon: string;
   iconViewBox: number;
   iconColor: string;
-  isHidden: boolean;
 }) {
   return (
     <div
