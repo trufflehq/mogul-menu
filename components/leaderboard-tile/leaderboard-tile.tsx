@@ -2,8 +2,8 @@ import {
   _,
   Avatar,
   gql,
+  observer,
   React,
-  useEffect,
   useMutation,
   useQuery,
   useSelector,
@@ -50,17 +50,19 @@ function getTop3(leaderboardCounters: OrgUserCounterConnection) {
   return userRanks.slice(0, 3);
 }
 
-export function LeaderboardTile({
-  orgUserWithRoles$,
-  headerText,
-  orgUserCounterTypeId,
-  displayKey,
-}: {
+interface LeaderboardTileProps {
   orgUserWithRoles$: OrgUserQuerySignal;
   headerText: string;
   orgUserCounterTypeId: string;
   displayKey: string;
-}) {
+}
+
+export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
+  orgUserWithRoles$,
+  headerText,
+  orgUserCounterTypeId,
+  displayKey,
+}: LeaderboardTileProps) => {
   useStyleSheet(styleSheet);
 
   const [{ data: leaderboardCounterData }] = useQuery({
@@ -78,7 +80,7 @@ export function LeaderboardTile({
 
   const hasTogglePermission = useSelector(() =>
     hasPermission({
-      orgUser: orgUserWithRoles$.value.orgUser.get!(),
+      orgUser: orgUserWithRoles$.orgUser.get!(),
       actions: ["update"],
       filters: {
         keyValue: { isAll: true, rank: 0 },
@@ -88,10 +90,10 @@ export function LeaderboardTile({
 
   // default to showing the leaderboard if the value is not set
   const shouldDisplay = useSelector(() => {
-    const displayValue = leaderboardDisplay$.value.data?.get!()?.org.keyValue?.value;
+    const displayValue = leaderboardDisplay$.data?.get!()?.org.keyValue?.value;
     return typeof displayValue !== "undefined" ? displayValue === "true" : true;
   });
-  const orgId = useSelector(() => leaderboardDisplay$.value.data?.get!()?.org.id);
+  const orgId = useSelector(() => leaderboardDisplay$.data?.get!()?.org.id);
 
   const onToggle = async () => {
     await executeLeaderboardKVUpsert({
@@ -120,7 +122,7 @@ export function LeaderboardTile({
       onToggle={onToggle}
     />
   );
-}
+});
 
 const MemoizedLeaderboardTile = React.memo(LeaderboardTileBase, (prev, next) => {
   const prevUserIds = prev.top3.map((ouc) => ouc.orgUser.user.id);

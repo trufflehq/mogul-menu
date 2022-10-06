@@ -70,13 +70,13 @@ export function RemoveButton(
   const isRemovingLoading$ = useSignal(false);
   const removeHandler = async () => {
     if (shouldHandleLoading) {
-      isRemovingLoading$.value = true;
+      isRemovingLoading$.set(true);
     }
 
     await onRemove();
 
     if (shouldHandleLoading) {
-      isRemovingLoading$.value = false;
+      isRemovingLoading$.set(false);
     }
   };
 

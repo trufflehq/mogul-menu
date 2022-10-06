@@ -2,7 +2,6 @@ import {
   Avatar,
   gql,
   React,
-  useEffect,
   useMutation,
   useQuerySignal,
   useSelector,
@@ -13,7 +12,7 @@ import {
   CROWN_ICON,
   hasPermission,
   OrgUserQuerySignal,
-  useOrgKothConfigQuery$,
+  usePollingOrgKothConfigQuery$,
 } from "../../shared/mod.ts";
 import { KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
@@ -31,25 +30,17 @@ mutation {
 }
 `;
 
-const KOTH_POLL_INTERVAL = 10000;
 export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal }) {
   useStyleSheet(styleSheet);
-  const { orgKothConfig$, reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecuteKothConfigQuery({ requestPolicy: "network-only" });
-    }, KOTH_POLL_INTERVAL);
-
-    return () => clearInterval(id);
-  }, []);
+  const { orgKothConfig$ } = usePollingOrgKothConfigQuery$();
 
   const kothUserId = useSelector(() =>
-    orgKothConfig$.value.data?.org?.orgConfig?.data?.kingOfTheHill?.userId.get!()
+    orgKothConfig$.data?.get()?.org.orgConfig.data.kingOfTheHill?.userId
   );
 
   const hasKothDeletePermission = useSelector(() =>
     hasPermission({
-      orgUser: orgUserWithRoles$.value.orgUser.get!(),
+      orgUser: orgUserWithRoles$.orgUser.get!(),
       actions: ["update"],
       filters: {
         orgConfig: { isAll: true, rank: 0 },
@@ -58,7 +49,7 @@ export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: Org
   );
 
   const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
-  const kothOrgUser = useSelector(() => kothUser$.value.orgUser.get!());
+  const kothOrgUser = useSelector(() => kothUser$.orgUser.get!());
 
   if (!kothUserId || !kothOrgUser) return <></>;
 

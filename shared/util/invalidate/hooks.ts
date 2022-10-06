@@ -1,7 +1,7 @@
 import { _clearCache, GLOBAL_JUMPER_MESSAGES, jumper, useEffect } from "../../../deps.ts";
 import {
   useActivePowerupConnection,
-  useOrgKothConfigQuery$,
+  usePollingOrgKothConfigQuery$,
   useOrgUserConnectionsQuery,
   useOwnedCollectibleConnection,
   useSeasonPassData,
@@ -16,7 +16,7 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
-  const { reexecuteKothConfigQuery } = useOrgKothConfigQuery$();
+  const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$();
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
