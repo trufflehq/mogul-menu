@@ -59,7 +59,10 @@ export function ActivityBannerManager<
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
-  const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>();
+  const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>({
+    interval: 2000,
+    limit: 1,
+  });
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
   );

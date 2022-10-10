@@ -37,8 +37,7 @@ export function ActivitiesTabManager<
   const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
 
   const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>(
-    2000,
-    20,
+    { interval: 2000, limit: 20 },
   );
 
   const activeActivities = useSelector(() =>
