@@ -96,9 +96,9 @@ export {
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
 export {
+  signal,
   useQuerySignal,
   useSignal,
   useUrqlQuerySignal,
-  signal,
-} from "https://tfl.dev/@truffle/utils@~0.0.19/signals/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/utils@~0.0.19/signals/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
