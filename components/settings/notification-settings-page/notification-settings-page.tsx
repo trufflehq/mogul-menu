@@ -19,7 +19,7 @@ export default function NotificationSettingsPage() {
 
   const subscriptionSwitchToggleHandler = async (
     topic: NotificationTopic,
-    subscribe: boolean
+    subscribe: boolean,
   ) => {
     if (subscribe) {
       await subscribeToNotificationTopic(topic);
@@ -36,6 +36,7 @@ export default function NotificationSettingsPage() {
             Desktop notifications
             <div className="input">
               <Switch
+                showIsLoading
                 value={isDesktopNotificationsEnabled}
                 onChange={setDesktopNotificationPref}
               />
@@ -56,10 +57,9 @@ export default function NotificationSettingsPage() {
                 <div className="name">{topic.name}</div>
                 <div className="input">
                   <Switch
+                    showIsLoading
                     value={topic.isSubscribed}
-                    onChange={(enabled: boolean) =>
-                      subscriptionSwitchToggleHandler(topic, enabled)
-                    }
+                    onChange={(enabled: boolean) => subscriptionSwitchToggleHandler(topic, enabled)}
                   />
                 </div>
               </div>

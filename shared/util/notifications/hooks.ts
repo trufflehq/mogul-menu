@@ -90,17 +90,17 @@ export function useDesktopNotificationSetting() {
   }, [fcmToken]);
 
   const isDesktopNotificationsEnabled = isTokenRegistered;
-  const setDesktopNotificationPref = (enable: boolean) => {
+  const setDesktopNotificationPref = async (enable: boolean) => {
     // don't try to register an undefined token
     if (!fcmToken) return;
 
     // enable desktop notifications
     if (enable) {
-      registerToken();
+      await registerToken();
 
       // disable desktop notifications
     } else {
-      unregisterToken();
+      await unregisterToken();
     }
   };
 

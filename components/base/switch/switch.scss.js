@@ -8,6 +8,12 @@ export default scss`
   display: inline-block;
   width: 40px;
   height: 24px;
+
+  &.is-loading {
+    cursor: not-allowed;
+    filter: brightness(40%);
+    transition: .2s;
+  }
   
   input { 
     opacity: 0;
