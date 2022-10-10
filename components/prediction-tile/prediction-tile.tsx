@@ -81,15 +81,11 @@ export default function PredictionTile(
   };
 
   const pollMsLeft = new Date(activePoll?.endTime || Date.now()).getTime() - Date.now();
-
   const hasPredictionEnded = pollMsLeft <= 0;
-
   const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
-
   const timeSinceWinnerSelection = activePoll?.data?.winnerSelectedTime
     ? new Date(activePoll?.data?.winnerSelectedTime).getTime() - Date.now()
     : undefined;
-
   const hasResultsExpired = hasWinner && timeSinceWinnerSelection
     ? RESULTS_TIMOUT + timeSinceWinnerSelection < 0
     : false;

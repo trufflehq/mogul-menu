@@ -5,7 +5,7 @@ const SECONDARY_FONT_FAMILY = "Roboto";
 
 function ThemeComponent({
   colorBgPrimary = "#050D13",
-  colorBgSecondary = "#161F2C",
+  colorBgSecondary = "#1F1F1F",
   colorBgTertiary = "#2D394A",
   colorBgOverlay = "rgba(0, 0, 0, 0.4)",
   colorPrimary = "#71DBDB",
@@ -30,7 +30,7 @@ function ThemeComponent({
   secondaryFontFamily = SECONDARY_FONT_FAMILY,
 }) {
   useGoogleFontLoader(() => [fontFamily, secondaryFontFamily], [fontFamily, secondaryFontFamily]);
-  
+
   return (
     <>
       <style>

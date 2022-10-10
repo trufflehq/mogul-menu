@@ -379,7 +379,7 @@ function TimeSince({ msSince }: { msSince: number }) {
   return <>Prediction started {timeSince}. Waiting for results</>;
 }
 
-function Winner({ isWinner }) {
+function Winner({ isWinner }: { isWinner?: boolean }) {
   return (
     <div className={`z-winner${isWinner ? " is-visible" : ""}`}>
       <Icon icon={TROPHY_ICON} color="#EBAD64" size="20px" />
@@ -388,7 +388,7 @@ function Winner({ isWinner }) {
   );
 }
 
-function pad(num, size = 2) {
+function pad(num: number | string, size = 2) {
   num = num.toString();
   while (num.length < size) num = `0${num}`;
   return num;
