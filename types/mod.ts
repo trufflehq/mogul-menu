@@ -11,3 +11,4 @@ export * from "./org-user.types.ts";
 export * from "./org-user-counter-type.types.ts";
 export * from "./season-pass.types.ts";
 export * from './alert.types.ts'
+export * from './utils.types.ts'

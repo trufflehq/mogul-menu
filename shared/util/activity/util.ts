@@ -14,16 +14,20 @@ export function isActiveActivity<ActivityType, SourceType extends string>(
   if (!activityAlert?.activity) return false;
   // if it's a poll, check if the poll has ended and if so whether the poll has been closed longer than the default timeout
   if (isPollActivity(activityAlert)) {
-    const { hasPollEnded, hasWinningOption, pollEndTime } = getPollInfo(activityAlert.activity);
-    return hasPollEnded && hasWinningOption
-      ? secondsSince(new Date(pollEndTime)) < ACTIVITY_TIMEOUT_SECONDS
-      : true;
-
+    return isPollActivityActive(activityAlert.activity);
     // default all other activities to a default timeout
   } else {
     const activityStartTime = new Date(activityAlert?.time);
     return secondsSince(activityStartTime) < ACTIVITY_TIMEOUT_SECONDS;
   }
+}
+
+export function isPollActivityActive(poll: Poll) {
+  const { hasPollEnded, hasWinningOption, pollEndTime } = getPollInfo(poll);
+
+  return hasPollEnded && hasWinningOption
+    ? secondsSince(new Date(pollEndTime)) < ACTIVITY_TIMEOUT_SECONDS
+    : true;
 }
 
 export function isPollActivity(

@@ -91,11 +91,14 @@ export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress
 export {
   enableLegendStateReact,
   observer,
+  useComputed,
+  useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
 export {
   useQuerySignal,
   useSignal,
   useUrqlQuerySignal,
+  signal,
 } from "https://tfl.dev/@truffle/utils@~0.0.19/signals/mod.ts";
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/utils@~0.0.19/signals/mod.ts";
