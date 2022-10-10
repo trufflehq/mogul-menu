@@ -12,7 +12,7 @@ export default scss`
     cursor: pointer;
   }
 
-  > .c-list-item__icon {
+  > .icon {
     display: flex;
     justify-content: center;
     align-items: center;

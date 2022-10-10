@@ -42,22 +42,19 @@ export function ActivitiesTabManager<
   );
 
   const activeActivities = useSelector(() =>
-    activityAlertConnection$.data?.get()?.alertConnection?.nodes?.filter((activity) =>
+    activityAlertConnection$.data?.get()?.alertConnection.nodes.filter((activity) =>
       activity?.activity
-    ).filter(isActiveActivity)
+    ).filter(isActiveActivity) || []
   );
 
   // HACK - this is a hack to only open the active prediction
-  // remove once we've cleaned up the prediction component so we can 
+  // remove once we've cleaned up the prediction component so we can
   // render past prediction results
-  const firstPrediction = activeActivities?.find((activity) => isPrediction(activity.activity));
+  const firstPrediction = activeActivities.find((activity) => isPrediction(activity.activity));
 
   const pastActivities = useSelector(() =>
-    activityAlertConnection$?.data?.get()?.alertConnection?.nodes?.filter((activity) =>
-      activity?.activity
-    ).filter((
-      activity,
-    ) => !isActiveActivity(activity))
+    activityAlertConnection$?.data?.get()?.alertConnection.nodes
+      .filter((activity) => activity?.activity && !isActiveActivity(activity))
   );
 
   return (
@@ -75,7 +72,7 @@ export function ActivitiesTabManager<
                   : null;
 
                 // HACK - this is a hack to only open the active prediction
-                // remove once we've cleaned up the prediction component so we can 
+                // remove once we've cleaned up the prediction component so we can
                 // render past prediction results
                 const isActivePrediction = isPrediction(activity.activity) &&
                   firstPrediction?.id === activity.id;

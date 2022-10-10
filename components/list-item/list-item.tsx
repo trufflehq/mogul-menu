@@ -18,7 +18,7 @@ export default function ListItem(
       onClick={onClick}
     >
       <div
-        className="c-list-item__icon"
+        className="icon"
         style={{
           border: `1px solid ${color}`,
         }}
