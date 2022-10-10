@@ -1,6 +1,6 @@
 import { ConnectionSourceType, DeepPick, TruffleGQlConnection } from "../deps.ts";
 import { User } from "./user.types.ts";
-import { ActivePowerupConnection } from "./active-powerup.types.ts";
+
 export interface OrgUser {
   id: string;
   name: string;
@@ -11,10 +11,6 @@ export interface OrgUser {
   socials: Record<string, unknown>;
   user: User;
   roleConnection: RoleConnection;
-}
-
-export interface KOTHOrgUser extends Pick<OrgUser, "name" | "user"> {
-  activePowerupConnection: ActivePowerupConnection;
 }
 
 export interface OrgUserChatSettings
