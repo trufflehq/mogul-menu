@@ -1,11 +1,19 @@
-import { _, classKebab, React, useEffect, useMemo, useRef, useStyleSheet } from "../../deps.ts";
+import {
+  _,
+  classKebab,
+  React,
+  useComputed,
+  useObserve,
+  useSelector,
+  useSignal,
+  useStyleSheet,
+} from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
 import { isActiveActivity, useLoginListener } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
-import { useActivityBanner, useFetchLatestActivityAlert } from "./hooks.ts";
-import { ActivityBannerProvider } from "./provider.tsx";
-import { ActivityAlert, Alert, Poll } from "../../types/mod.ts";
+import { isActivityBannerOpen$, usePollingActivityAlertConnection$ } from "./signals.ts";
+import { ActivityAlert, Alert, Poll, StringKeys } from "../../types/mod.ts";
 import PollBanner from "./poll-banner/poll-banner.tsx";
 import AlertBanner from "./alert-banner/alert-banner.tsx";
 
@@ -39,64 +47,64 @@ export function ActivityBannerEmbed<
   useLoginListener();
 
   return (
-    <ActivityBannerProvider>
+    <div className="c-activity-banner-embed">
       <ThemeComponent />
       <ActivityBannerManager {...props} />
-    </ActivityBannerProvider>
+    </div>
   );
 }
-
-type StringKeys<T> = Extract<keyof T, string>;
 
 export function ActivityBannerManager<
   BannerTypes,
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
-  const activityAlert = useFetchLatestActivityAlert<ActivityType, SourceType>();
-  const lastActivityAlertRef = useRef<ActivityAlert<ActivityType, SourceType> | undefined>(
+  const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>();
+  const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
   );
-  const hasClosedRef = useRef(false);
-  const { isBannerOpen, setIsBannerOpen } = useActivityBanner();
+  const hasClosed$ = useSignal(false);
 
   const openBanner = () => {
-    setIsBannerOpen(true);
+    isActivityBannerOpen$.set(true);
     setJumperOpen();
-    console.log("open banner");
   };
 
   const closeBanner = () => {
-    setIsBannerOpen(false);
+    isActivityBannerOpen$.set(false);
     setJumperClosed();
-    console.log("closing banner");
   };
 
-  useEffect(() => {
-    const hasActivityChanged = lastActivityAlertRef.current?.id !== activityAlert?.id;
-    // if there's a new activity and the activity is active, open the banner
-    if (hasActivityChanged && isActiveActivity(activityAlert)) {
-      openBanner();
-      lastActivityAlertRef.current = activityAlert;
-      hasClosedRef.current = false;
+  const hasActivityChanged = useComputed(() =>
+    lastActivityAlert$.get()?.id !==
+      activityAlertConnection$.data?.get()?.alertConnection?.nodes[0]?.id
+  );
 
-      // if the activity isn't active, close the banner
-    } else if (!isActiveActivity(activityAlert) && !hasClosedRef.current) {
-      hasClosedRef.current = true;
+  useObserve(() => {
+    // accessing activityAlert observable so the hook runs when the activity alert observable changes,
+    // accessing the selector will not cause the useObserve hook to run
+    const activityAlert = activityAlertConnection$.data?.get()?.alertConnection?.nodes[0];
+    if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
+      openBanner();
+      lastActivityAlert$.set(activityAlert);
+      hasClosed$.set(false);
+    } else if (activityAlert && !isActiveActivity(activityAlert) && !hasClosed$.get()) {
+      hasClosed$.set(true);
       closeBanner();
     }
-  }, [activityAlert]);
+  });
 
-  // only grab the component when activityAlert changes
-  const Component = useMemo(
-    () => {
-      const activitySourceType = activityAlert?.sourceType;
-      const component = activitySourceType ? props?.banners[activitySourceType] : null;
-
-      return component;
-    },
-    [activityAlert],
+  const activityAlert = useSelector(() =>
+    activityAlertConnection$.data?.get()?.alertConnection?.nodes[0]
   );
+
+  const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
+
+  const Component = useSelector(() => {
+    const activityAlert = activityAlertConnection$.data?.get()?.alertConnection?.nodes[0];
+    const activitySourceType = activityAlert?.sourceType;
+    return activitySourceType ? props?.banners[activitySourceType] : null;
+  });
 
   if (!Component) return null;
 
@@ -109,7 +117,8 @@ export function ActivityBannerManager<
       }`}
     >
       {/* This was necessary to make the TS compiler happy, for some reason it wasn't liking the JSX format <Component activity={activityAlert.activity} />*/}
-      {React.createElement(Component, { activity: activityAlert.activity })}
+      {activityAlert?.activity &&
+        React.createElement(Component, { activity: activityAlert.activity })}
     </div>
   );
 }

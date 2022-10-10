@@ -2,7 +2,7 @@ import { Icon, ImageByAspectRatio, React, useStyleSheet } from "../../../deps.ts
 import ProgressBar from "../../base/progress-bar/progress-bar.tsx";
 import stylesheet from "./activity-banner-fragment.scss.js";
 import { CHEVRON_RIGHT_ICON_PATH, CLOSE_ICON_PATH } from "../../../shared/mod.ts";
-import { useActivityBanner } from "../hooks.ts";
+import { isActivityBannerOpen$ } from "../signals.ts";
 
 export interface IconConfig {
   url?: string;
@@ -30,10 +30,8 @@ export function ActivityBannerIcon({ icon, color }: { icon: IconConfig; color: s
 }
 
 export function CloseActionIcon() {
-  const { setIsBannerOpen } = useActivityBanner();
-
   const onClick = () => {
-    setIsBannerOpen(false);
+    isActivityBannerOpen$.set(false);
   };
   return (
     <Icon
