@@ -48,7 +48,7 @@ function PredictionTile() {
     <CreateActivityTile
       icon={CRYSTAL_BALL_ICON}
       iconViewBox={20}
-      color={"#AF7AF2"}
+      color="#AF7AF2"
       activityType="Prediction"
       description="Engage fans by allowing them to vote on an outcome"
       actionButtonText="Start a prediction"
