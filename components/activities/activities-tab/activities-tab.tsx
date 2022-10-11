@@ -1,9 +1,16 @@
 import { React, useSelector, useStyleSheet } from "../../../deps.ts";
 import { usePollingActivityAlertConnection$ } from "../signals.ts";
-import { isActiveActivity, isPrediction } from "../../../shared/mod.ts";
-
+import {
+  hasPermission,
+  isActiveActivity,
+  isPrediction,
+  useOrgUserWithRoles$,
+} from "../../../shared/mod.ts";
+import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
+import { useDialog } from "../../base/dialog-container/dialog-service.ts";
+import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
 import { StringKeys } from "../../../types/mod.ts";
 
@@ -34,6 +41,8 @@ export function ActivitiesTabManager<
   ActivityType extends ActivityListItemTypes[SourceType],
 >(props: ActivitiesTabManagerProps<ActivityListItemTypes>) {
   useStyleSheet(styleSheet);
+  const orgUserWithRoles$ = useOrgUserWithRoles$();
+  const { pushDialog } = useDialog();
   const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
 
   const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>(
@@ -56,6 +65,19 @@ export function ActivitiesTabManager<
       .filter((activity) => activity?.activity && !isActiveActivity(activity))
   );
 
+  const hasPollPermissions = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$.orgUser.get!(),
+      actions: ["create", "update", "delete"],
+      filters: {
+        poll: { isAll: true, rank: 0 },
+      },
+    })
+  );
+
+  const onStartActivity = () => {
+    pushDialog(<CreateActivityDialog />);
+  };
   return (
     <div className="c-activities-tab">
       <div className="list">
@@ -84,6 +106,13 @@ export function ActivitiesTabManager<
             </div>
           )
           : <div className="empty-list-group">No live activities</div>}
+        {hasPollPermissions
+          ? (
+            <Button className="start" style="primary" onClick={onStartActivity}>
+              Start an activity
+            </Button>
+          )
+          : null}
       </div>
       <div className="list">
         <div className="list-header">
