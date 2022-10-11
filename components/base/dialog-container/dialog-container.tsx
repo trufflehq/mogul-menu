@@ -1,19 +1,17 @@
-import { React, useEffect, useStyleSheet } from "../../../deps.ts";
-import { dialogService } from "./dialog-service.ts";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
+import { React, useEffect, useSelector, useStyleSheet } from "../../../deps.ts";
+import { dialogStack$ } from "./dialog-service.ts";
 import styleSheet from "./dialog-container.scss.js";
 
 export default function DialogContainer() {
   useStyleSheet(styleSheet);
-  const { dialogStack } = useObservables(() => ({
-    dialogStack: dialogService.dialogStackSubject.obs,
-  }));
 
-  const topDialog = dialogStack.length > 0 ? dialogStack[dialogStack.length - 1] : null;
+  const topDialog = useSelector(() =>
+    dialogStack$.get().length ? dialogStack$.get()[dialogStack$.get().length - 1] : null
+  );
 
   const handleEscape = (ev: KeyboardEvent) => {
     if (ev.key === "Escape") {
-      dialogService.popDialog();
+      dialogStack$.set((currentStack) => currentStack.slice(0, -1));
     }
   };
 
@@ -29,7 +27,7 @@ export default function DialogContainer() {
 
   const handleBgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!topDialog?.isModal && e.target === e.currentTarget) {
-      dialogService.popDialog();
+      dialogStack$.set((currentStack) => currentStack.slice(0, -1));
     }
   };
 

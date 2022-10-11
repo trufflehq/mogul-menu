@@ -21,7 +21,6 @@ import StyleSheet from "../../base/stylesheet/stylesheet.tsx";
  * @property {string} textColor
  * @property {string} bg
  * @property {Function} onClick
- * @property {Stream} isDisabledStream
  */
 
 /**

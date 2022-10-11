@@ -16,7 +16,6 @@ export default scss`
   > div {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     max-height: 80%;
     overflow: hidden;
   }
