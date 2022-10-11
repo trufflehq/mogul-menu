@@ -88,6 +88,8 @@ export {
   getToken as getFCMToken,
 } from "https://npm.tfl.dev/firebase@9.9.4/messaging";
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
+export * as LabelPrimitive from "https://npm.tfl.dev/@radix-ui/react-label";
+
 export {
   enableLegendStateReact,
   observer,
@@ -95,6 +97,12 @@ export {
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
+export type {
+  Observable,
+  ObservableComputed,
+  ObservablePrimitiveChild,
+} from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
+export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
 export {
   signal,
   useQuerySignal,
