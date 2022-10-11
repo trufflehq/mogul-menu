@@ -75,7 +75,6 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
     } 
   
     > .content {
-      // overflow-y: auto;
       flex: 1;
     }
   }
