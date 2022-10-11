@@ -1,42 +1,28 @@
-import { JSX } from "https://npm.tfl.dev/react";
-import { createSubject } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
+import { React, signal } from "../../../deps.ts";
 
 interface DialogStackItem {
-  element: JSX.Element;
-  isModel: boolean;
+  element: React.ReactNode;
+  isModal: boolean;
 }
 
-type DialogStackItemParam = DialogStackItem | JSX.Element;
-
-class DialogService {
-  dialogStackSubject: ReturnType<typeof createSubject>;
-
-  constructor() {
-    this.dialogStackSubject = createSubject([]);
-  }
-
-  public pushDialog(nextDialog: DialogStackItemParam) {
-    const currentStack = this.dialogStackSubject.getValue();
-    if (nextDialog?.element) {
-      this.dialogStackSubject.next(
-        currentStack.concat({ element: nextDialog.element, isModal: nextDialog.isModal ?? false }),
-      );
-    } else {
-      this.dialogStackSubject.next(currentStack.concat({ element: nextDialog, isModal: false }));
-    }
-  }
-
-  public popDialog() {
-    const currentStack = this.dialogStackSubject.getValue();
-    this.dialogStackSubject.next(currentStack.slice(0, -1));
-  }
-}
-
-export const dialogService = new DialogService();
-
+export const dialogStack$ = signal<DialogStackItem[]>([]);
 export function useDialog() {
   return {
-    pushDialog: dialogService.pushDialog.bind(dialogService),
-    popDialog: dialogService.popDialog.bind(dialogService),
+    pushDialog: (nextDialog: DialogStackItem | React.ReactNode) => {
+      if (isDialogStackItem(nextDialog)) {
+        dialogStack$.set((currentStack) => currentStack.concat(nextDialog));
+      } else {
+        dialogStack$.set((currentStack) =>
+          currentStack.concat({ element: nextDialog, isModal: false })
+        );
+      }
+    },
+    popDialog: () => {
+      dialogStack$.set((currentStack) => currentStack.slice(0, -1));
+    },
   };
+}
+
+function isDialogStackItem(item: DialogStackItem | React.ReactNode): item is DialogStackItem {
+  return Boolean((item as DialogStackItem).element && (item as DialogStackItem).isModal);
 }

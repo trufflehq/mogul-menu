@@ -40,6 +40,8 @@ export default function Dialog({
   children,
   onClose,
   onBack,
+  className,
+  dialogCss,
   headerStyle = "default",
   headerText,
 }: {
@@ -47,11 +49,13 @@ export default function Dialog({
   showBack?: boolean;
   actions?: any[];
   alignActions?: "fill" | "left" | "right";
-  children?: any;
-  onClose?: () => any;
-  onBack?: () => any;
+  children?: React.ReactNode;
+  onClose?: () => void;
+  onBack?: () => void;
+  className?: string;
+  dialogCss: React.CSSProperties;
   headerStyle?: keyof typeof HEADER_STYLES;
-  headerText?: any;
+  headerText?: React.ReactNode;
 }) {
   const $$closeIconRef = useRef<HTMLDivElement>(null);
   useStyleSheet(styleSheet);
@@ -91,7 +95,7 @@ export default function Dialog({
 
   return (
     <FocusTrap>
-      <div className="c-dialog">
+      <div className={`c-dialog ${className}`} style={dialogCss}>
         <div className="flex">
           {hasTopActions && (
             <div className="top-actions" style={selectedStyles}>
