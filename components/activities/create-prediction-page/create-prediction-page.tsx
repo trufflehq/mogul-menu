@@ -18,15 +18,7 @@ import Button from "../../base/button/button.tsx";
 import Input, { InputProps } from "../../base/input/input.tsx";
 import stylesheet from "./create-prediction-page.scss.js";
 
-function getOptionColor(index: number) {
-  const colors = [
-    "var(--mm-color-opt-1)",
-    "var(--mm-color-opt-2)",
-    "var(--mm-color-opt-3)",
-    "var(--mm-color-opt-4)",
-  ];
-  return colors[index % colors.length];
-}
+const SECONDS_PER_MINUTE = 60;
 
 const CREATE_PREDICTION_QUERY = gql`
 mutation CreatePrediction($question: String, $options: JSON, $durationSeconds: Int) {
@@ -51,6 +43,16 @@ mutation CreatePrediction($question: String, $options: JSON, $durationSeconds: I
   }
 }
 `;
+
+function getOptionColor(index: number) {
+  const colors = [
+    "var(--mm-color-opt-1)",
+    "var(--mm-color-opt-2)",
+    "var(--mm-color-opt-3)",
+    "var(--mm-color-opt-4)",
+  ];
+  return colors[index % colors.length];
+}
 
 interface PollOptionInput {
   text: string;
@@ -77,7 +79,7 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
     const result = await executeCreatePredictionMutation({
       question: prediction$.question.get(),
       options: prediction$.options.get(),
-      durationSeconds: parseInt(prediction$.durationMinutes.get()) * 60, // TODO constant
+      durationSeconds: parseInt(prediction$.durationMinutes.get()) * SECONDS_PER_MINUTE,
     });
 
     if (result.error?.graphQLErrors?.length) {
