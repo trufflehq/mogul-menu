@@ -12,6 +12,7 @@ interface PageProps {
   // some pages we don't want the user to be able to dismiss, e.g the onboarding flow
   shouldDisableEscape?: boolean;
   isFullSize?: boolean;
+  footer?: React.ReactNode;
 }
 export default function Page(props: PageProps) {
   useStyleSheet(styleSheet);
@@ -34,6 +35,7 @@ function PageBase(props: PageProps) {
     shouldShowHeader = true,
     shouldDisableEscape = false,
     isFullSize = false,
+    footer,
   } = props;
 
   const $$backIconRef = useRef<HTMLDivElement>(null);
@@ -66,28 +68,31 @@ function PageBase(props: PageProps) {
         })
       }`}
     >
-      {shouldShowHeader && (
-        <div className="header">
-          <div className="left">
-            <div
-              className="back-icon"
-              onClick={handleOnClick}
-              onKeyDown={handleKeyPress}
-              tabIndex={0}
-              ref={$$backIconRef}
-            >
-              <Icon
-                icon="back"
-                color="var(--mm-color-text-bg-primary)"
-                onclick={handleOnClick}
-              />
+      <div className="body">
+        {shouldShowHeader && (
+          <div className="header">
+            <div className="left">
+              <div
+                className="back-icon"
+                onClick={handleOnClick}
+                onKeyDown={handleKeyPress}
+                tabIndex={0}
+                ref={$$backIconRef}
+              >
+                <Icon
+                  icon="back"
+                  color="var(--mm-color-text-bg-primary)"
+                  onclick={handleOnClick}
+                />
+              </div>
+              <div className="text">{title}</div>
             </div>
-            <div className="text">{title}</div>
+            {headerTopRight && <div className="right">{headerTopRight}</div>}
           </div>
-          {headerTopRight && <div className="right">{headerTopRight}</div>}
-        </div>
-      )}
-      <div className="content">{children}</div>
+        )}
+        <div className="content">{children}</div>
+      </div>
+      {footer && <div className="footer">{footer}</div>}
     </div>
   );
 }
