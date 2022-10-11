@@ -33,5 +33,10 @@ export default scss`
       font-weight: 600;
     }
   }
+
+  .start {
+    margin-top: 20px;
+    width: 100%;
+  }
 }
 `;
