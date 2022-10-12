@@ -35,7 +35,7 @@ export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: Org
   const { orgKothConfig$ } = usePollingOrgKothConfigQuery$();
 
   const kothUserId = useSelector(() =>
-    orgKothConfig$.data?.get()?.org.orgConfig.data.kingOfTheHill?.userId
+    orgKothConfig$.data?.get()?.org?.orgConfig.data.kingOfTheHill?.userId
   );
 
   const hasKothDeletePermission = useSelector(() =>
