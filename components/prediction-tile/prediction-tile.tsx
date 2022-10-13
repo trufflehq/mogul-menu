@@ -16,6 +16,7 @@ import {
   MOGUL_MENU_JUMPER_MESSAGES,
   ONE_SECOND_MS,
   OrgUserQuerySignal,
+  DELETE_POLL_MUTATION,
 } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
@@ -25,15 +26,6 @@ import Tile, { RemoveButton } from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
-const DELETE_POLL_MUTATION = gql`
-mutation PollDeleteByIdMutation($id: ID!) {
-  pollDeleteById(input: { id: $id }) {
-    poll {
-      id
-    }
-  }
-}
-`;
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 const RESULTS_TIMOUT = 100 * ONE_SECOND_MS;
