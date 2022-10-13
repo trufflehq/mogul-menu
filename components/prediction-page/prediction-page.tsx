@@ -250,40 +250,38 @@ function PredictionPageBase(
 
   return (
     <Memo>
-      {() => {
-        return (
-          <Page
-            title="Prediction"
-            headerTopRight={<PredictionHeader channelPoints$={channelPoints$} />}
-            onBack={popPage}
-            footer={hasPollPermissions
-              ? (
-                <div className="c-predictions-page_footer">
-                  {error$.get() && <div className="error">{error$.get()}</div>}
-                  <Button onClick={onDelete} shouldHandleLoading style="bg-tertiary">
-                    Delete
-                  </Button>
-                </div>
-              )
-              : null}
-          >
-            {prediction$.get()
-              ? (
-                <Computed>
-                  {() => (
-                    <Prediction
-                      prediction$={prediction$}
-                      refetchPrediction={reexecutePredictionQuery}
-                    />
-                  )}
-                </Computed>
-              )
-              : !isFetching$.get() && hasFetched$.get()
-              ? <EmptyPrediction message={emptyStateMessage} />
-              : null}
-          </Page>
-        );
-      }}
+      {() => (
+        <Page
+          title="Prediction"
+          headerTopRight={<PredictionHeader channelPoints$={channelPoints$} />}
+          onBack={popPage}
+          footer={hasPollPermissions
+            ? (
+              <div className="c-predictions-page_footer">
+                {error$.get() && <div className="error">{error$.get()}</div>}
+                <Button onClick={onDelete} shouldHandleLoading style="bg-tertiary">
+                  Delete
+                </Button>
+              </div>
+            )
+            : null}
+        >
+          {prediction$.get()
+            ? (
+              <Computed>
+                {() => (
+                  <Prediction
+                    prediction$={prediction$}
+                    refetchPrediction={reexecutePredictionQuery}
+                  />
+                )}
+              </Computed>
+            )
+            : !isFetching$.get() && hasFetched$.get()
+            ? <EmptyPrediction message={emptyStateMessage} />
+            : null}
+        </Page>
+      )}
     </Memo>
   );
 }
