@@ -1,14 +1,10 @@
 import { React, useStyleSheet } from "../../../deps.ts";
-import {
-  BAR_CHART_ICON_PATH,
-  getPollInfo,
-  isPrediction,
-} from "../../../shared/mod.ts";
+import { BAR_CHART_ICON_PATH, getPollInfo, isPrediction } from "../../../shared/mod.ts";
 import { ActivityListItemProps } from "../activities-tab/activities-tab.tsx";
 import styleSheet from "./poll-list-item.scss.js";
 import Time from "../../time/time.tsx";
 import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
-import PredictionListItem from '../prediction-list-item/prediction-list-item.tsx'
+import PredictionListItem from "../prediction-list-item/prediction-list-item.tsx";
 import { Poll } from "../../../types/mod.ts";
 
 export default function PollListItem({ activity, isActive }: ActivityListItemProps<Poll>) {
@@ -34,7 +30,7 @@ function BasePollListItem({ activity }: ActivityListItemProps<Poll>) {
 }
 
 export function PollListItemDescription({ poll }: { poll: Poll }) {
-  const { hasPollEnded, pollEndTime, hasWinningOption } = getPollInfo(poll);
+  const { hasPollEnded, pollEndTime, isRefund, hasWinningOption } = getPollInfo(poll);
   const pollMsLeft = new Date(pollEndTime || Date.now()).getTime() - Date.now();
 
   return (
@@ -46,7 +42,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
           </span>
         )
         : hasPollEnded
-        ? "Submissions closed"
+        ? isRefund ? "Prediction canceled" : "Submissions closed"
         : (
           <>
             <Time ms={pollMsLeft} />
