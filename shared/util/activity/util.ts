@@ -23,9 +23,9 @@ export function isActiveActivity<ActivityType, SourceType extends string>(
 }
 
 export function isPollActivityActive(poll: Poll) {
-  const { hasPollEnded, hasWinningOption, pollEndTime } = getPollInfo(poll);
+  const { hasPollEnded, hasWinningOption, isRefund, pollEndTime } = getPollInfo(poll);
 
-  return hasPollEnded && hasWinningOption
+  return hasPollEnded && (hasWinningOption || isRefund)
     ? secondsSince(new Date(pollEndTime)) < ACTIVITY_TIMEOUT_SECONDS
     : true;
 }
