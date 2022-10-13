@@ -1,4 +1,12 @@
-import { gql, signal, useEffect, useUrqlQuerySignal } from "../../deps.ts";
+import {
+  _,
+  gql,
+  signal,
+  useEffect,
+  useObserve,
+  useSignal,
+  useUrqlQuerySignal,
+} from "../../deps.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_QUERY_STR =
@@ -63,7 +71,13 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     { alertConnection: ActivityConnection<ActivityType, SourceType> }
   >`${ACTIVITY_CONNECTION_QUERY_STR}`;
 
-  const { signal$: activityAlertConnection$, reexecuteQuery } = useUrqlQuerySignal(
+  const activityAlertConnection$ = useSignal<
+    ActivityConnection<ActivityType, SourceType>
+  >(undefined!);
+  const {
+    signal$: activityAlertConnectionResponse$,
+    reexecuteQuery: reexecuteActivityConnectionQuery,
+  } = useUrqlQuerySignal(
     activityConnectionQuery,
     {
       status: "ready",
@@ -74,12 +88,24 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
 
   useEffect(() => {
     const id = setInterval(() => {
-      reexecuteQuery({ requestPolicy: "network-only" });
+      reexecuteActivityConnectionQuery({ requestPolicy: "network-only" });
     }, interval);
 
     return () => clearInterval(id);
   }, []);
-  return activityAlertConnection$;
+
+  useObserve(() => {
+    const currentActivityConnection = activityAlertConnectionResponse$.data?.get()?.alertConnection;
+    const pastActivityConnection = activityAlertConnection$.get();
+
+    // only update if the prediction has changed
+    if (
+      currentActivityConnection && !_.isEqual(currentActivityConnection, pastActivityConnection)
+    ) {
+      activityAlertConnection$.set(currentActivityConnection);
+    }
+  });
+  return { activityAlertConnection$, reexecuteActivityConnectionQuery };
 }
 
 export const isActivityBannerOpen$ = signal(false);
