@@ -91,7 +91,9 @@ export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress
 export * as LabelPrimitive from "https://npm.tfl.dev/@radix-ui/react-label";
 
 export {
+  Computed,
   enableLegendStateReact,
+  Memo,
   observer,
   useComputed,
   useObserve,
@@ -100,6 +102,7 @@ export {
 export type {
   Observable,
   ObservableComputed,
+  ObservableObject,
   ObservablePrimitiveChild,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
 export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
