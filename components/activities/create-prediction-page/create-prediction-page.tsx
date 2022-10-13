@@ -7,6 +7,7 @@ import {
   React,
   useComputed,
   useMutation,
+  useObserve,
   useSelector,
   useSignal,
   useStyleSheet,
@@ -16,6 +17,7 @@ import PredictionCreatedSnackbar from "../prediction-created-snackbar/prediction
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import Button from "../../base/button/button.tsx";
 import Input, { InputProps } from "../../base/input/input.tsx";
+import { getOptionColor } from "../../../shared/mod.ts";
 import stylesheet from "./create-prediction-page.scss.js";
 
 const SECONDS_PER_MINUTE = 60;
@@ -43,16 +45,6 @@ mutation CreatePrediction($question: String, $options: JSON, $durationSeconds: I
   }
 }
 `;
-
-function getOptionColor(index: number) {
-  const colors = [
-    "var(--mm-color-opt-1)",
-    "var(--mm-color-opt-2)",
-    "var(--mm-color-opt-3)",
-    "var(--mm-color-opt-4)",
-  ];
-  return colors[index % colors.length];
-}
 
 interface PollOptionInput {
   text: string;
@@ -126,9 +118,15 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
 });
 
 function SubmissionPeriod({ durationMinutes$ }: { durationMinutes$: Observable<string> }) {
-  const error$ = useComputed(() => {
-    const duration = parseInt(durationMinutes$.get());
-    return duration < 0 ? "Must be a positive value" : "";
+  const error$ = useSignal("");
+
+  useObserve(() => {
+    const durationMinutes = parseInt(durationMinutes$.get());
+    if (durationMinutes < 0) {
+      error$.set("Must be a positive value");
+    } else {
+      error$.set("");
+    }
   });
 
   return (
