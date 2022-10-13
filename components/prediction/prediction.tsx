@@ -179,25 +179,24 @@ export default function Prediction(
 }
 
 function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
-  const pollMsLeft$ = useSignal(0);
   const { hasPredictionEnded, isRefund, winningOption } = useSelector(() =>
     getPredictionInfo({
       prediction$,
     })
   );
 
+  // need to set the interval here because we need to update the timer every second when the prediction is still active
+  const pollMsLeft$ = useSignal(0);
   useObserve(() => {
     const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
     pollMsLeft$.set(pollMsLeft);
   });
-
-  // need to set the interval here because we need to update the timer every second when the prediction is still active
   useInterval(() => {
     const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
     pollMsLeft$.set(pollMsLeft);
   }, !hasPredictionEnded ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
-
   const pollMsLeft = useSelector(() => pollMsLeft$.get());
+
   return (
     <div className="status">
       {(hasPredictionEnded && isRefund) ? <div>Prediction canceled</div> : null}
