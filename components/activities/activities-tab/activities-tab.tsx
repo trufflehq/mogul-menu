@@ -3,7 +3,6 @@ import { usePollingActivityAlertConnection$ } from "../signals.ts";
 import {
   hasPermission,
   isActiveActivity,
-  isPrediction,
   useOrgUserWithRoles$,
 } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
@@ -16,7 +15,6 @@ import { StringKeys } from "../../../types/mod.ts";
 
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
-  isActive?: boolean;
 }
 
 type ListItemMap<ActivityTypes> = {
@@ -55,8 +53,6 @@ export function ActivitiesTabManager<
     ).filter(isActiveActivity) || []
   );
 
-  const activePrediction = activeActivities.find((activity) => isPrediction(activity.activity));
-
   const pastActivities = useSelector(() =>
     activityAlertConnection$?.data?.get()?.alertConnection.nodes
       .filter((activity) => activity?.activity && !isActiveActivity(activity))
@@ -85,16 +81,13 @@ export function ActivitiesTabManager<
           ? (
             <div className="list-group">
               {activeActivities?.map((activity) => {
-                const ActivityTile = activity.sourceType
+                const ActivityListItem = activity.sourceType
                   ? activityListItems[activity.sourceType]
                   : null;
 
-                const isActivePrediction = isPrediction(activity.activity) &&
-                  activePrediction?.id === activity.id;
-                return ActivityTile &&
-                  React.createElement(ActivityTile, {
+                return ActivityListItem &&
+                  React.createElement(ActivityListItem, {
                     activity: activity.activity,
-                    isActive: isActivePrediction,
                   });
               })}
             </div>
