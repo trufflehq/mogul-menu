@@ -18,4 +18,22 @@ export default scss`
     margin-right: 8px;
   }
 }
+
+.c-predictions-page_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  > .error {
+    color: var(--error-red);
+  }
+}
+.c-prediction-page_empty-predictions {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 `;
