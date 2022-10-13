@@ -71,3 +71,13 @@ export function isPrediction(
 ): poll is Poll {
   return poll?.data?.type === "prediction";
 }
+
+export function getOptionColor(index: number) {
+  const colors = [
+    "var(--mm-color-opt-1)",
+    "var(--mm-color-opt-2)",
+    "var(--mm-color-opt-3)",
+    "var(--mm-color-opt-4)",
+  ];
+  return colors[index % colors.length];
+}
