@@ -8,11 +8,11 @@ import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
 import { Poll } from "../../../types/mod.ts";
 import { PollListItemDescription } from "../poll-list-item/poll-list-item.tsx";
 
-export default function PredictionListItem({ activity, isActive }: ActivityListItemProps<Poll>) {
+export default function PredictionListItem({ activity }: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
   const { pushPage } = usePageStack();
   const showPredictionPage = () => {
-    pushPage(<PredictionPage pollId={!isActive ? activity.id : undefined} />);
+    pushPage(<PredictionPage pollId={activity.id} />);
   };
 
   return (
