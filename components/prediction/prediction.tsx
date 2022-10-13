@@ -16,7 +16,7 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import { VOTE_MUTATION } from "./gql.ts";
-import { COIN_ICON_PATH, getOptionColor } from "../../shared/mod.ts";
+import { COIN_ICON_PATH, getOptionColor, useInterval } from "../../shared/mod.ts";
 import { ChannelPoints, Poll, PollOption } from "../../types/mod.ts";
 import Time from "../time/time.tsx";
 import Input from "../base/input/input.tsx";
@@ -76,8 +76,8 @@ function getIsRefund({ prediction$ }: { prediction$: Observable<Poll> }) {
 function getTimeInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
   const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
   const hasPredictionEnded = pollMsLeft <= 0;
-
-  return { pollMsLeft, hasPredictionEnded };
+  const endTime = prediction$.endTime.get();
+  return { pollMsLeft, hasPredictionEnded, endTime };
 }
 
 // gets all the info we need to render the prediction
@@ -97,7 +97,7 @@ function getPredictionInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
   const { isRefund } = getIsRefund({ prediction$ });
 
   // time remaining
-  const { pollMsLeft, hasPredictionEnded } = getTimeInfo({ prediction$ });
+  const { pollMsLeft, hasPredictionEnded, endTime } = getTimeInfo({ prediction$ });
 
   return {
     hasPredictionEnded,
@@ -108,6 +108,7 @@ function getPredictionInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
     numWinningVoters,
     totalVotes,
     hasSelectedWinningOption,
+    endTime,
   };
 }
 
@@ -162,8 +163,9 @@ export default function Prediction(
     <div className="c-prediction">
       <div className="question-banner">
         <div className="question">{pollQuestion}</div>
-        {/* not memoizing so we rerender the timer according to the polling interval */}
-        <PredictionStatus prediction$={prediction$} />
+        <Memo>
+          {() => <PredictionStatus prediction$={prediction$} />}
+        </Memo>
         <Memo>
           {() => <PredictionResults prediction$={prediction$} />}
         </Memo>
@@ -174,12 +176,25 @@ export default function Prediction(
 }
 
 function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
-  const { hasPredictionEnded, isRefund, winningOption, pollMsLeft } = useSelector(() =>
+  const pollMsLeft$ = useSignal(0);
+  const { hasPredictionEnded, isRefund, winningOption } = useSelector(() =>
     getPredictionInfo({
       prediction$,
     })
   );
 
+  useObserve(() => {
+    const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
+    pollMsLeft$.set(pollMsLeft);
+  });
+
+  // need to set the interval here because we need to update the timer every second when the prediction is still active
+  useInterval(() => {
+    const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
+    pollMsLeft$.set(pollMsLeft);
+  }, !hasPredictionEnded ? 1000 : 10000);
+
+  const pollMsLeft = useSelector(() => pollMsLeft$.get());
   return (
     <div className="status">
       {(hasPredictionEnded && isRefund) ? <div>Prediction canceled</div> : null}
@@ -468,9 +483,7 @@ function VoteAmountInput(
           Vote
         </Button>
       </div>
-      {
-        error$.get() && <div className="error">{error$.get()}</div>
-      }
+      {error$.get() && <div className="error">{error$.get()}</div>}
     </>
   );
 }
