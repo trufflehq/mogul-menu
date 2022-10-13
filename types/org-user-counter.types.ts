@@ -6,4 +6,8 @@ export interface OrgUserCounter {
   orgUser: OrgUser;
 }
 
+export type ChannelPoints = {
+  count: number
+}
+
 export type OrgUserCounterConnection = TruffleGQlConnection<OrgUserCounter>;
