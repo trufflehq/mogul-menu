@@ -230,37 +230,33 @@ function PredictionResults({ prediction$ }: { prediction$: Observable<Poll> }) {
   const { isRefund } = useSelector(() => getIsRefund({ prediction$ }));
   const { totalVotes } = useSelector(() => getTotalVotes({ prediction$ }));
 
-  return (
-    <>
-      {winningOption
-        ? hasSelectedWinningOption
-          ? (
-            <PredictionResult
-              title="You won!"
-              channelPointsAmount={winnings}
-              message={numWinningVoters > 1
-                ? `go to you and ${numWinningVoters - 1} others`
-                : `go to you`}
-            />
-          )
-          : (
-            <PredictionResult
-              title="Better luck next time"
-              channelPointsAmount={totalVotes}
-              message={`go to ${numWinningVoters} others`}
-            />
-          )
-        : isRefund
-        ? (
-          <PredictionResult
-            title="Prediction cancelled"
-            channelPointsAmount={prediction$.myVote?.get()?.count || 0}
-            message="refunded to your account"
-          />
-        )
-        : null}
-    </>
-  );
+  return winningOption
+    ? hasSelectedWinningOption
+      ? (
+        <PredictionResult
+          title="You won!"
+          channelPointsAmount={winnings}
+          message={numWinningVoters > 1
+            ? `go to you and ${numWinningVoters - 1} others`
+            : `go to you`}
+        />
+      )
+      : (
+        <PredictionResult
+          title="Better luck next time"
+          channelPointsAmount={totalVotes}
+          message={`go to ${numWinningVoters} others`}
+        />
+      )
+    : isRefund
+    ? (
+      <PredictionResult
+        title="Prediction cancelled"
+        channelPointsAmount={prediction$.myVote?.get()?.count || 0}
+        message="refunded to your account"
+      />
+    )
+    : null;
 }
 
 function PredictionResult(
@@ -300,22 +296,20 @@ function PredictionOptions(
 ) {
   return (
     <Memo>
-      {() => {
-        return (
-          <div className="options">
-            {prediction$.options.map((option$) => {
-              return (
-                <PredictionOption
-                  prediction$={prediction$}
-                  option$={option$}
-                  currVote$={currVote$}
-                  vote={vote}
-                />
-              );
-            })}
-          </div>
-        );
-      }}
+      {() => (
+        <div className="options">
+          {prediction$.options.map((option$) => {
+            return (
+              <PredictionOption
+                prediction$={prediction$}
+                option$={option$}
+                currVote$={currVote$}
+                vote={vote}
+              />
+            );
+          })}
+        </div>
+      )}
     </Memo>
   );
 }
@@ -343,9 +337,7 @@ function PredictionOption(
   });
 
   const isVotedOption = useSelector(() => {
-    const votedOptionIndex = prediction$.myVote?.get()?.optionIndex;
-
-    return votedOptionIndex === option$.index.get();
+    return prediction$.myVote?.get()?.optionIndex === option$.index.get();
   });
 
   return (
