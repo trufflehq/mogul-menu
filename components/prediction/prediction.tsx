@@ -23,6 +23,9 @@ import Input from "../base/input/input.tsx";
 import Button from "../base/button/button.tsx";
 import styleSheet from "./prediction.scss.js";
 
+const ACTIVE_POLL_INTERVAL = 1000;
+const INACTIVE_POLL_INTERVAL = 60000;
+
 interface VoteInput {
   // amount of channel points user has typed in to vote
   amount: string;
@@ -192,7 +195,7 @@ function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
   useInterval(() => {
     const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
     pollMsLeft$.set(pollMsLeft);
-  }, !hasPredictionEnded ? 1000 : 10000);
+  }, !hasPredictionEnded ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
 
   const pollMsLeft = useSelector(() => pollMsLeft$.get());
   return (
