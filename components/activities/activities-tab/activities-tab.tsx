@@ -55,10 +55,7 @@ export function ActivitiesTabManager<
     ).filter(isActiveActivity) || []
   );
 
-  // HACK - this is a hack to only open the active prediction
-  // remove once we've cleaned up the prediction component so we can
-  // render past prediction results
-  const firstPrediction = activeActivities.find((activity) => isPrediction(activity.activity));
+  const activePrediction = activeActivities.find((activity) => isPrediction(activity.activity));
 
   const pastActivities = useSelector(() =>
     activityAlertConnection$?.data?.get()?.alertConnection.nodes
@@ -92,11 +89,8 @@ export function ActivitiesTabManager<
                   ? activityListItems[activity.sourceType]
                   : null;
 
-                // HACK - this is a hack to only open the active prediction
-                // remove once we've cleaned up the prediction component so we can
-                // render past prediction results
                 const isActivePrediction = isPrediction(activity.activity) &&
-                  firstPrediction?.id === activity.id;
+                  activePrediction?.id === activity.id;
                 return ActivityTile &&
                   React.createElement(ActivityTile, {
                     activity: activity.activity,
