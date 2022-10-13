@@ -458,7 +458,7 @@ function VoteAmountInput(
           }`}
           onClick={onClick}
           style="bg-tertiary"
-          isDisabled={!optionAmount}
+          isDisabled={!optionAmount || parseInt(optionAmount) <= 0}
           shouldHandleLoading
           css={{
             // override border color in the button component
@@ -468,6 +468,9 @@ function VoteAmountInput(
           Vote
         </Button>
       </div>
+      {
+        error$.get() && <div className="error">{error$.get()}</div>
+      }
     </>
   );
 }
