@@ -12,7 +12,7 @@ import stylesheet from "./input.scss.js";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value$: Observable<string>;
-  error$?: Observable<string>; // ObservableComputed<string>;
+  error$?: Observable<string>;
   placeholder?: string;
   label?: string;
   css?: React.CSSProperties;

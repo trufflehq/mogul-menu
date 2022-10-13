@@ -124,6 +124,14 @@ export default scss`
 
   > .input {
     margin-top: 12px;
+
+    .error {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14px;
+      color: var(--error-red);
+    }
   }
 
   > .my-vote {

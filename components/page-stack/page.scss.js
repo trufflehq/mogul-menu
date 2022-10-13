@@ -76,6 +76,7 @@ $ease-function: cubic-bezier(.4,.71,.18,.99);
   
     > .content {
       flex: 1;
+      overflow-y: overlay;
     }
   }
   
