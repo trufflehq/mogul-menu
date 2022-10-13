@@ -18,6 +18,8 @@ import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
 import PredictionListItem from "../prediction-list-item/prediction-list-item.tsx";
 import { Poll } from "../../../types/mod.ts";
 
+const ACTIVE_POLL_INTERVAL = 1000;
+const INACTIVE_POLL_INTERVAL = 60000;
 export default function PollListItem({ activity }: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
   if (!activity) return <></>;
@@ -53,7 +55,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
   useInterval(() => {
     const pollMsLeft = new Date(pollEndTime || Date.now()).getTime() - Date.now();
     pollMsLeft$.set(pollMsLeft);
-  }, !hasPollEnded ? 1000 : 10000);
+  }, !hasPollEnded ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
 
   const pollMsLeft = useSelector(() => pollMsLeft$.get());
 
