@@ -59,10 +59,12 @@ export function ActivityBannerManager<
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
-  const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>({
-    interval: 2000,
-    limit: 1,
-  });
+  const { activityAlertConnection$ } = usePollingActivityAlertConnection$<ActivityType, SourceType>(
+    {
+      interval: 2000,
+      limit: 1,
+    },
+  );
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
   );
@@ -80,13 +82,13 @@ export function ActivityBannerManager<
 
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.data?.get()?.alertConnection?.nodes[0]?.id
+      activityAlertConnection$.nodes.get()?.[0]?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.data?.get()?.alertConnection?.nodes[0];
+    const activityAlert = activityAlertConnection$.nodes.get()?.[0];
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
@@ -97,14 +99,12 @@ export function ActivityBannerManager<
     }
   });
 
-  const activityAlert = useSelector(() =>
-    activityAlertConnection$.data?.get()?.alertConnection?.nodes[0]
-  );
+  const activityAlert = useSelector(() => activityAlertConnection$.nodes.get()?.[0]);
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.data?.get()?.alertConnection?.nodes[0];
+    const activityAlert = activityAlertConnection$.nodes.get()?.[0];
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });
