@@ -8,13 +8,14 @@ import {
   Memo,
   Observable,
   React,
-  useEffect,
+  updateOnChange$,
   useMutation,
   useObserve,
+  usePollingQuerySignal,
   useSelector,
   useSignal,
   useStyleSheet,
-  useUrqlQuerySignal,
+  useUpdateOnChange$,
 } from "../../deps.ts";
 import {
   CRYSTAL_BALL_ICON,
@@ -36,95 +37,49 @@ const CHANNEL_POINTS_SRC =
 function usePollingChannelPoints$(
   { interval = 1000 }: { interval?: number },
 ) {
-  const channelPoints$ = useSignal<ChannelPoints>(undefined!);
+  const channelPoints$ = useSignal<{ channelPoints: { orgUserCounter: ChannelPoints } }>(
+    undefined!,
+  );
+
   const { signal$: channelPointsData$, reexecuteQuery: reexecuteChannelPointsQuery } =
-    useUrqlQuerySignal(
-      CHANNEL_POINTS_QUERY,
-    );
+    usePollingQuerySignal({ interval, query: CHANNEL_POINTS_QUERY });
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
-    }, interval);
-
-    return () => clearInterval(id);
-  }, []);
-
-  // we use this to cut down rerenders in the prediction component by only updating the observable
-  // if the response has changed vs. on every interval
-  useObserve(() => {
-    const channelPoints = channelPointsData$.data?.get()?.channelPoints.orgUserCounter;
-    const existingChannelPoints = channelPoints$.get();
-    if (channelPoints && !_.isEqual(channelPoints, existingChannelPoints)) {
-      channelPoints$.set(channelPoints);
-    }
-  });
+  // only update the channelPoits$ if the channel points data has changed
+  useUpdateOnChange$(channelPoints$, channelPointsData$.data);
 
   return { channelPoints$, reexecuteChannelPointsQuery };
 }
 
+// polls for a specific poll by id
 function usePollingPrediction$(
   { interval = 2000, pollId }: { interval?: number; pollId: string },
 ) {
-  const prediction$ = useSignal<Poll>(undefined!);
+  const prediction$ = useSignal<{ poll: Poll }>(undefined!);
 
   const { signal$: predictionResponse$, reexecuteQuery: reexecutePredictionQuery } =
-    useUrqlQuerySignal(
-      POLL_QUERY,
-      {
-        id: pollId,
-      },
-    );
+    usePollingQuerySignal({ interval, query: POLL_QUERY, variables: { id: pollId } });
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecutePredictionQuery({ requestPolicy: "network-only" });
-    }, interval);
-
-    return () => clearInterval(id);
-  }, []);
-
-  // we use this to cut down rerenders in the prediction component by only updating the observable
-  // if the response has changed vs. on every interval
-  useObserve(() => {
-    const currentPrediction = predictionResponse$.data?.get()?.poll;
-    const pastPrediction = prediction$.get();
-
-    // only update if the prediction has changed
-    if (currentPrediction && !_.isEqual(currentPrediction, pastPrediction)) {
-      prediction$.set(currentPrediction);
-    }
-  });
+  // only update the prediction$ if the poll has changed
+  useUpdateOnChange$(prediction$, predictionResponse$.data);
 
   return { prediction$, predictionResponse$, reexecutePredictionQuery };
 }
 
+// polling for poll connection and converts to a poll observable
 function usePollingActivePrediction$(
   { interval = 2000 }: { interval?: number },
 ) {
-  const prediction$ = useSignal<Poll>(undefined!);
+  const prediction$ = useSignal<{ poll: Poll }>(undefined!);
+
   const { signal$: predictionConnection$, reexecuteQuery: reexecutePredictionQuery } =
-    useUrqlQuerySignal(
-      ACTIVE_PREDICTION_QUERY,
-    );
+    usePollingQuerySignal({ interval, query: ACTIVE_PREDICTION_QUERY });
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecutePredictionQuery({ requestPolicy: "network-only" });
-    }, interval);
-
-    return () => clearInterval(id);
-  }, []);
-
-  // we use this to cut down rerenders in the prediction component by only updating the observable
-  // if the response has changed vs. on every interval
+  // we use the setter directly here because we want to convert from a PollConnection to a Poll
   useObserve(() => {
     const activePrediction = predictionConnection$.data?.get()?.pollConnection.nodes[0];
-    const pastPrediction = prediction$.get();
 
-    // only update if the prediction has changed
-    if (activePrediction && !_.isEqual(activePrediction, pastPrediction)) {
-      prediction$.set(activePrediction);
+    if (activePrediction) {
+      updateOnChange$(prediction$, { poll: activePrediction });
     }
   });
 
@@ -145,13 +100,10 @@ function ActivePredictionPage() {
 
   // we use this to ensure we only render the empty state if the prediction page has already fetched data
   useObserve(() => {
-    if (predictionConnection$.fetching.get()) {
-      isFetching$.set(true);
-      if (!hasFetched$.get()) {
-        hasFetched$.set(true);
-      }
-    } else {
-      isFetching$.set(false);
+    const isFetching = predictionConnection$.fetching.get();
+    isFetching$.set(isFetching);
+    if (isFetching && !hasFetched$.get()) {
+      hasFetched$.set(true);
     }
   });
 
@@ -176,13 +128,11 @@ function PredictionByIdPage({ pollId }: { pollId: string }) {
 
   // we use this to ensure we only render the empty state if the prediction page has already fetched data
   useObserve(() => {
-    if (predictionResponse$.fetching.get()) {
-      isFetching$.set(true);
-      if (!hasFetched$.get()) {
-        hasFetched$.set(true);
-      }
-    } else {
-      isFetching$.set(false);
+    const isFetching = predictionResponse$.fetching.get();
+    isFetching$.set(isFetching);
+
+    if (isFetching && !hasFetched$.get()) {
+      hasFetched$.set(true);
     }
   });
 
@@ -204,7 +154,7 @@ function PredictionPageBase(
     isFetching$,
     emptyStateMessage = "Missing prediction",
   }: {
-    prediction$: Observable<Poll>;
+    prediction$: Observable<{ poll: Poll }>;
     reexecutePredictionQuery: () => void;
     hasFetched$: Observable<boolean>;
     isFetching$: Observable<boolean>;
@@ -213,6 +163,7 @@ function PredictionPageBase(
   },
 ) {
   const { channelPoints$ } = usePollingChannelPoints$({});
+
   const [, executeDeletePollMutation] = useMutation(DELETE_POLL_MUTATION);
   const error$ = useSignal("");
   const orgUserWithRoles$ = useOrgUserWithRoles$();
@@ -233,7 +184,7 @@ function PredictionPageBase(
     error$.set("");
     try {
       const deleteResult = await executeDeletePollMutation({
-        id: prediction$.id.get(),
+        id: prediction$.poll.id.peek(),
       });
 
       if (deleteResult.error) {
@@ -286,7 +237,11 @@ function PredictionPageBase(
   );
 }
 
-function PredictionHeader({ channelPoints$ }: { channelPoints$: Observable<ChannelPoints> }) {
+function PredictionHeader(
+  { channelPoints$ }: {
+    channelPoints$: Observable<{ channelPoints: { orgUserCounter: ChannelPoints } }>;
+  },
+) {
   return (
     <div className="c-predictions-page_channel-points">
       <div className="icon">
@@ -297,8 +252,11 @@ function PredictionHeader({ channelPoints$ }: { channelPoints$: Observable<Chann
           height={16}
         />
       </div>
-      <div className="amount" title={formatNumber(channelPoints$.count.get())}>
-        {abbreviateNumber(channelPoints$.count.get() || 0, 1)}
+      <div
+        className="amount"
+        title={formatNumber(channelPoints$.channelPoints.orgUserCounter.count.get())}
+      >
+        {abbreviateNumber(channelPoints$.channelPoints.orgUserCounter.count.get() || 0, 1)}
       </div>
     </div>
   );

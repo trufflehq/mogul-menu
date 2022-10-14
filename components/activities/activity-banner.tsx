@@ -82,13 +82,13 @@ export function ActivityBannerManager<
 
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.nodes.get()?.[0]?.id
+      activityAlertConnection$.alertConnection.nodes.get()?.[0]?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
@@ -99,12 +99,14 @@ export function ActivityBannerManager<
     }
   });
 
-  const activityAlert = useSelector(() => activityAlertConnection$.nodes.get()?.[0]);
+  const activityAlert = useSelector(() =>
+    activityAlertConnection$.alertConnection.nodes.get()?.[0]
+  );
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });

@@ -1,4 +1,4 @@
-import { Memo, Observable, React, useEffect, useSelector, useStyleSheet } from "../../../deps.ts";
+import { Memo, React, useSelector, useStyleSheet } from "../../../deps.ts";
 import { usePollingActivityAlertConnection$ } from "../signals.ts";
 import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
@@ -7,8 +7,10 @@ import RaidListItem from "../raid-list-item/raid-list-item.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
-import { ActivityConnection, StringKeys } from "../../../types/mod.ts";
+import { ActivityAlert, StringKeys } from "../../../types/mod.ts";
 
+const ACTIVITY_CONNECTION_INTERVAL = 2000;
+const ACTIVITY_CONNECTION_LIMIT = 20;
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
 }
@@ -42,12 +44,8 @@ export function ActivitiesTabManager<
 
   const { activityAlertConnection$, reexecuteActivityConnectionQuery } =
     usePollingActivityAlertConnection$<ActivityType, SourceType>(
-      { interval: 2000, limit: 20 },
+      { interval: ACTIVITY_CONNECTION_INTERVAL, limit: ACTIVITY_CONNECTION_LIMIT },
     );
-
-  useEffect(() => {
-    reexecuteActivityConnectionQuery();
-  }, []);
 
   const hasPollPermissions = useSelector(() =>
     hasPermission({
@@ -72,14 +70,21 @@ export function ActivitiesTabManager<
         </div>
         {/* activity li's will only rerender if their data changes */}
         <Memo>
-          {() => (
-            <ActivityGroup
-              activityConnection$={activityAlertConnection$}
-              activityListItems={activityListItems}
-              isActive={true}
-              emptyStateMessage="No live activities"
-            />
-          )}
+          {() => {
+            const activityAlerts = useSelector(() =>
+              activityAlertConnection$?.alertConnection.nodes.get()?.filter((alert) =>
+                alert?.activity && isActiveActivity(alert)
+              )
+            );
+
+            return (
+              <ActivityGroup
+                activityAlerts={activityAlerts}
+                activityListItems={activityListItems}
+                emptyStateMessage="No live activities"
+              />
+            );
+          }}
         </Memo>
         {hasPollPermissions
           ? (
@@ -95,14 +100,21 @@ export function ActivitiesTabManager<
         </div>
         {/* activity li's will only rerender if their data changes */}
         <Memo>
-          {() => (
-            <ActivityGroup
-              activityConnection$={activityAlertConnection$}
-              activityListItems={activityListItems}
-              isActive={false}
-              emptyStateMessage="No past activities"
-            />
-          )}
+          {() => {
+            const activityAlerts = useSelector(() =>
+              activityAlertConnection$.alertConnection.nodes.get()?.filter((alert) =>
+                alert?.activity && !isActiveActivity(alert)
+              )
+            );
+
+            return (
+              <ActivityGroup
+                activityAlerts={activityAlerts}
+                activityListItems={activityListItems}
+                emptyStateMessage="No past activities"
+              />
+            );
+          }}
         </Memo>
       </div>
     </div>
@@ -114,30 +126,22 @@ function ActivityGroup<
   SourceType extends StringKeys<ActivityListItemTypes>,
   ActivityType extends ActivityListItemTypes[SourceType],
 >(
-  { activityConnection$, activityListItems, isActive, emptyStateMessage }: {
-    activityConnection$: Observable<ActivityConnection<ActivityType, SourceType>>;
+  { activityAlerts, activityListItems, emptyStateMessage }: {
+    activityAlerts: ActivityAlert<ActivityType, SourceType>[];
     activityListItems: ListItemMap<ActivityListItemTypes>;
-    isActive: boolean;
     emptyStateMessage: string;
   },
 ) {
-  const activities = useSelector(() =>
-    activityConnection$?.nodes.get()?.filter((activity) =>
-      activity?.activity && isActive ? isActiveActivity(activity) : !isActiveActivity(activity)
-    )
-  );
-
-  return activities?.length
+  return activityAlerts?.length
     ? (
       <div className="list-group">
-        {activities?.map((activity) => {
-          const ActivityListItem = activity.sourceType
-            ? activityListItems[activity.sourceType]
-            : null;
+        {activityAlerts?.map((alert) => {
+          const ActivityListItem = alert.sourceType ? activityListItems[alert.sourceType] : null;
 
+          {/* This was necessary to make the TS compiler happy, for some reason it wasn't liking the JSX format <Component activity={activityAlert.activity} />*/}
           return ActivityListItem &&
             React.createElement(ActivityListItem, {
-              activity: activity.activity,
+              activity: alert.activity,
             });
         })}
       </div>
