@@ -22,7 +22,6 @@ export function hasPermission({ filters = {}, row, rowType, actions, modelUserId
   modelUserIdKey?: string;
   orgUser: OrgUser;
 }) {
-  // console.log('hasPerm', orgUser)
   const roles = _.orderBy(orgUser?.roleConnection?.nodes, "rank");
 
   const isSuperAdmin = _.find(roles, { isSuperAdmin: true });
