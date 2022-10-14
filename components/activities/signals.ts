@@ -2,12 +2,10 @@ import {
   _,
   gql,
   signal,
-  useEffect,
-  useObserve,
+  usePollingQuerySignal,
   useSignal,
-  useUrqlQuerySignal,
+  useUpdateOnChange$,
 } from "../../deps.ts";
-import { usePollingQuerySignal, useUpdateIfChanged$ } from "../../shared/mod.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_QUERY_STR =
@@ -89,7 +87,7 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     },
   });
 
-  useUpdateIfChanged$(activityAlertConnection$, activityAlertConnectionResponse$.data);
+  useUpdateOnChange$(activityAlertConnection$, activityAlertConnectionResponse$.data);
 
   return { activityAlertConnection$, reexecuteActivityConnectionQuery };
 }
