@@ -24,10 +24,7 @@ export default function SelectOutcomeDialog(
   const error$ = useSignal("");
   useStyleSheet(styleSheet);
   const selectedOption$ = useSignal<PollOption>(undefined!);
-  const options = useSelector(() => prediction$.poll.options.get());
-  const question = useSelector(() => prediction$.poll.question.get());
-  const hasSelectedOption = useSelector(() => Boolean(selectedOption$.get()));
-  const selectedOption = useSelector(() => selectedOption$.get());
+
 
   const onSubmit = async () => {
     error$.set("");
@@ -61,7 +58,11 @@ export default function SelectOutcomeDialog(
   };
 
   const error = useSelector(() => error$.get());
-
+  const options = useSelector(() => prediction$.poll.options.get());
+  const question = useSelector(() => prediction$.poll.question.get());
+  const hasSelectedOption = useSelector(() => Boolean(selectedOption$.get()));
+  const selectedOption = useSelector(() => selectedOption$.get());
+  
   return (
     <div className="c-select-outcome-dialog">
       <Dialog headerText="Select the outcome">
