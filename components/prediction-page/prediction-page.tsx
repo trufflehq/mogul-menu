@@ -7,6 +7,7 @@ import {
   ImageByAspectRatio,
   Memo,
   Observable,
+  OperationContext,
   React,
   updateOnChange$,
   useMutation,
@@ -26,8 +27,23 @@ import {
 } from "../../shared/mod.ts";
 import { ChannelPoints, Poll } from "../../types/mod.ts";
 import Prediction from "../prediction/prediction.tsx";
-import { ACTIVE_PREDICTION_QUERY, CHANNEL_POINTS_QUERY, POLL_QUERY } from "../prediction/gql.ts";
+import {
+  ACTIVE_PREDICTION_QUERY,
+  CHANNEL_POINTS_QUERY,
+  END_PREDICTION_MUTATION,
+  POLL_QUERY,
+  REFUND_PREDICTION_MUTATION,
+} from "../prediction/gql.ts";
+import {
+  getIsRefund,
+  getTimeInfo,
+  getTotalVotes,
+  getWinningInfo,
+} from "../prediction/prediction.tsx";
+import SelectOutcomeDialog from "./select-outcome-dialog/select-outcome-dialog.tsx";
 import { Page, usePageStack } from "../page-stack/mod.ts";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
+
 import Button from "../base/button/button.tsx";
 import styleSheet from "./prediction-page.scss.js";
 
@@ -123,6 +139,7 @@ function PredictionByIdPage({ pollId }: { pollId: string }) {
     interval: 1000,
     pollId,
   });
+
   const hasFetched$ = useSignal(false);
   const isFetching$ = useSignal(false);
 
@@ -155,19 +172,14 @@ function PredictionPageBase(
     emptyStateMessage = "Missing prediction",
   }: {
     prediction$: Observable<{ poll: Poll }>;
-    reexecutePredictionQuery: () => void;
+    reexecutePredictionQuery: (opts?: Partial<OperationContext> | undefined) => void;
     hasFetched$: Observable<boolean>;
     isFetching$: Observable<boolean>;
-
     emptyStateMessage?: string;
   },
 ) {
   const { channelPoints$ } = usePollingChannelPoints$({});
-
-  const [, executeDeletePollMutation] = useMutation(DELETE_POLL_MUTATION);
-  const error$ = useSignal("");
   const orgUserWithRoles$ = useOrgUserWithRoles$();
-
   const { popPage } = usePageStack();
 
   const hasPollPermissions = useSelector(() =>
@@ -180,60 +192,39 @@ function PredictionPageBase(
     })
   );
 
-  const onDelete = async () => {
-    error$.set("");
-    try {
-      const deleteResult = await executeDeletePollMutation({
-        id: prediction$.poll.id.peek(),
-      });
-
-      if (deleteResult.error) {
-        console.error("error deleting poll", deleteResult.error);
-        error$.set(deleteResult.error.graphQLErrors[0]?.message);
-        return;
-      }
-      popPage();
-    } catch (err) {
-      console.error("error deleting poll", err);
-      error$.set(err.message);
-    }
-  };
-
   return (
-    <Memo>
-      {() => (
-        <Page
-          title="Prediction"
-          headerTopRight={<PredictionHeader channelPoints$={channelPoints$} />}
-          onBack={popPage}
-          footer={hasPollPermissions
-            ? (
-              <div className="c-predictions-page_footer">
-                {error$.get() && <div className="error">{error$.get()}</div>}
-                <Button onClick={onDelete} shouldHandleLoading style="bg-tertiary">
-                  Delete
-                </Button>
-              </div>
-            )
-            : null}
-        >
-          {prediction$.get()
-            ? (
-              <Computed>
-                {() => (
-                  <Prediction
-                    prediction$={prediction$}
-                    refetchPrediction={reexecutePredictionQuery}
-                  />
-                )}
-              </Computed>
-            )
-            : !isFetching$.get() && hasFetched$.get()
-            ? <EmptyPrediction message={emptyStateMessage} />
-            : null}
-        </Page>
-      )}
-    </Memo>
+    <Page
+      title="Prediction"
+      headerTopRight={<PredictionHeader channelPoints$={channelPoints$} />}
+      onBack={popPage}
+      footer={hasPollPermissions
+        ? (
+          <Memo>
+            {() => (
+              <PredictionFooter
+                prediction$={prediction$}
+                reexecutePredictionQuery={reexecutePredictionQuery}
+              />
+            )}
+          </Memo>
+        )
+        : null}
+    >
+      {prediction$.get()
+        ? (
+          <Computed>
+            {() => (
+              <Prediction
+                prediction$={prediction$}
+                refetchPrediction={reexecutePredictionQuery}
+              />
+            )}
+          </Computed>
+        )
+        : !isFetching$.get() && hasFetched$.get()
+        ? <EmptyPrediction message={emptyStateMessage} />
+        : null}
+    </Page>
   );
 }
 
@@ -257,6 +248,128 @@ function PredictionHeader(
         title={formatNumber(channelPoints$.channelPoints.orgUserCounter.count.get())}
       >
         {abbreviateNumber(channelPoints$.channelPoints.orgUserCounter.count.get() || 0, 1)}
+      </div>
+    </div>
+  );
+}
+
+function PredictionFooter({
+  prediction$,
+  reexecutePredictionQuery,
+}: {
+  prediction$: Observable<{ poll: Poll }>;
+  reexecutePredictionQuery: (opts?: Partial<OperationContext> | undefined) => void;
+}) {
+  const [, executeDeletePollMutation] = useMutation(DELETE_POLL_MUTATION);
+  const [, executeRefundPredictionMutation] = useMutation(REFUND_PREDICTION_MUTATION);
+  const [, executeEndPredictionMutation] = useMutation(END_PREDICTION_MUTATION);
+  const error$ = useSignal("");
+  const { popPage } = usePageStack();
+  const { pushDialog } = useDialog();
+
+  const onDelete = async () => {
+    error$.set("");
+    try {
+      const deleteResult = await executeDeletePollMutation({
+        id: prediction$.poll.id.get(),
+      });
+
+      if (deleteResult.error) {
+        console.error("error deleting poll", deleteResult.error);
+        error$.set(deleteResult.error.graphQLErrors[0]?.message);
+        return;
+      }
+      popPage();
+    } catch (err) {
+      console.error("error deleting poll", err);
+      error$.set(err.message);
+    }
+  };
+
+  const onRefund = async () => {
+    error$.set("");
+    try {
+      const refundResult = await executeRefundPredictionMutation({
+        id: prediction$.poll.id.get(),
+      });
+
+      if (refundResult.error) {
+        console.error("error refunding poll", refundResult.error);
+        error$.set(refundResult.error.graphQLErrors[0]?.message);
+        return;
+      }
+
+      await reexecutePredictionQuery({ requestPolicy: "network-only" });
+    } catch (err) {
+      console.error("error refunding poll", err);
+      error$.set(err.message);
+    }
+  };
+
+  const onEndTime = async () => {
+    error$.set("");
+    try {
+      const endPredictionResult = await executeEndPredictionMutation({
+        id: prediction$.poll.id.get(),
+      });
+
+      if (endPredictionResult.error) {
+        console.error("error ending poll", endPredictionResult.error);
+        error$.set(endPredictionResult.error.graphQLErrors[0]?.message);
+        return;
+      }
+
+      if (endPredictionResult.data?.pollUpsert) {
+        prediction$.set({ poll: endPredictionResult.data?.pollUpsert.poll });
+      }
+
+      await reexecutePredictionQuery({ requestPolicy: "network-only" });
+    } catch (err) {
+      console.error("error ending poll", err);
+      error$.set(err.message);
+    }
+  };
+
+  const onSelectOutcome = () => {
+    pushDialog(<SelectOutcomeDialog prediction$={prediction$} />);
+  };
+
+  const { isRefund } = useSelector(() => getIsRefund({ prediction$ }));
+  const { winningOption } = useSelector(() => getWinningInfo({ prediction$ }));
+  const { totalVotes } = useSelector(() => getTotalVotes({ prediction$ }));
+  const { hasPredictionEnded } = useSelector(() => getTimeInfo({ prediction$ }));
+
+  return (
+    <div className="c-predictions-page_footer">
+      <div className="delete">
+        <Button onClick={onDelete} shouldHandleLoading style="bg-tertiary">
+          Delete
+        </Button>
+      </div>
+      <div className="manage">
+        <div className="error">
+          {error$.get() && <div className="error">{error$.get()}</div>}
+        </div>
+        {(!isRefund && !winningOption && totalVotes > 0)
+          ? (
+            <Button onClick={onRefund} shouldHandleLoading style="bg-tertiary">
+              Refund
+            </Button>
+          )
+          : null}
+        {!hasPredictionEnded
+          ? (
+            <Button style="primary" onClick={onEndTime} shouldHandleLoading>
+              End prediction
+            </Button>
+          )
+          : !isRefund && !winningOption
+          ? (
+            <Button style="primary" onClick={onSelectOutcome}>
+              Select outcome
+            </Button>
+          )
+          : null}
       </div>
     </div>
   );
