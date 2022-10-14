@@ -3,7 +3,6 @@ import ThemeComponent from "../../components/base/theme-component/theme-componen
 
 import { ActionBannerProvider } from "../action-banner/mod.ts";
 import { TabButtonProvider, TabsProvider } from "../tabs/mod.ts";
-import { PageStackProvider } from "../page-stack/mod.ts";
 import { MenuProvider } from "./provider.tsx";
 import { MogulMenuProps } from "./menu.tsx";
 
@@ -17,16 +16,14 @@ export default function MenuWrapper(props: MenuProviderProps) {
   return (
     <>
       <MenuProvider {...props}>
-        <PageStackProvider>
-          <ThemeComponent />
-          <TabButtonProvider>
-            <TabsProvider tabs={props.tabs}>
-              <ActionBannerProvider>
-                {children}
-              </ActionBannerProvider>
-            </TabsProvider>
-          </TabButtonProvider>
-        </PageStackProvider>
+        <ThemeComponent />
+        <TabButtonProvider>
+          <TabsProvider tabs={props.tabs}>
+            <ActionBannerProvider>
+              {children}
+            </ActionBannerProvider>
+          </TabsProvider>
+        </TabButtonProvider>
       </MenuProvider>
     </>
   );

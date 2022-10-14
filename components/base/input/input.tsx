@@ -5,13 +5,14 @@ import {
   Observable,
   ObservableComputed,
   React,
+  useSelector,
   useStyleSheet,
 } from "../../../deps.ts";
 import stylesheet from "./input.scss.js";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value$: Observable<string>;
-  error$?: ObservableComputed<string>;
+  error$?: Observable<string>;
   placeholder?: string;
   label?: string;
   css?: React.CSSProperties;
@@ -21,11 +22,12 @@ export default function Input(
   { value$, error$, placeholder, label, css, ...props }: InputProps,
 ) {
   useStyleSheet(stylesheet);
+  const error = useSelector(() => error$?.get());
   return (
     <div
       className={`c-legend-input ${
         classKebab({
-          hasError: !!error$?.get(),
+          hasError: !!error,
         })
       }`}
     >

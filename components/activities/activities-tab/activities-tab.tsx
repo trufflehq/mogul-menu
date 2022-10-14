@@ -1,22 +1,18 @@
-import { React, useSelector, useStyleSheet } from "../../../deps.ts";
+import { Memo, React, useSelector, useStyleSheet } from "../../../deps.ts";
 import { usePollingActivityAlertConnection$ } from "../signals.ts";
-import {
-  hasPermission,
-  isActiveActivity,
-  isPrediction,
-  useOrgUserWithRoles$,
-} from "../../../shared/mod.ts";
+import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
-import { StringKeys } from "../../../types/mod.ts";
+import { ActivityAlert, StringKeys } from "../../../types/mod.ts";
 
+const ACTIVITY_CONNECTION_INTERVAL = 2000;
+const ACTIVITY_CONNECTION_LIMIT = 20;
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
-  isActive?: boolean;
 }
 
 type ListItemMap<ActivityTypes> = {
@@ -41,29 +37,15 @@ export function ActivitiesTabManager<
   ActivityType extends ActivityListItemTypes[SourceType],
 >(props: ActivitiesTabManagerProps<ActivityListItemTypes>) {
   useStyleSheet(styleSheet);
+
   const orgUserWithRoles$ = useOrgUserWithRoles$();
   const { pushDialog } = useDialog();
   const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
 
-  const activityAlertConnection$ = usePollingActivityAlertConnection$<ActivityType, SourceType>(
-    { interval: 2000, limit: 20 },
-  );
-
-  const activeActivities = useSelector(() =>
-    activityAlertConnection$.data?.get()?.alertConnection.nodes.filter((activity) =>
-      activity?.activity
-    ).filter(isActiveActivity) || []
-  );
-
-  // HACK - this is a hack to only open the active prediction
-  // remove once we've cleaned up the prediction component so we can
-  // render past prediction results
-  const firstPrediction = activeActivities.find((activity) => isPrediction(activity.activity));
-
-  const pastActivities = useSelector(() =>
-    activityAlertConnection$?.data?.get()?.alertConnection.nodes
-      .filter((activity) => activity?.activity && !isActiveActivity(activity))
-  );
+  const { activityAlertConnection$, reexecuteActivityConnectionQuery } =
+    usePollingActivityAlertConnection$<ActivityType, SourceType>(
+      { interval: ACTIVITY_CONNECTION_INTERVAL, limit: ACTIVITY_CONNECTION_LIMIT },
+    );
 
   const hasPollPermissions = useSelector(() =>
     hasPermission({
@@ -76,36 +58,34 @@ export function ActivitiesTabManager<
   );
 
   const onStartActivity = () => {
+    reexecuteActivityConnectionQuery();
     pushDialog(<CreateActivityDialog />);
   };
+
   return (
     <div className="c-activities-tab">
       <div className="list">
         <div className="list-header">
           LIVE ACTIVITIES
         </div>
-        {activeActivities?.length
-          ? (
-            <div className="list-group">
-              {activeActivities?.map((activity) => {
-                const ActivityTile = activity.sourceType
-                  ? activityListItems[activity.sourceType]
-                  : null;
+        {/* activity li's will only rerender if their data changes */}
+        <Memo>
+          {() => {
+            const activityAlerts = useSelector(() =>
+              activityAlertConnection$?.alertConnection.nodes.get()?.filter((alert) =>
+                alert?.activity && isActiveActivity(alert)
+              )
+            );
 
-                // HACK - this is a hack to only open the active prediction
-                // remove once we've cleaned up the prediction component so we can
-                // render past prediction results
-                const isActivePrediction = isPrediction(activity.activity) &&
-                  firstPrediction?.id === activity.id;
-                return ActivityTile &&
-                  React.createElement(ActivityTile, {
-                    activity: activity.activity,
-                    isActive: isActivePrediction,
-                  });
-              })}
-            </div>
-          )
-          : <div className="empty-list-group">No live activities</div>}
+            return (
+              <ActivityGroup
+                activityAlerts={activityAlerts}
+                activityListItems={activityListItems}
+                emptyStateMessage="No live activities"
+              />
+            );
+          }}
+        </Memo>
         {hasPollPermissions
           ? (
             <Button className="start" style="primary" onClick={onStartActivity}>
@@ -118,20 +98,53 @@ export function ActivitiesTabManager<
         <div className="list-header">
           ACTIVITY HISTORY
         </div>
-        {pastActivities?.length
-          ? (
-            <div className="list-group">
-              {pastActivities?.map((activity) => {
-                const ActivityTile = activity.sourceType
-                  ? activityListItems[activity.sourceType]
-                  : null;
-                return ActivityTile &&
-                  React.createElement(ActivityTile, { activity: activity.activity });
-              })}
-            </div>
-          )
-          : <div className="empty-list-group">No past activities</div>}
+        {/* activity li's will only rerender if their data changes */}
+        <Memo>
+          {() => {
+            const activityAlerts = useSelector(() =>
+              activityAlertConnection$.alertConnection.nodes.get()?.filter((alert) =>
+                alert?.activity && !isActiveActivity(alert)
+              )
+            );
+
+            return (
+              <ActivityGroup
+                activityAlerts={activityAlerts}
+                activityListItems={activityListItems}
+                emptyStateMessage="No past activities"
+              />
+            );
+          }}
+        </Memo>
       </div>
     </div>
   );
+}
+
+function ActivityGroup<
+  ActivityListItemTypes,
+  SourceType extends StringKeys<ActivityListItemTypes>,
+  ActivityType extends ActivityListItemTypes[SourceType],
+>(
+  { activityAlerts, activityListItems, emptyStateMessage }: {
+    activityAlerts: ActivityAlert<ActivityType, SourceType>[];
+    activityListItems: ListItemMap<ActivityListItemTypes>;
+    emptyStateMessage: string;
+  },
+) {
+  return activityAlerts?.length
+    ? (
+      <div className="list-group">
+        {activityAlerts?.map((alert) => {
+          const ActivityListItem = alert.sourceType ? activityListItems[alert.sourceType] : null;
+
+          {/* This was necessary to make the TS compiler happy, for some reason it wasn't liking the JSX format <Component activity={activityAlert.activity} />*/}
+          return ActivityListItem &&
+            React.createElement(ActivityListItem, {
+              activity: alert.activity,
+            });
+        })}
+      </div>
+    )
+    : <div className="empty-list-group">{emptyStateMessage}</div>;
 }

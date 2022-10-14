@@ -3,7 +3,15 @@ import styleSheet from "./button.scss.js";
 
 type Styles = Record<string, string>;
 
-type ButtonStyle = 'primary' | 'secondary' | 'gradient' | 'error' | 'positive' | 'bg-primary' | 'bg-secondary' | 'bg-tertiary'
+type ButtonStyle =
+  | "primary"
+  | "secondary"
+  | "gradient"
+  | "error"
+  | "positive"
+  | "bg-primary"
+  | "bg-secondary"
+  | "bg-tertiary";
 const buttonStyles: Record<ButtonStyle, Styles> = {
   primary: {
     "--background": "var(--mm-color-primary)",
@@ -60,25 +68,30 @@ const sizeStyles = {
   },
 };
 
+interface ButtonProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, "style" | "error"> {
+  className?: string;
+  children?: React.ReactNode;
+  shouldHandleLoading?: boolean;
+  style?: ButtonStyle | Styles;
+  border?: boolean;
+  css?: React.CSSProperties;
+  isDisabled?: boolean;
+  onClick?: () => void;
+  size?: keyof typeof sizeStyles;
+}
+
 export default function Button({
   className,
   children = "Click me",
   shouldHandleLoading = false,
   style = "bg-secondary",
   border = false,
+  css,
   isDisabled = false,
   onClick = () => null,
   size = "normal",
-}: {
-  className?: string;
-  children?: React.ReactNode;
-  shouldHandleLoading?: boolean;
-  style?: ButtonStyle | Styles;
-  border?: boolean;
-  isDisabled?: boolean;
-  onClick?: () => void;
-  size?: keyof typeof sizeStyles;
-}) {
+  ...props
+}: ButtonProps) {
   useStyleSheet(styleSheet);
   const [isLoading, setIsLoading] = useState(false);
   const _isDisabled = isDisabled || (shouldHandleLoading && isLoading);
@@ -111,9 +124,10 @@ export default function Button({
       className={`c-button ${className}`}
       onChange={clickHandler}
       onClick={clickHandler}
-      style={styles}
+      style={{ ...styles, ...css }}
+      {...props}
     >
-      {isLoading ? "Loading" : children}
+      {isLoading ? "..." : children}
     </button>
   );
 }

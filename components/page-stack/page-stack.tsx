@@ -1,4 +1,4 @@
-import { React, useEffect, useStyleSheet } from "../../deps.ts";
+import { React, useEffect, useSelector, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./page-stack.scss.js";
 import { usePageStack } from "./hooks.ts";
 
@@ -7,13 +7,13 @@ export default function PageStack({
 }: {
   background?: string;
 }) {
-  const { pageStack, popPage, peekPage } = usePageStack();
+  const { pageStack$, popPage, getTopPage } = usePageStack();
   useStyleSheet(styleSheet);
 
-  const isPageStackEmpty = !pageStack || pageStack.length === 0;
+  const isPageStackEmpty = useSelector(() => !pageStack$.get() || pageStack$.get()!.length === 0);
 
   const handleEscape = (ev: KeyboardEvent) => {
-    const top = peekPage();
+    const top = getTopPage();
     const isEscapeDisabled = top && top.isEscapeDisabled;
     if (ev.key === "Escape" && !isEscapeDisabled) {
       popPage();
@@ -26,16 +26,16 @@ export default function PageStack({
     return () => {
       document.removeEventListener("keydown", handleEscape, false);
     };
-  }, [JSON.stringify(pageStack)]);
+  }, [pageStack$.get()]);
   return (
     <>
       {isPageStackEmpty
         ? <></>
         : (
           <div className="c-page-stack" style={{ "--background": background }}>
-            {pageStack.map(({ Component }, idx) => (
+            {pageStack$.map(({ Component }, idx) => (
               <div key={idx} className="page">
-                {Component}
+                {Component.get()}
               </div>
             ))}
           </div>
