@@ -34,33 +34,33 @@ interface VoteInput {
 }
 
 // winning info
-function getWinningInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
-  const winningOptionIndex = prediction$?.data?.winningOptionIndex?.get();
+function getWinningInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+  const winningOptionIndex = prediction$?.poll.data?.winningOptionIndex?.get();
   const winningOption = winningOptionIndex !== undefined
-    ? prediction$?.options.get()[winningOptionIndex]
+    ? prediction$?.poll.options.get()[winningOptionIndex]
     : undefined;
 
   const winningVotes = winningOptionIndex !== undefined
-    ? prediction$?.options.get()[winningOptionIndex]?.count || 1
+    ? prediction$?.poll.options.get()[winningOptionIndex]?.count || 1
     : undefined;
   const numWinningVoters = winningOptionIndex !== undefined
-    ? prediction$?.options.get()[winningOptionIndex]?.unique ?? 0
+    ? prediction$?.poll.options.get()[winningOptionIndex]?.unique ?? 0
     : 0;
 
   return { winningOptionIndex, winningOption, winningVotes, numWinningVoters };
 }
 
 // total number of votes info
-function getTotalVotes({ prediction$ }: { prediction$: Observable<Poll> }) {
-  return { totalVotes: _.sumBy(prediction$?.options.get() ?? [], "count") };
+function getTotalVotes({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+  return { totalVotes: _.sumBy(prediction$?.poll.options.get() ?? [], "count") };
 }
 
 // myVote info
-function getMyVoteInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
+function getMyVoteInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   const { winningOptionIndex, winningVotes } = getWinningInfo({ prediction$ });
   const { totalVotes } = getTotalVotes({ prediction$ });
 
-  const myVote = prediction$.myVote?.get();
+  const myVote = prediction$.poll.myVote?.get();
   const votedOptionIndex = myVote?.optionIndex;
   const isWinner = votedOptionIndex === winningOptionIndex;
   const myVotes = myVote?.count || 0;
@@ -71,20 +71,21 @@ function getMyVoteInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
 }
 
 // prediction refund info
-function getIsRefund({ prediction$ }: { prediction$: Observable<Poll> }) {
-  return { isRefund: prediction$?.data?.isRefund?.get() ?? false };
+function getIsRefund({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+  return { isRefund: prediction$?.poll.data?.isRefund?.get() ?? false };
 }
 
 // prediction time info
-function getTimeInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
-  const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
+function getTimeInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+  const pollMsLeft = new Date(prediction$?.poll?.endTime.get() || Date.now()).getTime() -
+    Date.now();
   const hasPredictionEnded = pollMsLeft <= 0;
-  const endTime = prediction$.endTime.get();
+  const endTime = prediction$.poll?.endTime.get();
   return { pollMsLeft, hasPredictionEnded, endTime };
 }
 
 // gets all the info we need to render the prediction
-function getPredictionInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
+function getPredictionInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   // winning info
   const { winningOption, numWinningVoters } = getWinningInfo({
     prediction$,
@@ -117,7 +118,7 @@ function getPredictionInfo({ prediction$ }: { prediction$: Observable<Poll> }) {
 
 export default function Prediction(
   { prediction$, refetchPrediction }: {
-    prediction$: Observable<Poll>;
+    prediction$: Observable<{ poll: Poll }>;
     refetchPrediction?: () => void;
   },
 ) {
@@ -133,12 +134,12 @@ export default function Prediction(
 
   useObserve(() => {
     // if the user has already cast a vote, limit them from voting on other options
-    if (prediction$.myVote?.get()) {
-      currVote$.index.set(prediction$.myVote?.get()?.optionIndex!);
+    if (prediction$.poll.myVote?.get()) {
+      currVote$.index.set(prediction$.poll.myVote?.get()?.optionIndex!);
     }
   });
 
-  const pollQuestion = useSelector(() => prediction$.question.get());
+  const pollQuestion = useSelector(() => prediction$.poll.question.get());
 
   const vote = async () => {
     try {
@@ -148,7 +149,7 @@ export default function Prediction(
         voteCount: -1 * parseInt(currVote$.amount.get()),
         additionalData: {
           optionIndex: currVote$.index.get(),
-          pollId: prediction$.id.get(),
+          pollId: prediction$.poll.id.get(),
         },
       });
 
@@ -178,7 +179,7 @@ export default function Prediction(
   );
 }
 
-function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
+function PredictionStatus({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   const { hasPredictionEnded, isRefund, winningOption } = useSelector(() =>
     getPredictionInfo({
       prediction$,
@@ -188,11 +189,13 @@ function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
   // need to set the interval here because we need to update the timer every second when the prediction is still active
   const pollMsLeft$ = useSignal(0);
   useObserve(() => {
-    const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
+    const pollMsLeft = new Date(prediction$?.poll.endTime.get() || Date.now()).getTime() -
+      Date.now();
     pollMsLeft$.set(pollMsLeft);
   });
   useInterval(() => {
-    const pollMsLeft = new Date(prediction$?.endTime.get() || Date.now()).getTime() - Date.now();
+    const pollMsLeft = new Date(prediction$?.poll.endTime.get() || Date.now()).getTime() -
+      Date.now();
     pollMsLeft$.set(pollMsLeft);
   }, !hasPredictionEnded ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
   const pollMsLeft = useSelector(() => pollMsLeft$.get());
@@ -223,7 +226,7 @@ function PredictionStatus({ prediction$ }: { prediction$: Observable<Poll> }) {
   );
 }
 
-function PredictionResults({ prediction$ }: { prediction$: Observable<Poll> }) {
+function PredictionResults({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   const { winningOption, numWinningVoters } = useSelector(() => getWinningInfo({ prediction$ }));
   const { hasSelectedWinningOption, winnings } = useSelector(() => getMyVoteInfo({ prediction$ }));
   const { isRefund } = useSelector(() => getIsRefund({ prediction$ }));
@@ -251,7 +254,7 @@ function PredictionResults({ prediction$ }: { prediction$: Observable<Poll> }) {
     ? (
       <PredictionResult
         title="Prediction cancelled"
-        channelPointsAmount={prediction$.myVote?.get()?.count || 0}
+        channelPointsAmount={prediction$.poll.myVote?.get()?.count || 0}
         message="refunded to your account"
       />
     )
@@ -288,7 +291,7 @@ function PredictionResult(
 
 function PredictionOptions(
   { prediction$, currVote$, vote }: {
-    prediction$: Observable<Poll>;
+    prediction$: Observable<{ poll: Poll }>;
     vote: () => void;
     currVote$: Observable<VoteInput>;
   },
@@ -297,7 +300,7 @@ function PredictionOptions(
     <Memo>
       {() => (
         <div className="options">
-          {prediction$.options.map((option$) => {
+          {prediction$.poll.options.map((option$) => {
             return (
               <PredictionOption
                 prediction$={prediction$}
@@ -315,7 +318,7 @@ function PredictionOptions(
 
 function PredictionOption(
   { prediction$, option$, currVote$, vote }: {
-    prediction$: Observable<Poll>;
+    prediction$: Observable<{ poll: Poll }>;
     option$: ObservableObject<PollOption>;
     currVote$: Observable<{ index: number; amount: string }>;
     vote: () => void;
@@ -330,13 +333,13 @@ function PredictionOption(
     : 1;
 
   const hasVotedOnOtherOption = useSelector(() => {
-    const votedOptionIndex = prediction$.myVote?.get()?.optionIndex;
+    const votedOptionIndex = prediction$.poll.myVote?.get()?.optionIndex;
 
     return votedOptionIndex !== undefined && votedOptionIndex !== option$.index.get();
   });
 
   const isVotedOption = useSelector(() => {
-    return prediction$.myVote?.get()?.optionIndex === option$.index.get();
+    return prediction$.poll.myVote?.get()?.optionIndex === option$.index.get();
   });
 
   return (
@@ -379,9 +382,9 @@ function PredictionOption(
           )}
         </Computed>
       </div>
-      {prediction$.myVote?.get() && isVotedOption && (
+      {prediction$.poll.myVote?.get() && isVotedOption && (
         <div className="my-vote">
-          {`${abbreviateNumber(prediction$.myVote?.get()?.count, 0)} channel points spent`}
+          {`${abbreviateNumber(prediction$.poll.myVote?.get()?.count, 0)} channel points spent`}
         </div>
       )}
     </div>

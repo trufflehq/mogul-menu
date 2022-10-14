@@ -1,5 +1,5 @@
-import { React, useSignal, useStyleSheet } from "../../../deps.ts";
-import { CRYSTAL_BALL_ICON, isPollActivityActive, useInterval } from "../../../shared/mod.ts";
+import { React, useStyleSheet } from "../../../deps.ts";
+import { CRYSTAL_BALL_ICON } from "../../../shared/mod.ts";
 import { ActivityListItemProps } from "../activities-tab/activities-tab.tsx";
 import { usePageStack } from "../../page-stack/mod.ts";
 import PredictionPage from "../../prediction-page/prediction-page.tsx";

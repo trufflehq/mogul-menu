@@ -7,6 +7,7 @@ import {
   useSignal,
   useUrqlQuerySignal,
 } from "../../deps.ts";
+import { usePollingQuerySignal, useUpdateIfChanged$ } from "../../shared/mod.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_QUERY_STR =
@@ -66,45 +67,30 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     limit?: number;
   },
 ) {
+  const activityAlertConnection$ = useSignal<
+    { alertConnection: ActivityConnection<ActivityType, SourceType> }
+  >(undefined!);
+
   // define query inside hook to pull in type constraints
   const activityConnectionQuery = gql<
     { alertConnection: ActivityConnection<ActivityType, SourceType> }
   >`${ACTIVITY_CONNECTION_QUERY_STR}`;
 
-  const activityAlertConnection$ = useSignal<
-    ActivityConnection<ActivityType, SourceType>
-  >(undefined!);
   const {
     signal$: activityAlertConnectionResponse$,
     reexecuteQuery: reexecuteActivityConnectionQuery,
-  } = useUrqlQuerySignal(
-    activityConnectionQuery,
-    {
+  } = usePollingQuerySignal({
+    interval,
+    query: activityConnectionQuery,
+    variables: {
       status: "ready",
       type: "activity",
       limit,
     },
-  );
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecuteActivityConnectionQuery({ requestPolicy: "network-only" });
-    }, interval);
-
-    return () => clearInterval(id);
-  }, []);
-
-  useObserve(() => {
-    const currentActivityConnection = activityAlertConnectionResponse$.data?.get()?.alertConnection;
-    const pastActivityConnection = activityAlertConnection$.get();
-
-    // only update if the prediction has changed
-    if (
-      currentActivityConnection && !_.isEqual(currentActivityConnection, pastActivityConnection)
-    ) {
-      activityAlertConnection$.set(currentActivityConnection);
-    }
   });
+
+  useUpdateIfChanged$(activityAlertConnection$, activityAlertConnectionResponse$.data);
+
   return { activityAlertConnection$, reexecuteActivityConnectionQuery };
 }
 

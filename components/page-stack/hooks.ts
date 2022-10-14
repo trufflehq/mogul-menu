@@ -17,7 +17,7 @@ export function usePageStack() {
       );
     },
 
-    peekPage: () => {
+    getTopPage: () => {
       return pageStack$.get()[0];
     },
 

@@ -7,13 +7,13 @@ export default function PageStack({
 }: {
   background?: string;
 }) {
-  const { pageStack$, popPage, peekPage } = usePageStack();
+  const { pageStack$, popPage, getTopPage } = usePageStack();
   useStyleSheet(styleSheet);
 
   const isPageStackEmpty = useSelector(() => !pageStack$.get() || pageStack$.get()!.length === 0);
 
   const handleEscape = (ev: KeyboardEvent) => {
-    const top = peekPage();
+    const top = getTopPage();
     const isEscapeDisabled = top && top.isEscapeDisabled;
     if (ev.key === "Escape" && !isEscapeDisabled) {
       popPage();

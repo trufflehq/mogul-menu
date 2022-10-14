@@ -89,7 +89,6 @@ export {
 } from "https://npm.tfl.dev/firebase@9.9.4/messaging";
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
 export * as LabelPrimitive from "https://npm.tfl.dev/@radix-ui/react-label";
-
 export {
   Computed,
   enableLegendStateReact,
@@ -108,8 +107,17 @@ export type {
 export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
 export {
   signal,
+  updateOnChange$,
+  usePollingQuerySignal,
   useQuerySignal,
   useSignal,
+  useUpdateOnChange$,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
+export type {
+  CombinedError,
+  TypedDocumentNode,
+  UseQueryResponse,
+  UseQueryState,
+} from "https://npm.tfl.dev/urql@2";
