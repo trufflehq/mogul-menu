@@ -1,10 +1,4 @@
-import {
-  Icon,
-  React,
-  useRef,
-  useEffect,
-  useStyleSheet,
-} from "../../../deps.ts";
+import { Icon, React, useEffect, useRef, useStyleSheet } from "../../../deps.ts";
 import { useDialog } from "../dialog-container/dialog-service.ts";
 import FocusTrap from "../../focus-trap/focus-trap.tsx";
 import styleSheet from "./dialog.scss.js";
@@ -53,7 +47,7 @@ export default function Dialog({
   onClose?: () => void;
   onBack?: () => void;
   className?: string;
-  dialogCss: React.CSSProperties;
+  dialogCss?: React.CSSProperties;
   headerStyle?: keyof typeof HEADER_STYLES;
   headerText?: React.ReactNode;
 }) {
@@ -70,6 +64,7 @@ export default function Dialog({
 
   const handleKeyPress = (ev: React.KeyboardEvent) => {
     if (ev.key === "Escape") {
+      ev.stopPropagation();
       popDialog();
     } else if (ev.key === "Enter") {
       popDialog();
@@ -78,6 +73,7 @@ export default function Dialog({
 
   const globalEscapeHandler = (ev: KeyboardEvent) => {
     if (ev.key === "Escape") {
+      ev.stopPropagation();
       popDialog();
     }
   };
@@ -128,9 +124,7 @@ export default function Dialog({
             </div>
           )}
           <div className="content">{children}</div>
-          {actions && (
-            <div className={`bottom-actions ${alignActions}`}>{actions}</div>
-          )}
+          {actions && <div className={`bottom-actions ${alignActions}`}>{actions}</div>}
         </div>
       </div>
     </FocusTrap>
