@@ -110,6 +110,10 @@ export default function Button({
     }
   };
 
+  // in the future we should have a separate onChange handler
+  // prop so consumers can do something w/ the change event if
+  // the want. for now we're just wrapping the onClick handler
+  // which was the previous behavior
   const onChangeHandler = async (e: React.FormEvent) => {
     if (_isDisabled) return;
 
