@@ -22,6 +22,7 @@ import { getOptionColor } from "../../../shared/mod.ts";
 import stylesheet from "./create-prediction-page.scss.js";
 
 const SECONDS_PER_MINUTE = 60;
+const MAX_PREDICTION_OPTIONS = 10;
 
 const CREATE_PREDICTION_QUERY = gql`
 mutation CreatePrediction($question: String, $options: JSON, $durationSeconds: Int) {
@@ -92,8 +93,6 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
 
     return hasQuestion && hasDuration && hasOptions;
   });
-
-  const options = useSelector(() => prediction$.options.get());
 
   return (
     <Page
@@ -198,7 +197,7 @@ function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput>
     );
   };
 
-  const hasMaxNumberOfOptions = useSelector(() => prediction$.options.get().length >= 10);
+  const options = useSelector(() => prediction$.options.get());
 
   return (
     <div className="c-create-poll-options">
@@ -214,7 +213,11 @@ function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput>
             onRemove={() => onRemoveOption(option.get())}
           />
         ))}
-        <Button isDisabled={hasMaxNumberOfOptions} className="add-option" onClick={onAddOption}>
+        <Button
+          isDisabled={options.length >= MAX_PREDICTION_OPTIONS}
+          className="add-option"
+          onClick={onAddOption}
+        >
           <Icon icon="add" size="20px" />
           Add option
         </Button>
