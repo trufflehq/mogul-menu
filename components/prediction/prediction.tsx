@@ -8,6 +8,7 @@ import {
   Memo,
   Observable,
   ObservableObject,
+  OperationContext,
   React,
   useMutation,
   useObserve,
@@ -34,7 +35,7 @@ interface VoteInput {
 }
 
 // winning info
-function getWinningInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+export function getWinningInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   const winningOptionIndex = prediction$?.poll.data?.winningOptionIndex?.get();
   const winningOption = winningOptionIndex !== undefined
     ? prediction$?.poll.options.get()[winningOptionIndex]
@@ -51,7 +52,7 @@ function getWinningInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll 
 }
 
 // total number of votes info
-function getTotalVotes({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+export function getTotalVotes({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   return { totalVotes: _.sumBy(prediction$?.poll.options.get() ?? [], "count") };
 }
 
@@ -71,14 +72,15 @@ function getMyVoteInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }
 }
 
 // prediction refund info
-function getIsRefund({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+export function getIsRefund({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   return { isRefund: prediction$?.poll.data?.isRefund?.get() ?? false };
 }
 
 // prediction time info
-function getTimeInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
+export function getTimeInfo({ prediction$ }: { prediction$: Observable<{ poll: Poll }> }) {
   const pollMsLeft = new Date(prediction$?.poll?.endTime.get() || Date.now()).getTime() -
     Date.now();
+
   const hasPredictionEnded = pollMsLeft <= 0;
   const endTime = prediction$.poll?.endTime.get();
   return { pollMsLeft, hasPredictionEnded, endTime };

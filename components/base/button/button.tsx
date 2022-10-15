@@ -76,7 +76,7 @@ interface ButtonProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, "sty
   border?: boolean;
   css?: React.CSSProperties;
   isDisabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
   size?: keyof typeof sizeStyles;
 }
 
@@ -96,7 +96,25 @@ export default function Button({
   const [isLoading, setIsLoading] = useState(false);
   const _isDisabled = isDisabled || (shouldHandleLoading && isLoading);
 
-  const clickHandler = async () => {
+  const clickHandler = async (e: React.MouseEvent) => {
+    if (_isDisabled) return;
+
+    if (shouldHandleLoading) {
+      setIsLoading(true);
+    }
+
+    await onClick(e);
+
+    if (shouldHandleLoading) {
+      setIsLoading(false);
+    }
+  };
+
+  // in the future we should have a separate onChange handler
+  // prop so consumers can do something w/ the change event if
+  // the want. for now we're just wrapping the onClick handler
+  // which was the previous behavior
+  const onChangeHandler = async (e: React.FormEvent) => {
     if (_isDisabled) return;
 
     if (shouldHandleLoading) {
@@ -122,7 +140,7 @@ export default function Button({
       disabled={_isDisabled}
       tabIndex={_isDisabled ? -1 : 0}
       className={`c-button ${className}`}
-      onChange={clickHandler}
+      onChange={onChangeHandler}
       onClick={clickHandler}
       style={{ ...styles, ...css }}
       {...props}

@@ -71,3 +71,29 @@ export const CHANNEL_POINTS_QUERY = gql<{ channelPoints: { orgUserCounter: Chann
     }
   }
 `;
+
+export const REFUND_PREDICTION_MUTATION = gql`
+mutation PredictionRefundByIdMutation($id: ID) {
+  pollChooseWinningOptionIndexById(input: { id: $id, isRefund: true }) {
+    isWinnerSelected
+  }
+}
+`;
+
+export const CHOOSE_PREDICTION_WINNER_MUTATION = gql`
+mutation PredictionChooseWinnerByIdMutation($id: ID, $winningOptionIndex: Int) {
+  pollChooseWinningOptionIndexById(input: { id: $id, winningOptionIndex: $winningOptionIndex }) {
+    isWinnerSelected
+  }
+}
+`;
+
+export const END_PREDICTION_MUTATION = gql<{ pollUpsert: { poll: Poll } }>`
+mutation EndPredictionByIdMutation($id: ID) {
+  pollUpsert(input: { id: $id, durationSeconds: 0 }) {
+    poll {
+      ...PollWithVotes
+    }
+  }
+} ${POLL_WITH_VOTES_FRAGMENT}
+`;

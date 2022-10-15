@@ -115,9 +115,4 @@ export {
   useUrqlQuerySignal,
 } from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
-export type {
-  CombinedError,
-  TypedDocumentNode,
-  UseQueryResponse,
-  UseQueryState,
-} from "https://npm.tfl.dev/urql@2";
+export type { OperationContext } from "https://npm.tfl.dev/urql@2";
