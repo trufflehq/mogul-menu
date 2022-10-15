@@ -33,6 +33,11 @@ export default scss`
 
     margin-top: 24px;
   }
+  
+  .add-option {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .c-submission-period {
@@ -47,6 +52,7 @@ export default scss`
 
 .c-poll-option-input {
   display: flex;
+  position: relative;
 
   > .block {
     width: 40px;
@@ -54,6 +60,14 @@ export default scss`
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
   }
+
+  > .close {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    cursor: pointer;
+  }
+
 }
 
 .c-number-input {
