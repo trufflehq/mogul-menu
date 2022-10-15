@@ -1,6 +1,7 @@
 import {
   classKebab,
   gql,
+  Icon,
   LabelPrimitive,
   Observable,
   observer,
@@ -51,19 +52,21 @@ interface PollOptionInput {
   index: number;
 }
 
+interface PollInput {
+  question: string;
+  options: PollOptionInput[];
+  durationMinutes: string;
+}
+
 const CreatePredictionPage = observer(function CreatePredictionPage() {
   useStyleSheet(stylesheet);
   const [, executeCreatePredictionMutation] = useMutation(CREATE_PREDICTION_QUERY);
   const { popPage } = usePageStack();
   const enqueueSnackBar = useSnackBar();
   const predictionError$ = useSignal("");
-  const prediction$ = useSignal<{
-    question: string;
-    options: PollOptionInput[];
-    durationMinutes: string;
-  }>({
+  const prediction$ = useSignal<PollInput>({
     question: "",
-    options: [{ text: "", index: 0 }, { text: "", index: 0 }],
+    options: [{ text: "", index: 0 }, { text: "", index: 1 }],
     durationMinutes: "0",
   });
 
@@ -90,6 +93,8 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
     return hasQuestion && hasDuration && hasOptions;
   });
 
+  const options = useSelector(() => prediction$.options.get());
+
   return (
     <Page
       title="Start a prediction"
@@ -110,7 +115,7 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
       <div className="c-create-prediction-page">
         {predictionError$.get() && <div className="error">{predictionError$.get()}</div>}
         <Input label="Question" value$={prediction$.question} />
-        <CreatePollOptions options$={prediction$.options} />
+        <CreatePollOptions prediction$={prediction$} />
         <SubmissionPeriod durationMinutes$={prediction$.durationMinutes} />
       </div>
     </Page>
@@ -177,20 +182,42 @@ function DurationInput({ value$, error$, suffix = "min" }: DurationInputProps) {
   );
 }
 
-function CreatePollOptions({ options$ }: { options$: Observable<PollOptionInput[]> }) {
+function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput> }) {
+  const onAddOption = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    prediction$.options.set((existingOptions) =>
+      existingOptions.concat({ text: "", index: existingOptions.length })
+    );
+  };
+
+  const onRemoveOption = (option: PollOptionInput) => {
+    prediction$.options.set((existingOptions) =>
+      existingOptions
+        .filter((existingOption) => existingOption.index !== option.index)
+        .map((option, i) => ({ ...option, index: i }))
+    );
+  };
+
+  const hasMaxNumberOfOptions = useSelector(() => prediction$.options.get().length >= 10);
+
   return (
     <div className="c-create-poll-options">
       <div className="title">
         POSSIBLE OUTCOMES
       </div>
       <div className="options">
-        {options$.map((option, i) => (
+        {prediction$.options.map((option, i) => (
           <PollOptionInput
             color={getOptionColor(i)}
             placeholder={`Option ${i + 1}`}
             value$={option.text}
+            onRemove={() => onRemoveOption(option.get())}
           />
         ))}
+        <Button isDisabled={hasMaxNumberOfOptions} className="add-option" onClick={onAddOption}>
+          <Icon icon="add" size="20px" />
+          Add option
+        </Button>
       </div>
     </div>
   );
@@ -198,11 +225,16 @@ function CreatePollOptions({ options$ }: { options$: Observable<PollOptionInput[
 
 interface PollOptionInputProps extends InputProps {
   color: string;
+  onRemove: () => void;
 }
 
 function PollOptionInput(
   { color, ...props }: PollOptionInputProps,
 ) {
+  const onRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    props.onRemove();
+  };
   return (
     <div className="c-poll-option-input">
       <div className="block" style={{ backgroundColor: color }} />
@@ -213,6 +245,9 @@ function PollOptionInput(
         }}
         {...props}
       />
+      <div className="close" onClick={onRemove}>
+        <Icon icon="close" size="20px" />
+      </div>
     </div>
   );
 }
