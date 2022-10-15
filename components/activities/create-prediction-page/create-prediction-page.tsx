@@ -205,12 +205,12 @@ function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput>
         POSSIBLE OUTCOMES
       </div>
       <div className="options">
-        {prediction$.options.map((option, i) => (
+        {prediction$.options.map((option$, i) => (
           <PollOptionInput
             color={getOptionColor(i)}
             placeholder={`Option ${i + 1}`}
-            value$={option.text}
-            onRemove={() => onRemoveOption(option.get())}
+            value$={option$.text}
+            onRemove={() => onRemoveOption(option$.get())}
           />
         ))}
         <Button
