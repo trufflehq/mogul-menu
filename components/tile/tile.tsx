@@ -68,7 +68,9 @@ export function RemoveButton(
   },
 ) {
   const isRemovingLoading$ = useSignal(false);
-  const removeHandler = async () => {
+  const removeHandler = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
     if (shouldHandleLoading) {
       isRemovingLoading$.set(true);
     }
