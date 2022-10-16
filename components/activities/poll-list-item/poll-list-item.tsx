@@ -20,13 +20,13 @@ import { Poll } from "../../../types/mod.ts";
 
 const ACTIVE_POLL_INTERVAL = 1000;
 const INACTIVE_POLL_INTERVAL = 60000;
-export default function PollListItem({ activity }: ActivityListItemProps<Poll>) {
+export default function PollListItem(props: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
-  if (!activity) return <></>;
+  if (!props.activity) return <></>;
 
-  return isPrediction(activity)
-    ? <PredictionListItem activity={activity} />
-    : <BasePollListItem activity={activity} />;
+  return isPrediction(props.activity)
+    ? <PredictionListItem {...props} />
+    : <BasePollListItem {...props} />;
 }
 
 function BasePollListItem({ activity }: ActivityListItemProps<Poll>) {

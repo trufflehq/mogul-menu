@@ -11,7 +11,9 @@ import { PollListItemDescription } from "../poll-list-item/poll-list-item.tsx";
 const CHANNEL_POINTS_SRC =
   "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 
-export default function PredictionListItem({ activity }: ActivityListItemProps<Poll>) {
+export default function PredictionListItem(
+  { activity, createdBy }: ActivityListItemProps<Poll>,
+) {
   useStyleSheet(styleSheet);
   const { pushPage } = usePageStack();
 
@@ -25,6 +27,7 @@ export default function PredictionListItem({ activity }: ActivityListItemProps<P
     <ActivityListItem
       className="c-prediction-list-item"
       activityType="Prediction"
+      createdBy={createdBy}
       icon={CRYSTAL_BALL_ICON}
       color="#AF7AF2"
       iconViewBox={20}

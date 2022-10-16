@@ -3,11 +3,23 @@ import ListItem from "../../list-item/list-item.tsx";
 import stylesheet from "./activity-list-item.scss.js";
 
 export default function ActivityListItem(
-  { icon, color, className, activityType, title, description, preview, iconViewBox, onClick }: {
+  {
+    icon,
+    color,
+    className,
+    activityType,
+    createdBy,
+    title,
+    description,
+    preview,
+    iconViewBox,
+    onClick,
+  }: {
     icon: string;
     color: string;
     className?: string;
     activityType: React.ReactNode;
+    createdBy?: React.ReactNode;
     title: React.ReactNode;
     description: React.ReactNode;
     preview?: React.ReactNode;
@@ -33,6 +45,13 @@ export default function ActivityListItem(
         >
           {activityType}
         </span>
+        {createdBy
+          ? (
+            <span className="created">
+              · created by {createdBy}
+            </span>
+          )
+          : null}
         {/* TODO — created by for mods */}
       </div>
       {preview}
