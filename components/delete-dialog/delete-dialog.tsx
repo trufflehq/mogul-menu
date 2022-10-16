@@ -7,7 +7,7 @@ import styleSheet from "./delete-dialog.scss.js";
 const TRASH_ICON_URL = "https://cdn.bio/assets/images/features/browser_extension/trash-red.svg";
 
 export default function DeleteDialog(
-  props: { onDelete: () => void; error$: Observable<string> },
+  props: { title: string; onDelete: () => void; error$: Observable<string> },
 ) {
   useStyleSheet(styleSheet);
   const { popDialog } = useDialog();
@@ -28,7 +28,7 @@ export default function DeleteDialog(
               height={56}
             />
             <div className="title">
-              Are you sure you want to delete this poll?
+              {props.title}
             </div>
           </div>
           {error && <div className="error">{error}</div>}
