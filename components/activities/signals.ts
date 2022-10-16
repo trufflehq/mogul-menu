@@ -1,4 +1,11 @@
-import { gql, signal, useEffect, useUrqlQuerySignal } from "../../deps.ts";
+import {
+  _,
+  gql,
+  signal,
+  usePollingQuerySignal,
+  useSignal,
+  useUpdateSignalOnChange,
+} from "../../deps.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_QUERY_STR =
@@ -13,6 +20,8 @@ const ACTIVITY_CONNECTION_QUERY_STR =
     ) {
         nodes {
             id
+            orgId
+            userId
             message
             status
             type
@@ -20,6 +29,9 @@ const ACTIVITY_CONNECTION_QUERY_STR =
             sourceId
             data
             time
+            orgUser {
+              name
+            }
             activity {
                 __typename
                 ... on Poll {
@@ -58,28 +70,31 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     limit?: number;
   },
 ) {
+  const activityAlertConnection$ = useSignal<
+    { alertConnection: ActivityConnection<ActivityType, SourceType> }
+  >(undefined!);
+
   // define query inside hook to pull in type constraints
   const activityConnectionQuery = gql<
     { alertConnection: ActivityConnection<ActivityType, SourceType> }
   >`${ACTIVITY_CONNECTION_QUERY_STR}`;
 
-  const { signal$: activityAlertConnection$, reexecuteQuery } = useUrqlQuerySignal(
-    activityConnectionQuery,
-    {
+  const {
+    signal$: activityAlertConnectionResponse$,
+    reexecuteQuery: reexecuteActivityConnectionQuery,
+  } = usePollingQuerySignal({
+    interval,
+    query: activityConnectionQuery,
+    variables: {
       status: "ready",
       type: "activity",
       limit,
     },
-  );
+  });
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecuteQuery({ requestPolicy: "network-only" });
-    }, interval);
+  useUpdateSignalOnChange(activityAlertConnection$, activityAlertConnectionResponse$.data);
 
-    return () => clearInterval(id);
-  }, []);
-  return activityAlertConnection$;
+  return { activityAlertConnection$, reexecuteActivityConnectionQuery };
 }
 
 export const isActivityBannerOpen$ = signal(false);

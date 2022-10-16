@@ -11,19 +11,19 @@ export default scss`
   flex-direction: column;
   overflow: hidden;
 
-  >.flex {
+  > .flex {
     display: flex;
     flex-direction: column;
     overflow: auto;
 
-    >.content {
+    > .content {
       flex-grow: 1;
       flex-shrink: 1;
       flex-basis: auto;
       overflow: auto;
     }
 
-    >.top-actions {
+    > .top-actions {
       background: var(--background);
       color: var(--text-color);
       display: flex;
@@ -53,14 +53,14 @@ export default scss`
       }
     }
 
-    >.bottom-actions {
+    > .bottom-actions {
       display: flex;
       gap: 12px;
       padding: 24px;
       flex-shrink: 0;
 
       &.fill {
-        >* {
+        > * {
           flex: 1;
         }
       }

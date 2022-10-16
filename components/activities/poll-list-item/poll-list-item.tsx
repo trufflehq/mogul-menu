@@ -1,23 +1,32 @@
-import { React, useStyleSheet } from "../../../deps.ts";
+import {
+  React,
+  useEffect,
+  useSelector,
+  useSignal,
+  useStyleSheet,
+} from "../../../deps.ts";
 import {
   BAR_CHART_ICON_PATH,
   getPollInfo,
   isPrediction,
+  useInterval,
 } from "../../../shared/mod.ts";
 import { ActivityListItemProps } from "../activities-tab/activities-tab.tsx";
 import styleSheet from "./poll-list-item.scss.js";
 import Time from "../../time/time.tsx";
 import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
-import PredictionListItem from '../prediction-list-item/prediction-list-item.tsx'
+import PredictionListItem from "../prediction-list-item/prediction-list-item.tsx";
 import { Poll } from "../../../types/mod.ts";
 
-export default function PollListItem({ activity, isActive }: ActivityListItemProps<Poll>) {
+const ACTIVE_POLL_INTERVAL = 1000;
+const INACTIVE_POLL_INTERVAL = 60000;
+export default function PollListItem(props: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
-  if (!activity) return <></>;
+  if (!props.activity) return <></>;
 
-  return isPrediction(activity)
-    ? <PredictionListItem activity={activity} isActive={isActive} />
-    : <BasePollListItem activity={activity} />;
+  return isPrediction(props.activity)
+    ? <PredictionListItem {...props} />
+    : <BasePollListItem {...props} />;
 }
 
 function BasePollListItem({ activity }: ActivityListItemProps<Poll>) {
@@ -34,8 +43,21 @@ function BasePollListItem({ activity }: ActivityListItemProps<Poll>) {
 }
 
 export function PollListItemDescription({ poll }: { poll: Poll }) {
-  const { hasPollEnded, pollEndTime, hasWinningOption } = getPollInfo(poll);
-  const pollMsLeft = new Date(pollEndTime || Date.now()).getTime() - Date.now();
+  const { hasPollEnded, pollEndTime, isRefund, hasWinningOption } = getPollInfo(poll);
+
+  const pollMsLeft$ = useSignal(0);
+  useEffect(() => {
+    const pollMsLeft = new Date(pollEndTime || Date.now()).getTime() - Date.now();
+    pollMsLeft$.set(pollMsLeft);
+  }, [pollEndTime]);
+
+  // need to set the interval here because we need to update the timer every second when the prediction is still active
+  useInterval(() => {
+    const pollMsLeft = new Date(pollEndTime || Date.now()).getTime() - Date.now();
+    pollMsLeft$.set(pollMsLeft);
+  }, !hasPollEnded ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
+
+  const pollMsLeft = useSelector(() => pollMsLeft$.get());
 
   return (
     <div className="c-poll-list-item__description">
@@ -46,7 +68,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
           </span>
         )
         : hasPollEnded
-        ? "Submissions closed"
+        ? isRefund ? "Prediction canceled" : "Submissions closed"
         : (
           <>
             <Time ms={pollMsLeft} />

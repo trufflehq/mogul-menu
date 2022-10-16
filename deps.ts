@@ -88,17 +88,31 @@ export {
   getToken as getFCMToken,
 } from "https://npm.tfl.dev/firebase@9.9.4/messaging";
 export * as ProgressPrimitive from "https://npm.tfl.dev/@radix-ui/react-progress";
+export * as LabelPrimitive from "https://npm.tfl.dev/@radix-ui/react-label";
 export {
+  Computed,
   enableLegendStateReact,
+  Memo,
   observer,
   useComputed,
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
+export type {
+  Observable,
+  ObservableComputed,
+  ObservableObject,
+  ObservablePrimitiveChild,
+} from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
+export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
 export {
   signal,
+  updateSignalOnChange,
+  usePollingQuerySignal,
   useQuerySignal,
   useSignal,
+  useUpdateSignalOnChange,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.2/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
+export type { CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";

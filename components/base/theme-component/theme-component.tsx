@@ -6,7 +6,7 @@ const SECONDARY_FONT_FAMILY = "Roboto";
 function ThemeComponent({
   colorBgPrimary = "#050D13",
   colorBgSecondary = "#1F1F1F",
-  colorBgTertiary = "#2D394A",
+  colorBgTertiary = "#292929",
   colorBgOverlay = "rgba(0, 0, 0, 0.4)",
   colorPrimary = "#71DBDB",
   colorSecondary = "#FF9DC6",
