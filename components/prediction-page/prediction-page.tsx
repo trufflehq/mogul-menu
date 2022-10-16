@@ -40,6 +40,7 @@ import {
   getTotalVotes,
   getWinningInfo,
 } from "../prediction/prediction.tsx";
+import DeleteDialog from "../delete-dialog/delete-dialog.tsx";
 import SelectOutcomeDialog from "./select-outcome-dialog/select-outcome-dialog.tsx";
 import { Page, usePageStack } from "../page-stack/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
@@ -265,9 +266,9 @@ function PredictionFooter({
   const [, executeEndPredictionMutation] = useMutation(END_PREDICTION_MUTATION);
   const error$ = useSignal("");
   const { popPage } = usePageStack();
-  const { pushDialog } = useDialog();
+  const { pushDialog, popDialog } = useDialog();
 
-  const onDelete = async () => {
+  const onDeletePrediction = async () => {
     error$.set("");
     try {
       const deleteResult = await executeDeletePollMutation({
@@ -279,11 +280,23 @@ function PredictionFooter({
         error$.set(deleteResult.error.graphQLErrors[0]?.message);
         return;
       }
+
+      popDialog();
       popPage();
     } catch (err) {
       console.error("error deleting poll", err);
       error$.set(err.message);
     }
+  };
+
+  const onDelete = () => {
+    pushDialog(
+      <DeleteDialog
+        title="Are you sure you want to delete this poll?"
+        onDelete={onDeletePrediction}
+        error$={error$}
+      />,
+    );
   };
 
   const onRefund = async () => {
