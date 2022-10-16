@@ -3,13 +3,14 @@ import ListItem from "../../list-item/list-item.tsx";
 import stylesheet from "./activity-list-item.scss.js";
 
 export default function ActivityListItem(
-  { icon, color, className, activityType, title, description, iconViewBox, onClick }: {
+  { icon, color, className, activityType, title, description, preview, iconViewBox, onClick }: {
     icon: string;
     color: string;
     className?: string;
     activityType: React.ReactNode;
     title: React.ReactNode;
     description: React.ReactNode;
+    preview?: React.ReactNode;
     iconViewBox?: number;
     onClick?: (e: React.MouseEvent) => void;
   },
@@ -34,6 +35,7 @@ export default function ActivityListItem(
         </span>
         {/* TODO — created by for mods */}
       </div>
+      {preview}
       <div className="title">
         {title}
       </div>
