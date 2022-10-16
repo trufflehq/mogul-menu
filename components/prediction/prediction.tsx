@@ -8,7 +8,6 @@ import {
   Memo,
   Observable,
   ObservableObject,
-  OperationContext,
   React,
   useMutation,
   useObserve,
@@ -18,7 +17,7 @@ import {
 } from "../../deps.ts";
 import { VOTE_MUTATION } from "./gql.ts";
 import { COIN_ICON_PATH, getOptionColor, useInterval } from "../../shared/mod.ts";
-import { ChannelPoints, Poll, PollOption } from "../../types/mod.ts";
+import { Poll, PollOption } from "../../types/mod.ts";
 import Time from "../time/time.tsx";
 import Input from "../base/input/input.tsx";
 import Button from "../base/button/button.tsx";
@@ -280,7 +279,7 @@ function PredictionResult(
           ? (
             <>
               <div className="amount">
-                {channelPointsAmount} <ChannelPoints />
+                {channelPointsAmount} <ChannelPointsCoinIcon />
               </div>
               {message}
             </>
@@ -457,7 +456,7 @@ function VoteAmountInput(
           "--border-color": optionAmount ? getOptionColor(index) : "var(--mm-color-bg-tertiary)",
         } as React.CSSProperties}
       >
-        <ChannelPoints />
+        <ChannelPointsCoinIcon />
         <Input
           type="number"
           disabled={isDisabled}
@@ -487,7 +486,7 @@ function VoteAmountInput(
   );
 }
 
-function ChannelPoints() {
+function ChannelPointsCoinIcon() {
   return (
     <div className="c-channel-points-icon">
       <Icon icon={COIN_ICON_PATH} color="#EBC564" />
