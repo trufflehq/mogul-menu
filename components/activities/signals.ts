@@ -20,6 +20,8 @@ const ACTIVITY_CONNECTION_QUERY_STR =
     ) {
         nodes {
             id
+            orgId
+            userId
             message
             status
             type
@@ -27,6 +29,9 @@ const ACTIVITY_CONNECTION_QUERY_STR =
             sourceId
             data
             time
+            orgUser {
+              name
+            }
             activity {
                 __typename
                 ... on Poll {
