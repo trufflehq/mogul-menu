@@ -12,20 +12,21 @@ import {
   ACTIVE_POLL_QUERY,
   CRYSTAL_BALL_ICON,
   CRYSTAL_BALL_ICON_VIEWBOX,
+  DELETE_POLL_MUTATION,
   hasPermission,
   MOGUL_MENU_JUMPER_MESSAGES,
   ONE_SECOND_MS,
   OrgUserQuerySignal,
-  DELETE_POLL_MUTATION,
 } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { Poll } from "../../types/mod.ts";
+import { useDialog } from "../base/dialog-container/dialog-service.ts";
+import DeleteDialog from "../delete-dialog/delete-dialog.tsx";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
 import { useMenu } from "../menu/mod.ts";
 import Tile, { RemoveButton } from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
-
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
 const RESULTS_TIMOUT = 100 * ONE_SECOND_MS;
@@ -49,6 +50,7 @@ export default function PredictionTile(
   useStyleSheet(styleSheet);
   const { setIsOpen } = useMenu();
   const { pushPage } = usePageStack();
+  const { pushDialog, popDialog } = useDialog();
   const [_deletePollResult, executeDeletePollResult] = useMutation(DELETE_POLL_MUTATION);
   const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
     query: ACTIVE_POLL_QUERY,
@@ -68,8 +70,18 @@ export default function PredictionTile(
     (poll: Poll) => poll?.data?.type === "prediction",
   );
 
-  const onDelete = async () => {
+  const onDeletePrediction = async () => {
     await executeDeletePollResult({ id: activePoll.id });
+    popDialog();
+  };
+
+  const onDelete = () => {
+    pushDialog(
+      <DeleteDialog
+        title="Are you sure you want to delete this prediction?"
+        onDelete={onDeletePrediction}
+      />,
+    );
   };
 
   const pollMsLeft = new Date(activePoll?.endTime || Date.now()).getTime() - Date.now();

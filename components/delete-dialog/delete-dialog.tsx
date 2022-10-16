@@ -7,7 +7,7 @@ import styleSheet from "./delete-dialog.scss.js";
 const TRASH_ICON_URL = "https://cdn.bio/assets/images/features/browser_extension/trash-red.svg";
 
 export default function DeleteDialog(
-  props: { title: string; onDelete: () => void; error$: Observable<string> },
+  props: { title: string; onDelete: () => void; error$?: Observable<string> },
 ) {
   useStyleSheet(styleSheet);
   const { popDialog } = useDialog();
@@ -15,7 +15,7 @@ export default function DeleteDialog(
   const onCancel = () => {
     popDialog();
   };
-  const error = useSelector(() => props.error$.get());
+  const error = useSelector(() => props.error$?.get());
   return (
     <div className="c-delete-dialog">
       <Dialog>
