@@ -12,13 +12,17 @@ import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
+import { useCurrentTab, useTabButton, useTabSlug } from "../../tabs/mod.ts";
+
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
 import { ActivityAlert, OrgUser, StringKeys } from "../../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_INTERVAL = 2000;
-const ACTIVITY_CONNECTION_LIMIT = 5; // lowish number since it's potentially expensive
+const PASSIVE_ACTIVITY_CONNECTION_INTERVAL = 60000;
+const ACTIVITY_CONNECTION_LIMIT = 20;
+
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
   createdBy?: string;
@@ -47,13 +51,19 @@ export function ActivitiesTabManager<
 >(props: ActivitiesTabManagerProps<ActivityListItemTypes>) {
   useStyleSheet(styleSheet);
 
+  const { isActive } = useCurrentTab();
+
   const orgUserWithRoles$ = useOrgUserWithRoles$();
+
   const { pushDialog } = useDialog();
   const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
 
   const { activityAlertConnection$, reexecuteActivityConnectionQuery } =
     usePollingActivityAlertConnection$<ActivityType, SourceType>(
-      { interval: ACTIVITY_CONNECTION_INTERVAL, limit: ACTIVITY_CONNECTION_LIMIT },
+      {
+        interval: isActive ? ACTIVITY_CONNECTION_INTERVAL : PASSIVE_ACTIVITY_CONNECTION_INTERVAL,
+        limit: ACTIVITY_CONNECTION_LIMIT,
+      },
     );
 
   const hasPollPermissions = useSelector(() =>
