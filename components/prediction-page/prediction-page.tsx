@@ -290,7 +290,13 @@ function PredictionFooter({
   };
 
   const onDelete = () => {
-    pushDialog(<DeleteDialog onDelete={onDeletePrediction} error$={error$} />);
+    pushDialog(
+      <DeleteDialog
+        title="Are you sure you want to delete this poll?"
+        onDelete={onDeletePrediction}
+        error$={error$}
+      />,
+    );
   };
 
   const onRefund = async () => {
