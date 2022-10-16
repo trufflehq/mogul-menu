@@ -292,7 +292,7 @@ function PredictionFooter({
   const onDelete = () => {
     pushDialog(
       <DeleteDialog
-        title="Are you sure you want to delete this poll?"
+        title="Are you sure you want to delete this prediction?"
         onDelete={onDeletePrediction}
         error$={error$}
       />,
