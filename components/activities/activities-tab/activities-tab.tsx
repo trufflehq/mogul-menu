@@ -18,7 +18,7 @@ import styleSheet from "./activities-tab.scss.js";
 import { ActivityAlert, OrgUser, StringKeys } from "../../../types/mod.ts";
 
 const ACTIVITY_CONNECTION_INTERVAL = 2000;
-const ACTIVITY_CONNECTION_LIMIT = 20;
+const ACTIVITY_CONNECTION_LIMIT = 5; // lowish number since it's potentially expensive
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
   createdBy?: string;
