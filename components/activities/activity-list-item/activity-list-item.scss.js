@@ -2,6 +2,8 @@ import { scss } from "../../../deps.ts";
 
 export default scss`
 .c-activity-list-item {
+  position: relative;
+
   .header {
     > .type {
       font-size: 14px;

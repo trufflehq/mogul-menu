@@ -61,6 +61,7 @@ export function getPollInfo(poll: Poll) {
     hasVoted,
     isRefund,
     didWin,
+    totalVotes,
     myPlacedVotes,
     myWinningShare,
   };
