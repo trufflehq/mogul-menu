@@ -90,7 +90,7 @@ mutation PredictionChooseWinnerByIdMutation($id: ID, $winningOptionIndex: Int) {
 
 export const END_PREDICTION_MUTATION = gql<{ pollUpsert: { poll: Poll } }>`
 mutation EndPredictionByIdMutation($id: ID) {
-  pollUpsert(input: { id: $id, durationSeconds: 0 }) {
+  pollUpsert(input: { id: $id, durationSeconds: -1 }) {
     poll {
       ...PollWithVotes
     }
