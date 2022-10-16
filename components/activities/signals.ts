@@ -4,7 +4,7 @@ import {
   signal,
   usePollingQuerySignal,
   useSignal,
-  useUpdateOnChange$,
+  useUpdateSignalOnChange,
 } from "../../deps.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
@@ -87,7 +87,7 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     },
   });
 
-  useUpdateOnChange$(activityAlertConnection$, activityAlertConnectionResponse$.data);
+  useUpdateSignalOnChange(activityAlertConnection$, activityAlertConnectionResponse$.data);
 
   return { activityAlertConnection$, reexecuteActivityConnectionQuery };
 }

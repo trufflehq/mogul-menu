@@ -9,14 +9,14 @@ import {
   Observable,
   OperationContext,
   React,
-  updateOnChange$,
+  updateSignalOnChange,
   useMutation,
   useObserve,
   usePollingQuerySignal,
   useSelector,
   useSignal,
   useStyleSheet,
-  useUpdateOnChange$,
+  useUpdateSignalOnChange,
 } from "../../deps.ts";
 import {
   CRYSTAL_BALL_ICON,
@@ -61,7 +61,7 @@ function usePollingChannelPoints$(
     usePollingQuerySignal({ interval, query: CHANNEL_POINTS_QUERY });
 
   // only update the channelPoits$ if the channel points data has changed
-  useUpdateOnChange$(channelPoints$, channelPointsData$.data);
+  useUpdateSignalOnChange(channelPoints$, channelPointsData$.data);
 
   return { channelPoints$, reexecuteChannelPointsQuery };
 }
@@ -76,7 +76,7 @@ function usePollingPrediction$(
     usePollingQuerySignal({ interval, query: POLL_QUERY, variables: { id: pollId } });
 
   // only update the prediction$ if the poll has changed
-  useUpdateOnChange$(prediction$, predictionResponse$.data);
+  useUpdateSignalOnChange(prediction$, predictionResponse$.data);
 
   return { prediction$, predictionResponse$, reexecutePredictionQuery };
 }
@@ -95,7 +95,7 @@ function usePollingActivePrediction$(
     const activePrediction = predictionConnection$.data?.get()?.pollConnection.nodes[0];
 
     if (activePrediction) {
-      updateOnChange$(prediction$, { poll: activePrediction });
+      updateSignalOnChange(prediction$, { poll: activePrediction });
     }
   });
 

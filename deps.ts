@@ -107,12 +107,12 @@ export type {
 export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
 export {
   signal,
-  updateOnChange$,
+  updateSignalOnChange,
   usePollingQuerySignal,
   useQuerySignal,
   useSignal,
-  useUpdateOnChange$,
+  useUpdateSignalOnChange,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.3/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
 export type { OperationContext } from "https://npm.tfl.dev/urql@2";
