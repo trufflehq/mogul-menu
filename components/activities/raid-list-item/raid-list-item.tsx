@@ -1,14 +1,30 @@
-import { React, useStyleSheet } from "../../../deps.ts";
-import {
-  PARACHUTE_ICON_PATH,
-} from "../../../shared/mod.ts";
+import { React, useSelector, useStyleSheet } from "../../../deps.ts";
+import { hasPermission, PARACHUTE_ICON_PATH, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import { ActivityListItemProps } from "../activities-tab/activities-tab.tsx";
 import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
-import stylesheet from './raid-list-item.scss.js'
+import stylesheet from "./raid-list-item.scss.js";
 import { RaidAlert } from "../../../types/mod.ts";
-
+import { usePageStack } from "../../page-stack/mod.ts";
+import RaidPreviewPage from "../raid-preview-page/raid-preview-page.tsx";
 export default function RaidListItem({ activity }: ActivityListItemProps<RaidAlert>) {
   useStyleSheet(stylesheet);
+  const orgUserWithRoles$ = useOrgUserWithRoles$();
+
+  const hasAlertPermissions = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$.orgUser.get!(),
+      actions: ["update", "delete"],
+      filters: {
+        alert: { isAll: true, rank: 0 },
+      },
+    })
+  );
+  const { pushPage } = usePageStack();
+
+  const showRaidPage = () => {
+    pushPage(<RaidPreviewPage alertId={activity.id} />);
+  };
+
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     window.open(activity.data.url, "_blank");
@@ -22,7 +38,7 @@ export default function RaidListItem({ activity }: ActivityListItemProps<RaidAle
       color="#F86969"
       title={activity.data.title}
       description={activity.data.description}
-      onClick={onClick}
+      onClick={hasAlertPermissions ? showRaidPage : onClick}
     />
   );
 }
