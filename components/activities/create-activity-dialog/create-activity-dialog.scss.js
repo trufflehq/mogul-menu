@@ -16,6 +16,7 @@ export default scss`
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 }
 

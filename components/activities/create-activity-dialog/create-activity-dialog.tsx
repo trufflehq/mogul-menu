@@ -1,5 +1,5 @@
 import { Icon, React, useStyleSheet } from "../../../deps.ts";
-import { CRYSTAL_BALL_ICON } from "../../../shared/mod.ts";
+import { CRYSTAL_BALL_ICON, PARACHUTE_ICON_PATH } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -8,10 +8,13 @@ import styleSheet from "./create-activity-dialog.scss.js";
 import { usePageStack } from "../../page-stack/mod.ts";
 
 import CreatePredictionPage from "../create-prediction-page/create-prediction-page.tsx";
-
+import CreateRaidPage from "../create-raid-page/create-raid-page.tsx";
 const DEFAULT_TILES = [
   {
     Component: PredictionTile,
+  },
+  {
+    Component: RaidTile,
   },
 ];
 export default function CreateActivityDialog() {
@@ -52,6 +55,27 @@ function PredictionTile() {
       activityType="Prediction"
       description="Engage fans by allowing them to vote on an outcome"
       actionButtonText="Start a prediction"
+      onClick={onClick}
+    />
+  );
+}
+
+function RaidTile() {
+  const { pushPage } = usePageStack();
+  const { popDialog } = useDialog();
+  const onClick = () => {
+    popDialog();
+    pushPage(<CreateRaidPage />);
+  };
+
+  return (
+    <CreateActivityTile
+      icon={PARACHUTE_ICON_PATH}
+      iconViewBox={24}
+      color="#F86969"
+      activityType="Raid"
+      description="Send viewers to a video, streamer, or site after your stream ends"
+      actionButtonText="Start a raid"
       onClick={onClick}
     />
   );
