@@ -12,10 +12,15 @@ export function isActiveActivity<ActivityType, SourceType extends string>(
   activityAlert: ActivityAlert<ActivityType, SourceType>,
 ) {
   if (!activityAlert?.activity) return false;
+
+  if (activityAlert.status === "shown") return false;
+
   // if it's a poll, check if the poll has ended and if so whether the poll has been closed longer than the default timeout
   if (isPollActivity(activityAlert)) {
     return isPollActivityActive(activityAlert.activity);
     // default all other activities to a default timeout
+  } else if (isAlertActivity(activityAlert) && isRaid(activityAlert.activity)) {
+    return activityAlert.activity.status === "ready";
   } else {
     const activityStartTime = new Date(activityAlert?.time);
     return secondsSince(activityStartTime) < ACTIVITY_TIMEOUT_SECONDS;
@@ -34,6 +39,12 @@ export function isPollActivity(
   activityAlert?: ActivityAlert<unknown, string>,
 ): activityAlert is ActivityAlert<Poll, "poll"> {
   return activityAlert?.sourceType === "poll";
+}
+
+export function isAlertActivity(
+  activityAlert?: ActivityAlert<unknown, string>,
+): activityAlert is ActivityAlert<RaidAlert, "alert"> {
+  return activityAlert?.sourceType === "alert";
 }
 
 export function isRaid(
