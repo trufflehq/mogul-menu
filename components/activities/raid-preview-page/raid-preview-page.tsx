@@ -111,7 +111,7 @@ export default function RaidPreviewPage({ alertId }: { alertId: string }) {
   useObserve(() => {
     const src = getPreviewSrc(raid$.alert.data.url?.get());
     // needed to add this check since is was updating the previewSrc$ even when the src was the same
-    // and causing the YT embed to refire it's loading animation
+    // and causing the YT embed to refire its loading animation
     const previewSrc = previewSrc$.get();
     if (src && src !== previewSrc) {
       previewSrc$.set(src);
@@ -168,13 +168,9 @@ export default function RaidPreviewPage({ alertId }: { alertId: string }) {
 }
 
 function getFormattedDate(date: Date) {
-  // Language: TypeScript
-  // get the date as a string in the format of MM, DD, YYYY
-  const dateString = date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
-  return dateString;
 }

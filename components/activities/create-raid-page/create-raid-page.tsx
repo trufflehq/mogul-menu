@@ -46,7 +46,7 @@ interface RaidInput {
 
 export default function CreateRaidPage() {
   useStyleSheet(stylesheet);
-  const previewSrc$ = useSignal("");
+  const previewSrc$ = useSignal<string | null>("");
   const raidError$ = useSignal("");
   const raid$ = useSignal<RaidInput>({
     link: "",
@@ -60,12 +60,7 @@ export default function CreateRaidPage() {
 
   useObserve(() => {
     const src = getPreviewSrc(raid$.link.get());
-    // needed to add this check since is was updating the previewSrc$ even when the src was the same
-    // and causing the YT embed to refire it's loading animation
-    const previewSrc = previewSrc$.get();
-    if (src && src !== previewSrc) {
-      previewSrc$.set(src);
-    }
+    previewSrc$.set(src);
   });
 
   const onClick = async () => {
@@ -84,11 +79,9 @@ export default function CreateRaidPage() {
   };
 
   const canSubmit = useSelector(() => {
-    const hasLink = Boolean(raid$.link.get());
-    return hasLink;
+    return Boolean(raid$.link.get());
   });
 
-  const previewSrc = useSelector(() => previewSrc$.get());
   const raidError = useSelector(() => raidError$.get());
   return (
     <Page
@@ -113,9 +106,7 @@ export default function CreateRaidPage() {
         </div>
         {raidError && <div className="error">{raidError}</div>}
         <div className="inputs">
-          {previewSrc
-            ? <RaidPreview previewSrc$={previewSrc$} raid$={raid$} />
-            : <Input label="Link" value$={raid$.link} />}
+          <RaidPreview previewSrc$={previewSrc$} raid$={raid$} />
           <Input
             label="Raid title"
             placeholder={`Add a title like "Check out this video"`}
@@ -133,23 +124,24 @@ export default function CreateRaidPage() {
 }
 
 function RaidPreview(
-  { previewSrc$, raid$ }: { previewSrc$: Observable<string>; raid$: Observable<RaidInput> },
+  { previewSrc$, raid$ }: { previewSrc$: Observable<string | null>; raid$: Observable<RaidInput> },
 ) {
   const previewSrc = useSelector(() => previewSrc$.get());
 
   const onRemove = () => {
-    previewSrc$.set("");
     raid$.link.set("");
   };
 
-  return (
-    <div className="c-raid-preview">
-      <RaidIframe previewSrc={previewSrc} />
-      <div className="remove" onClick={onRemove}>
-        Remove
+  return previewSrc
+    ? (
+      <div className="c-raid-preview">
+        <RaidIframe previewSrc={previewSrc} />
+        <div className="remove" onClick={onRemove}>
+          Remove
+        </div>
       </div>
-    </div>
-  );
+    )
+    : <Input label="Link" value$={raid$.link} />;
 }
 
 export function RaidIframe({ previewSrc }: { previewSrc: string }) {

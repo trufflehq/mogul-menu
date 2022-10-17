@@ -8,8 +8,7 @@ import {
 } from "../../deps.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
-const ACTIVITY_CONNECTION_QUERY_STR =
-  `query AlertsReadyByType($type: String, $limit: Int)
+const ACTIVITY_CONNECTION_QUERY_STR = `query AlertsReadyByType($type: String, $limit: Int)
 {
     alertConnection(
         input: {

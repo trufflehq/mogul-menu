@@ -29,6 +29,12 @@ export default scss`
     }
   }
 
+  .info {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--mm-color-text-demphasized);
+  }
+  
   > .error {
     display: flex;
     justify-content: center;
