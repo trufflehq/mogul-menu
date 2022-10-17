@@ -82,7 +82,11 @@ export function getTimeInfo({ prediction$ }: { prediction$: Observable<{ poll: P
 
   const hasPredictionEnded = pollMsLeft <= 0;
   const endTime = prediction$.poll?.endTime.get();
-  return { pollMsLeft, hasPredictionEnded, endTime };
+  const winnerSelectedTime = prediction$.poll?.data?.winnerSelectedTime?.get();
+    const timeSinceWinnerSelection = winnerSelectedTime 
+    ? new Date(winnerSelectedTime).getTime() - Date.now()
+    : undefined;
+  return { pollMsLeft, hasPredictionEnded, endTime, timeSinceWinnerSelection };
 }
 
 // gets all the info we need to render the prediction

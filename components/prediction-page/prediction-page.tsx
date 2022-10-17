@@ -83,7 +83,7 @@ function usePollingPrediction$(
 }
 
 // polling for poll connection and converts to a poll observable
-function usePollingActivePrediction$(
+export function usePollingActivePrediction$(
   { interval = 2000 }: { interval?: number },
 ) {
   const prediction$ = useSignal<{ poll: Poll }>(undefined!);

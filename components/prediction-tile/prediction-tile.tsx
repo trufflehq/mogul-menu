@@ -3,12 +3,12 @@ import {
   React,
   useEffect,
   useMutation,
-  usePollingQuery,
+  useObserve,
   useSelector,
+  useSignal,
   useStyleSheet,
 } from "../../deps.ts";
 import {
-  ACTIVE_POLL_QUERY,
   CRYSTAL_BALL_ICON,
   CRYSTAL_BALL_ICON_VIEWBOX,
   DELETE_POLL_MUTATION,
@@ -16,9 +16,9 @@ import {
   MOGUL_MENU_JUMPER_MESSAGES,
   ONE_SECOND_MS,
   OrgUserQuerySignal,
+  useInterval,
 } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
-import { Poll } from "../../types/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DeleteDialog from "../delete-dialog/delete-dialog.tsx";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
@@ -26,6 +26,8 @@ import { useCurrentTab } from "../tabs/mod.ts";
 import { useMenu } from "../menu/mod.ts";
 import Tile, { RemoveButton } from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
+import { usePollingActivePrediction$ } from "../prediction-page/prediction-page.tsx";
+import { getTimeInfo, getWinningInfo } from "../prediction/prediction.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
@@ -54,8 +56,8 @@ export default function PredictionTile(
   const { pushPage } = usePageStack();
   const { pushDialog, popDialog } = useDialog();
   const [_deletePollResult, executeDeletePollResult] = useMutation(DELETE_POLL_MUTATION);
-  const { data: activePollData } = usePollingQuery(isActive ? POLL_INTERVAL : PASSIVE_POLL_INTERVAL, {
-    query: ACTIVE_POLL_QUERY,
+  const { prediction$ } = usePollingActivePrediction$({
+    interval: isActive ? POLL_INTERVAL : PASSIVE_POLL_INTERVAL,
   });
 
   const hasPollDeletePermission = useSelector(() =>
@@ -68,12 +70,8 @@ export default function PredictionTile(
     })
   );
 
-  const activePoll: Poll = activePollData?.pollConnection?.nodes?.find(
-    (poll: Poll) => poll?.data?.type === "prediction",
-  );
-
   const onDeletePrediction = async () => {
-    await executeDeletePollResult({ id: activePoll.id });
+    await executeDeletePollResult({ id: prediction$.poll.id.get() });
     popDialog();
   };
 
@@ -86,15 +84,30 @@ export default function PredictionTile(
     );
   };
 
-  const pollMsLeft = new Date(activePoll?.endTime || Date.now()).getTime() - Date.now();
-  const hasPredictionEnded = pollMsLeft <= 0;
-  const hasWinner = activePoll?.data?.winningOptionIndex !== undefined;
-  const timeSinceWinnerSelection = activePoll?.data?.winnerSelectedTime
-    ? new Date(activePoll?.data?.winnerSelectedTime).getTime() - Date.now()
-    : undefined;
-  const hasResultsExpired = hasWinner && timeSinceWinnerSelection
-    ? RESULTS_TIMOUT + timeSinceWinnerSelection < 0
-    : false;
+  const { hasPredictionEnded, timeSinceWinnerSelection } = getTimeInfo({ prediction$ });
+  const { winningOption } = getWinningInfo({ prediction$ });
+  const hasResultsExpired = useSelector(() =>
+    Boolean(winningOption) && timeSinceWinnerSelection
+      ? RESULTS_TIMOUT + timeSinceWinnerSelection < 0
+      : false
+  );
+
+  // need to set the interval here because we need to update the timer every second when the prediction is still active
+  const pollMsLeft$ = useSignal(0);
+  useObserve(() => {
+    const pollMsLeft = new Date(prediction$?.poll.endTime.get() || Date.now()).getTime() -
+      Date.now();
+    pollMsLeft$.set(pollMsLeft);
+  });
+
+  useInterval(() => {
+    const pollMsLeft = new Date(prediction$?.poll.endTime.get() || Date.now()).getTime() -
+      Date.now();
+
+    pollMsLeft$.set(pollMsLeft);
+  }, isActive ? ONE_SECOND_MS : PASSIVE_POLL_INTERVAL);
+
+  const pollMsLeft = useSelector(() => pollMsLeft$.get());
 
   let Content: React.ReactNode;
 
@@ -106,24 +119,24 @@ export default function PredictionTile(
         </div>
       </div>
     );
-  } else if (hasPredictionEnded && hasWinner) {
+  } else if (hasPredictionEnded && winningOption) {
     Content = (
       <div className="content">
-        <div className="primary-text">{activePoll?.question}</div>
+        <div className="primary-text">{prediction$.poll.question.get()}</div>
         <div className="secondary-text">The results are in!</div>
       </div>
     );
   } else if (hasPredictionEnded) {
     Content = (
       <div className="content">
-        <div className="primary-text">{activePoll?.question}</div>
+        <div className="primary-text">{prediction$.poll.question.get()}</div>
         <div className="secondary-text">Submissions closed</div>
       </div>
     );
   } else {
     Content = (
       <div className="content">
-        <div className="primary-text">{activePoll?.question}</div>
+        <div className="primary-text">{prediction$.poll.question.get()}</div>
         <div className="secondary-text">
           <span>
             Submissions closing in <Time ms={pollMsLeft} />
@@ -140,7 +153,7 @@ export default function PredictionTile(
 
   useListenForOpenPrediction(showPredictionPage);
 
-  if (!activePoll) return <></>;
+  if (!prediction$.poll.get()) return <></>;
 
   return (
     <Tile
