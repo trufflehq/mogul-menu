@@ -61,7 +61,7 @@ function usePollingChannelPoints$(
   const { signal$: channelPointsData$, reexecuteQuery: reexecuteChannelPointsQuery } =
     usePollingQuerySignal({ interval, query: CHANNEL_POINTS_QUERY });
 
-  // only update the channelPoits$ if the channel points data has changed
+  // only update the channelPoints$ if the channel points data has changed
   useUpdateSignalOnChange(channelPoints$, channelPointsData$.data);
 
   return { channelPoints$, reexecuteChannelPointsQuery };
