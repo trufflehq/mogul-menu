@@ -1,6 +1,4 @@
-import { gql, useEffect, useUrqlQuerySignal } from "../../../deps.ts";
-
-const LEADERBOARD_DISPLAY_POLL_INTERVAL = 10000;
+import { gql, usePollingQuerySignal } from "../../../deps.ts";
 
 interface OrgLeaderboardDisplayKVResult {
   org: {
@@ -22,21 +20,19 @@ query BattlepassLeaderboardKeyValue($key: String) {
   }
 }`;
 
-export function usePollingLeaderboardDisplay$(key: string) {
-  const { signal$: leaderboardDisplay$, reexecuteQuery: reexecuteLeaderboardDisplayQuery } =
-    useUrqlQuerySignal(
-      ORG_LEADERBOARD_DISPLAY_QUERY,
-      { key },
-    );
+export function usePollingLeaderboardDisplay$(
+  { interval, key }: { interval: number; key: string },
+) {
+  const {
+    signal$: leaderboardDisplay$,
+    reexecuteQuery: reexecuteLeaderboardDisplayQuery,
+  } = usePollingQuerySignal({
+    interval,
+    query: ORG_LEADERBOARD_DISPLAY_QUERY,
+    variables: {
+      key,
+    },
+  });
 
-  useEffect(() => {
-    reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
-
-    const id = setInterval(() => {
-      reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
-    }, LEADERBOARD_DISPLAY_POLL_INTERVAL);
-
-    return () => clearInterval(id);
-  }, []);
   return { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery };
 }

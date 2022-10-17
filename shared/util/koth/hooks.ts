@@ -1,4 +1,4 @@
-import { gql, useEffect, useUrqlQuerySignal } from "../../../deps.ts";
+import { gql, useEffect, usePollingQuerySignal, useUrqlQuerySignal } from "../../../deps.ts";
 
 interface KothOrgConfig {
   org: {
@@ -23,18 +23,16 @@ export const KOTH_ORG_CONFIG_QUERY = gql<KothOrgConfig>`
   }
 `;
 const KOTH_POLL_INTERVAL = 10000;
-export function usePollingOrgKothConfigQuery$() {
-  const { signal$: orgKothConfig$, reexecuteQuery: reexecuteKothConfigQuery } = useUrqlQuerySignal(
-    KOTH_ORG_CONFIG_QUERY,
-  );
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      reexecuteKothConfigQuery({ requestPolicy: "network-only" });
-    }, KOTH_POLL_INTERVAL);
-
-    return () => clearInterval(id);
-  }, []);
+export function usePollingOrgKothConfigQuery$(
+  { interval = KOTH_POLL_INTERVAL }: { interval?: number },
+) {
+  const {
+    signal$: orgKothConfig$,
+    reexecuteQuery: reexecuteKothConfigQuery,
+  } = usePollingQuerySignal({
+    interval,
+    query: KOTH_ORG_CONFIG_QUERY,
+  });
 
   return { orgKothConfig$, reexecuteKothConfigQuery };
 }

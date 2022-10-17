@@ -113,6 +113,6 @@ export {
   useSignal,
   useUpdateSignalOnChange,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.5/mod.ts";
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
 export type { CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
