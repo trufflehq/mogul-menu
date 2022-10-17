@@ -1,9 +1,9 @@
 import { _clearCache, GLOBAL_JUMPER_MESSAGES, jumper, useEffect } from "../../../deps.ts";
 import {
   useActivePowerupConnection,
-  usePollingOrgKothConfigQuery$,
   useOrgUserConnectionsQuery,
   useOwnedCollectibleConnection,
+  usePollingOrgKothConfigQuery$,
   useSeasonPassData,
   useUserInfo,
 } from "../mod.ts";
@@ -15,17 +15,19 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteUserInfoQuery } = useUserInfo();
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
+  const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
   const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$({});
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
       if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
-        reexecuteUserInfoQuery();
-        reexecuteActivePowerupConnQuery();
-        reexecuteOwnedCollectibleConnQuery();
-        reexecuteSeasonPassQuery();
-        reexecuteKothConfigQuery();
+        reexecuteUserInfoQuery({ requestPolicy: "network-only" });
+        reexecuteActivePowerupConnQuery({ requestPolicy: "network-only" });
+        reexecuteOwnedCollectibleConnQuery({ requestPolicy: "network-only" });
+        reexecuteSeasonPassQuery({ requestPolicy: "network-only" });
+        reexecuteKothConfigQuery({ requestPolicy: "network-only" });
+        refetchOrgUserConnections({ requestPolicy: "network-only" });
       }
     });
   }, []);

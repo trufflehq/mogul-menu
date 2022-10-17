@@ -1,14 +1,39 @@
-import { React, TextField, useEffect, useState, useStyleSheet } from "../../../deps.ts";
+import {
+  _clearCache,
+  _setAccessTokenAndClear,
+  GLOBAL_JUMPER_MESSAGES,
+  jumper,
+  React,
+  setAccessToken,
+  TextField,
+  useEffect,
+  useState,
+  useStyleSheet,
+} from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
-import { Page } from "../../page-stack/mod.ts";
-import { useOrgUserChatSettings, useSaveOrgUserSettings } from "../../../shared/mod.ts";
+import {
+  useInvalidateAllQueriesListener,
+  useOrgUserConnectionsQuery,
+} from "../../../shared/mod.ts";
+import { useMenu } from "../../menu/mod.ts";
+import { updateTabState, useTabs } from "../../tabs/mod.ts";
+import { Page, usePageStack } from "../../page-stack/mod.ts";
+import {
+  invalidateExtensionUser,
+  useOrgUserChatSettings,
+  useSaveOrgUserSettings,
+} from "../../../shared/mod.ts";
 import { SnackBar, useSnackBar } from "../../snackbar/mod.ts";
 import styleSheet from "./account-details-page.scss.js";
 
 export default function AccountDetailsPage() {
   useStyleSheet(styleSheet);
+  const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
 
   const enqueueSnackBar = useSnackBar();
+  const { clearPageStack } = usePageStack();
+  const { setIsClosed } = useMenu();
+  const { dispatch } = useTabs();
 
   const [username, setUsername] = useState<string>();
   const [nameColor, setNameColor] = useState<string>();
@@ -51,6 +76,23 @@ export default function AccountDetailsPage() {
     );
   };
 
+  const logout = async () => {
+    // clear the access token in the browser and ext. local storage
+    _setAccessTokenAndClear("");
+
+    // let the extension know that the user has logged out and needs to invalidate
+    invalidateExtensionUser();
+
+    // let other embeds know that the user has logged out
+    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
+
+    // reset the menu state
+    setIsClosed();
+    dispatch(updateTabState("home", "isActive", true));
+    clearPageStack();
+    await refetchOrgUserConnections({ requestPolicy: "network-only" });
+  };
+
   return (
     <Page title="Account details">
       <div className="c-account-details-page-body">
@@ -77,9 +119,14 @@ export default function AccountDetailsPage() {
             value={nameColor}
           />
         </div>
-        <Button style="primary" isDisabled={!hasChanged} onClick={save}>
-          Save
-        </Button>
+        <div className="actions">
+          <Button style="primary" isDisabled={!hasChanged} onClick={save}>
+            Save
+          </Button>
+          <Button style="error" onClick={logout}>
+            Logout
+          </Button>
+        </div>
       </div>
     </Page>
   );
