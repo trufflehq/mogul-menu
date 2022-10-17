@@ -12,7 +12,7 @@ import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
-import { useCurrentTab, useTabButton, useTabSlug } from "../../tabs/mod.ts";
+import { useCurrentTab } from "../../tabs/mod.ts";
 
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";

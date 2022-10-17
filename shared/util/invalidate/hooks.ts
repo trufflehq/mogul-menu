@@ -16,7 +16,7 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteActivePowerupConnQuery } = useActivePowerupConnection();
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
-  const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$();
+  const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$({});
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {

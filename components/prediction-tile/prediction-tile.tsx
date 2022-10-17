@@ -1,5 +1,4 @@
 import {
-  gql,
   jumper,
   React,
   useEffect,
@@ -23,12 +22,14 @@ import { Poll } from "../../types/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import DeleteDialog from "../delete-dialog/delete-dialog.tsx";
 import PredictionPage from "../prediction-page/prediction-page.tsx";
+import { useCurrentTab } from "../tabs/mod.ts";
 import { useMenu } from "../menu/mod.ts";
 import Tile, { RemoveButton } from "../tile/tile.tsx";
 import Time from "../time/time.tsx";
 import styleSheet from "./prediction-tile.scss.js";
 
 const POLL_INTERVAL = 2 * ONE_SECOND_MS;
+const PASSIVE_POLL_INTERVAL = 60 * ONE_SECOND_MS;
 const RESULTS_TIMOUT = 100 * ONE_SECOND_MS;
 // NOTE: we don't currently have a way to clean up onMessage listeners
 // in the extension so we'll need to be cognizant that the prediction tile
@@ -48,11 +49,12 @@ export default function PredictionTile(
   { orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal },
 ) {
   useStyleSheet(styleSheet);
+  const { isActive } = useCurrentTab();
   const { setIsOpen } = useMenu();
   const { pushPage } = usePageStack();
   const { pushDialog, popDialog } = useDialog();
   const [_deletePollResult, executeDeletePollResult] = useMutation(DELETE_POLL_MUTATION);
-  const { data: activePollData } = usePollingQuery(POLL_INTERVAL, {
+  const { data: activePollData } = usePollingQuery(isActive ? POLL_INTERVAL : PASSIVE_POLL_INTERVAL, {
     query: ACTIVE_POLL_QUERY,
   });
 

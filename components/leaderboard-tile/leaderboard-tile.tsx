@@ -10,7 +10,7 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import { User } from "../../types/mod.ts";
-
+import { useCurrentTab } from "../tabs/mod.ts";
 import { OrgUserCounter, OrgUserCounterConnection } from "../../types/org-user-counter.types.ts";
 import { LEADERBOARD_COUNTER_QUERY } from "./gql.ts";
 import Tile, { HideShowButton } from "../tile/tile.tsx";
@@ -23,6 +23,8 @@ import {
 } from "../../shared/mod.ts";
 
 import styleSheet from "./leaderboard-tile.scss.js";
+const LEADERBOARD_DISPLAY_POLL_INTERVAL = 10000;
+const PASSIVE_LEADERBOARD_DISPLAY_POLL_INTERVAL = 60000;
 
 const LEADERBOARD_LIMIT = 3;
 const LEADERBOARD_DISPLAY_UPSERT_MUTATION = gql`
@@ -64,6 +66,7 @@ export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
   displayKey,
 }: LeaderboardTileProps) => {
   useStyleSheet(styleSheet);
+  const { isActive } = useCurrentTab();
 
   const [{ data: leaderboardCounterData }] = useQuery({
     query: LEADERBOARD_COUNTER_QUERY,
@@ -74,7 +77,12 @@ export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
   });
 
   const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = usePollingLeaderboardDisplay$(
-    displayKey,
+    {
+      key: displayKey,
+      interval: isActive
+        ? LEADERBOARD_DISPLAY_POLL_INTERVAL
+        : PASSIVE_LEADERBOARD_DISPLAY_POLL_INTERVAL,
+    },
   );
   const [, executeLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
 
