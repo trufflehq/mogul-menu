@@ -27,15 +27,17 @@ export default function PageStack({
       document.removeEventListener("keydown", handleEscape, false);
     };
   }, [pageStack$.get()]);
+
+  const pageStack = useSelector(() => pageStack$.get() || []);
   return (
     <>
       {isPageStackEmpty
         ? <></>
         : (
           <div className="c-page-stack" style={{ "--background": background }}>
-            {pageStack$.map(({ Component }, idx) => (
+            {pageStack.map(({ Component }, idx) => (
               <div key={idx} className="page">
-                {Component.get()}
+                {Component}
               </div>
             ))}
           </div>

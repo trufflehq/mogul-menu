@@ -1,4 +1,4 @@
-import { getConnectionSourceType, React, useEffect, useExtensionInfo } from "../../deps.ts";
+import { getConnectionSourceType, React, useExtensionInfo$, useObserve } from "../../deps.ts";
 import { hasConnection, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "./mod.ts";
@@ -9,11 +9,12 @@ import { BasePage, OAuthConnectionPage } from "./mod.ts";
  * doesn't exist.
  */
 export function useOnboarding() {
-  const { orgUser, isFetchingOrgUser } = useOrgUserConnectionsQuery();
+  const { orgUser$ } = useOrgUserConnectionsQuery();
   const { pushPage } = usePageStack();
-  const { extensionInfo } = useExtensionInfo();
+  const extensionInfo$ = useExtensionInfo$();
 
-  useEffect(() => {
+  useObserve(() => {
+    const extensionInfo = extensionInfo$.get();
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
@@ -21,11 +22,13 @@ export function useOnboarding() {
     const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
       ? extensionInfo?.pageInfo
       : true;
+    const orgUser = orgUser$.orgUser.get();
+
     if (
-      hasPageInfo && !hasConnection(orgUser, connectionSourceType) && !isFetchingOrgUser
+      hasPageInfo && orgUser && !hasConnection(orgUser, connectionSourceType)
     ) {
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);
     }
-  }, [JSON.stringify(orgUser), isFetchingOrgUser, extensionInfo]);
+  });
 }

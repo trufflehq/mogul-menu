@@ -11,5 +11,10 @@ export default scss`
   .input {
     margin-bottom: 10px;
   }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+  }
 }
 `;

@@ -55,11 +55,12 @@ export {
   getConnectionSourceType,
   GLOBAL_JUMPER_MESSAGES,
   useExtensionInfo,
-} from "https://tfl.dev/@truffle/utils@~0.0.17/embed/mod.ts";
+  useExtensionInfo$,
+} from "https://tfl.dev/@truffle/utils@~0.0.22/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
-} from "https://tfl.dev/@truffle/utils@0.0.17/embed/mod.ts";
+} from "https://tfl.dev/@truffle/utils@0.0.22/embed/mod.ts";
 // components
 export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
