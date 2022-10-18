@@ -5,6 +5,7 @@ import {
   LabelPrimitive,
   RadioGroup,
   React,
+  useComputed,
   useExtensionInfo$,
   useMutation,
   useObserve,
@@ -93,76 +94,44 @@ export default function AdminSettingsPage() {
   const [, executeChannelUpsertMutation] = useMutation(CHANNEL_UPSERT_MUTATION_QUERY);
   const { channel$ } = usePollingChannel$({ interval: CHANNEL_POLLING_INTERVAL });
   const error$ = useSignal("");
-  const channelInfo = useSignal<{
-    sourceType: string;
-    isLive: boolean;
-    selectionValue: ChannelStatusSelectionValue | undefined;
-  }>({
-    sourceType: "",
-    isLive: false,
-    selectionValue: undefined,
-  });
   const extensionInfo$ = useExtensionInfo$();
 
-  useObserve(() => {
-    const extensionInfo = extensionInfo$.get();
-    const sourceType = extensionInfo?.pageInfo
-      ? getChannelSourceType(extensionInfo.pageInfo)
-      : "youtube";
-
-    if (sourceType) {
-      channelInfo.sourceType.set(sourceType);
-    }
-
-    const channel = channel$.get();
-    if (channel?.channel) {
-      // convert the channel model into the radio group status value
-      const selectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
-      channelInfo.selectionValue.set(selectionValue);
-
-      // set the isLive value
-      const isLive = channel?.channel?.isLive;
-      channelInfo.isLive.set(isLive);
-    }
+  const sourceType$ = useComputed(() => {
+    const pageInfo = extensionInfo$.pageInfo?.get();
+    return pageInfo ? getChannelSourceType(pageInfo) : "youtube";
   });
+  const localSelectionValue$ = useSignal("");
+  const selectionValue$ = useComputed(() =>
+    localSelectionValue$.get() ||
+    getChannelStatusSelectionValue({ channel: channel$.channel?.get() })
+  );
+  const isLive$ = useComputed(() => channel$.channel?.get().isLive);
 
-  useObserve(async () => {
-    const selectionValue = channelInfo.selectionValue.get();
-    const channel = channel$.get();
-    const upstreamSelectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
-    const hasChannelStatusChanged = selectionValue && upstreamSelectionValue &&
-      selectionValue !== upstreamSelectionValue;
+  const onValueChange = async (selectionValue: ChannelStatusSelectionValue) => {
+    const { isLive, isManual } = getChannelStatusBySelectionValue({ selectionValue });
+    localSelectionValue$.set(selectionValue);
+    error$.set("");
+    try {
+      const channelUpsertResult = await executeChannelUpsertMutation({
+        sourceType: sourceType$.get(),
+        isLive,
+        isManual,
+      }, {
+        additionalTypenames: ["Channel"],
+      });
 
-    // if the selection value doesn't match the upstream channel status, update the channel status
-    if (hasChannelStatusChanged) {
-      const { isLive, isManual } = getChannelStatusBySelectionValue({ selectionValue });
-      error$.set("");
-      try {
-        const channelUpsertResult = await executeChannelUpsertMutation({
-          sourceType: channelInfo.sourceType.get(),
-          isLive,
-          isManual,
-        }, {
-          additionalTypenames: ["Channel"],
-        });
-
-        if (channelUpsertResult.error) {
-          console.error("error updating channel status", channelUpsertResult.error);
-          error$.set(channelUpsertResult.error.graphQLErrors[0]?.message);
-          return;
-        }
-      } catch (err) {
-        error$.set(err.message);
+      if (channelUpsertResult.error) {
+        console.error("error updating channel status", channelUpsertResult.error);
+        error$.set(channelUpsertResult.error.graphQLErrors[0]?.message);
+        return;
       }
+    } catch (err) {
+      error$.set(err.message);
     }
-  });
-
-  const onValueChange = (value: ChannelStatusSelectionValue) => {
-    channelInfo.selectionValue.set(value);
   };
 
-  const selectionValue = useSelector(() => channelInfo.selectionValue.get());
-  const isLive = useSelector(() => channelInfo.isLive.get());
+  const isLive = useSelector(() => isLive$.get());
+  const selectionValue = useSelector(() => selectionValue$.get());
   const error = useSelector(() => error$.get());
   return (
     <Page title="Admin Settings">
