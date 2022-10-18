@@ -5,6 +5,7 @@ import {
   LabelPrimitive,
   RadioGroup,
   React,
+  useComputed,
   useExtensionInfo$,
   useMutation,
   useObserve,
@@ -93,41 +94,26 @@ export default function AdminSettingsPage() {
   const [, executeChannelUpsertMutation] = useMutation(CHANNEL_UPSERT_MUTATION_QUERY);
   const { channel$ } = usePollingChannel$({ interval: CHANNEL_POLLING_INTERVAL });
   const error$ = useSignal("");
-  const channelInfo$ = useSignal<{
-    sourceType: string;
-    isLive: boolean;
-    selectionValue: ChannelStatusSelectionValue | undefined;
-  }>({
-    sourceType: "",
-    isLive: false,
-    selectionValue: undefined,
-  });
+  const selectionValue$ = useSignal<ChannelStatusSelectionValue>("auto");
   const extensionInfo$ = useExtensionInfo$();
 
   useObserve(() => {
-    const extensionInfo = extensionInfo$.get();
-    const sourceType = extensionInfo?.pageInfo
-      ? getChannelSourceType(extensionInfo.pageInfo)
-      : "youtube";
-
-    if (sourceType) {
-      channelInfo$.sourceType.set(sourceType);
-    }
-
     const channel = channel$.get();
     if (channel?.channel) {
       // convert the channel model into the radio group status value
       const selectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
-      channelInfo$.selectionValue.set(selectionValue);
-
-      // set the isLive value
-      const isLive = channel?.channel?.isLive;
-      channelInfo$.isLive.set(isLive);
+      selectionValue$.set(selectionValue);
     }
   });
 
+  const sourceType$ = useComputed(() => {
+    const extensionInfo = extensionInfo$.get();
+    return extensionInfo?.pageInfo ? getChannelSourceType(extensionInfo.pageInfo) : "youtube";
+  });
+  const isLive$ = useComputed(() => channel$.channel?.isLive.get());
+
   const onValueChange = async (selectionValue: ChannelStatusSelectionValue) => {
-    channelInfo$.selectionValue.set(selectionValue);
+    selectionValue$.set(selectionValue);
     const channel = channel$.get();
     const upstreamSelectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
     const hasChannelStatusChanged = selectionValue && upstreamSelectionValue &&
@@ -139,7 +125,7 @@ export default function AdminSettingsPage() {
       error$.set("");
       try {
         const channelUpsertResult = await executeChannelUpsertMutation({
-          sourceType: channelInfo$.sourceType.get(),
+          sourceType: sourceType$.get(), // channelInfo$.sourceType.get(),
           isLive,
           isManual,
         }, {
@@ -157,8 +143,8 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const selectionValue = useSelector(() => channelInfo$.selectionValue.get());
-  const isLive = useSelector(() => channelInfo$.isLive.get());
+  const selectionValue = useSelector(() => selectionValue$.get());
+  const isLive = useSelector(() => isLive$.get());
   const error = useSelector(() => error$.get());
   return (
     <Page title="Admin Settings">
