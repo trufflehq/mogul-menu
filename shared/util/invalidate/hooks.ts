@@ -3,6 +3,7 @@ import {
   useActivePowerupConnection,
   useOrgUserConnectionsQuery,
   useOwnedCollectibleConnection,
+  usePollingActivityAlertConnection$,
   usePollingOrgKothConfigQuery$,
   useSeasonPassData,
   useUserInfo,
@@ -18,6 +19,7 @@ export function useInvalidateAllQueriesListener() {
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
   const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$({});
+  const { reexecuteActivityConnectionQuery } = usePollingActivityAlertConnection$({});
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
@@ -28,6 +30,7 @@ export function useInvalidateAllQueriesListener() {
         reexecuteSeasonPassQuery({ requestPolicy: "network-only" });
         reexecuteKothConfigQuery({ requestPolicy: "network-only" });
         refetchOrgUserConnections({ requestPolicy: "network-only" });
+        reexecuteActivityConnectionQuery({ requestPolicy: "network-only" });
       }
     });
   }, []);

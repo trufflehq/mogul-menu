@@ -6,8 +6,12 @@ import {
   useSelector,
   useStyleSheet,
 } from "../../../deps.ts";
-import { usePollingActivityAlertConnection$ } from "../signals.ts";
-import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
+import {
+  hasPermission,
+  isActiveActivity,
+  useOrgUserWithRoles$,
+  usePollingActivityAlertConnection$,
+} from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";

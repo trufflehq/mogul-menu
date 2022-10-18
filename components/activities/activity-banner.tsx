@@ -10,9 +10,13 @@ import {
 } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { isActiveActivity, useLoginListener } from "../../shared/mod.ts";
+import {
+  isActiveActivity,
+  useLoginListener,
+  usePollingActivityAlertConnection$,
+} from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
-import { isActivityBannerOpen$, usePollingActivityAlertConnection$ } from "./signals.ts";
+import { isActivityBannerOpen$ } from "./signals.ts";
 import { ActivityAlert, Alert, Poll, StringKeys } from "../../types/mod.ts";
 import PollBanner from "./poll-banner/poll-banner.tsx";
 import AlertBanner from "./alert-banner/alert-banner.tsx";
@@ -63,6 +67,7 @@ export function ActivityBannerManager<
     {
       interval: 2000,
       limit: 1,
+      status: "ready",
     },
   );
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
