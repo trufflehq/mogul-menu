@@ -6,7 +6,7 @@ import stylesheet from "./raid-list-item.scss.js";
 import { RaidAlert } from "../../../types/mod.ts";
 import { usePageStack } from "../../page-stack/mod.ts";
 import RaidPreviewPage from "../raid-preview-page/raid-preview-page.tsx";
-export default function RaidListItem({ activity }: ActivityListItemProps<RaidAlert>) {
+export default function RaidListItem({ activity, createdBy }: ActivityListItemProps<RaidAlert>) {
   useStyleSheet(stylesheet);
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
@@ -35,6 +35,7 @@ export default function RaidListItem({ activity }: ActivityListItemProps<RaidAle
       activityType="Raid"
       icon={PARACHUTE_ICON_PATH}
       iconViewBox={24}
+      createdBy={createdBy}
       color="#F86969"
       title={activity.data.title}
       description={activity.data.description}
