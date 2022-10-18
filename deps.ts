@@ -117,3 +117,4 @@ export {
 } from "https://tfl.dev/@truffle/state@~0.0.5/mod.ts";
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
 export type { CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
+export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";

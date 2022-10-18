@@ -8,12 +8,10 @@ import {
 } from "../../deps.ts";
 import { ActivityConnection } from "../../types/mod.ts";
 
-const ACTIVITY_CONNECTION_QUERY_STR =
-  `query AlertsReadyByType($status: String, $type: String, $limit: Int)
+const ACTIVITY_CONNECTION_QUERY_STR = `query AlertsReadyByType($type: String, $limit: Int)
 {
     alertConnection(
         input: {
-            status: $status,
             type: $type
         },
         first: $limit
@@ -58,6 +56,7 @@ const ACTIVITY_CONNECTION_QUERY_STR =
                     type
                     data
                     time
+                    status
                 }
             }
         }
@@ -86,7 +85,6 @@ export function usePollingActivityAlertConnection$<ActivityType, SourceType exte
     interval,
     query: activityConnectionQuery,
     variables: {
-      status: "ready",
       type: "activity",
       limit,
     },
