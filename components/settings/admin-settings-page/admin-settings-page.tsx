@@ -19,10 +19,8 @@ import { Page } from "../../page-stack/mod.ts";
 import styleSheet from "./admin-settings-page.scss.js";
 
 interface Channel {
-  id: string;
   isLive: boolean;
   isManual: boolean;
-  sourceType: string;
 }
 
 const CHANNEL_QUERY = gql`
