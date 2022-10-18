@@ -93,19 +93,14 @@ export default function AdminSettingsPage() {
   useStyleSheet(styleSheet);
   const [, executeChannelUpsertMutation] = useMutation(CHANNEL_UPSERT_MUTATION_QUERY);
   const { channel$ } = usePollingChannel$({ interval: CHANNEL_POLLING_INTERVAL });
+  const selectionValueInput$ = useSignal<ChannelStatusSelectionValue | undefined>(undefined!);
   const error$ = useSignal("");
-  const selectionValue$ = useSignal<ChannelStatusSelectionValue>("auto");
   const extensionInfo$ = useExtensionInfo$();
 
-  useObserve(() => {
-    const channel = channel$.get();
-    if (channel?.channel) {
-      // convert the channel model into the radio group status value
-      const selectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
-      selectionValue$.set(selectionValue);
-    }
-  });
-
+  const selectionValue$ = useComputed(() =>
+    selectionValueInput$.get() ||
+    getChannelStatusSelectionValue({ channel: channel$.channel.get() })
+  );
   const sourceType$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
     return extensionInfo?.pageInfo ? getChannelSourceType(extensionInfo.pageInfo) : "youtube";
@@ -113,7 +108,7 @@ export default function AdminSettingsPage() {
   const isLive$ = useComputed(() => channel$.channel?.isLive.get());
 
   const onValueChange = async (selectionValue: ChannelStatusSelectionValue) => {
-    selectionValue$.set(selectionValue);
+    selectionValueInput$.set(selectionValue);
     const channel = channel$.get();
     const upstreamSelectionValue = getChannelStatusSelectionValue({ channel: channel?.channel });
     const hasChannelStatusChanged = selectionValue && upstreamSelectionValue &&
@@ -125,7 +120,7 @@ export default function AdminSettingsPage() {
       error$.set("");
       try {
         const channelUpsertResult = await executeChannelUpsertMutation({
-          sourceType: sourceType$.get(), // channelInfo$.sourceType.get(),
+          sourceType: sourceType$.get(),
           isLive,
           isManual,
         }, {
