@@ -18,6 +18,7 @@ import {
 import { Page } from "../../page-stack/mod.ts";
 import styleSheet from "./admin-settings-page.scss.js";
 
+const CHANNEL_POLLING_INTERVAL = 2000;
 interface Channel {
   isLive: boolean;
   isManual: boolean;
@@ -46,7 +47,7 @@ const CHANNEL_UPSERT_MUTATION_QUERY = gql`
 `;
 
 function usePollingChannel$(
-  { interval = 1000 }: { interval?: number },
+  { interval = CHANNEL_POLLING_INTERVAL }: { interval?: number },
 ) {
   const channel$ = useSignal<{ channel: Channel }>(
     undefined!,
@@ -90,7 +91,7 @@ function getChannelStatusBySelectionValue(
 export default function AdminSettingsPage() {
   useStyleSheet(styleSheet);
   const [, executeChannelUpsertMutation] = useMutation(CHANNEL_UPSERT_MUTATION_QUERY);
-  const { channel$ } = usePollingChannel$({ interval: 2000 });
+  const { channel$ } = usePollingChannel$({ interval: CHANNEL_POLLING_INTERVAL });
   const error$ = useSignal("");
   const channelInfo = useSignal<{
     sourceType: string;
