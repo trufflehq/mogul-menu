@@ -29,6 +29,7 @@ mutation CreateRaidMutation($title: String, $url: String, $description: String) 
         title: $title,
         description: $description
       },
+      ttl: 0
     }
   ) {
     alert {
