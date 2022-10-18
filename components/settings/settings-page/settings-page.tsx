@@ -1,19 +1,31 @@
-import { React, useExtensionInfo, semver } from "../../../deps.ts";
+import { React, semver, useExtensionInfo, useSelector } from "../../../deps.ts";
+import { hasPermission, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import MenuItem from "../../base/menu-item/menu-item.tsx";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import AccountDetailsPage from "../account-details-page/account-details-page.tsx";
+import AdminSettingsPage from "../admin-settings-page/admin-settings-page.tsx";
 import NotificationSettingsPage from "../notification-settings-page/notification-settings-page.tsx";
 
 export default function SettingsPage() {
   const { pushPage } = usePageStack();
+  const orgUserWithRoles$ = useOrgUserWithRoles$();
+
+  const hasPermissions = useSelector(() =>
+    hasPermission({
+      orgUser: orgUserWithRoles$.orgUser.get!(),
+      actions: ["update"],
+      filters: {
+        channel: { isAll: true, rank: 0 },
+      },
+    })
+  );
 
   // notifications are currently only supported in google chrome
   const isGoogleChrome = window.navigator.vendor === "Google Inc.";
 
   // make sure the extension supports notifications (version 3.3.4)
   const { extensionInfo } = useExtensionInfo();
-  const supportsNotifications =
-    extensionInfo && semver.satisfies(extensionInfo.version, ">=3.3.4");
+  const supportsNotifications = extensionInfo && semver.satisfies(extensionInfo.version, ">=3.3.4");
 
   return (
     <Page title="Settings">
@@ -35,6 +47,13 @@ export default function SettingsPage() {
         /* <MenuItem icon="smile">Emotes</MenuItem>
       <MenuItem icon="desktop">Connections</MenuItem> */
       }
+      {hasPermissions
+        ? (
+          <MenuItem icon="badge" onClick={() => pushPage(<AdminSettingsPage />)}>
+            Admin Settings
+          </MenuItem>
+        )
+        : null}
     </Page>
   );
 }
