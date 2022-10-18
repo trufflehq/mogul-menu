@@ -24,7 +24,7 @@ export default scss`
 }
 
 .c-channel-status-radio-button {
-  all: 'unset';
+  all: unset;
   display: flex;
   align-items: center;
   cursor: pointer;

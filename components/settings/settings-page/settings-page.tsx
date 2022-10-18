@@ -10,7 +10,7 @@ export default function SettingsPage() {
   const { pushPage } = usePageStack();
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
-  const hasPermissions = useSelector(() =>
+  const hasAdminPermissions = useSelector(() =>
     hasPermission({
       orgUser: orgUserWithRoles$.orgUser.get!(),
       actions: ["update"],
@@ -47,7 +47,7 @@ export default function SettingsPage() {
         /* <MenuItem icon="smile">Emotes</MenuItem>
       <MenuItem icon="desktop">Connections</MenuItem> */
       }
-      {hasPermissions
+      {hasAdminPermissions
         ? (
           <MenuItem icon="badge" onClick={() => pushPage(<AdminSettingsPage />)}>
             Admin Settings
