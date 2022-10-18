@@ -59,7 +59,7 @@ function usePollingChannel$(
     query: CHANNEL_QUERY,
   });
 
-  // only update the channelPoints$ if the channel points data has changed
+  // only update the channel$ if the channel data has changed
   useUpdateSignalOnChange(channel$, channelData$.data);
 
   return { channel$, reexecuteChannelQuery };

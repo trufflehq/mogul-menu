@@ -33,8 +33,8 @@ export default scss`
     all: unset;
     margin-right: 16px;
     border: 2px solid var(--mm-color-primary);
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
     border-radius: 100%;
     &:hover { background-color: var(--mm-color-bg-secondary); };
 
@@ -49,8 +49,8 @@ export default scss`
       &:after {
         content: "";
         display: block;
-        width: 11px;
-        height: 11px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         background-color: var(--mm-color-primary);
       }
