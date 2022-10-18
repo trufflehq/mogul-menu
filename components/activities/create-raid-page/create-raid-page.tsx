@@ -46,7 +46,6 @@ interface RaidInput {
 
 export default function CreateRaidPage() {
   useStyleSheet(stylesheet);
-  const previewSrc$ = useSignal<string | null>("");
   const raidError$ = useSignal("");
   const raid$ = useSignal<RaidInput>({
     link: "",
@@ -57,11 +56,6 @@ export default function CreateRaidPage() {
   const [, executeCreateRaidMutation] = useMutation(CREATE_RAID_MUTATION_QUERY);
   const { popPage } = usePageStack();
   const enqueueSnackBar = useSnackBar();
-
-  useObserve(() => {
-    const src = getPreviewSrc(raid$.link.get());
-    previewSrc$.set(src);
-  });
 
   const onClick = async () => {
     const result = await executeCreateRaidMutation({
@@ -106,7 +100,7 @@ export default function CreateRaidPage() {
         </div>
         {raidError && <div className="error">{raidError}</div>}
         <div className="inputs">
-          <RaidPreview previewSrc$={previewSrc$} raid$={raid$} />
+          <RaidLinkPreview raid$={raid$} />
           <Input
             label="Raid title"
             placeholder={`Add a title like "Check out this video"`}
@@ -123,9 +117,15 @@ export default function CreateRaidPage() {
   );
 }
 
-function RaidPreview(
-  { previewSrc$, raid$ }: { previewSrc$: Observable<string | null>; raid$: Observable<RaidInput> },
+function RaidLinkPreview(
+  { raid$ }: { raid$: Observable<RaidInput> },
 ) {
+  const previewSrc$ = useSignal<string | null>("");
+
+  useObserve(() => {
+    const src = getPreviewSrc(raid$.link.get());
+    previewSrc$.set(src);
+  });
   const previewSrc = useSelector(() => previewSrc$.get());
 
   const onRemove = () => {
@@ -134,7 +134,7 @@ function RaidPreview(
 
   return previewSrc
     ? (
-      <div className="c-raid-preview">
+      <div className="c-raid-link-preview">
         <RaidIframe previewSrc={previewSrc} />
         <div className="remove" onClick={onRemove}>
           Remove

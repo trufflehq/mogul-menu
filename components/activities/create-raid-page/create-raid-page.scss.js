@@ -28,7 +28,7 @@ export default scss`
   }
 }
 
-.c-raid-preview {
+.c-raid-link-preview {
   display: flex;
   flex-direction: column;
 
