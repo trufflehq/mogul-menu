@@ -8,7 +8,6 @@ import {
   useComputed,
   useExtensionInfo$,
   useMutation,
-  useObserve,
   usePollingQuerySignal,
   useSelector,
   useSignal,
