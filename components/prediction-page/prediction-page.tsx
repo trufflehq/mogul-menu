@@ -93,7 +93,7 @@ export function usePollingActivePrediction$(
 
   // we use the setter directly here because we want to convert from a PollConnection to a Poll
   useObserve(() => {
-    const activePrediction = predictionConnection$.data?.get()?.pollConnection.nodes[0];
+    const activePrediction = predictionConnection$.data?.get()?.pollConnection?.nodes[0];
 
     if (activePrediction) {
       updateSignalOnChange(prediction$, { poll: activePrediction });
