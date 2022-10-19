@@ -12,6 +12,9 @@ import {
 } from "../../../deps.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import Button from "../../base/button/button.tsx";
+import DeleteDialog from "../../delete-dialog/delete-dialog.tsx";
+import { useDialog } from "../../base/dialog-container/dialog-service.ts";
+
 import { RaidAlert } from "../../../types/mod.ts";
 import { RaidIframe } from "../create-raid-page/create-raid-page.tsx";
 import stylesheet from "./raid-preview-page.scss.js";
@@ -78,7 +81,7 @@ export default function RaidPreviewPage({ alertId }: { alertId: string }) {
   useStyleSheet(stylesheet);
   const [, executeEndRaidMutation] = useMutation(END_RAID_MUTATION_QUERY);
   const [, executeDeleteRaidMutation] = useMutation(DELETE_RAID_MUTATION_QUERY);
-
+  const { pushDialog, popDialog } = useDialog();
   const previewSrc$ = useSignal("");
 
   const raidError$ = useSignal("");
@@ -101,7 +104,18 @@ export default function RaidPreviewPage({ alertId }: { alertId: string }) {
       raidError$.set(result.error.graphQLErrors[0].message);
     } else {
       popPage();
+      popDialog();
     }
+  };
+
+  const onDelete = () => {
+    pushDialog(
+      <DeleteDialog
+        title="Are you sure you want to delete this raid?"
+        onDelete={onDeleteRaid}
+        error$={raidError$}
+      />,
+    );
   };
 
   const title = useSelector(() => raid$.alert.data.title?.get());
@@ -129,7 +143,7 @@ export default function RaidPreviewPage({ alertId }: { alertId: string }) {
         <div className="c-raid-preview-page__footer">
           <Button
             style="bg-tertiary"
-            onClick={onDeleteRaid}
+            onClick={onDelete}
             shouldHandleLoading
           >
             Delete
