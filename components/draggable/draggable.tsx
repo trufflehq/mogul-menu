@@ -173,11 +173,11 @@ export default function Draggable({
         background: "none",
         width: "100%",
         height: "100%",
-        clipPath: createClipPath(
-          dragInfo.current,
-          dimensions.base,
-          dimensions.modifiers,
-        ),
+        // clipPath: createClipPath(
+        //   dragInfo.current,
+        //   dimensions.base,
+        //   dimensions.modifiers,
+        // ),
         overflow: "hidden",
         cursor: dragInfo.pressed ? "grab" : "auto",
         // dragInfo.pressed disables the animation during drag
@@ -186,41 +186,41 @@ export default function Draggable({
       onMouseDown={(e) => {
         const target = e.target as HTMLDivElement;
         const classes = target.className;
-        if (!classes?.includes || !classes?.includes(requiredClassName)) {
-          setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
-          return;
-        }
+        // if (!classes?.includes || !classes?.includes(requiredClassName)) {
+        //   setDragInfo((old: DragInfo) => ({ ...old, draggable: false }));
+        //   return;
+        // }
       }}
       onDragStart={(e) => {
         e.preventDefault();
-        if (dragInfo.draggable) {
-          onDragStart?.(e);
-          setDragInfo((old: DragInfo) => ({
-            ...old,
-            pressed: true,
-            start: {
-              x: e.clientX - old.current.x,
-              y: e.clientY - old.current.y,
-            },
-          }));
-        }
+        // if (dragInfo.draggable) {
+        //   onDragStart?.(e);
+        //   setDragInfo((old: DragInfo) => ({
+        //     ...old,
+        //     pressed: true,
+        //     start: {
+        //       x: e.clientX - old.current.x,
+        //       y: e.clientY - old.current.y,
+        //     },
+        //   }));
+        // }
       }}
       onMouseUp={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (dragInfo.pressed) {
-          onPressedMouseUp?.(e, dragInfo);
-        }
+        // if (dragInfo.pressed) {
+        //   onPressedMouseUp?.(e, dragInfo);
+        // }
 
-        setDragInfo((old: DragInfo) => ({
-          ...old,
-          pressed: false,
-          draggable: true,
-          start: {
-            x: old.current.x,
-            y: old.current.y,
-          },
-        }));
+        // setDragInfo((old: DragInfo) => ({
+        //   ...old,
+        //   pressed: false,
+        //   draggable: true,
+        //   start: {
+        //     x: old.current.x,
+        //     y: old.current.y,
+        //   },
+        // }));
       }}
     >
       <div
@@ -228,8 +228,10 @@ export default function Draggable({
         style={{
           //set position of child container
           background: "none",
-          width: "fit-content",
-          position: "absolute",
+          width: "100%",
+          height: "100%",
+          // width: "fit-content",
+          // position: "absolute",
           top: dragInfo.current.y + "px",
           left: dragInfo.current.x + "px",
           //disable text selection while dragging

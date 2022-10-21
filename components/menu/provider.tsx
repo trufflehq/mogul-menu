@@ -11,8 +11,8 @@ import {
 } from "./constants.ts";
 
 export const INITIAL_MENU_STATE: MenuState = {
-  menuState: "closed",
-  menuPosition: undefined,
+  menuState: "open",
+  menuPosition: "top-left",
   snackBars: [],
   creatorName: "",
   dimensions: {

@@ -23,7 +23,7 @@ export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
       <div className="inner">
         <div className="bottom">
           <TabBar />
-          <ExtensionIcon />
+          {/* <ExtensionIcon /> */}
         </div>
         <div className="body">
           <DialogContainer />
