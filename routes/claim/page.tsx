@@ -1,5 +1,5 @@
 import { React } from "../../deps.ts";
-import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.13/format/wc/react/index.ts";
+import { toDist } from "https://tfl.dev/@truffle/distribute@2.0.19/format/wc/react/index.ts";
 import ChannelPoints from "../../components/channel-points/channel-points.tsx";
 
 function HomePage() {
