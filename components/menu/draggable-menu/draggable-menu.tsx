@@ -113,8 +113,8 @@ export default function DraggableMenu({
 
     const { current, start, menuPosition } = positionInfo ?? {};
 
-    updateMenuPosition(menuPosition);
-    dispatch(updateDimensionsAction(getModifiersByPosition(menuPosition)));
+    // updateMenuPosition(menuPosition);
+    // dispatch(updateDimensionsAction(getModifiersByPosition(menuPosition)));
 
     // lazily reenable the transition after the mount so it's not janky
     setTimeout(() => {
@@ -139,17 +139,17 @@ export default function DraggableMenu({
 
     const menuPosition = getMenuMousePosition(e);
 
-    persistMenuPosition(
-      menuPosition,
-      {
-        x: dragInfo.current.x,
-        y: dragInfo.current.y,
-      },
-      {
-        x: dragInfo.start.x,
-        y: dragInfo.start.y,
-      },
-    );
+    // persistMenuPosition(
+    //   menuPosition,
+    //   {
+    //     x: dragInfo.current.x,
+    //     y: dragInfo.current.y,
+    //   },
+    //   {
+    //     x: dragInfo.start.x,
+    //     y: dragInfo.start.y,
+    //   },
+    // );
 
     // re-enable the transition
     setTimeout(() => {

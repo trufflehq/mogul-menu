@@ -1,4 +1,10 @@
-import { getConnectionSourceType, React, useExtensionInfo$, useObserve } from "../../deps.ts";
+import {
+  getConnectionSourceType,
+  jumper,
+  React,
+  useExtensionInfo$,
+  useObserve,
+} from "../../deps.ts";
 import { hasConnection, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { usePageStack } from "../page-stack/mod.ts";
 import { BasePage, OAuthConnectionPage } from "./mod.ts";
@@ -18,11 +24,19 @@ export function useOnboarding() {
     const connectionSourceType = extensionInfo?.pageInfo
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
+    jumper.call("platform.log", `ext info ${JSON.stringify(extensionInfo)}`);
+    jumper.call("platform.log", `connectionSourceType ${JSON.stringify(connectionSourceType)}`);
 
     const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
       ? extensionInfo?.pageInfo
       : true;
+
     const orgUser = orgUser$.orgUser.get();
+    jumper.call("platform.log", `hasPageInfo ${hasPageInfo}`);
+    jumper.call(
+      "platform.log",
+      `orgUser ${JSON.stringify(orgUser)} ${!hasConnection(orgUser, connectionSourceType)}`,
+    );
 
     if (
       hasPageInfo && orgUser && !hasConnection(orgUser, connectionSourceType)

@@ -22,15 +22,15 @@ export default function TabBar() {
   const { clearPageStack } = usePageStack();
   const isMenuOpen = getIsOpen(menuState);
 
-  useLayoutEffect(() => {
-    updateDimensions();
-  }, [isMenuOpen]);
+  // useLayoutEffect(() => {
+  //   updateDimensions();
+  // }, [isMenuOpen]);
 
   return (
     <div
       className={`c-tab-bar ${
         classKebab({
-          isCollapsed: !isMenuOpen,
+          // isCollapsed: !isMenuOpen,
         })
       }`}
     >

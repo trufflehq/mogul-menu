@@ -13,18 +13,30 @@ export function createMenuIframeStyle(
 ) {
   // creates an element that spans the entire screen
   // a clip path is used to crop to only the actual component
+  // web draggable
+  // const style = {
+  //   width: "100vw",
+  //   height: "100vh",
+  //   "clip-path": createMenuClipPath(
+  //     dragInfo.current,
+  //     dimensions.base,
+  //     dimensions.modifiers,
+  //     menuPosition,
+  //   ),
+  //   transition: dimensions.modifiers.transition,
+  //   background: "none",
+  //   position: "fixed",
+  //   top: "0",
+  //   left: "0",
+  //   "z-index": "9999",
+  // };
   const style = {
-    width: "100vw",
-    height: "100vh",
-    "clip-path": createMenuClipPath(
-      dragInfo.current,
-      dimensions.base,
-      dimensions.modifiers,
-      menuPosition,
-    ),
+    width: "100%",
+    height: "100%",
     transition: dimensions.modifiers.transition,
     background: "none",
-    position: "fixed",
+    border: "none",
+    position: "absolute",
     top: "0",
     left: "0",
     "z-index": "9999",
