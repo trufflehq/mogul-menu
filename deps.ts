@@ -35,7 +35,7 @@ export {
 export { default as semver } from "https://npm.tfl.dev/semver@7.3.7";
 export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.17/css/css.ts";
-export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@2.0.19/format/wc/react/index.ts";
+export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"; // DO NOT BUMP
 export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/class-kebab.ts";
 export {
   abbreviateNumber,
