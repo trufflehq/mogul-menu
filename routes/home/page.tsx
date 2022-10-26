@@ -1,5 +1,6 @@
 import React from "https://npm.tfl.dev/react";
-import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.11/format/wc/react/index.ts";
+import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"
+// import { toDist } from "./index.ts";
 import Menu from "../../components/menu/menu.tsx";
 import { jumper } from "../../deps.ts";
 const iconImageObj = {

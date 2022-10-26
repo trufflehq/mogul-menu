@@ -10,11 +10,13 @@ import {
   OAuthResponse,
   React,
   useHandleTruffleOAuth,
+  useSelector,
+  useSignal,
   useStyleSheet,
 } from "../../../deps.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
-
+import LocalOAuthFrame from "./local-oauth-frame.tsx";
 import stylesheet from "./oauth-connection-page.scss.js";
 
 export default function OAuthConnectionPage(
@@ -56,9 +58,15 @@ function OAuthButton(
     sourceType: ConnectionSourceType;
   },
 ) {
+  const accessToken$ = useSignal(
+    getAccessToken() || jumper.call("storage.get", {
+      key: "mogul-menu:accessToken",
+    }),
+  );
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+    jumper.call("platform.log", `onSetAccessToken ${JSON.stringify(oauthResponse)}`);
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
 
@@ -77,32 +85,27 @@ function OAuthButton(
   // and call onSetAccessToken when a user logs in using a 3rd party connection
   // and the user's truffle access token is returned
   useHandleTruffleOAuth(onSetAccessToken);
-
-  const accessToken = getAccessToken();
   const context = globalContext.getStore();
   const orgId = context?.orgId;
 
+  // jumper.call("platform.log", `oauth frame :${JSON.stringify({ accessToken, context, orgId })}`);
+  const accessToken = useSelector(() => accessToken$.get());
+  jumper.call("platform.log", `oauth frame accessToken ${accessToken}`);
+
+  // console.log(`oauth hostname ${process?.env?.OAUTH_HOSTNAME}`);
   return (
-    <OAuthIframe
-      sourceType={sourceType}
-      accessToken={accessToken}
-      orgId={orgId}
-      styles={{
-        width: "308px",
-        height: "42px",
-        margin: "20px auto",
-        border: "none",
-      }}
-    />
-    // For local development
-    // <iframe
-    //   src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
-    //   style={{
-    //     width: "236px",
+    // <OAuthIframe
+    //   sourceType={sourceType}
+    //   accessToken={accessToken}
+    //   orgId={orgId}
+    //   styles={{
+    //     width: "308px",
     //     height: "42px",
-    //     margin: "20px auto 8px auto",
+    //     margin: "20px auto",
     //     border: "none",
     //   }}
     // />
+    // For local development
+    <LocalOAuthFrame sourceType={sourceType} accessToken={accessToken} orgId={orgId} />
   );
 }

@@ -44,6 +44,7 @@ export default scss`
   >.items {
     display: grid;
     gap: 12px;
+    justify-content: center;
     grid-template-columns: repeat(auto-fit, 120px);
 
     >.item {

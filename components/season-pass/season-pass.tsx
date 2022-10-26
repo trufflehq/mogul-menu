@@ -90,7 +90,7 @@ export default function SeasonPass(props) {
     shouldUseLevelsZeroPrefix,
     premiumAccentColor,
     premiumBgColor = "",
-    numTiles = 4,
+    numTiles = 3,
     xpImageObj,
   } = props;
 

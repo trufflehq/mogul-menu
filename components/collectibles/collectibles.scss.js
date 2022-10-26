@@ -27,6 +27,7 @@ export default scss`
     >.collectibles {
       display: grid;
       grid-template-columns: repeat(auto-fit, 112px);
+      justify-content: center;
       grid-gap: 32px;
     }
   }
