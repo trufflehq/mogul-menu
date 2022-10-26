@@ -48,6 +48,12 @@ export default scss`
   min-width: 0;
   display: flex;
   flex-direction: column;
+
+  grid-column: span 2;
+
+  @media (min-width: 768px) {
+    grid-column: span 1;
+  }
   
   > .name {
     font-weight: 600;
