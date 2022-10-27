@@ -23,6 +23,18 @@ function getOrientation(orientationType: OrientationType) {
   }
 }
 
+function getOrientationByWindow() {
+  const angle = window.orientation;
+  switch (angle) {
+    case 0:
+    case 180:
+      return "portrait";
+    case 90:
+    case -90:
+      return "landscape";
+  }
+}
+
 const LAND_SCAPE_STYLESHEET = `
 .truffle-landscape ytm-app {
   padding-top: 0 !important;
@@ -133,12 +145,24 @@ export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
 
   useEffect(() => {
     window.addEventListener("orientationchange", (event) => {
-      // jumper.call("platform.log", `orientationchange ${JSON.stringify(event)}`);
-      // jumper.call(
-      //   "platform.log",
-      //   `orientationchange ${JSON.stringify(event?.target?.screen?.orientation?.angle)}`,
-      // );
-      const orientation = getOrientation(event?.target?.screen?.orientation?.type);
+      jumper.call(
+        "platform.log",
+        `window orientationchange ${window?.orientation} ${
+          JSON.stringify(event.target?.screen?.orientation)
+        }`,
+      );
+
+      let orientation;
+      // works on every device/browser except safari
+      if (event.target?.screen?.orientation) {
+        orientation = getOrientation(event?.target?.screen?.orientation?.type);
+        jumper.call("platform.log", `window orientationchange orientation ${orientation}`);
+        // works on safari
+      } else if (window?.orientation !== undefined) {
+        orientation = getOrientationByWindow();
+        jumper.call("platform.log", `window orientationchange orientationByWindow ${orientation}`);
+      }
+
       if (orientation) {
         jumper.call(
           "platform.log",
@@ -150,16 +174,6 @@ export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
             : PORTRAIT_LAYOUT_CONFIG_STEPS,
         });
       }
-      //     browserComms.call('layout.setDefaultLayoutConfigSteps', { layoutConfigSteps })
-
-      // window.ReactNativeWebView.postMessage(
-      //   JSON.stringify({
-      //     type: "jumper:call:orientationchange",
-      //     payload: {
-      //       event
-      //     },
-      //   })
-      // );
     });
 
     return () => window?.removeEventListener("orientationchange");
