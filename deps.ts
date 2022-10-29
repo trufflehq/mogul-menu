@@ -12,6 +12,7 @@ export {
   useMutation,
   usePollingQuery,
   useQuery,
+  useSubscription,
 } from "https://tfl.dev/@truffle/api@~0.1.0/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
