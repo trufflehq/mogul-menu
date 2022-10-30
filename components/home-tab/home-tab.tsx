@@ -1,12 +1,4 @@
-import {
-  abbreviateNumber,
-  gql,
-  Icon,
-  ImageByAspectRatio,
-  React,
-  useStyleSheet,
-  useSubscription,
-} from "../../deps.ts";
+import { abbreviateNumber, Icon, ImageByAspectRatio, React, useStyleSheet } from "../../deps.ts";
 
 import styleSheet from "./home-tab.scss.js";
 
@@ -122,24 +114,7 @@ export default function HomeTab() {
         <PredictionTile orgUserWithRoles$={orgUserWithRoles$} />
         <CPSpentTile orgUserWithRoles$={orgUserWithRoles$} />
         <KothTile orgUserWithRoles$={orgUserWithRoles$} />
-        <MemoizedSubscriptionTest />
       </div>
     </div>
   );
 }
-
-const MemoizedSubscriptionTest = React.memo(() => {
-  const [orgKothConfigTest] = useSubscription({
-    query: gql`subscription KOTHOrgQuery {
-      org {
-        orgConfig {
-          data
-        }
-      }
-    }`,
-  });
-
-  console.log("orgKothConfigTest", orgKothConfigTest);
-
-  return <></>;
-});
