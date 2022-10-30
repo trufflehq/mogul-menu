@@ -122,24 +122,24 @@ export default function HomeTab() {
         <PredictionTile orgUserWithRoles$={orgUserWithRoles$} />
         <CPSpentTile orgUserWithRoles$={orgUserWithRoles$} />
         <KothTile orgUserWithRoles$={orgUserWithRoles$} />
-        {/* <MemoizedSubscriptionTest /> */}
+        <MemoizedSubscriptionTest />
       </div>
     </div>
   );
 }
 
-// const MemoizedSubscriptionTest = React.memo(() => {
-//   const [orgKothConfigTest] = useSubscription({
-//     query: gql`subscription KOTHOrgQuery {
-//       org {
-//         orgConfig {
-//           data
-//         }
-//       }
-//     }`,
-//   });
+const MemoizedSubscriptionTest = React.memo(() => {
+  const [orgKothConfigTest] = useSubscription({
+    query: gql`subscription KOTHOrgQuery {
+      org {
+        orgConfig {
+          data
+        }
+      }
+    }`,
+  });
 
-//   console.log("orgKothConfigTest", orgKothConfigTest);
+  console.log("orgKothConfigTest", orgKothConfigTest);
 
-//   return <></>;
-// });
+  return <></>;
+});
