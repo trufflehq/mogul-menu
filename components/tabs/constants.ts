@@ -4,6 +4,7 @@ import TestTab from "../../components/test-tab/test-tab.tsx";
 import CollectionTab from "../../components/collection-tab/collection-tab.tsx";
 import SeasonPassTab from "../../components/season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../../components/channel-points-shop-tab/channel-points-shop-tab.tsx";
+import ChatTab from "../../components/chat-tab/chat-tab.tsx";
 
 export const DEFAULT_TABS = [
   // {
@@ -17,6 +18,12 @@ export const DEFAULT_TABS = [
     slug: "home",
     imgUrl: "https://cdn.bio/assets/images/features/browser_extension/home.svg",
     $el: HomeTab,
+  },
+  {
+    text: "Chat",
+    slug: "chat",
+    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/support-chat-light.svg",
+    $el: ChatTab,
   },
   {
     text: "Activities",

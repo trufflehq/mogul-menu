@@ -33,8 +33,10 @@ export default function OAuthConnectionPage(
       <div className="c-oauth-connection-page">
         <ImageByAspectRatio
           imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
-          widthPx={576}
-          height={300}
+          height={221}
+          isStretch
+          isCentered
+          aspectRatio={390 / 221}
         />
         <div className="info">
           <div className="title">
@@ -115,18 +117,18 @@ function OAuthButton(
 
   // console.log(`oauth hostname ${process?.env?.OAUTH_HOSTNAME}`);
   return (
-    <OAuthIframe
-      sourceType={sourceType}
-      accessToken={accessToken}
-      orgId={orgId}
-      styles={{
-        width: "308px",
-        height: "42px",
-        margin: "20px auto",
-        border: "none",
-      }}
-    />
+    // <OAuthIframe
+    //   sourceType={sourceType}
+    //   accessToken={accessToken}
+    //   orgId={orgId}
+    //   styles={{
+    //     width: "308px",
+    //     height: "42px",
+    //     margin: "20px auto",
+    //     border: "none",
+    //   }}
+    // />
     // For local development
-    // <LocalOAuthFrame sourceType={sourceType} accessToken={accessToken} orgId={orgId} />
+    <LocalOAuthFrame sourceType={sourceType} accessToken={accessToken} orgId={orgId} />
   );
 }
