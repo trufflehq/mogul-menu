@@ -11,8 +11,13 @@ export default scss`
   @include flex-column;
   
   box-sizing: border-box;
-  padding: 48px 32px;
+  // padding: 12px 32px;
+  padding: 0px;
   
+
+  @media (min-width: 768px) {
+    padding: 48px 32px;
+  }
 
   > .info {
     @include flex-column;
@@ -20,8 +25,8 @@ export default scss`
     align-items: center;
     justify-content: center; 
     text-align: center;
-    font-size: 16px;
-    margin-top: 40px;
+    font-size: 14px;
+    margin-top: 32px;
     color: var(--mm-color-text-bg-primary);
 
     > .title {

@@ -59,6 +59,7 @@ export {
   useExtensionInfo,
   useExtensionInfo$,
 } from "https://tfl.dev/@truffle/utils@~0.0.22/embed/mod.ts";
+export type { ExtensionInfo } from "https://tfl.dev/@truffle/utils@~0.0.22/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
@@ -106,6 +107,7 @@ export type {
   Observable,
   ObservableComputed,
   ObservableObject,
+  ObservablePrimitive,
   ObservablePrimitiveChild,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
 export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
