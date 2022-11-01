@@ -1,6 +1,6 @@
 export default {
   name: "@truffle/native-mogul-menu",
-  version: "0.2.25",
+  version: "0.2.26",
   // name: "@truffle-dev-early-access/mogul-menu",
   // version: "0.5.6",
   // staging
