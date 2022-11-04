@@ -31,6 +31,7 @@ export default scss`
     justify-content: flex-end;
     flex: 1;
     margin-left: 8px;
+    gap: 5px;
   }
 }
 `;

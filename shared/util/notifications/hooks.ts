@@ -1,4 +1,14 @@
-import { useEffect, useMemo, useMutation, useQuery } from "../../../deps.ts";
+import { useActionBanner } from "../../../components/action-banner/hooks.ts";
+import SetupNotificationsBanner from "../../../components/notifications/setup-notifications-banner.tsx";
+import {
+  React,
+  useEffect,
+  useMemo,
+  useMutation,
+  useQuery,
+  useRef,
+  useSelector,
+} from "../../../deps.ts";
 import { NotificationTopic } from "../../../types/notification.types.ts";
 import {
   DELETE_FCM_TOKEN_MUTATION,
@@ -10,6 +20,8 @@ import {
   UPSERT_NOTIFICATION_SUBSCRIPTION_MUTATION,
 } from "../../gql/notifications.gql.ts";
 import { useFcmTokenManager } from "../../mod.ts";
+import { useUserKV } from "../kv/hooks.ts";
+import { HAS_SEEN_NOTIFICATION_SETUP_BANNER, SETUP_NOTIFICATIONS_BANNER } from "./constants.ts";
 
 export function useNotificationTopics() {
   const [{ data: notificationTopicData, fetching }] = useQuery({ query: NOTIFICATION_TOPIC_QUERY });
@@ -105,4 +117,22 @@ export function useDesktopNotificationSetting() {
   };
 
   return { isDesktopNotificationsEnabled, setDesktopNotificationPref };
+}
+
+export function useFirstTimeNotificationBanner() {
+  const { value$: hasSeenBanner$ } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER);
+  const hasSeenBanner = useSelector(hasSeenBanner$);
+  const actionBannerIdRef = useRef("");
+
+  const { displayActionBanner, removeActionBanner } = useActionBanner();
+
+  useEffect(() => {
+    if (hasSeenBanner) {
+      removeActionBanner(actionBannerIdRef.current);
+    } else {
+      actionBannerIdRef.current = displayActionBanner(
+        React.createElement(SetupNotificationsBanner, { actionBannerIdRef }),
+      ) ?? "";
+    }
+  }, [hasSeenBanner]);
 }
