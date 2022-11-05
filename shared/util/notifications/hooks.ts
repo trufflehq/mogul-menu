@@ -131,6 +131,7 @@ export function useFirstTimeNotificationBanner() {
       removeActionBanner(actionBannerIdRef.current);
     } else {
       actionBannerIdRef.current = displayActionBanner(
+        // we're using `React.createElement` here because this code is not in a tsx file
         React.createElement(SetupNotificationsBanner, { actionBannerIdRef }),
       ) ?? "";
     }
