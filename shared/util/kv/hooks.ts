@@ -1,4 +1,4 @@
-import { signal, useComputed, useEffect, useMutation, useQuerySignal } from "../../../deps.ts";
+import { signal, useComputed, useMutation, useQuerySignal } from "../../../deps.ts";
 import { USER_KV_MUTATION, USER_KV_QUERY } from "../../gql/kv.ts";
 
 export function useUserKV(key: string) {
@@ -11,7 +11,7 @@ export function useUserKV(key: string) {
 
   const [_, executeKVUpsertMutation] = useMutation(USER_KV_MUTATION);
   const setUserKV = (value: string) =>
-    executeKVUpsertMutation({ key, value }, { additionalTypenames: ["KeyValue"] });
+    executeKVUpsertMutation({ key, value }, { additionalTypenames: ["OrgUser"] });
 
   return { value$, setUserKV };
 }

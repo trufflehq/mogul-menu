@@ -14,6 +14,8 @@ import {
 } from "../../../deps.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
+import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
+import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
@@ -68,7 +70,19 @@ function OAuthButton(
 
     pushPage(
       <ChatSettingsPage
-        onContinue={clearPageStack}
+        onContinue={() => {
+          pushPage(
+            <NotificationsEnablePage
+              onContinue={(shouldSetupNotifications) => {
+                if (shouldSetupNotifications) {
+                  pushPage(<NotificationTopicPage onContinue={clearPageStack} />);
+                } else {
+                  clearPageStack();
+                }
+              }}
+            />,
+          );
+        }}
       />,
     );
   };
