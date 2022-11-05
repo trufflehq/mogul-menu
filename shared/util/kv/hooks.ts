@@ -5,9 +5,7 @@ export function useUserKV(key: string) {
   const userKV$ = useQuerySignal(USER_KV_QUERY, {
     key,
   });
-  const value$ = useComputed<string>(() =>
-    userKV$?.orgUser?.keyValue?.value?.get?.() ?? signal(undefined)
-  );
+  const value$ = useComputed<string>(() => userKV$?.orgUser?.keyValue?.value?.get());
 
   const [_, executeKVUpsertMutation] = useMutation(USER_KV_MUTATION);
   const setUserKV = (value: string) =>
