@@ -29,10 +29,14 @@ function ThemeComponent({
   fontFamily = DEFAULT_FONT_FAMILY,
   secondaryFontFamily = SECONDARY_FONT_FAMILY,
 }) {
+<<<<<<< HEAD
   useGoogleFontLoader(() => [fontFamily, secondaryFontFamily, "Inter"], [
     fontFamily,
     secondaryFontFamily,
   ]);
+=======
+  useGoogleFontLoader(() => [fontFamily, secondaryFontFamily, "Inter"], [fontFamily, secondaryFontFamily]);
+>>>>>>> 7880ccb (wip: progress on chat)
 
   return (
     <>

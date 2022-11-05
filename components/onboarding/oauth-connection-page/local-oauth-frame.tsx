@@ -1,7 +1,7 @@
 import { _setAccessTokenAndClear, ConnectionSourceType, React } from "../../../deps.ts";
 
-const LOCAL_HOSTNAME = "https://local-oauth.rileymiller.dev";
-// const LOCAL_HOSTNAME = "https://mobile-third-party-oauth.truffle.vip";
+// const LOCAL_HOSTNAME = "https://local-oauth.rileymiller.dev";
+const LOCAL_HOSTNAME = "https://mobile-third-party-oauth.truffle.vip";
 
 export default function LocalOAuthFrame(
   { sourceType, accessToken, orgId }: {

@@ -1,7 +1,7 @@
 import { scss } from "../../deps.ts";
 
 export default scss`
-.c-chat-tab {
+.c-youtube-chat {
   display: grid;
   grid-template-columns: 1fr;
   flex: 1;

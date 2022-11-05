@@ -36,7 +36,7 @@ export default scss`
       > .portrait-collapsed-button {
         transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
         display: flex;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
         margin-top: 40px;
         padding: 4px;
@@ -44,7 +44,7 @@ export default scss`
         color: rgba(0, 0, 0, 1);
         border: 1px solid rgba(0, 0, 0, 1);
         border-radius: 40px;
-        width: fit-content;
+        width: 28%;
         margin: 0 auto 12px auto; // 12px is the margin between the bottom of the menu and the bottom of the screen
         box-sizing: border-box;
         height: 40px;
@@ -57,7 +57,7 @@ export default scss`
         }
 
         > .title {
-          margin-left: 16px;
+          margin-left: 6px;
         }
       }
 

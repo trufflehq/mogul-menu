@@ -7,8 +7,8 @@ import {
   React,
   useEffect,
   useSelector,
+  useSignal,
   useStyleSheet,
-  useSignal
 } from "../../../deps.ts";
 import styleSheet from "./native-menu.scss.js";
 
@@ -64,6 +64,7 @@ export default function NativeMenu(props: MogulMenuProps) {
   const orientation = useSelector(() => orientation$.get());
 
   useEffect(() => {
+    document.body.dataset.swipeThreshold = "250";
     document.addEventListener("swiped-down", function (e) {
       e.stopPropagation();
       e.preventDefault();
@@ -80,28 +81,14 @@ export default function NativeMenu(props: MogulMenuProps) {
           isCollapsed: true,
         });
       }
-      // console.log(e.target); // element that was swiped
-      // console.log(e?.detail); // see event data below
     });
 
     return () => document.removeEventListener("swiped-down", () => {}, true); // TODO - remove this
   }, []);
 
-  // will need a way to expand/collapse the menu and will need to persist these settings to local storage
-  // when switching between orientations
-
-  // orientation$.onChange((change) => {
-  //   jumper.call("platform.log", `orientation$ ${change}`);
-  // });
-
-  // jumper.call("platform.log", `orientation$ ${orientation}`);
-
   const onOpen = () => {
     isCollapsed$.set(false);
     jumper.call("platform.log", "open");
-
-    // need some way to scroll back up to the top of the menu when opening it
-    window?.scrollTo(0, 0);
 
     changeFrameOrientation({
       orientation: getOrientationByWindow(),

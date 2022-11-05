@@ -107,6 +107,7 @@ export {
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
 export type {
   Observable,
+  ObservableBaseFns,
   ObservableComputed,
   ObservableObject,
   ObservablePrimitive,
