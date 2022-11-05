@@ -4,6 +4,7 @@ export {
   _clearCache,
   _setAccessTokenAndClear,
   getAccessToken,
+  getClient,
   gql,
   pollingQueryObservable,
   query,
@@ -12,7 +13,8 @@ export {
   useMutation,
   usePollingQuery,
   useQuery,
-} from "https://tfl.dev/@truffle/api@~0.1.0/mod.ts";
+  useSubscription,
+} from "https://tfl.dev/@truffle/api@0.1.19/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
@@ -105,6 +107,7 @@ export {
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
 export type {
   Observable,
+  ObservableBaseFns,
   ObservableComputed,
   ObservableObject,
   ObservablePrimitive,
@@ -121,5 +124,13 @@ export {
   useUrqlQuerySignal,
 } from "https://tfl.dev/@truffle/state@~0.0.5/mod.ts";
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
-export type { CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
+export type {
+  Client,
+  CombinedError,
+  OperationContext,
+  TypedDocumentNode,
+  UseQueryResponse,
+  UseQueryState,
+  useSubscription as useSubscriptionType,
+} from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";

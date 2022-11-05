@@ -34,14 +34,18 @@ export const EXPANDED_LANDSCAPE_MENU_STYLES = {
 };
 
 export const PORTRAIT_STYLESHEET = `
-.truffle-portrait-open  .player-container .video-stream  {
+.truffle-portrait .player-container .video-stream  {
   top: 0 !important;
   height: 100% !important;
   width: 100% !important;
   bottom: 0 !important;
 }
 
-.truffle-portrait-open .html5-video-container {
+.truffle-portrait ytm-promoted-sparkles-web-renderer {
+  display: none !important;
+}
+
+.truffle-portrait .html5-video-container {
   height: 100% !important;
   width: 100% !important;
 }
@@ -89,6 +93,10 @@ export const LANDSCAPE_RIGHT_COLUMN_STYLESHEET = `
   overflow: auto;
 }
 
+.truffle-landscape ytm-promoted-sparkles-web-renderer {
+  display: none !important;
+}
+
 .truffle-landscape ytm-app ytm-mobile-topbar-renderer {
   display: none;
 }
@@ -114,7 +122,7 @@ export const LANDSCAPE_RIGHT_COLUMN_STYLESHEET = `
 }
 
 .truffle-landscape-collapsed ytm-app ytm-single-column-watch-next-results-renderer {
-  max-width: 3%;
+  max-width: 5%;
   position: absolute;
   right: 0;
 }
@@ -190,6 +198,12 @@ export const LANDSCAPE_VIDEO_PLAYER_STYLESHEET = `
 .player-controls-bottom .fullscreen-icon {
   display: none !important;
 }
+
+/* disable settings cog, breaks the layout atm */
+.player-controls-top .player-settings-icon {
+  display: none !important;
+}
+
 `;
 
 export const LANDSCAPE_STYLESHEET = `

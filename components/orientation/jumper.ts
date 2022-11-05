@@ -2,8 +2,8 @@ import { jumper } from "../../deps.ts";
 
 import {
   BASE_MENU_STYLES,
-  EXPANDED_LANDSCAPE_MENU_STYLES,
   COLLAPSED_PORTRAIT_MENU_STYLES,
+  EXPANDED_LANDSCAPE_MENU_STYLES,
   EXPANDED_PORTRAIT_MENU_STYLES,
   MENU_ORIENTATION_STYLESHEET,
 } from "./styles.ts";
@@ -43,7 +43,7 @@ function getMenuStyleSteps(orientation: "landscape" | "portrait", isCollapsed: b
 // need to add collapsed styles and steps
 
 export const PORTRAIT_LAYOUT_CONFIG_STEPS = [
-  { action: "scrollToTop", value: null },
+  // { action: "scrollToTop", value: null },
 
   ...getMenuStyleSteps("portrait", false), // add collapsed styles
 
