@@ -1,10 +1,14 @@
 import {
+  For,
   getClient as _getClient,
   gql,
   jumper,
+  ObservableArray,
   ObservableBaseFns,
   React,
   useComputed,
+  useObservable,
+  useObserve,
   useRef,
   useSelector,
   useSignal,
@@ -42,7 +46,7 @@ const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMes
 }`;
 
 interface YouTubeChatMessage {
-  id: string;
+  id: string | number;
   youtubeUserId: string;
   data: {
     id: string;
@@ -107,7 +111,34 @@ function getEmoteUrl(emote: Emote) {
   }
 }
 
+const splitPattern = /[\s.,?!]/;
+function splitWords(string: string): string[] {
+  const result: string[] = [];
+  let startOfMatch = 0;
+  for (let i = 0; i < string.length - 1; i++) {
+    if (splitPattern.test(string[i]) !== splitPattern.test(string[i + 1])) {
+      result.push(string.substring(startOfMatch, i + 1));
+      startOfMatch = i + 1;
+    }
+  }
+  result.push(string.substring(startOfMatch));
+  return result;
+}
+
 function formatMessage(text: string, emoteMap: Map<string, string>) {
+  const words = splitWords(text);
+  let msg = "";
+  for (const word of words) {
+    const emote = emoteMap.get(word);
+    if (emote) {
+      msg += `<img class="truffle-emote" src="${emote}" />`;
+    } else {
+      msg += word;
+    }
+  }
+
+  console.log("msg", msg);
+  return msg;
 }
 
 export default function YoutubeChat(
@@ -118,22 +149,25 @@ export default function YoutubeChat(
 ) {
   useStyleSheet(styleSheet);
   const iframeRef = useRef<HTMLIFrameElement>(undefined!);
-  const messages$ = useSignal<YouTubeChatMessage[]>([]);
+  // const messages$ = useObservable<YouTubeChatMessage[]>(new Set([]));
+  const messages$ = useSignal<YouTubeChatMessage[]>(new Set([]));
 
-  const emoteMap$ = useComputed(async () => {
+  // const
+  const emoteMap$ = useSignal<Map<string, string>>(new Map());
+  useObserve(async () => {
     const channelId = channelId$.get();
     const emoteMap = new Map<string, string>();
 
     const baseEmotesUrl = `https://v2.truffle.vip/gateway/emotes`;
-    // NOTE: this fetches a *huge* array of users and doing
-    // any serialization / unserialization of that is going to be slow
-    // and eat up CPU. storing in cache is slow, as is postMessaging it
+
     const url = channelId ? `${baseEmotesUrl}/c/${channelId}` : baseEmotesUrl;
+    jumper.call("platform.log", `emotes channelId ${channelId} ${url}`);
+    console.log(`emotes channelId ${channelId} ${url}`);
     const res = await fetch(url);
     const emotes = await res.json();
 
-    console.log("emotes", emotes);
-    jumper.call("platform.log", `emotes: ${JSON.stringify(emotes)}`);
+    // console.log("emotes", emotes);
+    // jumper.call("platform.log", `emotes: ${JSON.stringify(emotes)}`);
     for (const emote of emotes) {
       // const emoji = generateYoutubeEmoji(emote);
       const url = getEmoteUrl(emote);
@@ -142,10 +176,8 @@ export default function YoutubeChat(
       }
     }
 
-    return emoteMap;
+    emoteMap$.set(emoteMap);
   });
-
-  // console.log("emoteMap$", emoteMap$.get());
 
   useSubscription({
     query: YOUTUBE_CHAT_MESSAGE_ADDED,
@@ -154,14 +186,9 @@ export default function YoutubeChat(
     },
   }, (state, response: { youtubeChatMessageAdded: YouTubeChatMessage }) => {
     if (response.youtubeChatMessageAdded) {
-      // const formattedMessage = formatMessage(
-      //   response.youtubeChatMessageAdded.data.message,
-      //   emoteMap$.get(),
-      // );
-
       messages$.set((prev) => {
         let newMessages = [response.youtubeChatMessageAdded, ...prev];
-        if (newMessages.length > 150) {
+        if (newMessages.length > 250) {
           newMessages = newMessages.slice(-50);
         }
         return newMessages;
@@ -171,32 +198,52 @@ export default function YoutubeChat(
     }
   });
 
-  const messages = messages$.get();
-  // console.log("messages", messages);
-
   const videoId = useSelector(() => videoId$.get());
+
+  const handleScroll = (e) => {
+    const scrollTop = e.target.scrollTop;
+    const isPinnedToBottom = scrollTop < 0;
+    if (isPinnedToBottom) {
+      console.log("not bottom");
+    } else {
+      console.log("pinned to bottom");
+    }
+  };
+
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <div className="messages">
-        {messages.map((message) => (
-          <div className="message">
-            <span className="author">
-              {message.data?.author.badges.map((badge) => getBadge(badge.badge))}
-              <span
-                className="name"
-                style={{
-                  color: getUsernameColor(message.data?.author?.name),
-                }}
-              >
-                {message.data?.author?.name}
-                <span className="separator">
-                  :
+        <div className="inner" onScroll={handleScroll}>
+          <For each={messages$}>
+            {(message) => (
+              <div className="message">
+                <span className="author">
+                  {message.data?.peek().author.badges.map((badge) => getBadge(badge.badge))}
+                  <span
+                    className="name"
+                    style={{
+                      color: getUsernameColor(message.data?.peek()?.author?.name),
+                    }}
+                  >
+                    {message.data?.peek()?.author?.name}
+                    <span className="separator">
+                      :
+                    </span>
+                  </span>
                 </span>
-              </span>
-            </span>
-            <span className="message-text">{message.data?.message}</span>
-          </div>
-        ))}
+                {/* <span className="message-text">{message.data?.peek()?.message}</span> */}
+                <span
+                  className="message-text"
+                  dangerouslySetInnerHTML={{
+                    __html: formatMessage(message.data?.peek()?.message, emoteMap$.peek()),
+                  }}
+                >
+                  {/* {formatMessage(message.data?.peek()?.message, emoteMap$.peek())} */}
+                </span>
+              </div>
+            )}
+          </For>
+        </div>
       </div>
       <div className="youtube">
         <iframe

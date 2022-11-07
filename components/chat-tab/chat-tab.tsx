@@ -54,8 +54,10 @@ export default function ChatTab() {
   const videoId$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
 
-    return extensionInfo?.pageInfo ? getVideoId(extensionInfo.pageInfo) : null;
-    // return "tdfuwM-Ntu0";
+    return "m4u4EKzebFQ"; // riley
+    // return "W23qQlhqepo"; // lupo
+    // return extensionInfo?.pageInfo ? getVideoId(extensionInfo.pageInfo) : null;
+    // return "tdfuwM-Ntu0";s
   });
 
   const channelId$ = useComputed(() => {
@@ -65,16 +67,16 @@ export default function ChatTab() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
-    return channelId;
-    // return "UCvWU1K29wCZ8j1NsXsRrKnA";
+    return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
+    // return "UCNF0LEQ2abMr0PAX3cfkAMg";
   });
 
   // console.log("chatMessages", chatMessages);
 
   const videoId = videoId$.get();
-  jumper.call("platform.log", `channel id${channelId$.get()}`);
+  // jumper.call("platform.log", `channel id${channelId$.get()}`);
 
-  console.log("channelId$", channelId$.get());
+  // console.log("channelId$", channelId$.get());
 
   return <YoutubeChat videoId$={videoId$} channelId$={channelId$} />;
   // return videoId ? <MemoizedChatFrame videoId={videoId} /> : null;

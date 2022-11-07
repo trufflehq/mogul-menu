@@ -99,14 +99,17 @@ export * as RadioGroup from "https://npm.tfl.dev/@radix-ui/react-radio-group";
 export {
   Computed,
   enableLegendStateReact,
+  For,
   Memo,
   observer,
   useComputed,
+  useObservable,
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
 export type {
   Observable,
+  ObservableArray,
   ObservableBaseFns,
   ObservableComputed,
   ObservableObject,
