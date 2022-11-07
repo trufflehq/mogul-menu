@@ -2,8 +2,8 @@ import { scss } from "../../deps.ts";
 
 export default scss`
 .c-youtube-chat {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   flex: 1;
   position: relative;
   height: 100%;
@@ -12,49 +12,81 @@ export default scss`
 
   .messages {
     display: flex;
-    flex-direction: column-reverse;
-    overflow-y: auto;
-    padding: 8px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 112px;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 8px 8px 112px 8px;
+    height: 100%;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 112px;
 
-    > .message {
-      display: block;
-      font-size: 13px;
-      line-height: 16px;
-      padding: .3rem 1rem; /* from twitch */
-      // align-items: flex-start;
-      font-family: Inter;
-      > .author {
-        display: inline-block;
-        align-items: baseline;
-        margin-right: 4px;
-        gap: 2px;
+    > .inner {
+      display: flex;
+      flex-direction: column-reverse;
+      height: 100%;
+      overflow-y: scroll; /* has to be scroll, not auto */
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      z-index: 2;
+      box-sizing: border-box;
+      position: relative;
+      padding-bottom: 8px;
 
-        > .badge {
-          width: 16px;
-          height: 16px;
-          margin-bottom: -2px;
+      > .message {
+        display: block;
+        font-size: 13px;
+        line-height: 16px;
+        // min-height: 24px;
+        padding: .3rem 1rem; /* from twitch */
+        word-wrap: break-word;
+        word-break: break-word;
+        // align-items: flex-start;
+        font-family: Inter;
+        > .author {
+          display: inline-block;
+          align-items: baseline;
           margin-right: 4px;
-          box-sizing: border-box;
-        }
+          gap: 2px;
 
-        
-        > .name {
-          font-weight: 700;
-   
-          > .separator {
-            color: #efeff1;
+          > .badge {
+            width: 16px;
+            height: 16px;
+            margin-bottom: -2px;
+            margin-right: 4px;
+            box-sizing: border-box;
+          }
+
+          
+          > .name {
+            font-weight: 700;
+    
+            > .separator {
+              color: #efeff1;
+            }
           }
         }
-      }
 
-      > .message-text {
-        // display: flex;
-        // align-items: center;
+        > .message-text {
+          word-wrap: break-word;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          overflow: hidden;
+          min-height: 24px;
+
+          // display: flex;
+          // align-items: center;
+
+          .truffle-emote {
+            width: auto !important;
+            height: 28px;
+            margin: -1px 2px 1px;
+            vertical-align: middle;
+          }
+        }
       }
     }
   }
@@ -62,10 +94,13 @@ export default scss`
   .youtube {
     clip-path: inset(calc(100% - 112px) 0 0 0);
     position: fixed;
+    // position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
+    z-index: 1;
+
 
     > iframe {
       width: 100%;
@@ -79,6 +114,10 @@ export default scss`
   .c-chat-tab {
     max-height: 100vw;
     min-height: calc(100vw + 80px); /* cap the height of the menu body */
+    
+    .c-youtube-chat .youtube {
+      position: fixed !important;
+    }
   }
 }
 `;
