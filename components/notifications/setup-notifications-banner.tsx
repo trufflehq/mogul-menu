@@ -29,8 +29,8 @@ export default function SetupNotificationsBanner(
     <ActionBanner
       action={
         <>
+          <Button onClick={negativeClickHandler}>No</Button>
           <Button onClick={affirmativeClickHandler}>Yes! Set them up</Button>
-          <Button onClick={negativeClickHandler}>Nah</Button>
         </>
       }
     >
