@@ -1,8 +1,9 @@
-import { React, useState, useEffect } from "../../deps.ts";
+import { React, useEffect, useSelector, useSignal, useState } from "../../deps.ts";
 import { useCurrentTab, useTabButton, useTabSlug } from "../tabs/mod.ts";
 import { getMenuPosition, useMenu } from "../menu/mod.ts";
 import { useSnackBar } from "../snackbar/mod.ts";
 import Button from "../base/button/button.tsx";
+import Input from "../base/input/input.tsx";
 import { SnackBar } from "../snackbar/mod.ts";
 import Dialog from "../base/dialog/dialog.tsx";
 import Select from "../base/select/select.tsx";
@@ -18,6 +19,7 @@ import DefaultDialogContentFragment from "../dialogs/content-fragments/default/d
 import Switch from "../base/switch/switch.tsx";
 import { Page } from "../page-stack/mod.ts";
 import { useFcmTokenManager } from "../../shared/util/firebase/fcm.ts";
+import { useUserKV } from "../../shared/mod.ts";
 
 const TAB_BAR_BUTTON = "tab-bar-button";
 
@@ -41,7 +43,7 @@ export default function TestTab() {
   const [selectedValue, setSelectedValue] = useState();
   const { state: menuState, updateMenuPosition } = useMenu();
   const [menuPositionValue, setMenuPositionValue] = useState(
-    getMenuPosition(menuState)
+    getMenuPosition(menuState),
   );
   const additionalData = { value: selectedValue };
 
@@ -57,7 +59,7 @@ export default function TestTab() {
   const snackBarHandler = () => {
     console.log("enqueueing snackbar");
     enqueueSnackBar(
-      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />
+      <SnackBar message={`Congrats! You won. ${count}`} value="1000 cp" />,
     );
     setCount((prev) => prev + 1);
     setSelected((prev) => !prev);
@@ -77,12 +79,10 @@ export default function TestTab() {
   const actionBannerHandler = () => {
     const actionBannerId = displayActionBanner(
       <ActionBanner
-        action={
-          <Button onClick={() => removeActionBanner(actionBannerId)}></Button>
-        }
+        action={<Button onClick={() => removeActionBanner(actionBannerId)}></Button>}
       >
         Finish setting up your account
-      </ActionBanner>
+      </ActionBanner>,
     );
   };
 
@@ -100,7 +100,7 @@ export default function TestTab() {
           primaryText="Hello"
           secondaryText="How are you?"
         />
-      </Dialog>
+      </Dialog>,
     );
   };
 
@@ -109,7 +109,7 @@ export default function TestTab() {
   const addButtonHandler = () => {
     addButton(
       TAB_BAR_BUTTON,
-      <Button onClick={removeButtonHandler}>Remove button</Button>
+      <Button onClick={removeButtonHandler}>Remove button</Button>,
     );
   };
 
@@ -117,6 +117,9 @@ export default function TestTab() {
   useEffect(() => {
     console.log("[mm] new fcm token", fcmToken);
   }, [fcmToken]);
+
+  const userKVInput$ = useSignal("");
+  const { value$: userKVValue$, setUserKV } = useUserKV("mogul-menu:test-key");
 
   return (
     <div className="z-home-tab">
@@ -164,6 +167,14 @@ export default function TestTab() {
             <Option value={position}>{position}</Option>
           ))}
         </Select>
+      </div>
+      <div>
+        <h3>User KV</h3>
+        <Input label="Value" value$={userKVInput$} />
+        <div>Value: {userKVValue$.get()}</div>
+        <div>
+          <Button onClick={() => setUserKV(userKVInput$.get())}>Set user KV</Button>
+        </div>
       </div>
     </div>
   );

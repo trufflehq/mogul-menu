@@ -1,32 +1,15 @@
 import { React, useStyleSheet } from "../../../deps.ts";
-import { useNotificationTopics } from "../../../shared/util/notifications/hooks.ts";
 import { useDesktopNotificationSetting } from "../../../shared/mod.ts";
 import Switch from "../../base/switch/switch.tsx";
 import Page from "../../page-stack/page.tsx";
 import styleSheet from "./notification-settings-page.scss.js";
-import { NotificationTopic } from "../../../types/notification.types.ts";
+import NotificationTopicSettings from "../../notifications/notification-topic-settings/notification-topic-settings.tsx";
 
 export default function NotificationSettingsPage() {
   useStyleSheet(styleSheet);
 
-  const {
-    notificationTopics,
-    subscribeToNotificationTopic,
-    unSubscribeFromNotificationTopic,
-  } = useNotificationTopics();
   const { isDesktopNotificationsEnabled, setDesktopNotificationPref } =
     useDesktopNotificationSetting();
-
-  const subscriptionSwitchToggleHandler = async (
-    topic: NotificationTopic,
-    subscribe: boolean,
-  ) => {
-    if (subscribe) {
-      await subscribeToNotificationTopic(topic);
-    } else {
-      await unSubscribeFromNotificationTopic(topic);
-    }
-  };
 
   return (
     <Page title="Notifications">
@@ -51,20 +34,7 @@ export default function NotificationSettingsPage() {
           <div className="description mm-text-body-1">
             Choose which notifications to receive
           </div>
-          <div className="notification-topic-setting-rows">
-            {notificationTopics?.map((topic) => (
-              <div className="row">
-                <div className="name">{topic.name}</div>
-                <div className="input">
-                  <Switch
-                    showIsLoading
-                    value={topic.isSubscribed}
-                    onChange={(enabled: boolean) => subscriptionSwitchToggleHandler(topic, enabled)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <NotificationTopicSettings />
         </div>
       </div>
     </Page>
