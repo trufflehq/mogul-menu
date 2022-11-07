@@ -1,4 +1,4 @@
-import { signal, useComputed, useMutation, useQuerySignal } from "../../../deps.ts";
+import { useComputed, useMutation, useQuerySignal } from "../../../deps.ts";
 import { USER_KV_MUTATION, USER_KV_QUERY } from "../../gql/kv.ts";
 
 export function useUserKV(key: string) {

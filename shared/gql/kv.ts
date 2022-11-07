@@ -1,6 +1,15 @@
 import { gql } from "../../deps.ts";
 
-export const USER_KV_QUERY = gql`
+interface OrgUserKV {
+  orgUser: {
+    keyValue: {
+      key: string;
+      value: string;
+    };
+  };
+}
+
+export const USER_KV_QUERY = gql<OrgUserKV>`
   query GetUserKeyValue($key: String!) {
     orgUser {
       keyValue(input: { key: $key }) {
