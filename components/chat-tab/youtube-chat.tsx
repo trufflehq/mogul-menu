@@ -9,14 +9,17 @@ import {
   gql,
   jumper,
   Memo,
+  Observable,
   observable,
   ObservableArray,
   ObservableBaseFns,
+  ObservableComputed,
   ObservableObject,
   PageIdentifier,
   React,
   signal,
   useComputed,
+  useMemo,
   useObservable,
   useObserve,
   useRef,
@@ -52,10 +55,10 @@ function getVideoId(pageIdentifiers: PageIdentifier[]) {
   const urlIdentifier = pageIdentifiers.find((identifier) => identifier.sourceType === "url");
 
   if (!urlIdentifier) {
-    return null;
+    return "";
   }
 
-  return extractYoutubeId(urlIdentifier.sourceId);
+  return extractYoutubeId(urlIdentifier.sourceId) ?? "";
 }
 
 function getChannelId(pageIdentifiers: PageIdentifier[]) {
@@ -257,7 +260,7 @@ function formatMessage(text: string, emoteMap: Map<string, string>) {
 }
 
 // const messages$ = observable<YouTubeChatMessage[]>([]);
-// const messages$ = signal<YouTubeChatMessage[]>([]);
+const messages$ = signal<YouTubeChatMessage[]>([]);
 
 // const extensionInfo$ = signal(jumper.call("context.getInfo"));
 // const videoId$ = computed(() => {
@@ -266,45 +269,12 @@ function formatMessage(text: string, emoteMap: Map<string, string>) {
 //   extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
 // });
 
-// const { unsubscribe } = pipe(
-//   // getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId: "qH0b92JIPQQ" }),
-//   getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId: videoId$.get() }),
-//   subscribe((response) => {
-//     // console.log(result); // { data: ... }
-
-//     if (response.data?.youtubeChatMessageAdded) {
-//       // console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
-//       messages$.set((prev) => {
-//         let newMessages = response.data?.youtubeChatMessageAdded
-//           ? [response.data?.youtubeChatMessageAdded, ...prev]
-//           : prev;
-//         if (newMessages.length > 75) {
-//           // newMessages = newMessages.slice(-50);
-//           console.log("old newMessages", newMessages);
-
-//           newMessages = newMessages.slice(0, newMessages?.length - 50);
-
-//           console.log("sliced newMessages", newMessages);
-//         }
-//         // console.log("newMessages", newMessages);
-//         return newMessages;
-//       });
-//     } else {
-//       console.error("ERRROR", response);
-//     }
-//   }),
-// );
-
-export default function YoutubeChat() {
-  const renderCount = ++useRef(0).current;
-  useStyleSheet(styleSheet);
-  const messages$ = useSignal<YouTubeChatMessage[]>([]);
-  const iframeRef = useRef<HTMLIFrameElement>(undefined!);
+function useMessageAddedSubscription() {
   const extensionInfo$ = useSignal<ExtensionInfo>(jumper.call("context.getInfo"));
   const videoId$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
-
-    // return "TCIFqaxYFAs";
+    console.log("get video id");
+    return "TCIFqaxYFAs"; // myth
     // return "qH0b92JIPQQ";
     // return "m4u4EKzebFQ"; // riley
     // return "W23qQlhqepo"; // lupo
@@ -319,44 +289,47 @@ export default function YoutubeChat() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
-    // return "UCvQczq3aHiHRBGEx-BKdrcg"
-    return channelId;
+    return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
+    // return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
     // return "UCNF0LEQ2abMr0PAX3cfkAMg";
   });
 
-  useSubscription({
-    query: YOUTUBE_CHAT_MESSAGE_ADDED,
-    variables: { videoId: videoId$.get() },
-  }, (state, response: { youtubeChatMessageAdded: YouTubeChatMessage }) => {
-    // console.log("response", response);
-    if (response.youtubeChatMessageAdded) {
-      // console.log("response.youtubeChatMessageAdded", response.youtubeChatMessageAdded);
-      messages$.set((prev) => {
-        let newMessages = response.youtubeChatMessageAdded
-          ? [response.youtubeChatMessageAdded, ...prev]
-          : prev;
-        if (newMessages.length > 250) {
-          // newMessages = newMessages.slice(-50);
-          console.log("old newMessages", newMessages);
+  useObserve(() => {
+    const videoId = videoId$.get();
+    const { unsubscribe } = pipe(
+      getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId }),
+      subscribe((response) => {
+        if (response.data?.youtubeChatMessageAdded) {
+          // console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
+          messages$.set((prev) => {
+            let newMessages = response.data?.youtubeChatMessageAdded
+              ? [response.data?.youtubeChatMessageAdded, ...prev]
+              : prev;
+            if (newMessages.length > 75) {
+              // newMessages = newMessages.slice(-50);
+              console.log("old newMessages", newMessages);
 
-          newMessages = newMessages.slice(0, newMessages?.length - 50);
+              newMessages = newMessages.slice(0, newMessages?.length - 50);
 
-          console.log("sliced newMessages", newMessages);
+              console.log("sliced newMessages", newMessages);
+            }
+            // console.log("newMessages", newMessages);
+            return newMessages;
+          });
+        } else {
+          console.error("ERRROR", response);
         }
-        // console.log("newMessages", newMessages);
-        return newMessages;
-      });
-    } else {
-      console.error("ERRROR", response);
-    }
+      }),
+    );
   });
 
-  console.log("YoutubeChat", videoId$.get());
-  // const
-  const emoteMap$ = useObservable<Map<string, string>>(new Map());
+  return { videoId$, channelId$ };
+}
 
-  // populate emoteMap
+function useEmoteMap$(channelId$: ObservableComputed<string>) {
+  const emoteMap$ = useSignal<Map<string, string>>(new Map());
+
   useObserve(async () => {
     const channelId = channelId$.get();
     const emoteMap = new Map<string, string>();
@@ -382,6 +355,17 @@ export default function YoutubeChat() {
     emoteMap$.set(emoteMap);
   });
 
+  return { emoteMap$ };
+}
+
+export default function YoutubeChat() {
+  // const renderCount = ++useRef(0).current;
+  useStyleSheet(styleSheet);
+  const iframeRef = useRef<HTMLIFrameElement>(undefined!);
+  const { videoId$, channelId$ } = useMessageAddedSubscription();
+
+  const { emoteMap$ } = useEmoteMap$(channelId$);
+
   const videoId = useSelector(() => videoId$.get());
 
   const handleScroll = (e) => {
@@ -393,20 +377,12 @@ export default function YoutubeChat() {
       console.log("pinned to bottom");
     }
   };
-  // const messages = useSelector(() => messages$.get());
-
-  // console.log("messages", messages$.length);
 
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <div className="messages">
-        {renderCount}
+        {/* {renderCount} */}
         <div className="inner" onScroll={handleScroll}>
-          {
-            /* {messages$.map((message) => (
-            <ChatMessage key={message.id.peek()} item={message} emoteMap={emoteMap$.peek()} />
-          ))} */
-          }
           <For<YouTubeChatMessage, { emoteMap: Map<string, string> }>
             itemProps={{ emoteMap: emoteMap$.peek() }}
             each={messages$}
@@ -438,7 +414,7 @@ const MemoizedMessage = React.memo(Message, (prev, next) => {
 });
 
 function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<string, string> }) {
-  const renderCount = ++useRef(0).current;
+  // const renderCount = ++useRef(0).current;
 
   return (
     <div className="message">
@@ -451,7 +427,7 @@ function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<s
           }}
         >
           {getAuthorName(item)}
-          {renderCount}
+          {/* {renderCount} */}
           <span className="separator">
             :
           </span>
