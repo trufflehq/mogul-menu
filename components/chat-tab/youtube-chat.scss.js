@@ -93,8 +93,8 @@ export default scss`
   
   .youtube {
     clip-path: inset(calc(100% - 112px) 0 0 0);
-    position: fixed;
-    // position: absolute;
+    // position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
@@ -111,13 +111,9 @@ export default scss`
 }
 
 .landscape {
-  .c-chat-tab {
+  .c-youtube-chat {
     max-height: 100vw;
     min-height: calc(100vw + 80px); /* cap the height of the menu body */
-    
-    .c-youtube-chat .youtube {
-      position: fixed !important;
-    }
   }
 }
 `;

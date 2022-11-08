@@ -101,11 +101,19 @@ export default function NativeMenu(props: MogulMenuProps) {
   return (
     <div className={`c-native-menu ${classKebab({ isCollapsed, isOpen: !isCollapsed })}`}>
       <div className={`menu ${orientation}`}>
+        {
+          /* {isCollapsed
+          ? orientation === "landscape"
+            ? <LandscapeCollapsedButton onOpen={onOpen} />
+            : <PortraitCollapsedButton onOpen={onOpen} iconImageObj={props.iconImageObj} />
+          : <ExpandedMenu {...props} />} */
+        }
         {isCollapsed
           ? orientation === "landscape"
             ? <LandscapeCollapsedButton onOpen={onOpen} />
             : <PortraitCollapsedButton onOpen={onOpen} iconImageObj={props.iconImageObj} />
-          : <ExpandedMenu {...props} />}
+          : null}
+        <ExpandedMenu {...props} />
       </div>
     </div>
   );
@@ -150,9 +158,10 @@ function ExpandedMenu(props: MogulMenuProps) {
     jumper.call("platform.log", "collapse");
   };
   const orientation = useSelector(() => orientation$.get());
+  const isCollapsed = useSelector(() => isCollapsed$.get());
 
   return (
-    <div className="inner">
+    <div className={`inner ${classKebab({ isCollapsed })}`}>
       {orientation === "landscape" && (
         <div className="collapse">
           <div className="icon">

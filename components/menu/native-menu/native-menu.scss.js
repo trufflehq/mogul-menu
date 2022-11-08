@@ -106,6 +106,10 @@ export default scss`
       display: flex;
       flex-direction: column;
 
+      &.is-collapsed {
+        display: none;
+      }
+
       > .collapse {
         display: flex;
         justify-content: flex-end;
