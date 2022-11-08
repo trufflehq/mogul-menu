@@ -15,9 +15,90 @@ import {
   useStyleSheet,
   useSubscription,
 } from "../../deps.ts";
-import { getUsernameColor } from "./utils.ts";
+import { DEFAULT_CHAT_COLORS, getStringHash } from "./utils.ts";
 
 import styleSheet from "./youtube-chat.scss.js";
+
+interface YouTubeChatMessage {
+  id: string | number;
+  youtubeUserId: string;
+  data: {
+    id: string;
+    message: string;
+    formattedMessage: React.ReactNode;
+    type: string;
+    unix: number;
+    author: {
+      id: string;
+      name: string;
+      badges: {
+        badge: string; // this is the url for the badge
+        tooltip: string; // this is the tooltip for the badge
+        type: string; // this is the type of badge
+      }[];
+    };
+  };
+  connection: {
+    id: string;
+    orgUser: {
+      keyValueConnection: {
+        nodes: {
+          key: string;
+          value: string;
+        }[];
+      };
+      user: {
+        name: string;
+      };
+      activePowerupConnection: {
+        totalCount: number;
+        nodes: {
+          id: string;
+          userId: string;
+          data: {
+            rgba: string;
+            value: string;
+          };
+          powerup: {
+            id: string;
+            slug: string;
+
+            componentRels: {
+              props: Record<string, unknown>;
+            }[];
+          };
+        }[];
+      };
+    };
+  };
+}
+
+export function getUsernameColor(message: YouTubeChatMessage) {
+  const orgUserNameColor = message.connection?.orgUser?.keyValueConnection?.nodes?.find((kv) =>
+    kv.key === "nameColor"
+  )?.value;
+
+  if (orgUserNameColor) {
+    return orgUserNameColor;
+  }
+
+  const authorName = message.data?.author?.name;
+
+  const hash = getStringHash(authorName ?? "base name");
+  return DEFAULT_CHAT_COLORS[
+    ((hash % DEFAULT_CHAT_COLORS.length) + DEFAULT_CHAT_COLORS.length) % DEFAULT_CHAT_COLORS.length
+  ];
+}
+
+export function getAuthorName(message: YouTubeChatMessage) {
+  const orgUserName = message.connection?.orgUser?.user?.name;
+
+  if (orgUserName) {
+    return orgUserName;
+  }
+
+  return message.data?.author?.name;
+}
 
 const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMessage }>
   `subscription YouTubeChatMessages($videoId: String!) {
@@ -44,27 +125,6 @@ const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMes
     }
   }
 }`;
-
-interface YouTubeChatMessage {
-  id: string | number;
-  youtubeUserId: string;
-  data: {
-    id: string;
-    message: string;
-    formattedMessage: React.ReactNode;
-    type: string;
-    unix: number;
-    author: {
-      id: string;
-      name: string;
-      badges: {
-        badge: string; // this is the url for the badge
-        tooltip: string; // this is the tooltip for the badge
-        type: string; // this is the type of badge
-      }[];
-    };
-  };
-}
 
 function getBadge(badge: string | "MODERATOR" | "OWNER") {
   const badgeSrc = badge === "MODERATOR"
@@ -186,6 +246,7 @@ export default function YoutubeChat(
     },
   }, (state, response: { youtubeChatMessageAdded: YouTubeChatMessage }) => {
     if (response.youtubeChatMessageAdded) {
+      console.log("response.youtubeChatMessageAdded", response.youtubeChatMessageAdded);
       messages$.set((prev) => {
         let newMessages = [response.youtubeChatMessageAdded, ...prev];
         if (newMessages.length > 250) {
@@ -222,10 +283,10 @@ export default function YoutubeChat(
                   <span
                     className="name"
                     style={{
-                      color: getUsernameColor(message.data?.peek()?.author?.name),
+                      color: getUsernameColor(message.peek()),
                     }}
                   >
-                    {message.data?.peek()?.author?.name}
+                    {getAuthorName(message.peek())}
                     <span className="separator">
                       :
                     </span>

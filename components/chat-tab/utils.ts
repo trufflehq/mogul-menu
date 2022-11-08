@@ -9,7 +9,7 @@ export function getStringHash(str: string) {
   return hash;
 }
 
-const colors = [
+export const DEFAULT_CHAT_COLORS = [
   "#ff0000",
   "#009000",
   "#b22222",
@@ -25,8 +25,3 @@ const colors = [
   "#00ff7f",
   "#a244f9",
 ];
-
-export function getUsernameColor(str: string) {
-  const hash = getStringHash(str ?? "base name");
-  return colors[((hash % colors.length) + colors.length) % colors.length];
-}
