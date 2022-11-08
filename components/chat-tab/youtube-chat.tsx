@@ -1,11 +1,21 @@
 import {
+  Client,
+  computed,
+  ExtensionInfo,
   For,
+  // getClient,
+  // For,
   getClient as _getClient,
   gql,
   jumper,
+  Memo,
+  observable,
   ObservableArray,
   ObservableBaseFns,
+  ObservableObject,
+  PageIdentifier,
   React,
+  signal,
   useComputed,
   useObservable,
   useObserve,
@@ -15,9 +25,54 @@ import {
   useStyleSheet,
   useSubscription,
 } from "../../deps.ts";
+
+import { pipe, subscribe } from "https://npm.tfl.dev/wonka@4.0.15";
+
 import { DEFAULT_CHAT_COLORS, getStringHash } from "./utils.ts";
 
+// import {
+//   For,
+//   useComputed,
+//   useObservable,
+//   useObserve,
+//   useSelector,
+// } from "https://npm.tfl.dev/@legendapp/state@~0.21.0/react";
+// import { observable, ObservableObject } from "https://npm.tfl.dev/@legendapp/state@~0.21.0";
 import styleSheet from "./youtube-chat.scss.js";
+
+const getClient = _getClient as () => Client;
+
+export function extractYoutubeId(url: string) {
+  const regex = /(?:[?&]v=|\/embed\/|\/1\/|\/v\/|(https?:\/\/)?(?:www\.)?youtu\.be\/)([^&\n?#]+)/;
+  const id = url.match(regex);
+  return id?.[2];
+}
+
+function getVideoId(pageIdentifiers: PageIdentifier[]) {
+  const urlIdentifier = pageIdentifiers.find((identifier) => identifier.sourceType === "url");
+
+  if (!urlIdentifier) {
+    return null;
+  }
+
+  return extractYoutubeId(urlIdentifier.sourceId);
+}
+
+function getChannelId(pageIdentifiers: PageIdentifier[]) {
+  jumper.call("platform.log", `getChannelId`);
+
+  const channelIdentifier = pageIdentifiers.find((identifier) =>
+    identifier.sourceType === "youtubeLive"
+  );
+
+  jumper.call("platform.log", `channelIdentifier ${JSON.stringify(channelIdentifier)}`);
+
+  if (!channelIdentifier) {
+    return null;
+  }
+
+  return channelIdentifier.sourceId;
+}
 
 interface YouTubeChatMessage {
   id: string | number;
@@ -197,23 +252,111 @@ function formatMessage(text: string, emoteMap: Map<string, string>) {
     }
   }
 
-  console.log("msg", msg);
+  // console.log("msg", msg);
   return msg;
 }
 
-export default function YoutubeChat(
-  { videoId$, channelId$ }: {
-    videoId$: ObservableBaseFns<string | null | undefined>;
-    channelId$: ObservableBaseFns<string | null | undefined>;
-  },
-) {
-  useStyleSheet(styleSheet);
-  const iframeRef = useRef<HTMLIFrameElement>(undefined!);
-  // const messages$ = useObservable<YouTubeChatMessage[]>(new Set([]));
-  const messages$ = useSignal<YouTubeChatMessage[]>(new Set([]));
+// const messages$ = observable<YouTubeChatMessage[]>([]);
+// const messages$ = signal<YouTubeChatMessage[]>([]);
 
+// const extensionInfo$ = signal(jumper.call("context.getInfo"));
+// const videoId$ = computed(() => {
+//   const extensionInfo = extensionInfo$.get();
+//   console.log('ext. info', extensionInfo);
+//   extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
+// });
+
+// const { unsubscribe } = pipe(
+//   // getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId: "qH0b92JIPQQ" }),
+//   getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId: videoId$.get() }),
+//   subscribe((response) => {
+//     // console.log(result); // { data: ... }
+
+//     if (response.data?.youtubeChatMessageAdded) {
+//       // console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
+//       messages$.set((prev) => {
+//         let newMessages = response.data?.youtubeChatMessageAdded
+//           ? [response.data?.youtubeChatMessageAdded, ...prev]
+//           : prev;
+//         if (newMessages.length > 75) {
+//           // newMessages = newMessages.slice(-50);
+//           console.log("old newMessages", newMessages);
+
+//           newMessages = newMessages.slice(0, newMessages?.length - 50);
+
+//           console.log("sliced newMessages", newMessages);
+//         }
+//         // console.log("newMessages", newMessages);
+//         return newMessages;
+//       });
+//     } else {
+//       console.error("ERRROR", response);
+//     }
+//   }),
+// );
+
+export default function YoutubeChat() {
+  const renderCount = ++useRef(0).current;
+  useStyleSheet(styleSheet);
+  const messages$ = useSignal<YouTubeChatMessage[]>([]);
+  const iframeRef = useRef<HTMLIFrameElement>(undefined!);
+  const extensionInfo$ = useSignal<ExtensionInfo>(jumper.call("context.getInfo"));
+  const videoId$ = useComputed(() => {
+    const extensionInfo = extensionInfo$.get();
+
+    // return "TCIFqaxYFAs";
+    // return "qH0b92JIPQQ";
+    // return "m4u4EKzebFQ"; // riley
+    // return "W23qQlhqepo"; // lupo
+    return extensionInfo?.pageInfo ? getVideoId(extensionInfo.pageInfo) : null;
+    // return "tdfuwM-Ntu0";s
+  });
+
+  const channelId$ = useComputed(() => {
+    const extensionInfo = extensionInfo$.get();
+    // jumper.call("platform.log", `extensionInfo compute ${JSON.stringify(extensionInfo)}`);
+
+    const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
+    // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
+
+    // return "UCvQczq3aHiHRBGEx-BKdrcg"
+    return channelId;
+    // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
+    // return "UCNF0LEQ2abMr0PAX3cfkAMg";
+  });
+
+  useSubscription({
+    query: YOUTUBE_CHAT_MESSAGE_ADDED,
+    variables: { videoId: videoId$.get() },
+  }, (state, response: { youtubeChatMessageAdded: YouTubeChatMessage }) => {
+    // console.log("response", response);
+    if (response.youtubeChatMessageAdded) {
+      // console.log("response.youtubeChatMessageAdded", response.youtubeChatMessageAdded);
+      messages$.set((prev) => {
+        let newMessages = response.youtubeChatMessageAdded
+          ? [response.youtubeChatMessageAdded, ...prev]
+          : prev;
+        if (newMessages.length > 250) {
+          // newMessages = newMessages.slice(-50);
+          console.log("old newMessages", newMessages);
+
+          newMessages = newMessages.slice(0, newMessages?.length - 50);
+
+          console.log("sliced newMessages", newMessages);
+        }
+        // console.log("newMessages", newMessages);
+        return newMessages;
+      });
+    } else {
+      console.error("ERRROR", response);
+    }
+  });
+
+  console.log("YoutubeChat", videoId$.get());
   // const
-  const emoteMap$ = useSignal<Map<string, string>>(new Map());
+  const emoteMap$ = useObservable<Map<string, string>>(new Map());
+
+  // populate emoteMap
   useObserve(async () => {
     const channelId = channelId$.get();
     const emoteMap = new Map<string, string>();
@@ -239,26 +382,6 @@ export default function YoutubeChat(
     emoteMap$.set(emoteMap);
   });
 
-  useSubscription({
-    query: YOUTUBE_CHAT_MESSAGE_ADDED,
-    variables: {
-      videoId: videoId$.get(),
-    },
-  }, (state, response: { youtubeChatMessageAdded: YouTubeChatMessage }) => {
-    if (response.youtubeChatMessageAdded) {
-      console.log("response.youtubeChatMessageAdded", response.youtubeChatMessageAdded);
-      messages$.set((prev) => {
-        let newMessages = [response.youtubeChatMessageAdded, ...prev];
-        if (newMessages.length > 250) {
-          newMessages = newMessages.slice(-50);
-        }
-        return newMessages;
-      });
-    } else {
-      console.error("ERRROR", response);
-    }
-  });
-
   const videoId = useSelector(() => videoId$.get());
 
   const handleScroll = (e) => {
@@ -270,40 +393,26 @@ export default function YoutubeChat(
       console.log("pinned to bottom");
     }
   };
+  // const messages = useSelector(() => messages$.get());
+
+  // console.log("messages", messages$.length);
 
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <div className="messages">
+        {renderCount}
         <div className="inner" onScroll={handleScroll}>
-          <For each={messages$}>
-            {(message) => (
-              <div className="message">
-                <span className="author">
-                  {message.data?.peek().author.badges.map((badge) => getBadge(badge.badge))}
-                  <span
-                    className="name"
-                    style={{
-                      color: getUsernameColor(message.peek()),
-                    }}
-                  >
-                    {getAuthorName(message.peek())}
-                    <span className="separator">
-                      :
-                    </span>
-                  </span>
-                </span>
-                {/* <span className="message-text">{message.data?.peek()?.message}</span> */}
-                <span
-                  className="message-text"
-                  dangerouslySetInnerHTML={{
-                    __html: formatMessage(message.data?.peek()?.message, emoteMap$.peek()),
-                  }}
-                >
-                  {/* {formatMessage(message.data?.peek()?.message, emoteMap$.peek())} */}
-                </span>
-              </div>
-            )}
-          </For>
+          {
+            /* {messages$.map((message) => (
+            <ChatMessage key={message.id.peek()} item={message} emoteMap={emoteMap$.peek()} />
+          ))} */
+          }
+          <For<YouTubeChatMessage, { emoteMap: Map<string, string> }>
+            itemProps={{ emoteMap: emoteMap$.peek() }}
+            each={messages$}
+            item={ChatMessage}
+            optimized
+          />
         </div>
       </div>
       <div className="youtube">
@@ -312,6 +421,49 @@ export default function YoutubeChat(
           src={`https://www.youtube.com/live_chat?is_popout=1&v=${videoId}&embed_domain=${location.hostname}`}
         />
       </div>
+    </div>
+  );
+}
+
+function ChatMessage(
+  { item, emoteMap }: { item: ObservableObject<YouTubeChatMessage> } & {
+    emoteMap: Map<string, string>;
+  },
+) {
+  return <MemoizedMessage item={item.peek()} emoteMap={emoteMap} />;
+}
+
+const MemoizedMessage = React.memo(Message, (prev, next) => {
+  return prev.item.id === next.item.id;
+});
+
+function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<string, string> }) {
+  const renderCount = ++useRef(0).current;
+
+  return (
+    <div className="message">
+      <span className="author">
+        {item.data?.author.badges.map((badge) => getBadge(badge.badge))}
+        <span
+          className="name"
+          style={{
+            color: getUsernameColor(item),
+          }}
+        >
+          {getAuthorName(item)}
+          {renderCount}
+          <span className="separator">
+            :
+          </span>
+        </span>
+      </span>
+      <span
+        className="message-text"
+        dangerouslySetInnerHTML={{
+          __html: formatMessage(item.data?.message, emoteMap),
+        }}
+      >
+      </span>
     </div>
   );
 }

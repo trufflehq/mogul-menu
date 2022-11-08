@@ -5,7 +5,11 @@
   "compilerOptions": {
     "jsx": "react-jsxdev",
     "jsxImportSource": "https://npm.tfl.dev/react",
-    "lib": ["deno.ns", "dom"]
+    "lib": [
+      "deno.ns",
+      "dom"
+    ],
+    "strict": false
   },
   "fmt": {
     "options": {

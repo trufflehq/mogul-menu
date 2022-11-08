@@ -107,6 +107,7 @@ export {
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
+export { observable, computed } from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
 export type {
   Observable,
   ObservableArray,
