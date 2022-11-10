@@ -94,7 +94,7 @@ export default scss`
     bottom: 0;
     top: 0;
     z-index: 1;
-    margin-top: -160px;  /* hack for android to slide the keyboard up */
+    // margin-top: -160px;  /* hack for android to slide the keyboard up */
 
 
     > iframe {
