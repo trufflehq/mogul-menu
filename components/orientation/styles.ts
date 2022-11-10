@@ -41,6 +41,10 @@ export const PORTRAIT_STYLESHEET = `
   bottom: 0 !important;
 }
 
+.truffle-portrait ytm-mobile-topbar-renderer .mobile-topbar-header-content .topbar-menu-button-avatar-button {
+  display: none !important;
+}
+
 .truffle-portrait ytm-promoted-sparkles-web-renderer {
   display: none !important;
 }
