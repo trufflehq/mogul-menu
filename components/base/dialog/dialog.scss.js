@@ -2,7 +2,6 @@ import { scss } from "../../../deps.ts";
 
 export default scss`
 .c-dialog {
-  width: 424px;
   background: var(--mm-color-bg-secondary);
   color: var(--mm-color-text-bg-secondary);
   border-radius: 4px;
@@ -10,11 +9,18 @@ export default scss`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  width: 90% !important;
+
+  @media (min-width: 768px) {
+    width: 424px;
+  }
 
   > .flex {
     display: flex;
     flex-direction: column;
     overflow: auto;
+    width: 100%;
+
 
     > .content {
       flex-grow: 1;
