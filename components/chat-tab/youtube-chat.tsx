@@ -274,9 +274,9 @@ function useMessageAddedSubscription() {
   const videoId$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
     console.log("get video id");
-    return "TCIFqaxYFAs"; // myth
+    // return "TCIFqaxYFAs"; // myth
     // return "qH0b92JIPQQ";
-    // return "m4u4EKzebFQ"; // riley
+    return "m4u4EKzebFQ"; // riley
     // return "W23qQlhqepo"; // lupo
     return extensionInfo?.pageInfo ? getVideoId(extensionInfo.pageInfo) : null;
     // return "tdfuwM-Ntu0";s
@@ -289,8 +289,9 @@ function useMessageAddedSubscription() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
-    return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
-    // return channelId;
+    return "UCZaVG6KWBuquVXt63G6xopg" // riley
+    // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
+    return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
     // return "UCNF0LEQ2abMr0PAX3cfkAMg";
   });
