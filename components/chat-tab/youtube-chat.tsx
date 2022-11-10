@@ -5,6 +5,7 @@ import {
   getClient as _getClient,
   gql,
   jumper,
+  ObservableComputed,
   ObservableObject,
   PageIdentifier,
   React,
@@ -252,7 +253,6 @@ function formatMessage(text: string, emoteMap: Map<string, string>) {
     }
   }
 
-  // console.log("msg", msg);
   return msg;
 }
 
@@ -271,9 +271,11 @@ function useMessageAddedSubscription() {
   const videoId$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
     console.log("get video id");
+
+    // return "RsNCCn1Ioig"; // tim
     // return "TCIFqaxYFAs"; // myth
     // return "qH0b92JIPQQ";
-    return "m4u4EKzebFQ"; // riley
+    // return "m4u4EKzebFQ"; // riley
     // return "W23qQlhqepo"; // lupo
     return extensionInfo?.pageInfo ? getVideoId(extensionInfo.pageInfo) : null;
     // return "tdfuwM-Ntu0";s
@@ -286,7 +288,8 @@ function useMessageAddedSubscription() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
-    return "UCZaVG6KWBuquVXt63G6xopg"; // riley
+    // return "UCXBE_QQSZueB8082ml5fslg"; // tim
+    // return "UCZaVG6KWBuquVXt63G6xopg"; // riley
     // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
     return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
@@ -299,7 +302,6 @@ function useMessageAddedSubscription() {
       getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId }),
       subscribe((response) => {
         if (response.data?.youtubeChatMessageAdded) {
-          console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
           messages$.set((prev) => {
             let newMessages = response.data?.youtubeChatMessageAdded
               ? [response.data?.youtubeChatMessageAdded, ...prev]
@@ -353,16 +355,18 @@ function useEmoteMap$(channelId$: ObservableComputed<string>) {
     emoteMap$.set(emoteMap);
   });
 
-  return { emoteMap$ };
+  // tracks emoteMap
+  const emoteMap = useSelector(() => emoteMap$.get());
+  return { emoteMap };
 }
 
 export default function YoutubeChat() {
-  // const renderCount = ++useRef(0).current;
+  const renderCount = ++useRef(0).current;
   useStyleSheet(styleSheet);
   const iframeRef = useRef<HTMLIFrameElement>(undefined!);
   const { videoId$, channelId$ } = useMessageAddedSubscription();
 
-  const { emoteMap$ } = useEmoteMap$(channelId$);
+  const { emoteMap } = useEmoteMap$(channelId$);
 
   const videoId = useSelector(() => videoId$.get());
 
@@ -379,10 +383,9 @@ export default function YoutubeChat() {
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <div className="messages">
-        {/* {renderCount} */}
         <div className="inner" onScroll={handleScroll}>
           <For<YouTubeChatMessage, { emoteMap: Map<string, string> }>
-            itemProps={{ emoteMap: emoteMap$.peek() }}
+            itemProps={{ emoteMap }}
             each={messages$}
             item={ChatMessage}
             optimized
@@ -412,10 +415,14 @@ const MemoizedMessage = React.memo(Message, (prev, next) => {
 });
 
 function getTruffleBadges(item: YouTubeChatMessage) {
-  const badgeSrcArr = item.connection.orgUser.activePowerupConnection.nodes
-    .map((activePowerup) => activePowerup.powerup.componentRels?.[0].props?.imageSrc)
+  const badgeSrcArr = item.connection?.orgUser?.activePowerupConnection?.nodes
+    ?.map((activePowerup) => activePowerup?.powerup?.componentRels?.[0]?.props?.imageSrc)
     .filter((src) => src !== undefined)
-    .slice(0, 2);
+    .slice(0, 2) ?? [];
+
+  if (!badgeSrcArr.length) {
+    return;
+  }
 
   return badgeSrcArr.map((badgeSrc) => getBadge(badgeSrc));
 }

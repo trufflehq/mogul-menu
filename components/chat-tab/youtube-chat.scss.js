@@ -16,11 +16,7 @@ export default scss`
     overflow: hidden;
     padding: 8px 8px 112px 8px;
     height: 100%;
-    // position: absolute;
-    // top: 0;
-    // left: 0;
-    // right: 0;
-    // bottom: 112px;
+    background: var(--mm-color-bg-tertiary);
 
     > .inner {
       display: flex;
@@ -40,11 +36,9 @@ export default scss`
         display: block;
         font-size: 13px;
         line-height: 16px;
-        // min-height: 24px;
         padding: .3rem 1rem; /* from twitch */
         word-wrap: break-word;
         word-break: break-word;
-        // align-items: flex-start;
         font-family: Inter;
         > .author {
           display: inline-block;
@@ -100,6 +94,7 @@ export default scss`
     bottom: 0;
     top: 0;
     z-index: 1;
+    margin-top: -160px;  /* hack for android to slide the keyboard up */
 
 
     > iframe {
@@ -112,7 +107,7 @@ export default scss`
 
 .landscape {
   .youtube {
-    margin-top: -120px;
+    margin-top: -120px; /* hack for android to slide the keyboard up */
   }
 }
 `;
