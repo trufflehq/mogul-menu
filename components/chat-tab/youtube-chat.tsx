@@ -1,46 +1,26 @@
 import {
   Client,
-  computed,
   ExtensionInfo,
   For,
-  // getClient,
-  // For,
   getClient as _getClient,
   gql,
   jumper,
-  Memo,
-  Observable,
-  observable,
-  ObservableArray,
-  ObservableBaseFns,
-  ObservableComputed,
   ObservableObject,
   PageIdentifier,
   React,
   signal,
   useComputed,
-  useMemo,
-  useObservable,
   useObserve,
   useRef,
   useSelector,
   useSignal,
   useStyleSheet,
-  useSubscription,
 } from "../../deps.ts";
 
 import { pipe, subscribe } from "https://npm.tfl.dev/wonka@4.0.15";
 
 import { DEFAULT_CHAT_COLORS, getStringHash } from "./utils.ts";
 
-// import {
-//   For,
-//   useComputed,
-//   useObservable,
-//   useObserve,
-//   useSelector,
-// } from "https://npm.tfl.dev/@legendapp/state@~0.21.0/react";
-// import { observable, ObservableObject } from "https://npm.tfl.dev/@legendapp/state@~0.21.0";
 import styleSheet from "./youtube-chat.scss.js";
 
 const getClient = _getClient as () => Client;
@@ -122,7 +102,9 @@ interface YouTubeChatMessage {
             slug: string;
 
             componentRels: {
-              props: Record<string, unknown>;
+              props: {
+                imageSrc: string;
+              };
             }[];
           };
         }[];
@@ -167,23 +149,38 @@ const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMes
     data
     connection {
       id
-      orgUser
-       {
-          name
-          keyValueConnection {
-            nodes {
-              key
-              value
-            }
-          }
-          user {
-            name
+      orgUser {
+        name
+        orgId
+        userId
+        keyValueConnection {
+          nodes {
+            key
+            value
           }
         }
+        user {
+          name
+        }
+        activePowerupConnection {
+          nodes {
+            id
+            orgId
+            powerup {
+              id
+              slug
+              componentRels {
+                  props
+              }
+            }   
+          }
+        }
+      }
     }
   }
 }`;
 
+const URL_REGEX = /^(http|https):\/\/*/;
 function getBadge(badge: string | "MODERATOR" | "OWNER") {
   const badgeSrc = badge === "MODERATOR"
     ? "https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1"
@@ -191,7 +188,7 @@ function getBadge(badge: string | "MODERATOR" | "OWNER") {
     ? "https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1"
     : badge;
 
-  return badgeSrc ? <img className="badge" src={badgeSrc} /> : null;
+  return URL_REGEX.test(badgeSrc) ? <img className="badge" src={badgeSrc} /> : undefined;
 }
 
 export enum EmoteProvider {
@@ -289,7 +286,7 @@ function useMessageAddedSubscription() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
-    return "UCZaVG6KWBuquVXt63G6xopg" // riley
+    return "UCZaVG6KWBuquVXt63G6xopg"; // riley
     // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
     return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
@@ -302,7 +299,7 @@ function useMessageAddedSubscription() {
       getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { videoId }),
       subscribe((response) => {
         if (response.data?.youtubeChatMessageAdded) {
-          // console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
+          console.log("response.youtubeChatMessageAdded", response.data?.youtubeChatMessageAdded);
           messages$.set((prev) => {
             let newMessages = response.data?.youtubeChatMessageAdded
               ? [response.data?.youtubeChatMessageAdded, ...prev]
@@ -414,13 +411,21 @@ const MemoizedMessage = React.memo(Message, (prev, next) => {
   return prev.item.id === next.item.id;
 });
 
-function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<string, string> }) {
-  // const renderCount = ++useRef(0).current;
+function getTruffleBadges(item: YouTubeChatMessage) {
+  const badgeSrcArr = item.connection.orgUser.activePowerupConnection.nodes
+    .map((activePowerup) => activePowerup.powerup.componentRels?.[0].props?.imageSrc)
+    .filter((src) => src !== undefined)
+    .slice(0, 2);
 
+  return badgeSrcArr.map((badgeSrc) => getBadge(badgeSrc));
+}
+
+function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<string, string> }) {
   return (
     <div className="message">
       <span className="author">
         {item.data?.author.badges.map((badge) => getBadge(badge.badge))}
+        {getTruffleBadges(item)}
         <span
           className="name"
           style={{
@@ -428,7 +433,6 @@ function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<s
           }}
         >
           {getAuthorName(item)}
-          {/* {renderCount} */}
           <span className="separator">
             :
           </span>
