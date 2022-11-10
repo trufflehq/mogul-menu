@@ -9,13 +9,25 @@ export default scss`
   flex: 1;
   height: 100%;
 
+  .c-dialog {
+    
+    @media (min-width: 768px) {
+      width: 540px;
+      height: 100%;
+    }
+  }
+
   .body {
-    padding: 0 24px;
+    padding: 0 24px 24px 24px;
   }
 
   .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
     gap: 12px;
   }
 }

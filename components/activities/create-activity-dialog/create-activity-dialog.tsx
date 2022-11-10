@@ -22,13 +22,7 @@ export default function CreateActivityDialog() {
 
   return (
     <div className="c-create-activity-dialog">
-      <Dialog
-        headerText="Select an activity"
-        dialogCss={{
-          width: "540px",
-          height: "100%",
-        }}
-      >
+      <Dialog headerText="Select an activity">
         <div className="body">
           <div className="grid">
             {DEFAULT_TILES.map(({ Component }) => <Component />)}
