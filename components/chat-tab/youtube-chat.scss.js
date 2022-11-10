@@ -111,10 +111,6 @@ export default scss`
 }
 
 .landscape {
-  // .c-youtube-chat {
-  //   max-height: 100vw;
-  //   min-height: calc(100vw + 80px); /* cap the height of the menu body */
-  // }
   .youtube {
     margin-top: -120px;
   }

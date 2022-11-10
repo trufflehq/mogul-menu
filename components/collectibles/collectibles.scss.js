@@ -38,6 +38,12 @@ export default scss`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  padding: 24px;
+  
+  @media (min-width: 768px) {
+    padding:  0;
+  }
 }
 
 .c-no-collectibles {
@@ -53,11 +59,14 @@ export default scss`
 }
 
 .c-earn-collectibles {
-  width: 400px;
   margin: 20px auto;
   padding: 24px 32px;
   background: var(--mm-color-bg-secondary);
   border-radius: 6px;
+
+  @media (min-width: 768px) {
+    width: 400px;
+  }
 
   > .heading {
     margin-bottom: 30px;
