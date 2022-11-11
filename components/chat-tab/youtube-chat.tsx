@@ -16,6 +16,7 @@ import {
   useSelector,
   useSignal,
   useStyleSheet,
+  useSubscription,
 } from "../../deps.ts";
 
 import { pipe, subscribe } from "https://npm.tfl.dev/wonka@4.0.15";
@@ -77,6 +78,9 @@ interface YouTubeChatMessage {
       }[];
     };
   };
+}
+
+interface NormalizedYoutubeChatMessage extends YouTubeChatMessage {
   connection: {
     id: string;
     orgUser: {
@@ -89,7 +93,27 @@ interface YouTubeChatMessage {
       user: {
         name: string;
       };
-      activePowerupConnection: {
+      truffleBadges: {
+        src: string;
+      }[];
+    };
+  };
+}
+
+interface TruffleYouTubeChatMessage extends YouTubeChatMessage {
+  connection: {
+    id: string;
+    orgUser: {
+      keyValueConnection: {
+        nodes: {
+          key: string;
+          value: string;
+        }[];
+      };
+      user: {
+        name: string;
+      };
+      activePowerupConnection?: {
         totalCount: number;
         nodes: {
           id: string;
@@ -114,7 +138,7 @@ interface YouTubeChatMessage {
   };
 }
 
-export function getUsernameColor(message: YouTubeChatMessage) {
+export function getUsernameColor(message: NormalizedYoutubeChatMessage) {
   const orgUserNameColor = message.connection?.orgUser?.keyValueConnection?.nodes?.find((kv) =>
     kv.key === "nameColor"
   )?.value;
@@ -131,7 +155,7 @@ export function getUsernameColor(message: YouTubeChatMessage) {
   ];
 }
 
-export function getAuthorName(message: YouTubeChatMessage) {
+export function getAuthorName(message: NormalizedYoutubeChatMessage) {
   const orgUserName = message.connection?.orgUser?.user?.name;
 
   if (orgUserName) {
@@ -141,7 +165,7 @@ export function getAuthorName(message: YouTubeChatMessage) {
   return message.data?.author?.name;
 }
 
-const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMessage }>
+const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: TruffleYouTubeChatMessage }>
   `subscription YouTubeChatMessages($videoId: String!) {
   youtubeChatMessageAdded(youtubeVideoId: $videoId)
   {
@@ -173,13 +197,29 @@ const YOUTUBE_CHAT_MESSAGE_ADDED = gql<{ youtubeChatMessageAdded: YouTubeChatMes
               componentRels {
                   props
               }
-            }   
+            }
           }
         }
+
       }
     }
   }
 }`;
+
+// FIXME: For whatever reason we run into network errors when we add this to the query. Might be related to the message size? Not super sure
+// activePowerupConnection {
+//   nodes {
+//     id
+//     orgId
+//     powerup {
+//       id
+//       slug
+//       componentRels {
+//           props
+//       }
+//     }
+//   }
+// }
 
 const URL_REGEX = /^(http|https):\/\/*/;
 function getBadge(badge: string | "MODERATOR" | "OWNER") {
@@ -256,8 +296,34 @@ function formatMessage(text: string, emoteMap: Map<string, string>) {
   return msg;
 }
 
+function normalizeTruffleYoutubeChatMessage(
+  message: TruffleYouTubeChatMessage,
+): NormalizedYoutubeChatMessage {
+  const truffleBadges = message.connection?.orgUser?.activePowerupConnection?.nodes
+    ?.map((activePowerup) => activePowerup?.powerup?.componentRels?.[0]?.props?.imageSrc)
+    .filter((src) => src !== undefined)
+    .map((src) => ({ src })) ?? [];
+
+  if (message?.connection?.orgUser?.activePowerupConnection) {
+    delete message.connection.orgUser.activePowerupConnection;
+  }
+
+  const newMessage = {
+    ...message,
+    connection: {
+      ...message?.connection,
+      orgUser: {
+        ...message?.connection?.orgUser,
+        truffleBadges,
+      },
+    },
+  } as NormalizedYoutubeChatMessage;
+
+  return newMessage;
+}
+
 // const messages$ = observable<YouTubeChatMessage[]>([]);
-const messages$ = signal<YouTubeChatMessage[]>([]);
+const messages$ = signal<NormalizedYoutubeChatMessage[]>([]);
 
 // const extensionInfo$ = signal(jumper.call("context.getInfo"));
 // const videoId$ = computed(() => {
@@ -271,6 +337,8 @@ function useMessageAddedSubscription() {
   const videoId$ = useComputed(() => {
     const extensionInfo = extensionInfo$.get();
     console.log("get video id");
+
+    // return "3WZCCFmzPl4"; // lud
 
     // return "RsNCCn1Ioig"; // tim
     // return "TCIFqaxYFAs"; // myth
@@ -288,6 +356,7 @@ function useMessageAddedSubscription() {
     const channelId = extensionInfo?.pageInfo ? getChannelId(extensionInfo.pageInfo) : null;
     // jumper.call("platform.log", `extensionInfo compute channelId ${channelId}`);
 
+    // return "UCrPseYLGpNygVi34QpGNqpA"; // lud
     // return "UCXBE_QQSZueB8082ml5fslg"; // tim
     // return "UCZaVG6KWBuquVXt63G6xopg"; // riley
     // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
@@ -303,18 +372,19 @@ function useMessageAddedSubscription() {
       subscribe((response) => {
         if (response.data?.youtubeChatMessageAdded) {
           messages$.set((prev) => {
+            const normalizedChatMessage = normalizeTruffleYoutubeChatMessage(
+              response.data?.youtubeChatMessageAdded!,
+            );
             let newMessages = response.data?.youtubeChatMessageAdded
-              ? [response.data?.youtubeChatMessageAdded, ...prev]
+              ? [normalizedChatMessage, ...prev]
               : prev;
             if (newMessages.length > 75) {
-              // newMessages = newMessages.slice(-50);
               console.log("old newMessages", newMessages);
 
               newMessages = newMessages.slice(0, newMessages?.length - 50);
 
               console.log("sliced newMessages", newMessages);
             }
-            // console.log("newMessages", newMessages);
             return newMessages;
           });
         } else {
@@ -384,7 +454,7 @@ export default function YoutubeChat() {
     <div className="c-youtube-chat" data-swipe-ignore>
       <div className="messages">
         <div className="inner" onScroll={handleScroll}>
-          <For<YouTubeChatMessage, { emoteMap: Map<string, string> }>
+          <For<NormalizedYoutubeChatMessage, { emoteMap: Map<string, string> }>
             itemProps={{ emoteMap }}
             each={messages$}
             item={ChatMessage}
@@ -414,10 +484,8 @@ const MemoizedMessage = React.memo(Message, (prev, next) => {
   return prev.item.id === next.item.id;
 });
 
-function getTruffleBadges(item: YouTubeChatMessage) {
-  const badgeSrcArr = item.connection?.orgUser?.activePowerupConnection?.nodes
-    ?.map((activePowerup) => activePowerup?.powerup?.componentRels?.[0]?.props?.imageSrc)
-    .filter((src) => src !== undefined)
+function getTruffleBadges(item: NormalizedYoutubeChatMessage) {
+  const badgeSrcArr = item.connection?.orgUser?.truffleBadges.map((badge) => badge.src)
     .slice(0, 2) ?? [];
 
   if (!badgeSrcArr.length) {
@@ -427,7 +495,9 @@ function getTruffleBadges(item: YouTubeChatMessage) {
   return badgeSrcArr.map((badgeSrc) => getBadge(badgeSrc));
 }
 
-function Message({ item, emoteMap }: { item: YouTubeChatMessage; emoteMap: Map<string, string> }) {
+function Message(
+  { item, emoteMap }: { item: NormalizedYoutubeChatMessage; emoteMap: Map<string, string> },
+) {
   return (
     <div className="message">
       <span className="author">
