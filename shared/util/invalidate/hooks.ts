@@ -4,7 +4,6 @@ import {
   useOrgUserConnectionsQuery,
   useOwnedCollectibleConnection,
   usePollingActivityAlertConnection$,
-  usePollingOrgKothConfigQuery$,
   useSeasonPassData,
   useUserInfo,
 } from "../mod.ts";
@@ -18,7 +17,6 @@ export function useInvalidateAllQueriesListener() {
   const { reexecuteOwnedCollectibleConnQuery } = useOwnedCollectibleConnection();
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
   const { reexecuteSeasonPassQuery } = useSeasonPassData();
-  const { reexecuteKothConfigQuery } = usePollingOrgKothConfigQuery$({});
   const { reexecuteActivityConnectionQuery } = usePollingActivityAlertConnection$({});
 
   useEffect(() => {
@@ -28,7 +26,6 @@ export function useInvalidateAllQueriesListener() {
         reexecuteActivePowerupConnQuery({ requestPolicy: "network-only" });
         reexecuteOwnedCollectibleConnQuery({ requestPolicy: "network-only" });
         reexecuteSeasonPassQuery({ requestPolicy: "network-only" });
-        reexecuteKothConfigQuery({ requestPolicy: "network-only" });
         refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteActivityConnectionQuery({ requestPolicy: "network-only" });
       }

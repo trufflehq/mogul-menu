@@ -6,16 +6,11 @@ import {
   useQuerySignal,
   useSelector,
   useStyleSheet,
+  useSubscriptionSignal,
 } from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
-import {
-  CROWN_ICON,
-  hasPermission,
-  OrgUserQuerySignal,
-  usePollingOrgKothConfigQuery$,
-} from "../../shared/mod.ts";
-import { KOTH_USER_QUERY } from "./gql.ts";
-import { useCurrentTab } from "../tabs/mod.ts";
+import { CROWN_ICON, hasPermission, OrgUserQuerySignal } from "../../shared/mod.ts";
+import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile, { RemoveButton } from "../tile/tile.tsx";
 
@@ -30,16 +25,10 @@ mutation {
   }
 }
 `;
-const KOTH_POLL_INTERVAL = 10000;
-const PASSIVE_KOTH_POLL_INTERVAL = 60000;
 
 export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal }) {
   useStyleSheet(styleSheet);
-  const { isActive } = useCurrentTab();
-
-  const { orgKothConfig$ } = usePollingOrgKothConfigQuery$({
-    interval: isActive ? KOTH_POLL_INTERVAL : PASSIVE_KOTH_POLL_INTERVAL,
-  });
+  const { signal$: orgKothConfig$ } = useSubscriptionSignal(KOTH_ORG_CONFIG_QUERY);
 
   const kothUserId = useSelector(() =>
     orgKothConfig$.data?.get()?.org?.orgConfig.data.kingOfTheHill?.userId

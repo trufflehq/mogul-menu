@@ -14,7 +14,6 @@ export * from "./notifications/mod.ts";
 export * from "./firebase/mod.ts";
 export * from "./poll/mod.ts";
 export * from "./permissions/mod.ts";
-export * from "./koth/mod.ts";
 export * from "./leaderboards/mod.ts";
 export * from "./interval/mod.ts";
 export * from "./kv/mod.ts";

@@ -128,7 +128,6 @@ export default function HomeTab() {
         <PredictionTile orgUserWithRoles$={orgUserWithRoles$} />
         <CPSpentTile orgUserWithRoles$={orgUserWithRoles$} />
         <KothTile orgUserWithRoles$={orgUserWithRoles$} />
-        <MemoizedSubscriptionTest />
       </div>
     </div>
   );
