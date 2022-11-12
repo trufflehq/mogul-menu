@@ -135,17 +135,40 @@ export default function HomeTab() {
 }
 
 const MemoizedSubscriptionTest = React.memo(() => {
-  const [orgKothConfigTest] = useSubscription({
-    query: gql`subscription KOTHOrgQuery {
-      org {
-        orgConfig {
-          data
+  const [subscriptionTest] = useSubscription({
+    query: gql`subscription {
+      alertConnection(input: { type: "activity" }, first: 2) {
+        nodes {
+          id
+          message
+          activity {
+            __typename
+            ... on Poll {
+              id
+              question
+              counter {
+                options {
+                  text
+                  index
+                  count
+                  unique
+                }
+              }
+              myVote {
+                optionIndex
+                count
+              }
+            }
+            ... on Alert {
+              id
+            }
+          }
         }
       }
     }`,
   });
 
-  console.log("orgKothConfigTest", orgKothConfigTest);
+  console.log("subscriptionTest", subscriptionTest);
 
   return <></>;
 });
