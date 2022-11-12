@@ -1,4 +1,12 @@
-import { abbreviateNumber, Icon, ImageByAspectRatio, React, useStyleSheet } from "../../deps.ts";
+import {
+  abbreviateNumber,
+  gql,
+  Icon,
+  ImageByAspectRatio,
+  React,
+  useStyleSheet,
+  useSubscription,
+} from "../../deps.ts";
 
 import styleSheet from "./home-tab.scss.js";
 
@@ -9,7 +17,11 @@ import Watchtime from "../watchtime/watchtime.tsx";
 import PredictionTile from "../prediction-tile/prediction-tile.tsx";
 import KothTile from "../koth-tile/koth-tile.tsx";
 import SettingsPage from "../settings/settings-page/settings-page.tsx";
-import { useOrgUserWithRoles$, useUserInfo } from "../../shared/mod.ts";
+import {
+  useFirstTimeNotificationBanner,
+  useOrgUserWithRoles$,
+  useUserInfo,
+} from "../../shared/mod.ts";
 import BrowserExtensionNotificationDialog from "../dialogs/notification-dialog/notification-dialog.tsx";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import BattlepassLeaderboardTile from "../battlepass-leaderboard-tile/battlepass-leaderboard-tile.tsx";
@@ -38,6 +50,8 @@ export default function HomeTab() {
   const handleOpenNotificationDialog = () => {
     pushDialog(<BrowserExtensionNotificationDialog />);
   };
+
+  useFirstTimeNotificationBanner();
 
   return (
     <div className="c-home-tab">
@@ -118,3 +132,42 @@ export default function HomeTab() {
     </div>
   );
 }
+
+const MemoizedSubscriptionTest = React.memo(() => {
+  const [subscriptionTest] = useSubscription({
+    query: gql`subscription {
+      alertConnection(input: { type: "activity" }, first: 2) {
+        nodes {
+          id
+          message
+          activity {
+            __typename
+            ... on Poll {
+              id
+              question
+              counter {
+                options {
+                  text
+                  index
+                  count
+                  unique
+                }
+              }
+              myVote {
+                optionIndex
+                count
+              }
+            }
+            ... on Alert {
+              id
+            }
+          }
+        }
+      }
+    }`,
+  });
+
+  console.log("subscriptionTest", subscriptionTest);
+
+  return <></>;
+});
