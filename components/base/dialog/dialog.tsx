@@ -34,7 +34,7 @@ export default function Dialog({
   children,
   onClose,
   onBack,
-  className,
+  className = "",
   dialogCss,
   headerStyle = "default",
   headerText,

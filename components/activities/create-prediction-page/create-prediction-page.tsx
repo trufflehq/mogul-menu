@@ -38,9 +38,11 @@ mutation CreatePrediction($question: String, $options: JSON, $durationSeconds: I
       id
       question
       endTime
-      options {
-        text
-        index
+      counter {
+        options {
+          text
+          index
+        }
       }
       data
     }
@@ -65,7 +67,7 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
   const { popPage } = usePageStack();
   const enqueueSnackBar = useSnackBar();
   const predictionError$ = useSignal("");
-  const prediction$ = useSignal<PollInput>({
+  const predictionForm$ = useSignal<PollInput>({
     question: "",
     options: [{ text: "", index: 0 }, { text: "", index: 1 }],
     durationMinutes: "0",
@@ -73,9 +75,9 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
 
   const onClick = async () => {
     const result = await executeCreatePredictionMutation({
-      question: prediction$.question.get(),
-      options: prediction$.options.get(),
-      durationSeconds: parseInt(prediction$.durationMinutes.get()) * SECONDS_PER_MINUTE,
+      question: predictionForm$.question.get(),
+      options: predictionForm$.options.get(),
+      durationSeconds: parseInt(predictionForm$.durationMinutes.get()) * SECONDS_PER_MINUTE,
     });
 
     if (result.error?.graphQLErrors?.length) {
@@ -87,9 +89,9 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
   };
 
   const canSubmit = useComputed(() => {
-    const hasQuestion = Boolean(prediction$.question.get().length);
-    const hasDuration = parseInt(prediction$.durationMinutes.get()) > 0;
-    const hasOptions = prediction$.options.get().every((option) => option.text.length);
+    const hasQuestion = Boolean(predictionForm$.question.get().length);
+    const hasDuration = parseInt(predictionForm$.durationMinutes.get()) > 0;
+    const hasOptions = predictionForm$.options.get().every((option) => option.text.length);
 
     return hasQuestion && hasDuration && hasOptions;
   });
@@ -113,9 +115,9 @@ const CreatePredictionPage = observer(function CreatePredictionPage() {
     >
       <div className="c-create-prediction-page">
         {predictionError$.get() && <div className="error">{predictionError$.get()}</div>}
-        <Input label="Question" value$={prediction$.question} />
-        <CreatePollOptions prediction$={prediction$} />
-        <SubmissionPeriod durationMinutes$={prediction$.durationMinutes} />
+        <Input label="Question" value$={predictionForm$.question} />
+        <CreatePollOptions predictionForm$={predictionForm$} />
+        <SubmissionPeriod durationMinutes$={predictionForm$.durationMinutes} />
       </div>
     </Page>
   );
@@ -181,23 +183,23 @@ function DurationInput({ value$, error$, suffix = "min" }: DurationInputProps) {
   );
 }
 
-function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput> }) {
+function CreatePollOptions({ predictionForm$ }: { predictionForm$: Observable<PollInput> }) {
   const onAddOption = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    prediction$.options.set((existingOptions) =>
+    predictionForm$.options.set((existingOptions) =>
       existingOptions.concat({ text: "", index: existingOptions.length })
     );
   };
 
   const onRemoveOption = (option: PollOptionInput) => {
-    prediction$.options.set((existingOptions) =>
+    predictionForm$.options.set((existingOptions) =>
       existingOptions
         .filter((existingOption) => existingOption.index !== option.index)
         .map((option, i) => ({ ...option, index: i }))
     );
   };
 
-  const options = useSelector(() => prediction$.options.get());
+  const options = useSelector(() => predictionForm$.options.get());
 
   return (
     <div className="c-create-poll-options">
@@ -205,7 +207,7 @@ function CreatePollOptions({ prediction$ }: { prediction$: Observable<PollInput>
         POSSIBLE OUTCOMES
       </div>
       <div className="options">
-        {prediction$.options.map((option$, i) => (
+        {predictionForm$.options.map((option$, i) => (
           <PollOptionInput
             color={getOptionColor(i)}
             placeholder={`Option ${i + 1}`}

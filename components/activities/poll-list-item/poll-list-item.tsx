@@ -1,10 +1,4 @@
-import {
-  React,
-  useEffect,
-  useSelector,
-  useSignal,
-  useStyleSheet,
-} from "../../../deps.ts";
+import { React, useEffect, useSelector, useSignal, useStyleSheet } from "../../../deps.ts";
 import {
   BAR_CHART_ICON_PATH,
   getPollInfo,
@@ -23,6 +17,8 @@ const INACTIVE_POLL_INTERVAL = 60000;
 export default function PollListItem(props: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
   if (!props.activity) return <></>;
+
+  console.log("list item", props);
 
   return isPrediction(props.activity)
     ? <PredictionListItem {...props} />
@@ -64,7 +60,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
       {hasWinningOption
         ? (
           <span className="winner">
-            {poll.options[poll.data.winningOptionIndex!].text}
+            {poll.counter.options[poll.data.winningOptionIndex!].text}
           </span>
         )
         : hasPollEnded

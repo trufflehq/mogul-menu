@@ -32,7 +32,7 @@ export const KOTH_USER_QUERY = gql<{ orgUser: Required<KOTHOrgUser> }, { userId:
   }
 `;
 
-export const KOTH_ORG_CONFIG_QUERY = gql<KothOrgConfig>`
+export const KOTH_ORG_CONFIG_SUBSCRIPTION = gql<KothOrgConfig>`
   subscription KOTHOrgQuery {
     org {
       orgConfig {
