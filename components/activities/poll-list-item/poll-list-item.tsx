@@ -18,8 +18,6 @@ export default function PollListItem(props: ActivityListItemProps<Poll>) {
   useStyleSheet(styleSheet);
   if (!props.activity) return <></>;
 
-  console.log("list item", props);
-
   return isPrediction(props.activity)
     ? <PredictionListItem {...props} />
     : <BasePollListItem {...props} />;
