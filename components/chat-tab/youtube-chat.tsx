@@ -34,6 +34,16 @@ export function extractYoutubeId(url: string) {
 }
 
 function getVideoId(pageIdentifiers: PageIdentifier[]) {
+  const youtubeLiveIdentifier = pageIdentifiers.find((identifier) =>
+    identifier.sourceType === "youtubeLive"
+  );
+
+  if (youtubeLiveIdentifier?.data?.videoId) {
+    jumper.call("platform.log", `videoId WHOO ${youtubeLiveIdentifier?.data?.videoId}`);
+
+    return youtubeLiveIdentifier.data.videoId;
+  }
+
   const urlIdentifier = pageIdentifiers.find((identifier) => identifier.sourceType === "url");
 
   if (!urlIdentifier) {
@@ -439,6 +449,7 @@ export default function YoutubeChat() {
   const { emoteMap } = useEmoteMap$(channelId$);
 
   const videoId = useSelector(() => videoId$.get());
+  console.log("videoId", videoId);
 
   const handleScroll = (e) => {
     const scrollTop = e.target.scrollTop;
