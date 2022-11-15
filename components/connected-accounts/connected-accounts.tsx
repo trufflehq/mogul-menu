@@ -70,28 +70,28 @@ function ConnectedAccounts() {
   const lastUpdatedConnectionsRef = useRef<Connection[] | undefined>(undefined!);
 
   const logos = [
-    {
-      sourceType: "discord",
-      snackbarSrc: "https://cdn.bio/assets/icons/global/light/discord.svg",
-      imgUrl:
-        "https://cdn.bio/ugc/file/74d63ae0-3134-11ec-b844-c04b4cdda93a/39d5b910-5f6b-11ec-84a1-2e2f04e55ed6.svg",
-      color: "#586AEA",
-      hasConnection: false,
-      data: {
-        title: "Discord",
-      },
-    },
-    {
-      sourceType: "twitter",
-      snackbarSrc: "https://cdn.bio/assets/icons/global/light/twitter.svg",
-      imgUrl:
-        "https://cdn.bio/ugc/file/74d63ae0-3134-11ec-b844-c04b4cdda93a/39d59200-5f6b-11ec-932f-1a7d09fc7d5c.svg",
-      color: "#5D92F7",
-      hasConnection: false,
-      data: {
-        title: "Twitter",
-      },
-    },
+    // {
+    //   sourceType: "discord",
+    //   snackbarSrc: "https://cdn.bio/assets/icons/global/light/discord.svg",
+    //   imgUrl:
+    //     "https://cdn.bio/ugc/file/74d63ae0-3134-11ec-b844-c04b4cdda93a/39d5b910-5f6b-11ec-84a1-2e2f04e55ed6.svg",
+    //   color: "#586AEA",
+    //   hasConnection: false,
+    //   data: {
+    //     title: "Discord",
+    //   },
+    // },
+    // {
+    //   sourceType: "twitter",
+    //   snackbarSrc: "https://cdn.bio/assets/icons/global/light/twitter.svg",
+    //   imgUrl:
+    //     "https://cdn.bio/ugc/file/74d63ae0-3134-11ec-b844-c04b4cdda93a/39d59200-5f6b-11ec-932f-1a7d09fc7d5c.svg",
+    //   color: "#5D92F7",
+    //   hasConnection: false,
+    //   data: {
+    //     title: "Twitter",
+    //   },
+    // },
     // FIXME: detect who we should show twitch vs youtube icon for
     // don't want it on for ludwig :p
     // {
