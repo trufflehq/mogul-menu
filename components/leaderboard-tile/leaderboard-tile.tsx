@@ -8,23 +8,16 @@ import {
   useQuery,
   useSelector,
   useStyleSheet,
+  useSubscriptionSignal,
 } from "../../deps.ts";
 import { User } from "../../types/mod.ts";
-import { useCurrentTab } from "../tabs/mod.ts";
 import { OrgUserCounter, OrgUserCounterConnection } from "../../types/org-user-counter.types.ts";
 import { LEADERBOARD_COUNTER_QUERY } from "./gql.ts";
 import Tile, { HideShowButton } from "../tile/tile.tsx";
 
-import {
-  hasPermission,
-  OrgUserQuerySignal,
-  TROPHY_ICON,
-  usePollingLeaderboardDisplay$,
-} from "../../shared/mod.ts";
+import { hasPermission, OrgUserQuerySignal, TROPHY_ICON } from "../../shared/mod.ts";
 
 import styleSheet from "./leaderboard-tile.scss.js";
-const LEADERBOARD_DISPLAY_POLL_INTERVAL = 10000;
-const PASSIVE_LEADERBOARD_DISPLAY_POLL_INTERVAL = 60000;
 
 const LEADERBOARD_LIMIT = 3;
 const LEADERBOARD_DISPLAY_UPSERT_MUTATION = gql`
@@ -37,6 +30,26 @@ const LEADERBOARD_DISPLAY_UPSERT_MUTATION = gql`
     }
   }
 `;
+
+interface OrgLeaderboardDisplayKVResult {
+  org: {
+    id: string;
+    keyValue: {
+      value: `${boolean}`;
+    };
+  };
+}
+
+const ORG_LEADERBOARD_DISPLAY_SUBSCRIPTION = gql<OrgLeaderboardDisplayKVResult>`
+subscription BattlepassLeaderboardKeyValue($key: String) {
+  org {
+    id
+    keyValue(input: { key: $key }) {
+      key
+      value
+    }
+  }
+}`;
 
 function getTop3(leaderboardCounters: OrgUserCounterConnection) {
   let userRanks = leaderboardCounters?.nodes?.map((orgUserCounter) => {
@@ -66,8 +79,6 @@ export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
   displayKey,
 }: LeaderboardTileProps) => {
   useStyleSheet(styleSheet);
-  const { isActive } = useCurrentTab();
-
   const [{ data: leaderboardCounterData }] = useQuery({
     query: LEADERBOARD_COUNTER_QUERY,
     variables: {
@@ -76,13 +87,9 @@ export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
     },
   });
 
-  const { leaderboardDisplay$, reexecuteLeaderboardDisplayQuery } = usePollingLeaderboardDisplay$(
-    {
-      key: displayKey,
-      interval: isActive
-        ? LEADERBOARD_DISPLAY_POLL_INTERVAL
-        : PASSIVE_LEADERBOARD_DISPLAY_POLL_INTERVAL,
-    },
+  const { signal$: leaderboardDisplay$ } = useSubscriptionSignal(
+    ORG_LEADERBOARD_DISPLAY_SUBSCRIPTION,
+    { key: displayKey },
   );
   const [, executeLeaderboardKVUpsert] = useMutation(LEADERBOARD_DISPLAY_UPSERT_MUTATION);
 
@@ -109,8 +116,6 @@ export const LeaderboardTile: React.FC<LeaderboardTileProps> = observer(({
       key: displayKey,
       value: `${!shouldDisplay}`,
     });
-
-    await reexecuteLeaderboardDisplayQuery({ requestPolicy: "network-only" });
   };
 
   const leaderboardCounters: OrgUserCounterConnection = leaderboardCounterData

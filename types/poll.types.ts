@@ -6,6 +6,10 @@ export interface PollOption {
   unique: number;
 }
 
+export interface PollCounter {
+  options: PollOption[];
+}
+
 export interface PollVote {
   pollId: string;
   userId: string;
@@ -17,7 +21,7 @@ export interface Poll {
   __typename: "Poll";
   id: string;
   question: string;
-  options: PollOption[];
+  counter: PollCounter;
   data: {
     type?: "prediction";
     winningOptionIndex?: number;

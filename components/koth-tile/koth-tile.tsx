@@ -10,7 +10,7 @@ import {
 } from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
 import { CROWN_ICON, hasPermission, OrgUserQuerySignal } from "../../shared/mod.ts";
-import { KOTH_ORG_CONFIG_QUERY, KOTH_USER_QUERY } from "./gql.ts";
+import { KOTH_ORG_CONFIG_SUBSCRIPTION, KOTH_USER_QUERY } from "./gql.ts";
 import ActivePowerups from "../active-powerups/active-powerups.tsx";
 import Tile, { RemoveButton } from "../tile/tile.tsx";
 
@@ -28,7 +28,7 @@ mutation {
 
 export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: OrgUserQuerySignal }) {
   useStyleSheet(styleSheet);
-  const { signal$: orgKothConfig$ } = useSubscriptionSignal(KOTH_ORG_CONFIG_QUERY);
+  const { signal$: orgKothConfig$ } = useSubscriptionSignal(KOTH_ORG_CONFIG_SUBSCRIPTION);
 
   const kothUserId = useSelector(() =>
     orgKothConfig$.data?.get()?.org?.orgConfig.data.kingOfTheHill?.userId

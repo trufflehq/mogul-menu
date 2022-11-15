@@ -5,25 +5,19 @@ import {
   React,
   useSelector,
   useStyleSheet,
+  useSubscriptionSignal,
 } from "../../../deps.ts";
-import {
-  hasPermission,
-  isActiveActivity,
-  useOrgUserWithRoles$,
-  usePollingActivityAlertConnection$,
-} from "../../../shared/mod.ts";
+import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
+import { ACTIVITY_CONNECTION_SUBSCRIPTION } from "../../../shared/util/activity/gql.ts";
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
-import { useCurrentTab } from "../../tabs/mod.ts";
 
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
-import { ActivityAlert, OrgUser, StringKeys } from "../../../types/mod.ts";
+import { ActivityAlert, ActivityConnection, OrgUser, StringKeys } from "../../../types/mod.ts";
 
-const ACTIVITY_CONNECTION_INTERVAL = 2000;
-const PASSIVE_ACTIVITY_CONNECTION_INTERVAL = 60000;
 const ACTIVITY_CONNECTION_LIMIT = 20;
 
 export interface ActivityListItemProps<ActivityType> {
@@ -54,20 +48,15 @@ export function ActivitiesTabManager<
 >(props: ActivitiesTabManagerProps<ActivityListItemTypes>) {
   useStyleSheet(styleSheet);
 
-  const { isActive } = useCurrentTab();
-
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
   const { pushDialog } = useDialog();
   const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
 
-  const { activityAlertConnection$, reexecuteActivityConnectionQuery } =
-    usePollingActivityAlertConnection$<ActivityType, SourceType>(
-      {
-        interval: isActive ? ACTIVITY_CONNECTION_INTERVAL : PASSIVE_ACTIVITY_CONNECTION_INTERVAL,
-        limit: ACTIVITY_CONNECTION_LIMIT,
-      },
-    );
+  const { signal$: activityAlertConnection$ } = useSubscriptionSignal(
+    ACTIVITY_CONNECTION_SUBSCRIPTION,
+    { limit: ACTIVITY_CONNECTION_LIMIT },
+  );
 
   const hasPollPermissions = useSelector(() =>
     hasPermission({
@@ -80,7 +69,6 @@ export function ActivitiesTabManager<
   );
 
   const onStartActivity = () => {
-    reexecuteActivityConnectionQuery();
     pushDialog(<CreateActivityDialog />);
   };
 
@@ -94,7 +82,7 @@ export function ActivitiesTabManager<
         <Memo>
           {() => {
             const activityAlerts = useSelector(() =>
-              activityAlertConnection$?.alertConnection.nodes.get()?.filter((alert) =>
+              activityAlertConnection$.data.alertConnection.nodes.get()?.filter((alert) =>
                 alert?.activity && isActiveActivity(alert)
               )
             );
@@ -125,7 +113,7 @@ export function ActivitiesTabManager<
         <Memo>
           {() => {
             const activityAlerts = useSelector(() =>
-              activityAlertConnection$.alertConnection.nodes.get()?.filter((alert) =>
+              activityAlertConnection$.data.alertConnection.nodes.get()?.filter((alert) =>
                 alert?.activity && !isActiveActivity(alert)
               )
             );

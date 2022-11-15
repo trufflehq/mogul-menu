@@ -17,7 +17,7 @@ import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import styleSheet from "./select-outcome-dialog.scss.js";
 
 export default function SelectOutcomeDialog(
-  { prediction$ }: { prediction$: Observable<{ poll: Poll }> },
+  { prediction$ }: { prediction$: Observable<Poll> },
 ) {
   const [, executeChoosePredictionWinnerMutation] = useMutation(CHOOSE_PREDICTION_WINNER_MUTATION);
   const { popDialog } = useDialog();
@@ -25,13 +25,12 @@ export default function SelectOutcomeDialog(
   useStyleSheet(styleSheet);
   const selectedOption$ = useSignal<PollOption>(undefined!);
 
-
   const onSubmit = async () => {
     error$.set("");
 
     try {
       const chooseWinnerResult = await executeChoosePredictionWinnerMutation({
-        id: prediction$.poll.id.get(),
+        id: prediction$.id.get(),
         winningOptionIndex: selectedOption$.index.get(),
       });
 
@@ -58,11 +57,11 @@ export default function SelectOutcomeDialog(
   };
 
   const error = useSelector(() => error$.get());
-  const options = useSelector(() => prediction$.poll.options.get());
-  const question = useSelector(() => prediction$.poll.question.get());
+  const options = useSelector(() => prediction$.counter.options.get());
+  const question = useSelector(() => prediction$.question.get());
   const hasSelectedOption = useSelector(() => Boolean(selectedOption$.get()));
   const selectedOption = useSelector(() => selectedOption$.get());
-  
+
   return (
     <div className="c-select-outcome-dialog">
       <Dialog headerText="Select the outcome">

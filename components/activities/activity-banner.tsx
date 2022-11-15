@@ -7,17 +7,15 @@ import {
   useSelector,
   useSignal,
   useStyleSheet,
+  useSubscriptionSignal,
 } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import {
-  isActiveActivity,
-  useLoginListener,
-  usePollingActivityAlertConnection$,
-} from "../../shared/mod.ts";
+import { isActiveActivity, useLoginListener } from "../../shared/mod.ts";
+import { ACTIVITY_CONNECTION_SUBSCRIPTION } from "../../shared/util/activity/gql.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { isActivityBannerOpen$ } from "./signals.ts";
-import { ActivityAlert, Alert, Poll, StringKeys } from "../../types/mod.ts";
+import { ActivityAlert, ActivityConnection, Alert, Poll, StringKeys } from "../../types/mod.ts";
 import PollBanner from "./poll-banner/poll-banner.tsx";
 import AlertBanner from "./alert-banner/alert-banner.tsx";
 
@@ -63,12 +61,9 @@ export function ActivityBannerManager<
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
-  const { activityAlertConnection$ } = usePollingActivityAlertConnection$<ActivityType, SourceType>(
-    {
-      interval: 2000,
-      limit: 1,
-      status: "ready",
-    },
+  const { signal$: activityAlertConnection$ } = useSubscriptionSignal(
+    ACTIVITY_CONNECTION_SUBSCRIPTION,
+    { status: "ready" },
   );
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
@@ -87,13 +82,13 @@ export function ActivityBannerManager<
 
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.alertConnection.nodes.get()?.[0]?.id
+      activityAlertConnection$.data.alertConnection.nodes.get()?.[0]?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
@@ -105,13 +100,13 @@ export function ActivityBannerManager<
   });
 
   const activityAlert = useSelector(() =>
-    activityAlertConnection$.alertConnection.nodes.get()?.[0]
+    activityAlertConnection$.data.alertConnection.nodes.get()?.[0]
   );
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });

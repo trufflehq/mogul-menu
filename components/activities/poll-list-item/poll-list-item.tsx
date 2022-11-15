@@ -1,10 +1,4 @@
-import {
-  React,
-  useEffect,
-  useSelector,
-  useSignal,
-  useStyleSheet,
-} from "../../../deps.ts";
+import { React, useEffect, useSelector, useSignal, useStyleSheet } from "../../../deps.ts";
 import {
   BAR_CHART_ICON_PATH,
   getPollInfo,
@@ -64,7 +58,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
       {hasWinningOption
         ? (
           <span className="winner">
-            {poll.options[poll.data.winningOptionIndex!].text}
+            {poll.counter.options[poll.data.winningOptionIndex!].text}
           </span>
         )
         : hasPollEnded

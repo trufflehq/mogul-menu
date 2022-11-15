@@ -6,11 +6,13 @@ query PredictionPoll {
     nodes {
       id
       question
-      options {
-        index
-        text
-        count
-        unique
+      counter {
+        options {
+          index
+          text
+          count
+          unique
+        }
       }
       data
       time
