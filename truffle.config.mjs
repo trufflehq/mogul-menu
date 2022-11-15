@@ -10,3 +10,4 @@ export default {
   // localhost
   // apiUrl: 'http://localhost:50420/graphql'
 };
+
