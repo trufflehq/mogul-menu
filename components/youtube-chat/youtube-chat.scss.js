@@ -16,7 +16,8 @@ export default scss`
     overflow: hidden;
     padding: 8px 8px 8px 8px;
     height: 100%;
-    background: var(--mm-color-bg-tertiary);
+    /* background: var(--mm-color-bg-tertiary); */
+    background: #181818; /* yt chat bg */
     color: #FFF;
 
     > .inner {
