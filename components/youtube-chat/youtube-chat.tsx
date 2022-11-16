@@ -367,7 +367,8 @@ function useMessageAddedSubscription() {
               console.log('has message id')
               return prev;
             }
-            console.log("normalizedChatMessage", normalizedChatMessage?.data?.message);
+            
+            // console.log("normalizedChatMessage", normalizedChatMessage?.data?.message);
             let newMessages = response.data?.youtubeChatMessageAdded
               ? [normalizedChatMessage, ...prev]
               : prev;
