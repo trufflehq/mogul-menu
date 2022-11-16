@@ -79,8 +79,8 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^0.0.35/components/oauth-iframe/mod.ts";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.35/components/oauth-iframe/mod.ts";
+} from "https://tfl.dev/@truffle/third-party-oauth@^0.0.41/components/oauth-iframe/mod.ts?bundle";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^0.0.41/components/oauth-iframe/mod.ts?bundle";
 
 export {
   getApp as getFirebaseApp,
