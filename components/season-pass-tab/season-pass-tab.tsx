@@ -3,7 +3,6 @@ import LinkButton from "../base/link-button/link-button.tsx";
 import { _, React, useStyleSheet } from "../../deps.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import styleSheet from "./season-pass-tab.scss.js";
-import ConnectedAccounts from "../connected-accounts/connected-accounts.tsx";
 import XpActionsDialog from "../dialogs/xp-actions-dialog/xp-actions-dialog.tsx";
 
 export default function SeasonPassTab() {
@@ -19,14 +18,9 @@ export default function SeasonPassTab() {
     <div className="c-season-pass-tab">
       <SeasonPass />
       <div className="mm-text-header-caps title">Earn XP</div>
-      <div className="mm-text-body-1 description">
-        Connect your accounts to start earning XP
-      </div>
       <LinkButton className="how-to-earn-link" onClick={onHowToEarnClick}>
         How do I earn XP?
       </LinkButton>
-      <div className="mm-text-header-caps connections-heading">Connections</div>
-      <ConnectedAccounts />
     </div>
   );
 }
