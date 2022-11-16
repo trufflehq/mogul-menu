@@ -40,6 +40,10 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
         _clearCache();
         refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
+      } else if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
+        // claim recorded elsewhere (menu watchtime.tsx), reset the timer
+        setIsClaimable(false);
+        resetTimer();
       }
     });
 
@@ -71,7 +75,7 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
     setIsClaimable(true);
   };
 
-  const { claim } = useWatchtimeCounter({
+  const { claim, resetTimer } = useWatchtimeCounter({
     source: "youtube",
     onFinishedCountdown,
     isClaimable,
