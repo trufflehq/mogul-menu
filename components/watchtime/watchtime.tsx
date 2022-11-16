@@ -133,21 +133,15 @@ export default function Watchtime(props: WatchtimeProps) {
           {(hasChannelPoints || hasBattlePass || true) && (
             <Timer timerSeconds={timeWatchedSeconds} message={"Time watched"} />
           )}
-          <Button isDisabled={!isClaimable} className="claim" style="gradient" onClick={onClaim}>
-            {isClaimable ? "Claim Reward" : (
-              <Timer
-                timerSeconds={secondsRemaining}
-                message={"Claim reward in"}
-              />
-            )}
-          </Button>
           {
-            /* {(hasChannelPoints || hasBattlePass || true) && (
-            <Timer
-              timerSeconds={secondsRemaining}
-              message={"Time until reward"}
-            />
-          )} */
+            <Button isDisabled={!isClaimable} className="claim" style="gradient" onClick={onClaim}>
+              {isClaimable ? "Claim Reward" : (
+                <Timer
+                  timerSeconds={secondsRemaining}
+                  message={"Claim reward in"}
+                />
+              )}
+            </Button>
           }
         </div>
       </div>
