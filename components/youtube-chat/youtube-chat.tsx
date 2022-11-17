@@ -346,7 +346,6 @@ function useMessageAddedSubscription() {
     // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
     // return "UCG6zBb8GZKo1XZW4eHdg-0Q"; // pcrow
     // return "UCNF0LEQ2abMr0PAX3cfkAMg";
-    // return "UCXBE_QQSZueB8082ml5fslg";
     return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
     // return "UCNF0LEQ2abMr0PAX3cfkAMg";
@@ -466,8 +465,8 @@ export default function YoutubeChat() {
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <ThemeComponent />
-      <div className="status">
-      Update Truffle to 3.3.10 for a better chat experience
+      <div className="status" onClick={() => window.open("https://truffle.vip/extension", "_blank")}>
+        Update Truffle to 3.3.10 for a better chat experience
       </div>
       <div className="messages">
         <div className="inner" onScroll={handleScroll}>
