@@ -13,6 +13,7 @@ export default scss`
   > .status {
     display: flex;
     justify-content: center;
+    text-decoration: underline;
     cursor: pointer;
     font-family: var(--mm-font-family);
     background: var(--mm-color-secondary);
