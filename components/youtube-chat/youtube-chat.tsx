@@ -374,7 +374,7 @@ function useMessageAddedSubscription() {
               let newMessages = response.data?.youtubeChatMessageAdded
                 ? [normalizedChatMessage, ...prev]
                 : prev;
-              if (newMessages.length > 75) {
+              if (newMessages.length > 250) {
                 console.log("old newMessages", newMessages);
 
                 newMessages = newMessages.slice(0, newMessages?.length - 50);
@@ -465,6 +465,9 @@ export default function YoutubeChat() {
   return (
     <div className="c-youtube-chat" data-swipe-ignore>
       <ThemeComponent />
+      <div className="status" onClick={() => window.open("https://truffle.vip/extension", "_blank")}>
+        Update Truffle to 3.3.10 for a better chat experience
+      </div>
       <div className="messages">
         <div className="inner" onScroll={handleScroll}>
           {

@@ -1,13 +1,9 @@
 export default {
   name: "@truffle/mogul-menu",
-  version: "1.0.29",
-  // name: "@truffle-dev-early-access/mogul-menu",
-  // version: "0.5.6",
-  // staging
-  // apiUrl: "https://mycelium.staging.bio/graphql",
-  // prod
+  version: "1.0.33",
   apiUrl: "https://mycelium.truffle.vip/graphql",
-  // localhost
-  // apiUrl: 'http://localhost:50420/graphql'
+  description: "Menu for channel points, predictions, and activities",
+  requestedPermissions: [],
+  installActionRel: {},
 };
 

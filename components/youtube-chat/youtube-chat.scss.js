@@ -10,11 +10,22 @@ export default scss`
   width: 100%;
   overflow: hidden;
 
+  > .status {
+    display: flex;
+    justify-content: center;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: var(--mm-font-family);
+    background: var(--mm-color-secondary);
+    font-size: 16px;
+    line-height: 21px;
+    padding: 8px;
+  }
+
   .messages {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 8px 8px 8px 8px;
     height: 100%;
     /* background: var(--mm-color-bg-tertiary); */
     background: #181818; /* yt chat bg */
