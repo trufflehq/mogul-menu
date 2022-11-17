@@ -344,6 +344,8 @@ function useMessageAddedSubscription() {
     // return "UCXBE_QQSZueB8082ml5fslg"; // tim
     // return "UCZaVG6KWBuquVXt63G6xopg"; // riley
     // return "UCvQczq3aHiHRBGEx-BKdrcg"; // myth
+    // return "UCG6zBb8GZKo1XZW4eHdg-0Q"; // pcrow
+    // return "UCNF0LEQ2abMr0PAX3cfkAMg";
     return channelId;
     // return channelId ?? "UCNF0LEQ2abMr0PAX3cfkAMg";
     // return "UCNF0LEQ2abMr0PAX3cfkAMg";
@@ -351,31 +353,42 @@ function useMessageAddedSubscription() {
 
   useObserve(() => {
     const channelId = channelId$.get();
-    const { unsubscribe } = pipe(
-      getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { channelId }),
-      subscribe((response) => {
-        if (response.data?.youtubeChatMessageAdded) {
-          messages$.set((prev) => {
-            const normalizedChatMessage = normalizeTruffleYoutubeChatMessage(
-              response.data?.youtubeChatMessageAdded!,
-            );
-            let newMessages = response.data?.youtubeChatMessageAdded
-              ? [normalizedChatMessage, ...prev]
-              : prev;
-            if (newMessages.length > 75) {
-              console.log("old newMessages", newMessages);
 
-              newMessages = newMessages.slice(0, newMessages?.length - 50);
+    if (channelId) {
+      const { unsubscribe } = pipe(
+        getClient().subscription(YOUTUBE_CHAT_MESSAGE_ADDED, { channelId }),
+        subscribe((response) => {
+          if (response.data?.youtubeChatMessageAdded) {
+            messages$.set((prev) => {
+              const normalizedChatMessage = normalizeTruffleYoutubeChatMessage(
+                response.data?.youtubeChatMessageAdded!,
+              );
+              const messageIdSet = new Set(prev.map((message) => message.id));
 
-              console.log("sliced newMessages", newMessages);
-            }
-            return newMessages;
-          });
-        } else {
-          console.error("ERRROR", response);
-        }
-      }),
-    );
+              if (messageIdSet.has(normalizedChatMessage.id)) {
+                console.log("has message id");
+                return prev;
+              }
+
+              // console.log("normalizedChatMessage", normalizedChatMessage?.data?.message);
+              let newMessages = response.data?.youtubeChatMessageAdded
+                ? [normalizedChatMessage, ...prev]
+                : prev;
+              if (newMessages.length > 75) {
+                console.log("old newMessages", newMessages);
+
+                newMessages = newMessages.slice(0, newMessages?.length - 50);
+
+                console.log("sliced newMessages", newMessages);
+              }
+              return newMessages;
+            });
+          } else {
+            console.error("ERRROR", response);
+          }
+        }),
+      );
+    }
   });
 
   return { channelId$ };
