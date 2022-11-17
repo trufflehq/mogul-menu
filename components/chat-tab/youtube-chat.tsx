@@ -385,6 +385,13 @@ function useMessageAddedSubscription() {
             const normalizedChatMessage = normalizeTruffleYoutubeChatMessage(
               response.data?.youtubeChatMessageAdded!,
             );
+
+            const messageIdSet = new Set(prev.map((message) => message.id));
+
+            if (messageIdSet.has(normalizedChatMessage.id)) {
+              console.log("has message id");
+              return prev;
+            }
             let newMessages = response.data?.youtubeChatMessageAdded
               ? [normalizedChatMessage, ...prev]
               : prev;
