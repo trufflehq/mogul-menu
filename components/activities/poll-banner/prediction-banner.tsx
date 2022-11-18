@@ -44,7 +44,7 @@ export default function PredictionBanner({ poll }: { poll: Poll }) {
     >
       {!hasPredictionEnded
         ? <CurrentPrediction pollQuestion={pollQuestion} />
-        : (winningOption && hasVoted)
+        : (winningOption && hasVoted && false)
         ? <PredictionEndedVoted amount={didWin ? myWinningShare : myPlacedVotes} didWin={didWin} />
         : <PredictionEndedNoVote pollQuestion={pollQuestion} winningOption={winningOption} />}
     </ActivityBannerFragment>
@@ -72,7 +72,9 @@ function PredictionEndedNoVote(
 ) {
   return (
     <ActivityBannerInfo text={pollQuestion}>
-      {winningOption ? <ActivityBannerSecondaryInfo text={winningOption?.text} /> : <ActivityBannerSecondaryInfo text={'Awaiting results'} />}
+      {winningOption
+        ? <ActivityBannerSecondaryInfo text={winningOption?.text} />
+        : <ActivityBannerSecondaryInfo text={"Awaiting results"} />}
     </ActivityBannerInfo>
   );
 }
