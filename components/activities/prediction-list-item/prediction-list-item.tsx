@@ -34,7 +34,7 @@ export default function PredictionListItem(
       title={activity.question}
       onClick={showPredictionPage}
       description={<PollListItemDescription poll={activity} />}
-      preview={totalVotes > 0
+      preview={totalVotes > 0 && false
         ? (
           <div className="c-prediction-list-item__preview">
             <ImageByAspectRatio
