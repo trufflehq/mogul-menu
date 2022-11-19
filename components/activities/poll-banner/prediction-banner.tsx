@@ -44,7 +44,7 @@ export default function PredictionBanner({ poll }: { poll: Poll }) {
     >
       {!hasPredictionEnded
         ? <CurrentPrediction pollQuestion={pollQuestion} />
-        : (winningOption && hasVoted && false)
+        : (winningOption && hasVoted)
         ? <PredictionEndedVoted amount={didWin ? myWinningShare : myPlacedVotes} didWin={didWin} />
         : <PredictionEndedNoVote pollQuestion={pollQuestion} winningOption={winningOption} />}
     </ActivityBannerFragment>
