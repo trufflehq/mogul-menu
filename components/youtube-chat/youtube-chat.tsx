@@ -240,6 +240,7 @@ export enum EmoteProvider {
   Custom,
   Spore,
   SevenTV,
+  Emotesly,
 }
 export type Emote = {
   provider: EmoteProvider;
@@ -248,6 +249,7 @@ export type Emote = {
   ext?: string;
   bitIndex?: number;
   channelId?: string;
+  cat?: string;
 };
 
 function getEmoteUrl(emote: Emote) {
@@ -263,6 +265,8 @@ function getEmoteUrl(emote: Emote) {
     return `https://cdn.bio/ugc/collectible/${emote.id}.tiny.${emote.ext}`;
   } else if (emote.provider === EmoteProvider.Custom) {
     return `https://v2.truffle.vip/emotes/${emote.id}`;
+  } else if (emote.provider === EmoteProvider.Emotesly && emote?.cat) {
+    return `https://cdn.jsdelivr.net/gh/bhavita/YTEmotesly/assets/${emote.cat}/${emote.id}.${emote.ext}`;
   } else {
     return undefined;
   }
