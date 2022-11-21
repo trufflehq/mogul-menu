@@ -1,4 +1,5 @@
 import {
+  GLOBAL_JUMPER_MESSAGES,
   gql,
   jumper,
   React,
@@ -11,6 +12,7 @@ import {
 } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
 import { getCreatorName, useMenu } from "../menu/mod.ts";
+import Button from "../../components/base/button/button.tsx";
 import { MOGUL_MENU_JUMPER_MESSAGES } from "../../shared/mod.ts";
 import Timer from "../timer/timer.tsx";
 import { useWatchtimeCounter } from "./watchtime-counter.ts";
@@ -79,17 +81,31 @@ export default function Watchtime(props: WatchtimeProps) {
     });
   }, []);
 
-  const { resetTimer, secondsRemainingSubject, timeWatchedSecondsSubject } = useWatchtimeCounter({
-    source: "youtube",
-    onFinishedCountdown,
-    isClaimable,
-    setIsClaimable,
-  });
+  const { resetTimer, secondsRemainingSubject, timeWatchedSecondsSubject, claim } =
+    useWatchtimeCounter({
+      source: "youtube",
+      onFinishedCountdown,
+      isClaimable,
+      setIsClaimable,
+    });
 
   const { secondsRemaining, timeWatchedSeconds } = useObservables(() => ({
     timeWatchedSeconds: timeWatchedSecondsSubject.obs,
     secondsRemaining: secondsRemainingSubject.obs,
   }));
+
+  const onClaim = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setIsClaimable(false);
+
+    await claim();
+
+    // invalidate the user and let the channel points component know to invalidate its state
+    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
+    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
+    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS);
+  };
 
   return (
     <div className="c-live-info">
@@ -117,12 +133,16 @@ export default function Watchtime(props: WatchtimeProps) {
           {(hasChannelPoints || hasBattlePass || true) && (
             <Timer timerSeconds={timeWatchedSeconds} message={"Time watched"} />
           )}
-          {(hasChannelPoints || hasBattlePass || true) && (
-            <Timer
-              timerSeconds={secondsRemaining}
-              message={"Time until reward"}
-            />
-          )}
+          {
+            <Button isDisabled={!isClaimable} className="claim" style="gradient" onClick={onClaim}>
+              {isClaimable ? "Claim Reward" : (
+                <Timer
+                  timerSeconds={secondsRemaining}
+                  message={"Claim reward in"}
+                />
+              )}
+            </Button>
+          }
         </div>
       </div>
     </div>
