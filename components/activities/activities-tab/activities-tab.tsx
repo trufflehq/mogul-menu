@@ -18,7 +18,8 @@ import CreateActivityDialog from "../create-activity-dialog/create-activity-dial
 import styleSheet from "./activities-tab.scss.js";
 import { ActivityAlert, ActivityConnection, OrgUser, StringKeys } from "../../../types/mod.ts";
 
-const ACTIVITY_CONNECTION_LIMIT = 20;
+// higher limit means a lot of data streamed back every second during polls
+const ACTIVITY_CONNECTION_LIMIT = 10;
 
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
