@@ -36,7 +36,7 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
   // if we have brief period of downtime, we want to keep the previous value here
   // instead of having it show '..' or 0, so less people freak out.
   // as long as a value was returned, or there wasn't an error, we can use the value
-  if (rawChannelPoints != null || !channelPointsError) {
+  if (channelPointsData && (rawChannelPoints != null || !channelPointsError)) {
     rawChannelPointsRef.current = rawChannelPoints ?? 0;
   }
 
