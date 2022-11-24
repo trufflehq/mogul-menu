@@ -36,6 +36,8 @@ export const DEFAULT_BANNERS = {
   alert: AlertBanner,
 };
 
+const ACTIVITY_CONNECTION_LIMIT = 5;
+
 export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
@@ -63,7 +65,7 @@ export function ActivityBannerManager<
 >(props: ActivityBannerManagerProps<BannerTypes>) {
   const { signal$: activityAlertConnection$ } = useSubscriptionSignal(
     ACTIVITY_CONNECTION_SUBSCRIPTION,
-    { status: "ready" },
+    { status: "ready", limit: ACTIVITY_CONNECTION_LIMIT },
   );
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
