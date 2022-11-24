@@ -47,7 +47,7 @@ export const ORG_USER_CONNECTIONS_QUERY = gql<{ orgUser: OrgUserConnections }>`
       name
       userId
       orgId
-      connectionConnection(sourceTypes: ["youtube", "twitch"]) {
+      connectionConnection(input: { sourceTypes: ["youtube", "twitch"] }) {
         nodes {
           id
           sourceType
