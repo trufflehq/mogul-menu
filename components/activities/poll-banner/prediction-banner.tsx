@@ -58,9 +58,10 @@ function CurrentPrediction({ pollQuestion }: { pollQuestion: string }) {
 function PredictionEndedVoted(
   { amount, didWin = false }: { amount?: number; didWin?: boolean },
 ) {
+  const message = didWin ? `You won` : `You lost`;
   return (
     <ActivityBannerInfo
-      text={didWin ? `You won ${amount}` : `You lost ${amount}`}
+      text={amount && isNaN(amount) ? message : `${message} ${amount}`}
     >
       {amount ? <ChannelPointsIcon /> : null}
     </ActivityBannerInfo>
