@@ -7,6 +7,8 @@ import {
   useSelector,
   useStyleSheet,
   useSubscriptionSignal,
+  query,
+  useComputed
 } from "../../deps.ts";
 import { KOTHOrgUser } from "../../types/mod.ts";
 import { CROWN_ICON, hasPermission, OrgUserQuerySignal } from "../../shared/mod.ts";
@@ -30,9 +32,16 @@ export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: Org
   useStyleSheet(styleSheet);
   const { signal$: orgKothConfig$ } = useSubscriptionSignal(KOTH_ORG_CONFIG_SUBSCRIPTION);
 
-  const kothUserId = useSelector(() =>
-    orgKothConfig$.data?.get()?.org?.orgConfig.data.kingOfTheHill?.userId
-  );
+  const kothUser$ = useComputed(async () => {
+    const kothUserId = orgKothConfig$.data?.get()?.org?.orgConfig.data.kingOfTheHill?.userId;
+
+    if (!kothUserId) return;
+
+    const res = await query(KOTH_USER_QUERY, { userId: kothUserId });
+    return res?.data;
+  });
+
+  const kothOrgUser = useSelector(() => kothUser$.orgUser.get!());
 
   const hasKothDeletePermission = useSelector(() =>
     hasPermission({
@@ -44,10 +53,7 @@ export default function KothTile({ orgUserWithRoles$ }: { orgUserWithRoles$: Org
     })
   );
 
-  const kothUser$ = useQuerySignal(KOTH_USER_QUERY, { userId: kothUserId });
-  const kothOrgUser = useSelector(() => kothUser$.orgUser.get!());
-
-  if (!kothUserId || !kothOrgUser) return <></>;
+  if (!kothOrgUser) return <></>;
 
   return (
     <MemoizedTile
