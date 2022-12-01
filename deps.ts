@@ -81,8 +81,8 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.0/components/oauth-iframe/mod.ts?bundle";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.0/components/oauth-iframe/mod.ts?bundle";
+} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts?bundle";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts?bundle";
 
 export {
   getApp as getFirebaseApp,
@@ -130,4 +130,4 @@ export {
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
 export type { Client, CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";
-export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.8/components/youtube-chat/youtube-chat.tsx";
+export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.9/components/youtube-chat/youtube-chat.tsx";
