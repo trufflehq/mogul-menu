@@ -120,7 +120,7 @@ export {
   useSubscriptionSignal,
   useUpdateSignalOnChange,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.6/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.6/mod.ts";
+} from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
 export type { Client, CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";
