@@ -23,7 +23,13 @@ const CHANNEL_POINTS_STYLES = {
   "z-index": "999",
 };
 
-export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg?: string }) {
+export default function ChannelPoints(
+  { highlightButtonBg, isStandalone = true, style = "collapsed" }: {
+    highlightButtonBg?: string;
+    isStandalone?: boolean;
+    style?: "collapsed" | "expanded";
+  },
+) {
   useStyleSheet(stylesheet);
   const [isClaimable, setIsClaimable] = useState(false);
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
@@ -40,16 +46,22 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
         _clearCache();
         refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
+      } else if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
+        // claim recorded elsewhere (menu watchtime.tsx), reset the timer
+        setIsClaimable(false);
+        resetTimer();
       }
     });
 
-    // set styles for this iframe within YouTube's site
-    jumper.call("layout.applyLayoutConfigSteps", {
-      layoutConfigSteps: [
-        { action: "useSubject" }, // start with our iframe
-        { action: "setStyle", value: CHANNEL_POINTS_STYLES },
-      ],
-    });
+    if (isStandalone) {
+      // set styles for this iframe within YouTube's site
+      jumper.call("layout.applyLayoutConfigSteps", {
+        layoutConfigSteps: [
+          { action: "useSubject" }, // start with our iframe
+          { action: "setStyle", value: CHANNEL_POINTS_STYLES },
+        ],
+      });
+    }
   }, []);
 
   const onClick = async (e: React.MouseEvent) => {
@@ -71,7 +83,7 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
     setIsClaimable(true);
   };
 
-  const { claim } = useWatchtimeCounter({
+  const { claim, resetTimer } = useWatchtimeCounter({
     source: "youtube",
     onFinishedCountdown,
     isClaimable,
@@ -79,7 +91,7 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
   });
 
   return (
-    <div className="c-channel-points">
+    <div className={`c-channel-points ${style}`}>
       <ThemeComponent />
       <div className="inner">
         <div className="coin">
@@ -101,6 +113,7 @@ export default function ChannelPoints({ highlightButtonBg }: { highlightButtonBg
                 onClick={onClick}
               >
                 <ChannelPointsIcon size={16} variant="dark" />
+                {style === "expanded" && <span className="title">Claim</span>}
               </div>
             )}
         </IsLive>
