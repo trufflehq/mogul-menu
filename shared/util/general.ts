@@ -47,3 +47,5 @@ export function fromNow(date: Date, suffix = "") {
 export const secondsSince = (date: Date) => {
   return Math.floor((Date.now() - date.getTime()) / 1000);
 };
+
+export const isGoogleChrome = window.navigator.vendor === "Google Inc.";

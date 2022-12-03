@@ -1,5 +1,5 @@
 import { React, semver, useExtensionInfo, useSelector } from "../../../deps.ts";
-import { hasPermission, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
+import { hasPermission, isGoogleChrome, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import MenuItem from "../../base/menu-item/menu-item.tsx";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import AccountDetailsPage from "../account-details-page/account-details-page.tsx";
@@ -21,7 +21,6 @@ export default function SettingsPage() {
   );
 
   // notifications are currently only supported in google chrome
-  const isGoogleChrome = window.navigator.vendor === "Google Inc.";
 
   // make sure the extension supports notifications (version 3.3.4)
   const { extensionInfo } = useExtensionInfo();
