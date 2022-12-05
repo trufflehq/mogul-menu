@@ -1,4 +1,4 @@
-import { _, jumper, ObservablePrimitive, signal, useEffect } from "../../deps.ts";
+import { _, jumper, signal, useEffect } from "../../deps.ts";
 import { changeFrameOrientation } from "./jumper.ts";
 
 type Orientation = "landscape" | "portrait";
@@ -31,8 +31,6 @@ export function getOrientationByWindow() {
 }
 
 export function useOrientationChange() {
-  // jumper.call("platform.log", `useOrientationChange`);
-
   const handleOrientationChange = (event: Event) => {
     jumper.call(
       "platform.log",
@@ -54,8 +52,6 @@ export function useOrientationChange() {
 
     if (orientation) {
       orientation$.set(orientation);
-      // updatePrimitiveSignalOnChange(orientation$, orientation);
-
       changeFrameOrientation({ orientation, isCollapsed: isCollapsed$.get() });
     }
   };
@@ -71,21 +67,4 @@ export function useOrientationChange() {
 
     return () => window?.removeEventListener("orientationchange", handleOrientationChange, true);
   }, []);
-}
-
-/**
- * Update a signal only if the value has changed
- *
- * @param signal$ signal to update
- * @param value value to update the signal with
- */
-export function updatePrimitiveSignalOnChange<T>(
-  signal$: ObservablePrimitive<T>,
-  value: T | undefined,
-) {
-  const currentValue = signal$.get() as T;
-
-  if (value && value !== currentValue) {
-    signal$.set(value);
-  }
 }

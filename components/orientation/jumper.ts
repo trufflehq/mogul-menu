@@ -15,8 +15,6 @@ export function changeFrameOrientation(
   },
 ) {
   if (!orientation) return;
-  jumper.call("platform.log", `changeFrameOrientation ${orientation} ${isCollapsed}`);
-
   jumper.call("layout.applyLayoutConfigSteps", {
     layoutConfigSteps: orientation === "landscape"
       ? isCollapsed ? COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS : LANDSCAPE_LAYOUT_CONFIG_STEPS
@@ -40,13 +38,9 @@ function getMenuStyleSteps(orientation: "landscape" | "portrait", isCollapsed: b
     { action: "useDocument", value: "null" },
   ];
 }
-// need to add collapsed styles and steps
 
 export const PORTRAIT_LAYOUT_CONFIG_STEPS = [
-  // { action: "scrollToTop", value: null },
-
   ...getMenuStyleSteps("portrait", false), // add collapsed styles
-
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-portrait", "truffle-portrait-open"] },
   {
@@ -68,8 +62,7 @@ export const PORTRAIT_LAYOUT_CONFIG_STEPS = [
 ];
 
 export const COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS = [
-  ...getMenuStyleSteps("portrait", true), // add collapsed styles
-
+  ...getMenuStyleSteps("portrait", true),
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-portrait", "truffle-portrait-closed"] },
   {
@@ -91,7 +84,7 @@ export const COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS = [
 ];
 
 export const COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
-  ...getMenuStyleSteps("landscape", true), // add collapsed styles
+  ...getMenuStyleSteps("landscape", true),
 
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-landscape", "truffle-landscape-collapsed"] },
@@ -114,10 +107,9 @@ export const COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
 ];
 
 export const LANDSCAPE_LAYOUT_CONFIG_STEPS = [
-  ...getMenuStyleSteps("landscape", false), // add collapsed styles
+  ...getMenuStyleSteps("landscape", false),
 
   { action: "querySelector", value: "body" },
-  // TODO cleanup these class names
   { action: "addClassNames", value: ["truffle-landscape", "truffle-landscape-open"] },
   {
     action: "removeClassNames",

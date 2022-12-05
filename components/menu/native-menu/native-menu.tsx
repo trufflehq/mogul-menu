@@ -30,7 +30,9 @@ import {
   orientation$,
 } from "../../orientation/mod.ts";
 import { File } from "../../../types/mod.ts";
-import { getMenuPosition, MenuPosition, useMenu } from "../mod.ts";
+import { getMenuPosition, useMenu } from "../mod.ts";
+
+const DEFAULT_SWIPE_THRESHOLD = "250";
 
 /**
  * Returns an object with the CSS styles that will be applied as inline styles to the
@@ -62,17 +64,12 @@ export default function NativeMenu(props: MogulMenuProps) {
   const orientation = useSelector(() => orientation$.get());
 
   useEffect(() => {
-    document.body.dataset.swipeThreshold = "250";
+    document.body.dataset.swipeThreshold = DEFAULT_SWIPE_THRESHOLD;
     document.addEventListener("swiped-down", function (e) {
       e.stopPropagation();
       e.preventDefault();
       const orientation = getOrientationByWindow();
       if (orientation === "portrait") {
-        jumper.call(
-          "platform.log",
-          `swiped-down ${orientation} ${JSON.stringify(e.target)} ${JSON.stringify(e.detail)}`,
-        ); // TODO - remove this
-
         isCollapsed$.set(true);
         changeFrameOrientation({
           orientation: getOrientationByWindow(),
@@ -81,12 +78,11 @@ export default function NativeMenu(props: MogulMenuProps) {
       }
     });
 
-    return () => document.removeEventListener("swiped-down", () => {}, true); // TODO - remove this
+    return () => document.removeEventListener("swiped-down", () => {}, true);
   }, []);
 
   const onOpen = () => {
     isCollapsed$.set(false);
-    jumper.call("platform.log", "open");
 
     changeFrameOrientation({
       orientation: getOrientationByWindow(),
@@ -99,13 +95,6 @@ export default function NativeMenu(props: MogulMenuProps) {
   return (
     <div className={`c-native-menu ${classKebab({ isCollapsed, isOpen: !isCollapsed })}`}>
       <div className={`menu ${orientation}`}>
-        {
-          /* {isCollapsed
-          ? orientation === "landscape"
-            ? <LandscapeCollapsedButton onOpen={onOpen} />
-            : <PortraitCollapsedButton onOpen={onOpen} iconImageObj={props.iconImageObj} />
-          : <ExpandedMenu {...props} />} */
-        }
         {isCollapsed
           ? orientation === "landscape"
             ? <LandscapeCollapsedButton onOpen={onOpen} />
