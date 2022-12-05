@@ -1,12 +1,4 @@
-import {
-  gql,
-  op,
-  queryObservable,
-  React,
-  useMemo,
-  useObservables,
-  _,
-} from "../../../deps.ts";
+import { _, gql, op, queryObservable, React, useMemo, useObservables } from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
 import XPIcon from "../../xp-icon/xp-icon.tsx";
 import EconomyActionDialog from "../economy-action-dialog/economy-action-dialog.tsx";
@@ -44,9 +36,9 @@ export default function XpActionsDialog() {
           seasonPass?.economyActionConnection?.nodes,
           (action) =>
             action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
-            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID
+            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
         );
-      })
+      }),
     );
     return {
       seasonPassWatchTimeActionsObs,
@@ -62,21 +54,6 @@ export default function XpActionsDialog() {
       economyActions={seasonPassWatchTimeActions}
       oucIcon={<XPIcon />}
       title={"How to earn XP"}
-      $bottom={<LearnMoreButton />}
     />
-  );
-}
-
-function LearnMoreButton() {
-  const clickHandler = () => {
-    window.open("/", "_blank", "noreferrer");
-  };
-  return (
-    <div className="c-xp-learn-more">
-      <div className="title">Earn XP through linked accounts</div>
-      <Button style="primary" onClick={clickHandler}>
-        Learn more
-      </Button>
-    </div>
   );
 }

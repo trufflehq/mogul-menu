@@ -27,14 +27,14 @@ export function getPollInfo(poll: Poll) {
   const hasPollEnded = getHasPollEnded(poll?.endTime);
 
   // poll votes
-  const totalVotes = _.sumBy(poll.options, "count");
+  const totalVotes = _.sumBy(poll.counter.options, "count");
   const winningOptionIndex = poll?.data?.winningOptionIndex;
   const winningOption = typeof winningOptionIndex !== "undefined"
-    ? poll?.options?.find((option) => option?.index === winningOptionIndex)
+    ? poll?.counter.options?.find((option) => option?.index === winningOptionIndex)
     : undefined;
   const hasWinningOption = Boolean(winningOption);
   const winningVotes = typeof winningOptionIndex !== "undefined"
-    ? poll?.options[winningOptionIndex]?.count
+    ? poll?.counter.options[winningOptionIndex]?.count
     : 1;
   const isRefund = poll?.data?.isRefund;
 

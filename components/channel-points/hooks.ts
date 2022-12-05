@@ -5,6 +5,7 @@ export function useChannelPoints() {
   const [
     {
       data: channelPointsData,
+      error: channelPointsError,
       fetching: isFetchingChannelPoints,
     },
     reexecuteChannelPointsQuery,
@@ -23,6 +24,7 @@ export function useChannelPoints() {
   });
   return {
     channelPointsData,
+    channelPointsError,
     isFetchingChannelPoints,
     reexecuteChannelPointsQuery,
   };

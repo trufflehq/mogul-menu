@@ -10,11 +10,7 @@ import {
 } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import {
-  isActiveActivity,
-  useLoginListener,
-  usePollingActivityAlertConnection$,
-} from "../../shared/mod.ts";
+import { isActiveActivity, useActivitySubscription$, useLoginListener } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { isActivityBannerOpen$ } from "./signals.ts";
 import { ActivityAlert, Alert, Poll, StringKeys } from "../../types/mod.ts";
@@ -38,6 +34,8 @@ export const DEFAULT_BANNERS = {
   alert: AlertBanner,
 };
 
+const ACTIVITY_CONNECTION_LIMIT = 5;
+
 export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
@@ -47,7 +45,9 @@ export function ActivityBannerEmbed<
   props: ActivityBannerManagerProps<BannerTypes>,
 ) {
   useStyleSheet(stylesheet);
-  props = { ...props, banners: props.banners ?? DEFAULT_BANNERS };
+
+  const banners = (props.banners ?? DEFAULT_BANNERS) as BannerMap<BannerTypes>;
+  props = { ...props, banners };
   useLoginListener();
 
   return (
@@ -63,13 +63,11 @@ export function ActivityBannerManager<
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
-  const { activityAlertConnection$ } = usePollingActivityAlertConnection$<ActivityType, SourceType>(
-    {
-      interval: 2000,
-      limit: 1,
-      status: "ready",
-    },
-  );
+  const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
+    status: "ready",
+    limit: ACTIVITY_CONNECTION_LIMIT,
+  });
+
   const lastActivityAlert$ = useSignal<ActivityAlert<ActivityType, SourceType> | undefined>(
     undefined!,
   );
@@ -87,13 +85,13 @@ export function ActivityBannerManager<
 
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.alertConnection.nodes.get()?.[0]?.id
+      activityAlertConnection$.data.alertConnection.nodes.get()?.[0]?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
@@ -105,13 +103,13 @@ export function ActivityBannerManager<
   });
 
   const activityAlert = useSelector(() =>
-    activityAlertConnection$.alertConnection.nodes.get()?.[0]
+    activityAlertConnection$.data.alertConnection.nodes.get()?.[0]
   );
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });

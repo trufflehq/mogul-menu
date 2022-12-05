@@ -1,5 +1,6 @@
 import {
   CombinedError,
+  gql,
   Memo,
   ObservableObject,
   React,
@@ -9,22 +10,20 @@ import {
 import {
   hasPermission,
   isActiveActivity,
+  useActivitySubscription$,
   useOrgUserWithRoles$,
-  usePollingActivityAlertConnection$,
 } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
-import { useCurrentTab } from "../../tabs/mod.ts";
 
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
-import { ActivityAlert, OrgUser, StringKeys } from "../../../types/mod.ts";
+import { ActivityAlert, ActivityConnection, OrgUser, StringKeys } from "../../../types/mod.ts";
 
-const ACTIVITY_CONNECTION_INTERVAL = 2000;
-const PASSIVE_ACTIVITY_CONNECTION_INTERVAL = 60000;
-const ACTIVITY_CONNECTION_LIMIT = 20;
+// higher limit means a lot of data streamed back every second during polls
+const ACTIVITY_CONNECTION_LIMIT = 10;
 
 export interface ActivityListItemProps<ActivityType> {
   activity: ActivityType;
@@ -47,6 +46,7 @@ export default function ActivitiesTab() {
 interface ActivitiesTabManagerProps<ActivityTypes> {
   activityListItems: ListItemMap<ActivityTypes>;
 }
+
 export function ActivitiesTabManager<
   ActivityListItemTypes,
   SourceType extends StringKeys<ActivityListItemTypes>,
@@ -54,20 +54,16 @@ export function ActivitiesTabManager<
 >(props: ActivitiesTabManagerProps<ActivityListItemTypes>) {
   useStyleSheet(styleSheet);
 
-  const { isActive } = useCurrentTab();
-
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
   const { pushDialog } = useDialog();
-  const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
+  const activityListItems = (props.activityListItems ?? DEFAULT_LIST_ITEMS) as ListItemMap<
+    ActivityListItemTypes
+  >;
 
-  const { activityAlertConnection$, reexecuteActivityConnectionQuery } =
-    usePollingActivityAlertConnection$<ActivityType, SourceType>(
-      {
-        interval: isActive ? ACTIVITY_CONNECTION_INTERVAL : PASSIVE_ACTIVITY_CONNECTION_INTERVAL,
-        limit: ACTIVITY_CONNECTION_LIMIT,
-      },
-    );
+  const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
+    limit: ACTIVITY_CONNECTION_LIMIT,
+  });
 
   const hasPollPermissions = useSelector(() =>
     hasPermission({
@@ -80,7 +76,6 @@ export function ActivitiesTabManager<
   );
 
   const onStartActivity = () => {
-    reexecuteActivityConnectionQuery();
     pushDialog(<CreateActivityDialog />);
   };
 
@@ -94,7 +89,7 @@ export function ActivitiesTabManager<
         <Memo>
           {() => {
             const activityAlerts = useSelector(() =>
-              activityAlertConnection$?.alertConnection.nodes.get()?.filter((alert) =>
+              activityAlertConnection$.data.alertConnection.nodes.get()?.filter((alert) =>
                 alert?.activity && isActiveActivity(alert)
               )
             );
@@ -125,7 +120,7 @@ export function ActivitiesTabManager<
         <Memo>
           {() => {
             const activityAlerts = useSelector(() =>
-              activityAlertConnection$.alertConnection.nodes.get()?.filter((alert) =>
+              activityAlertConnection$.data.alertConnection.nodes.get()?.filter((alert) =>
                 alert?.activity && !isActiveActivity(alert)
               )
             );

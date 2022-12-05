@@ -14,7 +14,7 @@ export {
   usePollingQuery,
   useQuery,
   useSubscription,
-} from "https://tfl.dev/@truffle/api@0.1.19/mod.ts";
+} from "https://tfl.dev/@truffle/api@~0.1.19/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
@@ -37,9 +37,7 @@ export {
 export { default as semver } from "https://npm.tfl.dev/semver@7.3.7";
 export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.17/css/css.ts";
-export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts";
-// export { useStyleSheet } from "./routes/home/index.ts";
-
+export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"; // DO NOT BUMP
 export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/class-kebab.ts";
 export {
   abbreviateNumber,
@@ -82,8 +80,8 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts?bundle";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts?bundle";
+} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
 
 export {
   getApp as getFirebaseApp,
@@ -124,18 +122,11 @@ export {
   usePollingQuerySignal,
   useQuerySignal,
   useSignal,
+  useSubscriptionSignal,
   useUpdateSignalOnChange,
   useUrqlQuerySignal,
-} from "https://tfl.dev/@truffle/state@~0.0.5/mod.ts";
-export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.4/mod.ts";
-export type {
-  Client,
-  CombinedError,
-  OperationContext,
-  TypedDocumentNode,
-  UseQueryResponse,
-  UseQueryState,
-  useSubscription as useSubscriptionType,
-} from "https://npm.tfl.dev/urql@2";
+} from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
+export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
+export type { Client, CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";
 export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.10/components/youtube-chat/youtube-chat.tsx";

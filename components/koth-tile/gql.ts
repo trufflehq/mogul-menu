@@ -1,5 +1,5 @@
 import { gql } from "../../deps.ts";
-import { KOTHOrgUser } from "../../types/mod.ts";
+import { KothOrgConfig, KOTHOrgUser } from "../../types/mod.ts";
 
 export const KOTH_USER_QUERY = gql<{ orgUser: Required<KOTHOrgUser> }, { userId: string }>`
   query KOTHUserQuery($userId: ID!) {
@@ -27,6 +27,16 @@ export const KOTH_USER_QUERY = gql<{ orgUser: Required<KOTHOrgUser> }, { userId:
           }
           aspectRatio
         }
+      }
+    }
+  }
+`;
+
+export const KOTH_ORG_CONFIG_SUBSCRIPTION = gql<KothOrgConfig>`
+  subscription KOTHOrgQuery {
+    org {
+      orgConfig {
+        data
       }
     }
   }

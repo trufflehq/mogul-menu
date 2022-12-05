@@ -29,7 +29,10 @@ function ThemeComponent({
   fontFamily = DEFAULT_FONT_FAMILY,
   secondaryFontFamily = SECONDARY_FONT_FAMILY,
 }) {
-  useGoogleFontLoader(() => [fontFamily, secondaryFontFamily, "Inter"], [fontFamily, secondaryFontFamily]);
+  useGoogleFontLoader(() => [fontFamily, secondaryFontFamily, "Inter"], [
+    fontFamily,
+    secondaryFontFamily,
+  ]);
 
   return (
     <>

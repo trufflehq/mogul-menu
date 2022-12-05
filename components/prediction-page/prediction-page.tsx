@@ -7,15 +7,14 @@ import {
   ImageByAspectRatio,
   Memo,
   Observable,
-  OperationContext,
   React,
-  updateSignalOnChange,
   useMutation,
   useObserve,
   usePollingQuerySignal,
   useSelector,
   useSignal,
   useStyleSheet,
+  useSubscriptionSignal,
   useUpdateSignalOnChange,
 } from "../../deps.ts";
 import {
@@ -28,10 +27,10 @@ import {
 import { ChannelPoints, Poll } from "../../types/mod.ts";
 import Prediction from "../prediction/prediction.tsx";
 import {
-  ACTIVE_PREDICTION_QUERY,
   CHANNEL_POINTS_QUERY,
   END_PREDICTION_MUTATION,
-  POLL_QUERY,
+  POLL_CONNECTION_SUBSCRIPTION,
+  POLL_SUBSCRIPTION,
   REFUND_PREDICTION_MUTATION,
 } from "../prediction/gql.ts";
 import {
@@ -50,7 +49,6 @@ import styleSheet from "./prediction-page.scss.js";
 
 const CHANNEL_POINTS_SRC =
   "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
-
 function usePollingChannelPoints$(
   { interval = 1000 }: { interval?: number },
 ) {
@@ -66,43 +64,6 @@ function usePollingChannelPoints$(
 
   return { channelPoints$, reexecuteChannelPointsQuery };
 }
-
-// polls for a specific poll by id
-function usePollingPrediction$(
-  { interval = 2000, pollId }: { interval?: number; pollId: string },
-) {
-  const prediction$ = useSignal<{ poll: Poll }>(undefined!);
-
-  const { signal$: predictionResponse$, reexecuteQuery: reexecutePredictionQuery } =
-    usePollingQuerySignal({ interval, query: POLL_QUERY, variables: { id: pollId } });
-
-  // only update the prediction$ if the poll has changed
-  useUpdateSignalOnChange(prediction$, predictionResponse$.data);
-
-  return { prediction$, predictionResponse$, reexecutePredictionQuery };
-}
-
-// polling for poll connection and converts to a poll observable
-export function usePollingActivePrediction$(
-  { interval = 2000 }: { interval?: number },
-) {
-  const prediction$ = useSignal<{ poll: Poll }>(undefined!);
-
-  const { signal$: predictionConnection$, reexecuteQuery: reexecutePredictionQuery } =
-    usePollingQuerySignal({ interval, query: ACTIVE_PREDICTION_QUERY });
-
-  // we use the setter directly here because we want to convert from a PollConnection to a Poll
-  useObserve(() => {
-    const activePrediction = predictionConnection$.data?.get()?.pollConnection?.nodes[0];
-
-    if (activePrediction) {
-      updateSignalOnChange(prediction$, { poll: activePrediction });
-    }
-  });
-
-  return { predictionConnection$, prediction$, reexecutePredictionQuery };
-}
-
 export default function PredictionPage({ pollId }: { pollId?: string }) {
   useStyleSheet(styleSheet);
 
@@ -110,8 +71,8 @@ export default function PredictionPage({ pollId }: { pollId?: string }) {
 }
 
 function ActivePredictionPage() {
-  const { prediction$, reexecutePredictionQuery, predictionConnection$ } =
-    usePollingActivePrediction$({ interval: 1000 });
+  const { signal$: predictionConnection$ } = useSubscriptionSignal(POLL_CONNECTION_SUBSCRIPTION);
+  const prediction$ = predictionConnection$.data.pollConnection.nodes?.[0];
   const hasFetched$ = useSignal(false);
   const isFetching$ = useSignal(false);
 
@@ -127,7 +88,6 @@ function ActivePredictionPage() {
   return (
     <PredictionPageBase
       prediction$={prediction$}
-      reexecutePredictionQuery={reexecutePredictionQuery}
       hasFetched$={hasFetched$}
       isFetching$={isFetching$}
       emptyStateMessage="No active predictions"
@@ -136,17 +96,14 @@ function ActivePredictionPage() {
 }
 
 function PredictionByIdPage({ pollId }: { pollId: string }) {
-  const { prediction$, reexecutePredictionQuery, predictionResponse$ } = usePollingPrediction$({
-    interval: 1000,
-    pollId,
-  });
+  const { signal$: prediction$ } = useSubscriptionSignal(POLL_SUBSCRIPTION, { id: pollId });
 
   const hasFetched$ = useSignal(false);
   const isFetching$ = useSignal(false);
 
   // we use this to ensure we only render the empty state if the prediction page has already fetched data
   useObserve(() => {
-    const isFetching = predictionResponse$.fetching.get();
+    const isFetching = prediction$.fetching.get();
     isFetching$.set(isFetching);
 
     if (isFetching && !hasFetched$.get()) {
@@ -156,8 +113,7 @@ function PredictionByIdPage({ pollId }: { pollId: string }) {
 
   return (
     <PredictionPageBase
-      prediction$={prediction$}
-      reexecutePredictionQuery={reexecutePredictionQuery}
+      prediction$={prediction$.data.poll}
       isFetching$={isFetching$}
       hasFetched$={hasFetched$}
     />
@@ -167,13 +123,11 @@ function PredictionByIdPage({ pollId }: { pollId: string }) {
 function PredictionPageBase(
   {
     prediction$,
-    reexecutePredictionQuery,
     hasFetched$,
     isFetching$,
     emptyStateMessage = "Missing prediction",
   }: {
-    prediction$: Observable<{ poll: Poll }>;
-    reexecutePredictionQuery: (opts?: Partial<OperationContext> | undefined) => void;
+    prediction$: Observable<Poll>;
     hasFetched$: Observable<boolean>;
     isFetching$: Observable<boolean>;
     emptyStateMessage?: string;
@@ -204,7 +158,6 @@ function PredictionPageBase(
             {() => (
               <PredictionFooter
                 prediction$={prediction$}
-                reexecutePredictionQuery={reexecutePredictionQuery}
               />
             )}
           </Memo>
@@ -217,7 +170,6 @@ function PredictionPageBase(
             {() => (
               <Prediction
                 prediction$={prediction$}
-                refetchPrediction={reexecutePredictionQuery}
               />
             )}
           </Computed>
@@ -256,10 +208,8 @@ function PredictionHeader(
 
 function PredictionFooter({
   prediction$,
-  reexecutePredictionQuery,
 }: {
-  prediction$: Observable<{ poll: Poll }>;
-  reexecutePredictionQuery: (opts?: Partial<OperationContext> | undefined) => void;
+  prediction$: Observable<Poll>;
 }) {
   const [, executeDeletePollMutation] = useMutation(DELETE_POLL_MUTATION);
   const [, executeRefundPredictionMutation] = useMutation(REFUND_PREDICTION_MUTATION);
@@ -272,7 +222,7 @@ function PredictionFooter({
     error$.set("");
     try {
       const deleteResult = await executeDeletePollMutation({
-        id: prediction$.poll.id.get(),
+        id: prediction$.id.get(),
       });
 
       if (deleteResult.error) {
@@ -303,7 +253,7 @@ function PredictionFooter({
     error$.set("");
     try {
       const refundResult = await executeRefundPredictionMutation({
-        id: prediction$.poll.id.get(),
+        id: prediction$.id.get(),
       });
 
       if (refundResult.error) {
@@ -311,8 +261,6 @@ function PredictionFooter({
         error$.set(refundResult.error.graphQLErrors[0]?.message);
         return;
       }
-
-      await reexecutePredictionQuery({ requestPolicy: "network-only" });
     } catch (err) {
       console.error("error refunding poll", err);
       error$.set(err.message);
@@ -323,7 +271,7 @@ function PredictionFooter({
     error$.set("");
     try {
       const endPredictionResult = await executeEndPredictionMutation({
-        id: prediction$.poll.id.get(),
+        id: prediction$.id.get(),
       });
 
       if (endPredictionResult.error) {
@@ -333,10 +281,8 @@ function PredictionFooter({
       }
 
       if (endPredictionResult.data?.pollUpsert) {
-        prediction$.set({ poll: endPredictionResult.data?.pollUpsert.poll });
+        prediction$.set(endPredictionResult.data?.pollUpsert.poll);
       }
-
-      await reexecutePredictionQuery({ requestPolicy: "network-only" });
     } catch (err) {
       console.error("error ending poll", err);
       error$.set(err.message);

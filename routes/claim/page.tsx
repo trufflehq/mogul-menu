@@ -1,5 +1,5 @@
 import { React } from "../../deps.ts";
-import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.11/format/wc/react/index.ts";
+import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"; // DO NOT BUMP
 import ChannelPoints from "../../components/channel-points/channel-points.tsx";
 
 function HomePage() {

@@ -1,10 +1,12 @@
 import {
   _clearCache,
   abbreviateNumber,
+  formatNumber,
   GLOBAL_JUMPER_MESSAGES,
   jumper,
   React,
   useEffect,
+  useRef,
   useState,
   useStyleSheet,
 } from "../../deps.ts";
@@ -33,7 +35,16 @@ export default function ChannelPoints(
   useStyleSheet(stylesheet);
   const [isClaimable, setIsClaimable] = useState(false);
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
-  const { channelPointsData, reexecuteChannelPointsQuery } = useChannelPoints();
+  const { channelPointsData, channelPointsError, reexecuteChannelPointsQuery } = useChannelPoints();
+
+  const rawChannelPointsRef = useRef<number | undefined>();
+  const rawChannelPoints = channelPointsData?.orgUserCounterType?.orgUserCounter?.count;
+  // if we have brief period of downtime, we want to keep the previous value here
+  // instead of having it show '..' or 0, so less people freak out.
+  // as long as a value was returned, or there wasn't an error, we can use the value
+  if (channelPointsData && (rawChannelPoints != null || !channelPointsError)) {
+    rawChannelPointsRef.current = rawChannelPoints ?? 0;
+  }
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
@@ -74,10 +85,12 @@ export default function ChannelPoints(
     jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
   };
 
-  const channelPoints = abbreviateNumber(
-    channelPointsData?.orgUserCounterType?.orgUserCounter?.count || 0,
-    2,
-  );
+  const fullChannelPoints = rawChannelPointsRef.current != null
+    ? formatNumber(rawChannelPointsRef.current)
+    : "...";
+  const channelPoints = rawChannelPointsRef.current != null
+    ? abbreviateNumber(rawChannelPointsRef.current, 2)
+    : "..";
 
   const onFinishedCountdown = () => {
     setIsClaimable(true);
@@ -98,7 +111,7 @@ export default function ChannelPoints(
           <ChannelPointsIcon />
         </div>
         {
-          <div className="points">
+          <div className="points" title={fullChannelPoints}>
             {channelPoints}
           </div>
         }

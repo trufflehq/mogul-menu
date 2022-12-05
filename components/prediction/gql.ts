@@ -4,11 +4,13 @@ import { ChannelPoints, Poll, PollConnection } from "../../types/mod.ts";
 const POLL_WITH_VOTES_FRAGMENT = `fragment PollWithVotes on Poll {
   id
   question
-  options {
-    index
-    text
-    count
-    unique
+  counter {
+    options {
+      index
+      text
+      count
+      unique
+    }
   }
   data
   time
@@ -29,8 +31,8 @@ query ActivePredictionPoll {
 } ${POLL_WITH_VOTES_FRAGMENT}
 `;
 
-export const ACTIVE_PREDICTION_QUERY = gql<{ pollConnection: PollConnection }>`
-query ActivePredictionPoll {
+export const POLL_CONNECTION_SUBSCRIPTION = gql<{ pollConnection: PollConnection }>`
+subscription ActivePredictionPoll {
   pollConnection(first: 1, input: { type: prediction }) {
     nodes {
       ...PollWithVotes
@@ -39,8 +41,8 @@ query ActivePredictionPoll {
 } ${POLL_WITH_VOTES_FRAGMENT}
 `;
 
-export const POLL_QUERY = gql<{ poll: Poll }>`
-query PredictionPoll($id: ID!) {
+export const POLL_SUBSCRIPTION = gql<{ poll: Poll }>`
+subscription PredictionPoll($id: ID!) {
   poll(input: { id: $id }) {
     ...PollWithVotes
   }

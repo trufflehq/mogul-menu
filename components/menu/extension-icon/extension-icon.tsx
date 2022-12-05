@@ -9,7 +9,7 @@ export default function ExtensionIcon() {
   const hasNotification = getHasNotification(tabsState);
 
   const onExtensionIconClick = () => {
-    // toggleOpen();
+    toggleOpen();
   };
 
   useStyleSheet(stylesheet);
