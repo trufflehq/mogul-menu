@@ -21,6 +21,9 @@ import NotificationTopicPage from "../notification-topic-page/notification-topic
 import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
 
 import LocalOAuthFrame from "./local-oauth-frame.tsx";
+import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
+import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
+
 import stylesheet from "./oauth-connection-page.scss.js";
 
 export default function OAuthConnectionPage(

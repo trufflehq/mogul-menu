@@ -20,12 +20,6 @@ export const DEFAULT_TABS = [
     $el: HomeTab,
   },
   {
-    text: "Chat",
-    slug: "chat",
-    imgUrl: "https://cdn.bio/assets/images/features/browser_extension/support-chat-light.svg",
-    $el: ChatTab,
-  },
-  {
     text: "Activities",
     slug: "activities",
     imgUrl: "https://cdn.bio/assets/images/features/browser_extension/activities.svg",
@@ -50,4 +44,11 @@ export const SEASON_PASS_TAB = {
   slug: "battle-pass",
   imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
   $el: SeasonPassTab,
+};
+
+export const CHAT_TAB = {
+  text: "Chat",
+  slug: "chat",
+  imgUrl: "https://cdn.bio/assets/images/features/browser_extension/support-chat-light.svg",
+  $el: ChatTab,
 };

@@ -1,5 +1,6 @@
 import {
   CombinedError,
+  gql,
   Memo,
   ObservableObject,
   React,
@@ -7,8 +8,12 @@ import {
   useStyleSheet,
   useSubscriptionSignal,
 } from "../../../deps.ts";
-import { hasPermission, isActiveActivity, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
-import { ACTIVITY_CONNECTION_SUBSCRIPTION } from "../../../shared/util/activity/gql.ts";
+import {
+  hasPermission,
+  isActiveActivity,
+  useActivitySubscription$,
+  useOrgUserWithRoles$,
+} from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
@@ -42,6 +47,7 @@ export default function ActivitiesTab() {
 interface ActivitiesTabManagerProps<ActivityTypes> {
   activityListItems: ListItemMap<ActivityTypes>;
 }
+
 export function ActivitiesTabManager<
   ActivityListItemTypes,
   SourceType extends StringKeys<ActivityListItemTypes>,
@@ -52,12 +58,13 @@ export function ActivitiesTabManager<
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
   const { pushDialog } = useDialog();
-  const activityListItems = props.activityListItems ?? DEFAULT_LIST_ITEMS;
+  const activityListItems = (props.activityListItems ?? DEFAULT_LIST_ITEMS) as ListItemMap<
+    ActivityListItemTypes
+  >;
 
-  const { signal$: activityAlertConnection$ } = useSubscriptionSignal(
-    ACTIVITY_CONNECTION_SUBSCRIPTION,
-    { limit: ACTIVITY_CONNECTION_LIMIT },
-  );
+  const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
+    limit: ACTIVITY_CONNECTION_LIMIT,
+  });
 
   const hasPollPermissions = useSelector(() =>
     hasPermission({

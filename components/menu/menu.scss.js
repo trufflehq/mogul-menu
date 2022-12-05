@@ -133,11 +133,15 @@ $clip-path-transition: .5s;
 
   > .menu {
     transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
-    width: 100%;
     
-    // width: 640px;
-    // height: 600px;
+    width: 100%;
     height: 100%;
+    
+    @media (min-width: 768px) {
+      width: 640px;
+      height: 600px;
+    }
+    
     border-radius: 2px;
     box-sizing: border-box;
     background: var(--mm-color-bg-primary);

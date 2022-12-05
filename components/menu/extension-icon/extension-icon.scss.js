@@ -40,7 +40,7 @@ export default scss`
 }
 
 .c-extension-icon {
-  // cursor: pointer;
+  cursor: pointer;
   background-image: url(https://cdn.bio/assets/images/creators/ludwig/extension_icon.png);
   background-size: 100%;
   background-repeat: no-repeat;

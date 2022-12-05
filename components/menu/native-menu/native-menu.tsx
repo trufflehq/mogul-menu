@@ -35,8 +35,6 @@ import { getMenuPosition, MenuPosition, useMenu } from "../mod.ts";
 /**
  * Returns an object with the CSS styles that will be applied as inline styles to the
  * parent iframe of the extension mapping (or embeddable or whatever).
- *
- * TODO - styles for collapsed menu
  */
 export function createMenuIframeStyle() {
   return BASE_MENU_STYLES;

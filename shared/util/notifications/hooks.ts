@@ -121,7 +121,7 @@ export function useDesktopNotificationSetting() {
 }
 
 export function useFirstTimeNotificationBanner() {
-  const { value$: hasSeenBanner$ } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER);
+  const { value$: hasSeenBanner$ } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER, true);
   const hasSeenBanner = useSelector(hasSeenBanner$);
   const actionBannerIdRef = useRef("");
 

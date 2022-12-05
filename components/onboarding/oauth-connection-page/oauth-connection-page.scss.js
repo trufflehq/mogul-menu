@@ -11,7 +11,6 @@ export default scss`
   @include flex-column;
   
   box-sizing: border-box;
-  // padding: 12px 32px;
   padding: 0px;
   
 
@@ -29,6 +28,11 @@ export default scss`
     margin-top: 32px;
     color: var(--mm-color-text-bg-primary);
 
+    @media (min-width: 768px) {
+      font-size: 16px;
+      margin-top: 40px;
+    }
+    
     > .title {
       font-size: 20px;
       font-weight: bold;

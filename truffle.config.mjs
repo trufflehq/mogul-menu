@@ -1,8 +1,9 @@
 export default {
-  name: "@truffle/native-mogul-menu",
-  version: "0.2.51",
-  apiUrl: "https://mycelium.truffle.vip/graphql",
-  description: "Mobile Menu for channel points, predictions, and activities",
+  name: "@dev/mogul-menu",
+  version: "1.0.54",
+  apiUrl: "https://mycelium.staging.bio/graphql",
+  // apiUrl: "https://mycelium.truffle.vip/graphql",
+  description: "Menu for channel points, predictions, and activities",
   requestedPermissions: [],
   installActionRel: {},
 };
