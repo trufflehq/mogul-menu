@@ -67,11 +67,7 @@ export default scss`
       backface-visibility: hidden;
       transform-origin: bottom;
     }
-
-
   }
-
-
 
   @keyframes claim-shake {
     0% { transform: rotate(0); }
@@ -84,9 +80,5 @@ export default scss`
     61% { transform: rotate(1deg); }
     100% { transform: rotate(0); }
   }
-  
-  
-
 }
-
 `
