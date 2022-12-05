@@ -30,7 +30,7 @@ export function getOrientationByWindow() {
   }
 }
 
-export function useOrientationChange() {
+export function useOrientationHandler() {
   const handleOrientationChange = (event: Event) => {
     jumper.call(
       "platform.log",

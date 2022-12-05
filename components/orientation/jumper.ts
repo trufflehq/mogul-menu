@@ -2,12 +2,13 @@ import { jumper } from "../../deps.ts";
 
 import {
   BASE_MENU_STYLES,
-  COLLAPSED_PORTRAIT_MENU_STYLES,
-  EXPANDED_LANDSCAPE_MENU_STYLES,
-  EXPANDED_PORTRAIT_MENU_STYLES,
-  MENU_ORIENTATION_STYLESHEET,
+  YOUTUBE_COLLAPSED_PORTRAIT_MENU_STYLES,
+  YOUTUBE_EXPANDED_LANDSCAPE_MENU_STYLES,
+  YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES,
+  YOUTUBE_MENU_ORIENTATION_STYLESHEET,
 } from "./styles.ts";
 
+// FIXME: add support for sourceType so we can support youtube & twitch specific styles
 export function changeFrameOrientation(
   { orientation, isCollapsed }: {
     orientation: "landscape" | "portrait" | undefined;
@@ -17,29 +18,34 @@ export function changeFrameOrientation(
   if (!orientation) return;
   jumper.call("layout.applyLayoutConfigSteps", {
     layoutConfigSteps: orientation === "landscape"
-      ? isCollapsed ? COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS : LANDSCAPE_LAYOUT_CONFIG_STEPS
+      ? isCollapsed
+        ? YOUTUBE_COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS
+        : YOUTUBE_LANDSCAPE_LAYOUT_CONFIG_STEPS
       : isCollapsed
-      ? COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS
-      : PORTRAIT_LAYOUT_CONFIG_STEPS,
+      ? YOUTUBE_COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS
+      : YOUTUBE_PORTRAIT_LAYOUT_CONFIG_STEPS,
   });
 }
 
+// FIXME: add support for sourceType so we can support youtube & twitch specific styles
 function getMenuStyleSteps(orientation: "landscape" | "portrait", isCollapsed: boolean) {
   return [
     { action: "useSubject" }, // start with our iframe
     {
       action: "setStyle",
       value: orientation === "portrait"
-        ? isCollapsed ? COLLAPSED_PORTRAIT_MENU_STYLES : EXPANDED_PORTRAIT_MENU_STYLES
+        ? isCollapsed
+          ? YOUTUBE_COLLAPSED_PORTRAIT_MENU_STYLES
+          : YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES
         : isCollapsed
         ? BASE_MENU_STYLES
-        : EXPANDED_LANDSCAPE_MENU_STYLES,
+        : YOUTUBE_EXPANDED_LANDSCAPE_MENU_STYLES,
     },
     { action: "useDocument", value: "null" },
   ];
 }
 
-export const PORTRAIT_LAYOUT_CONFIG_STEPS = [
+export const YOUTUBE_PORTRAIT_LAYOUT_CONFIG_STEPS = [
   ...getMenuStyleSteps("portrait", false), // add collapsed styles
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-portrait", "truffle-portrait-open"] },
@@ -56,12 +62,12 @@ export const PORTRAIT_LAYOUT_CONFIG_STEPS = [
     action: "setStyleSheet",
     value: {
       id: "menu-orientation-styles",
-      css: MENU_ORIENTATION_STYLESHEET,
+      css: YOUTUBE_MENU_ORIENTATION_STYLESHEET,
     },
   },
 ];
 
-export const COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS = [
+export const YOUTUBE_COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS = [
   ...getMenuStyleSteps("portrait", true),
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-portrait", "truffle-portrait-closed"] },
@@ -78,12 +84,12 @@ export const COLLAPSED_PORTRAIT_LAYOUT_CONFIG_STEPS = [
     action: "setStyleSheet",
     value: {
       id: "menu-orientation-styles",
-      css: MENU_ORIENTATION_STYLESHEET,
+      css: YOUTUBE_MENU_ORIENTATION_STYLESHEET,
     },
   },
 ];
 
-export const COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
+export const YOUTUBE_COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
   ...getMenuStyleSteps("landscape", true),
 
   { action: "querySelector", value: "body" },
@@ -101,12 +107,12 @@ export const COLLAPSED_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
     action: "setStyleSheet",
     value: {
       id: "menu-orientation-styles",
-      css: MENU_ORIENTATION_STYLESHEET,
+      css: YOUTUBE_MENU_ORIENTATION_STYLESHEET,
     },
   },
 ];
 
-export const LANDSCAPE_LAYOUT_CONFIG_STEPS = [
+export const YOUTUBE_LANDSCAPE_LAYOUT_CONFIG_STEPS = [
   ...getMenuStyleSteps("landscape", false),
 
   { action: "querySelector", value: "body" },
@@ -124,7 +130,7 @@ export const LANDSCAPE_LAYOUT_CONFIG_STEPS = [
     action: "setStyleSheet",
     value: {
       id: "menu-orientation-styles",
-      css: MENU_ORIENTATION_STYLESHEET,
+      css: YOUTUBE_MENU_ORIENTATION_STYLESHEET,
     },
   },
 ];

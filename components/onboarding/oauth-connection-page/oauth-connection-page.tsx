@@ -13,6 +13,7 @@ import {
   useSelector,
   useSignal,
   useStyleSheet,
+  TRUFFLE_ACCESS_TOKEN_KEY
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
 import { isNative } from "../../../shared/mod.ts";
@@ -75,7 +76,7 @@ function OAuthButton(
 ) {
   const accessToken$ = useSignal(
     getAccessToken() || jumper.call("storage.get", {
-      key: "mogul-menu:accessToken",
+      key: TRUFFLE_ACCESS_TOKEN_KEY,
     }),
   );
   const { clearPageStack, pushPage, popPage } = usePageStack();

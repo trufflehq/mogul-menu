@@ -7,7 +7,6 @@ import {
   React,
   useEffect,
   useSelector,
-  useSignal,
   useStyleSheet,
 } from "../../../deps.ts";
 import styleSheet from "./native-menu.scss.js";
@@ -16,7 +15,7 @@ import Tabs from "../../tabs/tabs.tsx";
 import TabBar from "../../tab-bar/tab-bar.tsx";
 import PageStack from "../../page-stack/page-stack.tsx";
 import { SnackBarContainer } from "../../snackbar/mod.ts";
-import { useOrientationChange } from "../../orientation/mod.ts";
+import { useOrientationHandler } from "../../orientation/mod.ts";
 import "https://npm.tfl.dev/swiped-events@1.1.6/dist/swiped-events.min.js";
 
 import { ActionBannerContainer } from "../../action-banner/mod.ts";
@@ -57,12 +56,7 @@ function useUpdateNativeMenuPosition() {
   }, [menuPosition]);
 }
 
-export default function NativeMenu(props: MogulMenuProps) {
-  useStyleSheet(styleSheet);
-  useUpdateNativeMenuPosition();
-  useOrientationChange();
-  const orientation = useSelector(() => orientation$.get());
-
+export function useSwipeHandler() {
   useEffect(() => {
     document.body.dataset.swipeThreshold = DEFAULT_SWIPE_THRESHOLD;
     document.addEventListener("swiped-down", function (e) {
@@ -80,6 +74,14 @@ export default function NativeMenu(props: MogulMenuProps) {
 
     return () => document.removeEventListener("swiped-down", () => {}, true);
   }, []);
+}
+
+export default function NativeMenu(props: MogulMenuProps) {
+  useStyleSheet(styleSheet);
+  useUpdateNativeMenuPosition();
+  useOrientationHandler();
+  useSwipeHandler();
+  const orientation = useSelector(() => orientation$.get());
 
   const onOpen = () => {
     isCollapsed$.set(false);
@@ -142,7 +144,6 @@ function ExpandedMenu(props: MogulMenuProps) {
       orientation: getOrientationByWindow(),
       isCollapsed: true,
     });
-    jumper.call("platform.log", "collapse");
   };
   const orientation = useSelector(() => orientation$.get());
   const isCollapsed = useSelector(() => isCollapsed$.get());
