@@ -10,13 +10,18 @@ import {
   OAuthResponse,
   React,
   useHandleTruffleOAuth,
+  useSelector,
+  useSignal,
   useStyleSheet,
+  TRUFFLE_ACCESS_TOKEN_KEY
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
+import { isNative } from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
 import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
+import LocalOAuthFrame from "./local-oauth-frame.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
@@ -25,13 +30,23 @@ export default function OAuthConnectionPage(
 ) {
   useStyleSheet(stylesheet);
 
+  const imgProps = isNative()
+    ? {
+      height: 221,
+      isStretch: true,
+      isCentered: true,
+      aspectRatio: 390 / 221,
+    }
+    : {
+      widthPx: 576,
+      height: 300,
+    };
   return (
     <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-oauth-connection-page">
         <ImageByAspectRatio
           imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
-          widthPx={576}
-          height={300}
+          {...imgProps}
         />
         <div className="info">
           <div className="title">
@@ -59,6 +74,11 @@ function OAuthButton(
     sourceType: ConnectionSourceType;
   },
 ) {
+  const accessToken$ = useSignal(
+    getAccessToken() || jumper.call("storage.get", {
+      key: TRUFFLE_ACCESS_TOKEN_KEY,
+    }),
+  );
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
@@ -97,10 +117,9 @@ function OAuthButton(
   // and call onSetAccessToken when a user logs in using a 3rd party connection
   // and the user's truffle access token is returned
   useHandleTruffleOAuth(onSetAccessToken);
-
-  const accessToken = getAccessToken();
   const context = globalContext.getStore();
   const orgId = context?.orgId;
+  const accessToken = useSelector(() => accessToken$.get());
 
   return (
     <OAuthIframe
@@ -115,14 +134,6 @@ function OAuthButton(
       }}
     />
     // For local development
-    // <iframe
-    //   src={`http://localhost:50230/auth/${sourceType}?accessToken=${accessToken}&orgId=${orgId}`}
-    //   style={{
-    //     width: "236px",
-    //     height: "42px",
-    //     margin: "20px auto 8px auto",
-    //     border: "none",
-    //   }}
-    // />
+    // <LocalOAuthFrame sourceType={sourceType} accessToken={accessToken} orgId={orgId} />
   );
 }

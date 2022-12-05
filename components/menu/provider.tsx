@@ -1,5 +1,6 @@
 import { React } from "../../deps.ts";
 import { File } from "../../types/mod.ts";
+import { isNative } from "../../shared/mod.ts";
 import { MenuState } from "./types.ts";
 import { useMenuReducer } from "./hooks.ts";
 import { MenuContext } from "./context.ts";
@@ -11,8 +12,8 @@ import {
 } from "./constants.ts";
 
 export const INITIAL_MENU_STATE: MenuState = {
-  menuState: "closed",
-  menuPosition: undefined,
+  menuState: isNative() ? "open" : "closed",
+  menuPosition: isNative() ? "top-left" : undefined,
   snackBars: [],
   creatorName: "",
   dimensions: {

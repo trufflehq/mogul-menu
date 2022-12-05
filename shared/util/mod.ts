@@ -16,3 +16,4 @@ export * from "./poll/mod.ts";
 export * from "./permissions/mod.ts";
 export * from "./interval/mod.ts";
 export * from "./kv/mod.ts";
+export * from "./native/mod.ts";

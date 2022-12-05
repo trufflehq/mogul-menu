@@ -2,9 +2,12 @@ import {
   _,
   classKebab,
   ImageByAspectRatio,
+  jumper,
   React,
   Ripple,
+  useEffect,
   useLayoutEffect,
+  useRef,
   useStyleSheet,
 } from "../../deps.ts";
 import { usePageStack } from "../page-stack/mod.ts";
@@ -14,6 +17,7 @@ import { getIsOpen, useMenu } from "../menu/mod.ts";
 import stylesheet from "./tab-bar.scss.js";
 export default function TabBar() {
   useStyleSheet(stylesheet);
+  const tabBarRef = useRef<HTMLDivElement>(null);
   const tabButtonManager = useTabButton();
   const additionalTabButtons = tabButtonManager.buttonMap;
   const { state: tabsState } = useTabs();
@@ -33,6 +37,7 @@ export default function TabBar() {
           isCollapsed: !isMenuOpen,
         })
       }`}
+      ref={tabBarRef}
     >
       <div className="additional-tab-buttons">
         {Object.values(additionalTabButtons)}

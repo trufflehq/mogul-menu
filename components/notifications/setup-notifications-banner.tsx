@@ -1,4 +1,4 @@
-import { MutableRefObject, React } from "../../deps.ts";
+import { React } from "../../deps.ts";
 import { useUserKV } from "../../shared/util/kv/hooks.ts";
 import { HAS_SEEN_NOTIFICATION_SETUP_BANNER } from "../../shared/util/notifications/constants.ts";
 import ActionBanner from "../action-banner/action-banner.tsx";
@@ -8,7 +8,7 @@ import { usePageStack } from "../page-stack/mod.ts";
 import NotificationSettingsPage from "../settings/notification-settings-page/notification-settings-page.tsx";
 
 export default function SetupNotificationsBanner(
-  { actionBannerIdRef }: { actionBannerIdRef: MutableRefObject<string> },
+  { actionBannerIdRef }: { actionBannerIdRef: React.MutableRefObject<string> },
 ) {
   const { pushPage } = usePageStack();
   const { removeActionBanner } = useActionBanner();

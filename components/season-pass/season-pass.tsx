@@ -16,7 +16,7 @@ import {
   zeroPrefix,
 } from "../../deps.ts";
 
-import { useOwnedCollectibleConnection } from "../../shared/mod.ts";
+import { isNative, useOwnedCollectibleConnection } from "../../shared/mod.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 
 import UnlockedEmoteDialog from "../dialogs/unlocked-emote-dialog/unlocked-emote-dialog.tsx";
@@ -90,7 +90,7 @@ export default function SeasonPass(props) {
     shouldUseLevelsZeroPrefix,
     premiumAccentColor,
     premiumBgColor = "",
-    numTiles = 4,
+    numTiles = isNative() ? 3 : 4,
     xpImageObj,
   } = props;
 

@@ -9,12 +9,33 @@ export default scss`
   min-height: 30px;
   max-height: 40px;
 
+  &.expanded {   
+    .points {
+      padding-right: 16px !important;
+    }
+    
+    .claim {
+      border-radius: 2px !important;
+      
+      > .title {
+        display: flex;
+        align-items: center;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  &.collapsed {
+    > .inner {
+      background: rgba(33, 33, 33, 0.98);
+    }
+  }
+
   > .inner {
     display: flex;
     align-items: center;
     padding: 4px;
     border-radius: 4px;
-    background: rgba(33, 33, 33, 0.98);
 
     > .coin {
       margin-right: 5px;
@@ -48,8 +69,6 @@ export default scss`
     }
   }
 
-
-
   @keyframes claim-shake {
     0% { transform: rotate(0); }
     40% { transform: rotate(1deg); }
@@ -61,9 +80,5 @@ export default scss`
     61% { transform: rotate(1deg); }
     100% { transform: rotate(0); }
   }
-  
-  
-
 }
-
 `

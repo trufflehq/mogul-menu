@@ -4,6 +4,7 @@ import TestTab from "../../components/test-tab/test-tab.tsx";
 import CollectionTab from "../../components/collection-tab/collection-tab.tsx";
 import SeasonPassTab from "../../components/season-pass-tab/season-pass-tab.tsx";
 import ChannelPointsShopTab from "../../components/channel-points-shop-tab/channel-points-shop-tab.tsx";
+import ChatTab from "../../components/chat-tab/chat-tab.tsx";
 
 export const DEFAULT_TABS = [
   // {
@@ -43,4 +44,11 @@ export const SEASON_PASS_TAB = {
   slug: "battle-pass",
   imgUrl: "https://cdn.bio/assets/images/features/browser_extension/gamepad.svg",
   $el: SeasonPassTab,
+};
+
+export const CHAT_TAB = {
+  text: "Chat",
+  slug: "chat",
+  imgUrl: "https://cdn.bio/assets/images/features/browser_extension/support-chat-light.svg",
+  $el: ChatTab,
 };

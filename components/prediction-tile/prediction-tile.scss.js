@@ -2,6 +2,7 @@ import { scss } from "../../deps.ts";
 
 export default scss`
 .c-prediction-tile {
+
   .content {
     flex: 1;
     display: flex;

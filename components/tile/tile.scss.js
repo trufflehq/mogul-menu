@@ -39,6 +39,11 @@ export default scss`
   border: 1px solid var(--mm-color-bg-tertiary);
   transition: filter linear 100ms;
   position: relative;
+  grid-column: span 2;
+
+  @media (min-width: 768px) {
+    grid-column: span 1;
+  }
 
   
   > .inner {

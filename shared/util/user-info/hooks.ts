@@ -1,4 +1,10 @@
-import { useMemo, useQuery, useSignal, useUpdateSignalOnChange, useUrqlQuerySignal } from "../../../deps.ts";
+import {
+  useMemo,
+  useQuery,
+  useSignal,
+  useUpdateSignalOnChange,
+  useUrqlQuerySignal,
+} from "../../../deps.ts";
 import { OrgUserConnections } from "../../../types/mod.ts";
 import { ORG_USER_CONNECTIONS_QUERY, USER_INFO_QUERY } from "./gql.ts";
 
@@ -25,11 +31,12 @@ export function useUserInfo() {
 }
 
 export function useOrgUserConnectionsQuery() {
-  const orgUser$ = useSignal<{ orgUser: OrgUserConnections}>(undefined!)
+  const orgUser$ = useSignal<{ orgUser: OrgUserConnections }>(undefined!);
 
-  const { signal$: orgUserData$, reexecuteQuery: refetchOrgUserConnections } = useUrqlQuerySignal(ORG_USER_CONNECTIONS_QUERY,)
+  const { signal$: orgUserData$, reexecuteQuery: refetchOrgUserConnections } = useUrqlQuerySignal(
+    ORG_USER_CONNECTIONS_QUERY,
+  );
   useUpdateSignalOnChange(orgUser$, orgUserData$.data);
-
   return {
     orgUser$,
     refetchOrgUserConnections,

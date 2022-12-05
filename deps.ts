@@ -10,6 +10,7 @@ export {
   query,
   queryObservable,
   setAccessToken,
+  TRUFFLE_ACCESS_TOKEN_KEY,
   useMutation,
   usePollingQuery,
   useQuery,
@@ -60,6 +61,7 @@ export {
   useExtensionInfo,
   useExtensionInfo$,
 } from "https://tfl.dev/@truffle/utils@~0.0.22/embed/mod.ts";
+export type { ExtensionInfo } from "https://tfl.dev/@truffle/utils@~0.0.22/embed/mod.ts";
 export type {
   ConnectionSourceType,
   PageIdentifier,
@@ -80,8 +82,8 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.0/components/oauth-iframe/mod.ts?bundle";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.0/components/oauth-iframe/mod.ts?bundle";
+} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
 
 export {
   getApp as getFirebaseApp,
@@ -101,13 +103,18 @@ export {
   Memo,
   observer,
   useComputed,
+  useObservable,
   useObserve,
   useSelector,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react";
+export { computed, observable } from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
 export type {
   Observable,
+  ObservableArray,
+  ObservableBaseFns,
   ObservableComputed,
   ObservableObject,
+  ObservablePrimitive,
   ObservablePrimitiveChild,
 } from "https://npm.tfl.dev/@legendapp/state@~0.19.0";
 export { legend } from "https://npm.tfl.dev/@legendapp/state@~0.19.0/react-components";
@@ -124,3 +131,4 @@ export {
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
 export type { Client, CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";
+export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.10/components/youtube-chat/youtube-chat.tsx";

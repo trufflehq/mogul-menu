@@ -16,8 +16,15 @@ export default scss`
   > div {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    align-items: center;
+  
     max-height: 80%;
     overflow: hidden;
+    
+    @media (min-width: 768px) {
+      width: unset;
+    }
   }
 }
 `;

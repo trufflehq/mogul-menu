@@ -10,7 +10,13 @@ export default scss`
 
   .question-banner {
     text-align: center;
-    padding:  0;
+    
+    padding: 0 64px;
+    
+    @media (min-width: 768px) {
+      padding:  0;
+    }
+
   
     .question {
       font-weight: 600;
@@ -48,6 +54,12 @@ export default scss`
   min-width: 0;
   display: flex;
   flex-direction: column;
+
+  grid-column: span 2;
+
+  @media (min-width: 768px) {
+    grid-column: span 1;
+  }
   
   > .name {
     font-weight: 600;
@@ -207,11 +219,15 @@ export default scss`
   justify-content: center;
   background-color: var(--mm-color-bg-tertiary);
   border-radius: 8px;
-  width: 400px;
   margin: 0 auto;
   padding: 24px;
   box-sizing: border-box;
   margin-top: 20px;
+  
+  @media (min-width: 768px) {
+    width: 400px;
+  }
+
 
   > .title {
     font-size: 18px;

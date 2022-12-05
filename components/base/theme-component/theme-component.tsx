@@ -33,7 +33,6 @@ function ThemeComponent({
     fontFamily,
     secondaryFontFamily,
   ]);
-
   return (
     <>
       <style>
