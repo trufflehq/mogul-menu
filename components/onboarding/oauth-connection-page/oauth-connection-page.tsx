@@ -12,6 +12,7 @@ import {
   useHandleTruffleOAuth,
   useStyleSheet,
 } from "../../../deps.ts";
+import { isGoogleChrome } from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
@@ -71,17 +72,22 @@ function OAuthButton(
     pushPage(
       <ChatSettingsPage
         onContinue={() => {
-          pushPage(
-            <NotificationsEnablePage
-              onContinue={(shouldSetupNotifications) => {
-                if (shouldSetupNotifications) {
-                  pushPage(<NotificationTopicPage onContinue={clearPageStack} />);
-                } else {
-                  clearPageStack();
-                }
-              }}
-            />,
-          );
+          // notifications only supported in Google Chrome atm
+          if (isGoogleChrome) {
+            pushPage(
+              <NotificationsEnablePage
+                onContinue={(shouldSetupNotifications) => {
+                  if (shouldSetupNotifications) {
+                    pushPage(<NotificationTopicPage onContinue={clearPageStack} />);
+                  } else {
+                    clearPageStack();
+                  }
+                }}
+              />,
+            );
+          } else {
+            clearPageStack();
+          }
         }}
       />,
     );

@@ -20,6 +20,7 @@ import {
   UPSERT_NOTIFICATION_SUBSCRIPTION_MUTATION,
 } from "../../gql/notifications.gql.ts";
 import { useFcmTokenManager } from "../../mod.ts";
+import { isGoogleChrome } from "../general.ts";
 import { useUserKV } from "../kv/hooks.ts";
 import { HAS_SEEN_NOTIFICATION_SETUP_BANNER, SETUP_NOTIFICATIONS_BANNER } from "./constants.ts";
 
@@ -129,7 +130,9 @@ export function useFirstTimeNotificationBanner() {
   useEffect(() => {
     if (hasSeenBanner) {
       removeActionBanner(actionBannerIdRef.current);
-    } else {
+
+      // notifications only supported on Google Chrome atm
+    } else if (isGoogleChrome) {
       actionBannerIdRef.current = displayActionBanner(
         // we're using `React.createElement` here because this code is not in a tsx file
         React.createElement(SetupNotificationsBanner, { actionBannerIdRef }),
