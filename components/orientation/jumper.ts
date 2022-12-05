@@ -46,7 +46,7 @@ function getMenuStyleSteps(orientation: "landscape" | "portrait", isCollapsed: b
 }
 
 export const YOUTUBE_PORTRAIT_LAYOUT_CONFIG_STEPS = [
-  ...getMenuStyleSteps("portrait", false), // add collapsed styles
+  ...getMenuStyleSteps("portrait", false),
   { action: "querySelector", value: "body" },
   { action: "addClassNames", value: ["truffle-portrait", "truffle-portrait-open"] },
   {
