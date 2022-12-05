@@ -8,8 +8,7 @@ export default scss`
 
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
-  // TODO: rm this when we either include it in the design system or have it as a component prop
-  --truffle-gradient: linear-gradient(281.86deg, #71DBDB 2.63%, #ADACDD 50.48%, #FF9DC6 94.5%);
+  --truffle-gradient: var(--mm-gradient);
   $clip-path-transition: .5s;
 
   &.position-top-left, &.position-bottom-left {
@@ -32,8 +31,7 @@ export default scss`
 
   &.is-collapsed {
     > .menu {
-      /* TODO: consolidate the button styles */
-      > .portrait-collapsed-button {
+        > .portrait-collapsed-button {
         transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
         display: flex;
         justify-content: space-evenly;
@@ -76,7 +74,6 @@ export default scss`
       }
 
       &.landscape {
-        // transition: all $clip-path-transition cubic-bezier(.4, .71, .18, .99);
         background: transparent;
       }
 
