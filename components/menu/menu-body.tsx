@@ -1,6 +1,5 @@
 import { React, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./menu.scss.js";
-
 import DraggableMenu from "./draggable-menu/draggable-menu.tsx";
 import NativeMenu from "./native-menu/native-menu.tsx";
 import Tabs from "../tabs/tabs.tsx";
@@ -13,15 +12,12 @@ import { useOnboarding } from "../onboarding/mod.ts";
 import { ActionBannerContainer } from "../action-banner/mod.ts";
 import DialogContainer from "../base/dialog-container/dialog-container.tsx";
 import { MogulMenuProps } from "./menu.tsx";
-import { TabDefinition, useDynamicTabs } from "../tabs/mod.ts";
 
 export default function BrowserExtensionMenuBody(props: MogulMenuProps) {
   useStyleSheet(styleSheet);
   useInvalidateAllQueriesListener();
   useOnboarding();
 
-  console.log("isNative", isNative());
-  // add something for is native
   return isNative() ? <NativeMenu {...props} /> : <WebMenu {...props} />;
 }
 

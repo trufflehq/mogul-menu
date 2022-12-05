@@ -12,7 +12,7 @@ export default scss`
   width: 90% !important;
 
   @media (min-width: 768px) {
-    width: 424px;
+    width: 424px !important;
   }
 
   > .flex {

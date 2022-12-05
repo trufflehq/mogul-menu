@@ -1,7 +1,6 @@
 import React from "https://npm.tfl.dev/react";
 import { toDist } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"; // DO NOT BUMP
 import Menu from "../../components/menu/menu.tsx";
-import { jumper } from "../../deps.ts";
 const iconImageObj = {
   id: "f38e1f40-fe27-11ec-8613-c8d0b98b6415",
   cdn: "cdn.bio",
@@ -28,7 +27,6 @@ const iconImageObj = {
 };
 
 function HomePage() {
-  jumper.call("platform.log", "loading home page");
   return (
     <>
       <Menu iconImageObj={iconImageObj} creatorName={"Ludwig"} />

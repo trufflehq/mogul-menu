@@ -37,7 +37,6 @@ export default scss`
   height: 100%;
   display: flex;
   flex-direction: column;
-
   padding: 24px;
 
   @media (min-width: 768px) {

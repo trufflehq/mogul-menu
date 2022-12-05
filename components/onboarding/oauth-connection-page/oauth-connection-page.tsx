@@ -15,14 +15,12 @@ import {
   useStyleSheet,
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
+import { isNative } from "../../../shared/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
 import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
-
 import LocalOAuthFrame from "./local-oauth-frame.tsx";
-import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
-import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
@@ -31,15 +29,23 @@ export default function OAuthConnectionPage(
 ) {
   useStyleSheet(stylesheet);
 
+  const imgProps = isNative()
+    ? {
+      height: 221,
+      isStretch: true,
+      isCentered: true,
+      aspectRatio: 390 / 221,
+    }
+    : {
+      widthPx: 576,
+      height: 300,
+    };
   return (
     <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-oauth-connection-page">
         <ImageByAspectRatio
           imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
-          height={221}
-          isStretch
-          isCentered
-          aspectRatio={390 / 221}
+          {...imgProps}
         />
         <div className="info">
           <div className="title">
@@ -75,7 +81,6 @@ function OAuthButton(
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
-    jumper.call("platform.log", `onSetAccessToken ${JSON.stringify(oauthResponse)}`);
     popPage();
     _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
 
@@ -113,12 +118,8 @@ function OAuthButton(
   useHandleTruffleOAuth(onSetAccessToken);
   const context = globalContext.getStore();
   const orgId = context?.orgId;
-
-  // jumper.call("platform.log", `oauth frame :${JSON.stringify({ accessToken, context, orgId })}`);
   const accessToken = useSelector(() => accessToken$.get());
-  jumper.call("platform.log", `oauth frame accessToken ${accessToken}`);
 
-  // console.log(`oauth hostname ${process?.env?.OAUTH_HOSTNAME}`);
   return (
     <OAuthIframe
       sourceType={sourceType}

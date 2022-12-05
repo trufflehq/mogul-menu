@@ -1,6 +1,4 @@
 import {
-  globalContext,
-  jumper,
   useMemo,
   useQuery,
   useSignal,
@@ -39,14 +37,6 @@ export function useOrgUserConnectionsQuery() {
     ORG_USER_CONNECTIONS_QUERY,
   );
   useUpdateSignalOnChange(orgUser$, orgUserData$.data);
-  const store = globalContext.getStore();
-  // jumper.call("platform.log", `store: ${JSON.stringify(store)}`);
-  // jumper.call(
-  //   "platform.log",
-  //   `data: ${JSON.stringify(orgUserData$.data?.get())} errors: ${
-  //     JSON.stringify(orgUserData$.error?.get()?.message)
-  //   } ${JSON.stringify(orgUserData$.error?.get()?.networkError)}`,
-  // );
   return {
     orgUser$,
     refetchOrgUserConnections,
