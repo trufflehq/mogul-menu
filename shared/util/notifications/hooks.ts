@@ -21,7 +21,7 @@ import {
 } from "../../gql/notifications.gql.ts";
 import { useFcmTokenManager } from "../../mod.ts";
 import { useUserKV } from "../kv/hooks.ts";
-import { HAS_SEEN_NOTIFICATION_SETUP_BANNER, SETUP_NOTIFICATIONS_BANNER } from "./constants.ts";
+import { HAS_SEEN_NOTIFICATION_SETUP_BANNER } from "./constants.ts";
 
 export function useNotificationTopics() {
   const [{ data: notificationTopicData, fetching }] = useQuery({ query: NOTIFICATION_TOPIC_QUERY });
