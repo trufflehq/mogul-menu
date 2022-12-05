@@ -30,6 +30,7 @@ export function getOrientationByWindow() {
   }
 }
 
+// FIXME: add support for sourceType so we can support youtube & twitch specific styles
 export function useOrientationHandler() {
   const handleOrientationChange = (event: Event) => {
     jumper.call(
