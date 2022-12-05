@@ -12,7 +12,7 @@ export default scss`
   .c-dialog {
     
     @media (min-width: 768px) {
-      width: 540px;
+      width: 540px !important;
       height: 100%;
     }
   }
