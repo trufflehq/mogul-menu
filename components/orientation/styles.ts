@@ -77,17 +77,7 @@ export const PORTRAIT_STYLESHEET = `
 
 .truffle-portrait-closed ytm-single-column-watch-next-results-renderer {
   flex: 1;
-  /* overflow: hidden; */
 }
-
-/* .truffle-portrait-closed .related-chips-slot-wrapper {
-  display: none;
-}*/
-
-
-/*.truffle-portrait-closed ytm-item-section-renderer {
-  display: none;
-}*/
 `;
 
 export const LANDSCAPE_RIGHT_COLUMN_STYLESHEET = `
@@ -189,7 +179,6 @@ export const LANDSCAPE_VIDEO_PLAYER_STYLESHEET = `
   width: 100% !important;
   height: 100% !important;
 }
-
 
 /* control overlay */
 .truffle-landscape-open #player-control-overlay {
