@@ -1,4 +1,4 @@
-import { _setAccessTokenAndClear, ConnectionSourceType, React } from "../../../deps.ts";
+import { ConnectionSourceType, React } from "../../../deps.ts";
 
 const LOCAL_HOSTNAME = "https://local-oauth.rileymiller.dev";
 

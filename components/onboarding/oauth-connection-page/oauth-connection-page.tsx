@@ -1,19 +1,16 @@
 import {
-  _setAccessTokenAndClear,
   ConnectionSourceType,
   getAccessToken,
-  GLOBAL_JUMPER_MESSAGES,
   globalContext,
   ImageByAspectRatio,
-  jumper,
   OAuthIframe,
   OAuthResponse,
   React,
+  setAccessToken,
   useHandleTruffleOAuth,
   useSelector,
   useSignal,
   useStyleSheet,
-  TRUFFLE_ACCESS_TOKEN_KEY
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
 import { isNative } from "../../../shared/mod.ts";
@@ -21,7 +18,7 @@ import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
 import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
-import LocalOAuthFrame from "./local-oauth-frame.tsx";
+// import LocalOAuthFrame from "./local-oauth-frame.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
@@ -74,20 +71,12 @@ function OAuthButton(
     sourceType: ConnectionSourceType;
   },
 ) {
-  const accessToken$ = useSignal(
-    getAccessToken() || jumper.call("storage.get", {
-      key: TRUFFLE_ACCESS_TOKEN_KEY,
-    }),
-  );
+  const accessToken$ = useSignal(getAccessToken());
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onSetAccessToken = (oauthResponse: OAuthResponse) => {
     popPage();
-    _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
-
-    // let other embeds know that the user has changed and they need to
-    // reset their api client and cache
-    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
+    setAccessToken(oauthResponse.truffleAccessToken);
 
     pushPage(
       <ChatSettingsPage

@@ -1,8 +1,6 @@
 // utils
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/image.ts";
 export {
-  _clearCache,
-  _setAccessTokenAndClear,
   getAccessToken,
   getClient,
   gql,
@@ -15,7 +13,7 @@ export {
   usePollingQuery,
   useQuery,
   useSubscription,
-} from "https://tfl.dev/@truffle/api@~0.1.19/mod.ts";
+} from "https://tfl.dev/@truffle/api@~0.2.0/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
@@ -82,8 +80,8 @@ export { default as globalContext } from "https://tfl.dev/@truffle/global-contex
 export {
   OAuthIframe,
   useHandleTruffleOAuth,
-} from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
-export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^1.0.1/components/oauth-iframe/mod.ts";
+} from "https://tfl.dev/@truffle/third-party-oauth@^2.0.0/components/oauth-iframe/mod.ts";
+export type { OAuthResponse } from "https://tfl.dev/@truffle/third-party-oauth@^2.0.0/components/oauth-iframe/mod.ts";
 
 export {
   getApp as getFirebaseApp,

@@ -7,14 +7,13 @@ import {
   useSelector,
   useSignal,
   useStyleSheet,
-  useSubscriptionSignal,
 } from "../../deps.ts";
 import stylesheet from "./activity-banner.scss.js";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { isActiveActivity, useActivitySubscription$, useLoginListener } from "../../shared/mod.ts";
+import { isActiveActivity, useActivitySubscription$ } from "../../shared/mod.ts";
 import { setJumperClosed, setJumperOpen } from "./jumper.ts";
 import { isActivityBannerOpen$ } from "./signals.ts";
-import { ActivityAlert, ActivityConnection, Alert, Poll, StringKeys } from "../../types/mod.ts";
+import { ActivityAlert, Alert, Poll, StringKeys } from "../../types/mod.ts";
 import PollBanner from "./poll-banner/poll-banner.tsx";
 import AlertBanner from "./alert-banner/alert-banner.tsx";
 
@@ -49,7 +48,6 @@ export function ActivityBannerEmbed<
 
   const banners = (props.banners ?? DEFAULT_BANNERS) as BannerMap<BannerTypes>;
   props = { ...props, banners };
-  useLoginListener();
 
   return (
     <div className="c-activity-banner-embed">

@@ -1,8 +1,4 @@
 import {
-  _clearCache,
-  _setAccessTokenAndClear,
-  GLOBAL_JUMPER_MESSAGES,
-  jumper,
   React,
   setAccessToken,
   TextField,
@@ -11,10 +7,7 @@ import {
   useStyleSheet,
 } from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
-import {
-  useInvalidateAllQueriesListener,
-  useOrgUserConnectionsQuery,
-} from "../../../shared/mod.ts";
+import { useOrgUserConnectionsQuery } from "../../../shared/mod.ts";
 import { useMenu } from "../../menu/mod.ts";
 import { updateTabState, useTabs } from "../../tabs/mod.ts";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
@@ -78,13 +71,10 @@ export default function AccountDetailsPage() {
 
   const logout = async () => {
     // clear the access token in the browser and ext. local storage
-    _setAccessTokenAndClear("");
+    setAccessToken("");
 
     // let the extension know that the user has logged out and needs to invalidate
     invalidateExtensionUser();
-
-    // let other embeds know that the user has logged out
-    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
 
     // reset the menu state
     setIsClosed();
