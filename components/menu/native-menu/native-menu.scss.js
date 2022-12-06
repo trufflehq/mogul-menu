@@ -155,6 +155,8 @@ export default scss`
         justify-content: flex-end;
         max-height: 40px;
         width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(58, 58, 58, 1);
 
         > .c-tab-bar {
           flex-direction: row;

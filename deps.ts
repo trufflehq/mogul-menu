@@ -131,4 +131,4 @@ export {
 export type { TruffleQuerySignal } from "https://tfl.dev/@truffle/state@~0.0.8/mod.ts";
 export type { Client, CombinedError, OperationContext } from "https://npm.tfl.dev/urql@2";
 export { previewSrc as getPreviewSrc } from "https://tfl.dev/@truffle/raid@~0.0.4/shared/util/stream-plat.ts";
-export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.10/components/youtube-chat/youtube-chat.tsx";
+export { default as YoutubeChat } from "https://tfl.dev/@truffle/chat@0.0.13/components/youtube-chat/youtube-chat.tsx";
