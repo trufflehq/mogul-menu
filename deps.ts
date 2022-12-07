@@ -4,6 +4,7 @@ export {
   getAccessToken,
   getClient,
   gql,
+  onAccessTokenChange,
   pollingQueryObservable,
   query,
   queryObservable,
@@ -72,8 +73,6 @@ export { default as Ripple } from "https://tfl.dev/@truffle/ui@~0.1.0/components
 export { default as Spinner } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
 export { default as Avatar } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
 export { default as TextField } from "https://tfl.dev/@truffle/ui@~0.1.0/components/text-field/text-field.tag.ts";
-export { default as AuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.0/components/auth-dialog/auth-dialog.tag.ts";
-export { default as AbsoluteAuthDialog } from "https://tfl.dev/@truffle/ui@~0.1.4/components/absolute-auth-dialog/absolute-auth-dialog.tag.ts";
 export { default as FocusTrap } from "https://npm.tfl.dev/focus-trap-react@9.0.2?bundle";
 export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/format/format.ts";
 export { default as globalContext } from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";

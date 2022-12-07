@@ -5,6 +5,7 @@ import {
   ImageByAspectRatio,
   OAuthIframe,
   OAuthResponse,
+  onAccessTokenChange,
   React,
   setAccessToken,
   useHandleTruffleOAuth,
@@ -74,10 +75,8 @@ function OAuthButton(
   const accessToken$ = useSignal(getAccessToken());
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
-  const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+  const onLoggedIn = () => {
     popPage();
-    setAccessToken(oauthResponse.truffleAccessToken);
-
     pushPage(
       <ChatSettingsPage
         onContinue={() => {
@@ -102,10 +101,21 @@ function OAuthButton(
     );
   };
 
+  // for native app, eventually desktop if we setup jumper for window.open messages
+  const { unsubscribe } = onAccessTokenChange(() => {
+    unsubscribe();
+    onLoggedIn();
+  });
+
   // listens for a post message from the OAuthIframe component
-  // and call onSetAccessToken when a user logs in using a 3rd party connection
-  // and the user's truffle access token is returned
-  useHandleTruffleOAuth(onSetAccessToken);
+  // and call onLoggedIn when a user logs in using a 3rd party connection
+  // and the user's truffle access token is returned.
+  // only necessary because jumper doesn't work with window.open atm
+  useHandleTruffleOAuth((oauthResponse: OAuthResponse) => {
+    unsubscribe();
+    setAccessToken(oauthResponse.truffleAccessToken);
+    onLoggedIn();
+  });
   const context = globalContext.getStore();
   const orgId = context?.orgId;
   const accessToken = useSelector(() => accessToken$.get());
