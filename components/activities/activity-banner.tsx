@@ -105,19 +105,11 @@ export function ActivityBannerManager<
       bannerSourceTypes.includes(alert.sourceType)
     );
 
-    console.log(
-      "hasActivityChanged",
-      hasActivityChanged.get(),
-      activityAlert,
-      isActiveActivity(activityAlert),
-    );
-
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
       hasClosed$.set(false);
     } else if (activityAlert && !isActiveActivity(activityAlert) && !hasClosed$.get()) {
-      console.log("closing banner");
       hasClosed$.set(true);
       closeBanner();
     }
@@ -130,7 +122,6 @@ export function ActivityBannerManager<
   );
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
-  console.log("activityAlert", activityAlert, bannerSourceTypes, { isBannerOpen });
 
   const Component = useSelector(() => {
     const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
@@ -141,7 +132,6 @@ export function ActivityBannerManager<
   });
 
   if (!Component) {
-    console.log("missing component");
     return null;
   }
 
