@@ -59,9 +59,13 @@ function PredictionEndedVoted(
   { amount, didWin = false }: { amount?: number; didWin?: boolean },
 ) {
   const message = didWin ? `You won` : `You lost`;
+  // w/ live queries sometimes amount is NaN - haven't figure out yet.
+  // also haven't figured out if it happens here or server-side
+  // (i think server-side, which would mean str NaN)
+  const isAmountNaN = typeof amount === "string" ? amount === "NaN" : isNaN(amount);
   return (
     <ActivityBannerInfo
-      text={amount && isNaN(amount) ? message : `${message} ${amount}`}
+      text={amount && isAmountNaN ? message : `${message} ${amount}`}
     >
       {amount ? <ChannelPointsIcon /> : null}
     </ActivityBannerInfo>
