@@ -22,7 +22,6 @@ export default function RaidListItem({ activity, createdBy }: ActivityListItemPr
   const { pushPage } = usePageStack();
 
   const showRaidPage = () => {
-    console.log("activity id", activity.id);
     pushPage(<RaidPreviewPage alertId={activity.id} />);
   };
 
