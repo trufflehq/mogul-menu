@@ -42,10 +42,12 @@ export default function OAuthConnectionPage(
   return (
     <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-oauth-connection-page">
-        <ImageByAspectRatio
-          imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
-          {...imgProps}
-        />
+        <div className="onboard-image">
+          <ImageByAspectRatio
+            imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
+            {...imgProps}
+          />
+        </div>
         <div className="info">
           <div className="title">
             Let's get started
