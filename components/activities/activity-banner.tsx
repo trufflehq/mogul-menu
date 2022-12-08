@@ -27,6 +27,7 @@ type BannerMap<BannerTypes> = {
 
 export interface ActivityBannerManagerProps<BannerTypes> {
   banners: BannerMap<BannerTypes>;
+  isStandalone?: boolean;
 }
 
 export const DEFAULT_BANNERS = {
@@ -62,6 +63,7 @@ export function ActivityBannerManager<
   SourceType extends StringKeys<BannerTypes>,
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
+  const { isStandalone = true } = props;
   const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
     status: "ready",
     limit: ACTIVITY_CONNECTION_LIMIT,
@@ -74,12 +76,16 @@ export function ActivityBannerManager<
 
   const openBanner = () => {
     isActivityBannerOpen$.set(true);
-    setJumperOpen();
+    if (isStandalone) {
+      setJumperOpen();
+    }
   };
 
   const closeBanner = () => {
     isActivityBannerOpen$.set(false);
-    setJumperClosed();
+    if (isStandalone) {
+      setJumperClosed();
+    }
   };
 
   const hasActivityChanged = useComputed(() =>
