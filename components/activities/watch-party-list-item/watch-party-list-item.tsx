@@ -1,12 +1,15 @@
 import { React, useSelector, useStyleSheet } from "../../../deps.ts";
-import { hasPermission, PARACHUTE_ICON_PATH, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
+import { DISCO_BALL_PATH, hasPermission, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import { ActivityListItemProps } from "../activities-tab/activities-tab.tsx";
 import ActivityListItem from "../activity-list-item/activity-list-item.tsx";
-import stylesheet from "./raid-list-item.scss.js";
-import { RaidAlert } from "../../../types/mod.ts";
+import stylesheet from "./watch-party-list-item.scss.js";
+import { WatchPartyAlert } from "../../../types/mod.ts";
 import { usePageStack } from "../../page-stack/mod.ts";
-import RaidPreviewPage from "../raid-preview-page/raid-preview-page.tsx";
-export default function RaidListItem({ activity, createdBy }: ActivityListItemProps<RaidAlert>) {
+import AlertPreviewPage from "../alert-preview-page/alert-preview-page.tsx";
+
+export default function RaidListItem(
+  { activity, createdBy }: ActivityListItemProps<WatchPartyAlert>,
+) {
   useStyleSheet(stylesheet);
   const orgUserWithRoles$ = useOrgUserWithRoles$();
 
@@ -21,26 +24,30 @@ export default function RaidListItem({ activity, createdBy }: ActivityListItemPr
   );
   const { pushPage } = usePageStack();
 
-  const showRaidPage = () => {
-    console.log("activity id", activity.id);
-    pushPage(<RaidPreviewPage alertId={activity.id} />);
-  };
-
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(activity.data.url, "_blank");
+    pushPage(
+      <AlertPreviewPage
+        pageTitle="Watch Party"
+        alertId={activity.id}
+        activeText="Watch party is live"
+        deleteConfirmText="Are you sure you want to delete this watch party?"
+        endButtonText="End watch party"
+        hasAdminPerms={hasAlertPermissions}
+      />,
+    );
   };
 
   return (
     <ActivityListItem
-      activityType="Raid"
-      icon={PARACHUTE_ICON_PATH}
+      activityType="Watch Party"
+      icon={DISCO_BALL_PATH}
       iconViewBox={24}
       createdBy={createdBy}
-      color="#F86969"
+      color="#71DBDB"
       title={activity.data.title}
       description={activity.data.description}
-      onClick={hasAlertPermissions ? showRaidPage : onClick}
+      onClick={onClick}
     />
   );
 }

@@ -32,7 +32,8 @@ export interface ActivityBannerManagerProps<BannerTypes> {
 
 export const DEFAULT_BANNERS = {
   poll: PollBanner,
-  alert: AlertBanner,
+  alert: AlertBanner, // TODO alert type deprecated, remove Jan. 2023
+  ["raid-stream"]: AlertBanner,
 };
 
 const ACTIVITY_CONNECTION_LIMIT = 5;
@@ -41,6 +42,7 @@ export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
     alert: Alert<string, any>;
+    "raid-stream": Alert<string, any>;
   }>,
 >(
   props: ActivityBannerManagerProps<BannerTypes>,
@@ -64,6 +66,7 @@ export function ActivityBannerManager<
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
   const { isStandalone = true } = props;
+  const bannerSourceTypes = Object.keys(props.banners) as SourceType[];
   const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
     status: "ready",
     limit: ACTIVITY_CONNECTION_LIMIT,
@@ -90,36 +93,57 @@ export function ActivityBannerManager<
 
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.data.alertConnection.nodes.get()?.[0]?.id
+      activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+        bannerSourceTypes.includes(alert.sourceType)
+      )?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+      bannerSourceTypes.includes(alert.sourceType)
+    );
+
+    console.log(
+      "hasActivityChanged",
+      hasActivityChanged.get(),
+      activityAlert,
+      isActiveActivity(activityAlert),
+    );
+
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
       hasClosed$.set(false);
     } else if (activityAlert && !isActiveActivity(activityAlert) && !hasClosed$.get()) {
+      console.log("closing banner");
       hasClosed$.set(true);
       closeBanner();
     }
   });
 
   const activityAlert = useSelector(() =>
-    activityAlertConnection$.data.alertConnection.nodes.get()?.[0]
+    activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+      bannerSourceTypes.includes(alert.sourceType)
+    )
   );
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
+  console.log("activityAlert", activityAlert, bannerSourceTypes, { isBannerOpen });
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+      bannerSourceTypes.includes(alert.sourceType)
+    );
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });
 
-  if (!Component) return null;
+  if (!Component) {
+    console.log("missing component");
+    return null;
+  }
 
   return (
     <div

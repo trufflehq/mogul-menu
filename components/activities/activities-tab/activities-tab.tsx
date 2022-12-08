@@ -6,7 +6,6 @@ import {
   React,
   useSelector,
   useStyleSheet,
-  useSubscriptionSignal,
 } from "../../../deps.ts";
 import {
   hasPermission,
@@ -17,11 +16,12 @@ import {
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
+import WatchPartyItem from "../watch-party-list-item/watch-party-list-item.tsx";
 
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
 import styleSheet from "./activities-tab.scss.js";
-import { ActivityAlert, ActivityConnection, OrgUser, StringKeys } from "../../../types/mod.ts";
+import { ActivityAlert, OrgUser, StringKeys } from "../../../types/mod.ts";
 
 // higher limit means a lot of data streamed back every second during polls
 const ACTIVITY_CONNECTION_LIMIT = 10;
@@ -37,7 +37,9 @@ type ListItemMap<ActivityTypes> = {
 
 export const DEFAULT_LIST_ITEMS = {
   poll: PollListItem,
-  alert: RaidListItem,
+  alert: RaidListItem, // TODO alert type deprecated, remove Jan. 2023
+  ["raid-stream"]: RaidListItem,
+  ["watch-party"]: WatchPartyItem,
 };
 
 export default function ActivitiesTab() {
@@ -64,6 +66,7 @@ export function ActivitiesTabManager<
 
   const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
     limit: ACTIVITY_CONNECTION_LIMIT,
+    type: "activity",
   });
 
   const hasPollPermissions = useSelector(() =>

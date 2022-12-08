@@ -24,6 +24,12 @@ export type RaidAlert = Alert<"raid-stream", {
   description?: string;
 }>;
 
+export type WatchPartyAlert = Alert<"watch-party", {
+  url?: string;
+  title?: string;
+  description?: string;
+}>;
+
 export interface ActivityAlert<ActivityType, SourceType extends string> extends Alert<SourceType> {
   activity: ActivityType;
 }
