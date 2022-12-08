@@ -41,7 +41,7 @@ const ACTIVITY_CONNECTION_LIMIT = 5;
 export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
-    alert: Alert<string, any>;
+    alert: Alert<string, any>; // TODO alert type deprecated, remove Jan. 2023
     "raid-stream": Alert<string, any>;
   }>,
 >(
@@ -91,19 +91,21 @@ export function ActivityBannerManager<
     }
   };
 
+  const activityAlert$ = useComputed(() =>
+    activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+      bannerSourceTypes.includes(alert.sourceType)
+    )
+  );
+
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
-        bannerSourceTypes.includes(alert.sourceType)
-      )?.id
+      activityAlert$.get()?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
-      bannerSourceTypes.includes(alert.sourceType)
-    );
+    const activityAlert = activityAlert$.get();
 
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
@@ -115,25 +117,17 @@ export function ActivityBannerManager<
     }
   });
 
-  const activityAlert = useSelector(() =>
-    activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
-      bannerSourceTypes.includes(alert.sourceType)
-    )
-  );
+  const activityAlert = useSelector(() => activityAlert$?.get());
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
-      bannerSourceTypes.includes(alert.sourceType)
-    );
+    const activityAlert = activityAlert$?.get();
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });
 
-  if (!Component) {
-    return null;
-  }
+  if (!Component) return null;
 
   return (
     <div
