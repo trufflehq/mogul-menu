@@ -16,7 +16,7 @@ export {
   useSubscription,
 } from "https://tfl.dev/@truffle/api@~0.2.0/mod.ts";
 
-export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.1.0/types/mod.ts";
+export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.2.0/types/mod.ts";
 export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
 
 export { default as _ } from "https://cdn.skypack.dev/lodash?dts";
