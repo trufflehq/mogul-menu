@@ -13,9 +13,16 @@ export default scss`
   box-sizing: border-box;
   padding: 0px;
   
+  > .onboard-image {
+    display: none;
+  }
 
   @media (min-width: 768px) {
     padding: 48px 32px;
+
+    > .onboard-image {
+      display: block;
+    }  
   }
 
   > .info {

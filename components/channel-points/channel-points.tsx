@@ -1,5 +1,4 @@
 import {
-  _clearCache,
   abbreviateNumber,
   formatNumber,
   GLOBAL_JUMPER_MESSAGES,
@@ -51,11 +50,6 @@ export default function ChannelPoints(
       if (message === GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER) {
         refetchOrgUserConnections({ requestPolicy: "network-only" });
       } else if (message === MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS) {
-        reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
-      } else if (message === GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED) {
-        // reset the api client w/ the updated user and refetch user/channel points info
-        _clearCache();
-        refetchOrgUserConnections({ requestPolicy: "network-only" });
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       } else if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
         // claim recorded elsewhere (menu watchtime.tsx), reset the timer

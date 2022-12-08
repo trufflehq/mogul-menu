@@ -19,13 +19,10 @@ export function useOnboarding() {
       ? getConnectionSourceType(extensionInfo.pageInfo)
       : "youtube";
 
-    const hasPageInfo = window?._truffleInitialData?.clientConfig?.IS_PROD_ENV
-      ? extensionInfo?.pageInfo
-      : true;
     const orgUser = orgUser$.orgUser.get();
 
     if (
-      hasPageInfo && orgUser && !hasConnection(orgUser, connectionSourceType)
+      orgUser && !hasConnection(orgUser, connectionSourceType)
     ) {
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);

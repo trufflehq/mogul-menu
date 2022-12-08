@@ -23,6 +23,8 @@ export const YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES = {
   height: `calc(100vh - 56.25vw - ${YOUTUBE_HEADER_HEIGHT_PX}px)`,
   position: "fixed",
   top: `calc(${YOUTUBE_HEADER_HEIGHT_PX}px + 100vw * .5625)`,
+  // i can't find where, but somewhere "margin-top: 4px" gets added. this prevents
+  "margin-top": "0",
 };
 
 export const YOUTUBE_EXPANDED_LANDSCAPE_MENU_STYLES = {

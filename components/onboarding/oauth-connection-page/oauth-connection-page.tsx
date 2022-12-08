@@ -1,19 +1,17 @@
 import {
-  _setAccessTokenAndClear,
   ConnectionSourceType,
   getAccessToken,
-  GLOBAL_JUMPER_MESSAGES,
   globalContext,
   ImageByAspectRatio,
-  jumper,
   OAuthIframe,
   OAuthResponse,
+  onAccessTokenChange,
   React,
+  setAccessToken,
   useHandleTruffleOAuth,
   useSelector,
   useSignal,
   useStyleSheet,
-  TRUFFLE_ACCESS_TOKEN_KEY
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
 import { isNative } from "../../../shared/mod.ts";
@@ -21,7 +19,7 @@ import { Page, usePageStack } from "../../page-stack/mod.ts";
 import ChatSettingsPage from "../chat-settings-page/chat-settings-page.tsx";
 import NotificationTopicPage from "../notification-topic-page/notification-topic-page.tsx";
 import NotificationsEnablePage from "../notifications-enable-page/notifications-enable-page.tsx";
-import LocalOAuthFrame from "./local-oauth-frame.tsx";
+// import LocalOAuthFrame from "./local-oauth-frame.tsx";
 
 import stylesheet from "./oauth-connection-page.scss.js";
 
@@ -44,10 +42,12 @@ export default function OAuthConnectionPage(
   return (
     <Page isFullSize shouldDisableEscape shouldShowHeader={false}>
       <div className="c-oauth-connection-page">
-        <ImageByAspectRatio
-          imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
-          {...imgProps}
-        />
+        <div className="onboard-image">
+          <ImageByAspectRatio
+            imageUrl="https://cdn.bio/assets/images/features/browser_extension/extension-onboarding.png"
+            {...imgProps}
+          />
+        </div>
         <div className="info">
           <div className="title">
             Let's get started
@@ -74,21 +74,11 @@ function OAuthButton(
     sourceType: ConnectionSourceType;
   },
 ) {
-  const accessToken$ = useSignal(
-    getAccessToken() || jumper.call("storage.get", {
-      key: TRUFFLE_ACCESS_TOKEN_KEY,
-    }),
-  );
+  const accessToken$ = useSignal(getAccessToken());
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
-  const onSetAccessToken = (oauthResponse: OAuthResponse) => {
+  const onLoggedIn = () => {
     popPage();
-    _setAccessTokenAndClear(oauthResponse.truffleAccessToken);
-
-    // let other embeds know that the user has changed and they need to
-    // reset their api client and cache
-    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.ACCESS_TOKEN_UPDATED);
-
     pushPage(
       <ChatSettingsPage
         onContinue={() => {
@@ -113,10 +103,21 @@ function OAuthButton(
     );
   };
 
+  // for native app, eventually desktop if we setup jumper for window.open messages
+  const { unsubscribe } = onAccessTokenChange(() => {
+    unsubscribe();
+    onLoggedIn();
+  });
+
   // listens for a post message from the OAuthIframe component
-  // and call onSetAccessToken when a user logs in using a 3rd party connection
-  // and the user's truffle access token is returned
-  useHandleTruffleOAuth(onSetAccessToken);
+  // and call onLoggedIn when a user logs in using a 3rd party connection
+  // and the user's truffle access token is returned.
+  // only necessary because jumper doesn't work with window.open atm
+  useHandleTruffleOAuth((oauthResponse: OAuthResponse) => {
+    unsubscribe();
+    setAccessToken(oauthResponse.truffleAccessToken);
+    onLoggedIn();
+  });
   const context = globalContext.getStore();
   const orgId = context?.orgId;
   const accessToken = useSelector(() => accessToken$.get());
