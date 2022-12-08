@@ -9,7 +9,6 @@ export {
   query,
   queryObservable,
   setAccessToken,
-  TRUFFLE_ACCESS_TOKEN_KEY,
   useMutation,
   usePollingQuery,
   useQuery,
