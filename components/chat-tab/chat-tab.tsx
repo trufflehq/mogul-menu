@@ -3,21 +3,25 @@ import {
   jumper,
   Memo,
   React,
+  useEffect,
   useStyleSheet,
   YoutubeChat,
 } from "../../deps.ts";
+import { getYoutubeVideoId } from "https://tfl.dev/@truffle/chat@0.0.15/shared/truffle/utils.ts";
 import ChannelPoints from "../channel-points/channel-points.tsx";
 import styleSheet from "./chat-tab.scss.js";
-import {
-  ActivityBannerEmbed,
-  AlertBanner,
-  PollBanner,
-} from "../../components/activities/mod.ts";
+import { ActivityBannerEmbed, AlertBanner, PollBanner } from "../../components/activities/mod.ts";
+
 export default function ChatTab() {
   useStyleSheet(styleSheet);
 
-  const onSend = (message: string) => {
-    jumper.call("chat.sendMessage", { message, sourceType: "youtube" });
+  useHiddenWebviewForChat();
+
+  const onSend = (text: string) => {
+    jumper.call("comms.postMessage", {
+      type: "youtubeChatMessage",
+      text,
+    });
   };
 
   const banners = {
@@ -29,7 +33,7 @@ export default function ChatTab() {
     <Memo>
       <YoutubeChat
         visibleBanners={[
-          <ActivityBannerEmbed banners={banners} isStandalone={false} />
+          <ActivityBannerEmbed banners={banners} isStandalone={false} />,
         ]}
         onSend={onSend}
         hasChatInput
@@ -43,4 +47,28 @@ export default function ChatTab() {
       />
     </Memo>
   );
+}
+
+function useHiddenWebviewForChat() {
+  useEffect(() => {
+    jumper.call("context.getInfo").then((extensionInfo) => {
+      const youtubeVideoId = extensionInfo && getYoutubeVideoId(extensionInfo.pageInfo);
+      if (youtubeVideoId) {
+        // TODO: could be sweet to have a way to direct which parent jumper calls should go to
+        // eg setting an id here and being able to target this window for jumper calls.
+        // maybe makes things too complicated though? and maybe just specific to this use-case
+        jumper.call("browser.openWindow", {
+          id: "youtube-chat-do-not-change-me", // don't change. hardcoded in native
+          url: `https://www.youtube.com/live_chat?is_popout=1&v=${youtubeVideoId}`,
+          options: { isHidden: true },
+        });
+      } else {
+        console.warn("Video id not found");
+      }
+    });
+
+    return () => {
+      jumper.call("browser.closeWindow", { id: "hidden-youtube-chat" });
+    };
+  }, []);
 }

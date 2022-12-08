@@ -77,7 +77,6 @@ export default function AccountDetailsPage() {
     invalidateExtensionUser();
 
     // reset the menu state
-    setIsClosed();
     dispatch(updateTabState("home", "isActive", true));
     clearPageStack();
     await refetchOrgUserConnections({ requestPolicy: "network-only" });
