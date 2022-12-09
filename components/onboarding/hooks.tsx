@@ -21,8 +21,12 @@ export function useOnboarding() {
 
     const orgUser = orgUser$.orgUser.get();
 
+    // HACK: on staging we want to be able to login w/o having to use oauth
+    const isStaging = window?._truffleInitialData?.clientConfig?.IS_STAGING_ENV
+    const isOAuthDesired = isStaging ? extensionInfo?.pageInfo : true
+
     if (
-      orgUser && !hasConnection(orgUser, connectionSourceType)
+      isOAuthDesired && orgUser && !hasConnection(orgUser, connectionSourceType)
     ) {
       pushPage(<BasePage />);
       pushPage(<OAuthConnectionPage sourceType={connectionSourceType} />);
