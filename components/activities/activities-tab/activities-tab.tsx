@@ -16,7 +16,7 @@ import {
 import Button from "../../base/button/button.tsx";
 import PollListItem from "../poll-list-item/poll-list-item.tsx";
 import RaidListItem from "../raid-list-item/raid-list-item.tsx";
-import WatchPartyItem from "../watch-party-list-item/watch-party-list-item.tsx";
+import WatchPartyListItem from "../watch-party-list-item/watch-party-list-item.tsx";
 
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import CreateActivityDialog from "../create-activity-dialog/create-activity-dialog.tsx";
@@ -39,7 +39,7 @@ export const DEFAULT_LIST_ITEMS = {
   poll: PollListItem,
   alert: RaidListItem, // TODO alert type deprecated, remove Jan. 2023
   ["raid-stream"]: RaidListItem,
-  ["watch-party"]: WatchPartyItem,
+  ["watch-party"]: WatchPartyListItem,
 };
 
 export default function ActivitiesTab() {

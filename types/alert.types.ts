@@ -2,7 +2,7 @@ import { TruffleGQlConnection } from "../deps.ts";
 import { OrgUser } from "./org-user.types.ts";
 
 export type AlertStatus = "ready" | "shown";
-export type AlertType = "raid-stream" | "activity";
+export type AlertType = "raid-stream" | "activity" | "watch-party";
 
 export interface Alert<SourceType extends string, AlertDataType = Record<string, any>> {
   __typename: "Alert";

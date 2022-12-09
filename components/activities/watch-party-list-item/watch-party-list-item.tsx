@@ -7,7 +7,7 @@ import { WatchPartyAlert } from "../../../types/mod.ts";
 import { usePageStack } from "../../page-stack/mod.ts";
 import AlertPreviewPage from "../alert-preview-page/alert-preview-page.tsx";
 
-export default function RaidListItem(
+export default function WatchPartyListItem(
   { activity, createdBy }: ActivityListItemProps<WatchPartyAlert>,
 ) {
   useStyleSheet(stylesheet);
