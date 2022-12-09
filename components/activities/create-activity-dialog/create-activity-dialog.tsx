@@ -1,5 +1,5 @@
 import { Icon, React, useStyleSheet } from "../../../deps.ts";
-import { CRYSTAL_BALL_ICON, PARACHUTE_ICON_PATH } from "../../../shared/mod.ts";
+import { CRYSTAL_BALL_ICON, DISCO_BALL_PATH, PARACHUTE_ICON_PATH } from "../../../shared/mod.ts";
 import Button from "../../base/button/button.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
@@ -9,12 +9,17 @@ import { usePageStack } from "../../page-stack/mod.ts";
 
 import CreatePredictionPage from "../create-prediction-page/create-prediction-page.tsx";
 import CreateRaidPage from "../create-raid-page/create-raid-page.tsx";
+import CreateWatchPartyPage from "../create-watch-party-page/create-watch-party-page.tsx";
+
 const DEFAULT_TILES = [
   {
     Component: PredictionTile,
   },
   {
     Component: RaidTile,
+  },
+  {
+    Component: WatchPartyTile,
   },
 ];
 export default function CreateActivityDialog() {
@@ -70,6 +75,27 @@ function RaidTile() {
       activityType="Raid"
       description="Send viewers to a video, streamer, or site after your stream ends"
       actionButtonText="Start a raid"
+      onClick={onClick}
+    />
+  );
+}
+
+function WatchPartyTile() {
+  const { pushPage } = usePageStack();
+  const { popDialog } = useDialog();
+  const onClick = () => {
+    popDialog();
+    pushPage(<CreateWatchPartyPage />);
+  };
+
+  return (
+    <CreateActivityTile
+      icon={DISCO_BALL_PATH}
+      iconViewBox={24}
+      color="#71DBDB"
+      activityType="Watch Party"
+      description="Watch a video with chat before streams"
+      actionButtonText="Start watch party"
       onClick={onClick}
     />
   );

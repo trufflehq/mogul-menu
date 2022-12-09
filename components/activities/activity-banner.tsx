@@ -32,7 +32,8 @@ export interface ActivityBannerManagerProps<BannerTypes> {
 
 export const DEFAULT_BANNERS = {
   poll: PollBanner,
-  alert: AlertBanner,
+  alert: AlertBanner, // TODO alert type deprecated, remove Jan. 2023
+  ["raid-stream"]: AlertBanner,
 };
 
 const ACTIVITY_CONNECTION_LIMIT = 5;
@@ -40,7 +41,8 @@ const ACTIVITY_CONNECTION_LIMIT = 5;
 export function ActivityBannerEmbed<
   BannerTypes = BannerMap<{
     poll: Poll;
-    alert: Alert<string, any>;
+    alert: Alert<string, any>; // TODO alert type deprecated, remove Jan. 2023
+    "raid-stream": Alert<string, any>;
   }>,
 >(
   props: ActivityBannerManagerProps<BannerTypes>,
@@ -64,6 +66,7 @@ export function ActivityBannerManager<
   ActivityType extends BannerTypes[SourceType],
 >(props: ActivityBannerManagerProps<BannerTypes>) {
   const { isStandalone = true } = props;
+  const bannerSourceTypes = Object.keys(props.banners) as SourceType[];
   const { activityAlertConnection$ } = useActivitySubscription$<ActivityType, SourceType>({
     status: "ready",
     limit: ACTIVITY_CONNECTION_LIMIT,
@@ -88,15 +91,22 @@ export function ActivityBannerManager<
     }
   };
 
+  const activityAlert$ = useComputed(() =>
+    activityAlertConnection$.data.alertConnection.nodes.get()?.find((alert) =>
+      bannerSourceTypes.includes(alert.sourceType)
+    )
+  );
+
   const hasActivityChanged = useComputed(() =>
     lastActivityAlert$.get()?.id !==
-      activityAlertConnection$.data.alertConnection.nodes.get()?.[0]?.id
+      activityAlert$.get()?.id
   );
 
   useObserve(() => {
     // accessing activityAlert observable so the hook runs when the activity alert observable changes,
     // accessing the selector will not cause the useObserve hook to run
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlert$.get();
+
     if (activityAlert && hasActivityChanged.get() && isActiveActivity(activityAlert)) {
       openBanner();
       lastActivityAlert$.set(activityAlert);
@@ -107,14 +117,12 @@ export function ActivityBannerManager<
     }
   });
 
-  const activityAlert = useSelector(() =>
-    activityAlertConnection$.data.alertConnection.nodes.get()?.[0]
-  );
+  const activityAlert = useSelector(() => activityAlert$?.get());
 
   const isBannerOpen = useSelector(() => isActivityBannerOpen$.get());
 
   const Component = useSelector(() => {
-    const activityAlert = activityAlertConnection$.data.alertConnection.nodes.get()?.[0];
+    const activityAlert = activityAlert$?.get();
     const activitySourceType = activityAlert?.sourceType;
     return activitySourceType ? props?.banners[activitySourceType] : null;
   });

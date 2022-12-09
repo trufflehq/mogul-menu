@@ -1,4 +1,4 @@
-import { ActivityAlert, Poll, RaidAlert } from "../../../types/mod.ts";
+import { ActivityAlert, Poll, RaidAlert, WatchPartyAlert } from "../../../types/mod.ts";
 import { getPollInfo, secondsSince } from "../mod.ts";
 
 export const ACTIVITY_TIMEOUT_SECONDS = 100;
@@ -19,7 +19,9 @@ export function isActiveActivity<ActivityType, SourceType extends string>(
   if (isPollActivity(activityAlert)) {
     return isPollActivityActive(activityAlert.activity);
     // default all other activities to a default timeout
-  } else if (isAlertActivity(activityAlert) && isRaid(activityAlert.activity)) {
+  } else if (
+    isAlertActivity(activityAlert) && hasAlertUrl(activityAlert.activity)
+  ) {
     return activityAlert.activity.status === "ready";
   } else {
     const activityStartTime = new Date(activityAlert?.time);
@@ -41,14 +43,32 @@ export function isPollActivity(
   return activityAlert?.sourceType === "poll";
 }
 
+// TODO alert type deprecated, remove Jan. 2023
 export function isAlertActivity(
   activityAlert?: ActivityAlert<unknown, string>,
-): activityAlert is ActivityAlert<RaidAlert, "alert"> {
-  return activityAlert?.sourceType === "alert";
+): activityAlert is ActivityAlert<
+  RaidAlert | WatchPartyAlert,
+  "alert" | "raid-stream" | "watch-party"
+> {
+  return activityAlert?.sourceType === "alert" || activityAlert?.sourceType === "raid-stream" ||
+    activityAlert?.sourceType === "watch-party";
 }
 
+// TODO alert type deprecated, remove alert branch Jan. 2023
 export function isRaid(
-  alert: unknown & { data?: { url?: string } },
+  alert: unknown & { data?: { url?: string }; type?: string },
 ): alert is RaidAlert {
+  return (alert?.type === "alert" || alert?.type === "raid-stream") &&
+    Boolean(alert?.data?.url);
+}
+
+export function isWatchParty(
+  alert: unknown & { data?: { url?: string }; type?: string },
+): alert is WatchPartyAlert {
+  return alert?.type === "watch-party" &&
+    Boolean(alert?.data?.url);
+}
+
+export function hasAlertUrl(alert: unknown & { data?: { url?: string } }) {
   return Boolean(alert?.data?.url);
 }

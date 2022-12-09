@@ -21,6 +21,7 @@ function HomePage() {
     poll: PollBanner,
     alert: AlertBanner,
     foo: FooBanner,
+    ["raid-stream"]: AlertBanner,
   };
   return (
     <>
