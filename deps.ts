@@ -2,6 +2,7 @@
 export { getSrcByImageObj } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/image.ts";
 export {
   getAccessToken,
+  getAccessToken$,
   getClient,
   gql,
   onAccessTokenChange,

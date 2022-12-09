@@ -1,6 +1,6 @@
 import {
   ConnectionSourceType,
-  getAccessToken,
+  getAccessToken$,
   globalContext,
   ImageByAspectRatio,
   OAuthIframe,
@@ -74,7 +74,7 @@ function OAuthButton(
     sourceType: ConnectionSourceType;
   },
 ) {
-  const accessToken$ = useSignal(getAccessToken());
+  const accessToken$ = getAccessToken$();
   const { clearPageStack, pushPage, popPage } = usePageStack();
 
   const onLoggedIn = () => {
