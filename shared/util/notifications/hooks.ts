@@ -1,6 +1,7 @@
 import { useActionBanner } from "../../../components/action-banner/hooks.ts";
 import SetupNotificationsBanner from "../../../components/notifications/setup-notifications-banner.tsx";
 import {
+  jumper,
   React,
   useEffect,
   useMemo,
@@ -77,8 +78,9 @@ export function useFcmNotificationMediumConfig(token: string | undefined) {
 
   const registerToken = async () => {
     if (token) {
+      const context = await jumper.call("context.getInfo");
       console.log("registering fcmToken with mycelium");
-      await upsertFcmToken({ token });
+      await upsertFcmToken({ token, platform: context?.platform ?? "extension-chrome" });
     }
   };
 
