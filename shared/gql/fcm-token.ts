@@ -12,7 +12,7 @@ export const FCM_TOKEN_QUERY = gql`
 `;
 
 export const UPSERT_FCM_TOKEN_MUTATION = gql`
-  mutation($token: String, $platform) {
+  mutation($token: String, $platform: String) {
     notificationMediumUserConfigUpsert (input: {
       notificationMediumSlug: fcm,
       notificationMediumKey: $token,
