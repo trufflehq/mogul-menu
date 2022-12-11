@@ -124,6 +124,10 @@ export default function HomeTab() {
             hasBattlePass={hasBattlePass}
           />
         </IsLive>
+        {/* FIXME: rm after 12/11/22 */}
+        {typeof window !== 'undefined' && window.location.href.includes('new.ludwig.social')
+          ? <a className="chessboxing" href="https://ludwig.gg" target="_blank"></a>
+          : ''}
         <BattlepassLeaderboardTile orgUserWithRoles$={orgUserWithRoles$} />
         <PredictionTile orgUserWithRoles$={orgUserWithRoles$} />
         <CPSpentTile orgUserWithRoles$={orgUserWithRoles$} />

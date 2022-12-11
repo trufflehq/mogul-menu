@@ -61,7 +61,7 @@ export default scss`
       border-radius: 4px;
       font-size: 12px;
       cursor: pointer;
-      background-color: var(--truffle-gradient);
+      background-color: var(--mm-gradient);
   
       animation: claim-shake 2s infinite cubic-bezier(.36,.07,.19,.97) both;
       backface-visibility: hidden;

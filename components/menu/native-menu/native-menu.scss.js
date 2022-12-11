@@ -8,7 +8,7 @@ export default scss`
 
   --error-red: rgba(238, 113, 113, 1);
   --success-green: rgba(107, 190, 86, 1);
-  --truffle-gradient: var(--mm-gradient);
+  // --mm-gradient: var(--mm-gradient);
   $clip-path-transition: .5s;
 
   &.position-top-left, &.position-bottom-left {

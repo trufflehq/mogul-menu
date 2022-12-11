@@ -13,10 +13,15 @@ interface MenuProviderProps extends MogulMenuProps {
 
 export default function MenuWrapper(props: MenuProviderProps) {
   const { children } = props;
+  const themeProps = typeof window !== 'undefined' && window.location.href.includes('new.ludwig.social') ? {
+    colorPrimary: "#F5C973",
+    colorSecondary: "#F5CC76",
+    gradient: "linear-gradient(282.52deg, #E35923 6.5%, #EA7723 42.22%, #F5CC76 99.17%)"
+  } : {}
   return (
     <>
       <MenuProvider {...props}>
-        <ThemeComponent />
+        <ThemeComponent {...themeProps} />
         <TabButtonProvider>
           <TabsProvider tabs={props.tabs}>
             <ActionBannerProvider>

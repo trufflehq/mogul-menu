@@ -112,7 +112,7 @@ export default function Watchtime(props: WatchtimeProps) {
       <div
         className="header"
         style={{
-          "--background": highlightButtonBg ?? "var(--truffle-gradient)",
+          "--background": highlightButtonBg ?? "var(--mm-gradient)",
         }}
       >
         {creatorName ? `${creatorName} is live!` : ""}

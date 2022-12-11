@@ -153,7 +153,7 @@ function CollectibleItem(props: CollectibleItemProps) {
       <ConfirmPurchaseDialog
         collectibleItem={collectibleItem}
         channelPointsImageObj={channelPointsImageObj}
-        buttonBg="var(--truffle-gradient)"
+        buttonBg="var(--mm-gradient)"
       />
     );
   };
