@@ -31,7 +31,7 @@ export default function PredictionBanner({ poll }: { poll: Poll }) {
 
   return (
     <ActivityBannerFragment
-      title={hasPredictionEnded ? "Prediction ended" : "Current prediction"}
+      title={hasPredictionEnded ? "" : "Current prediction"}
       startTime={predictionStartTime}
       endTime={predictionEndTime}
       color={"#AF7AF2"}
