@@ -58,7 +58,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
       {hasWinningOption
         ? (
           <span className="winner">
-            {poll.counter.options[poll.data.winningOptionIndex!].text}
+            {/*poll.counter.options[poll.data.winningOptionIndex!].text */}
           </span>
         )
         : hasPollEnded
