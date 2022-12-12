@@ -50,7 +50,7 @@ import styleSheet from "./prediction-page.scss.js";
 const CHANNEL_POINTS_SRC =
   "https://cdn.bio/assets/images/features/browser_extension/channel-points-default.svg";
 function usePollingChannelPoints$(
-  { interval = 1000 }: { interval?: number },
+  { interval = 10000 }: { interval?: number },
 ) {
   const channelPoints$ = useSignal<{ channelPoints: { orgUserCounter: ChannelPoints } }>(
     undefined!,
