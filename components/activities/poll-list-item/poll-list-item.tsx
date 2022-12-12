@@ -62,7 +62,7 @@ export function PollListItemDescription({ poll }: { poll: Poll }) {
           </span>
         )
         : hasPollEnded
-        ? isRefund ? "Prediction canceled" : ""
+        ? isRefund ? "Prediction canceled" : "Submissions closed"
         : (
           <>
             <Time ms={pollMsLeft} />
