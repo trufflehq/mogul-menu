@@ -24,7 +24,7 @@ export const INITIAL_DIMENSIONS = {
 };
 
 export const getInitialMenuState = (): MenuState => ({
-  isNative: isNative(),
+  isNative: isNative() ?? false,
   menuState: isNative() ? "open" : "closed",
   menuPosition: isNative() ? "top-left" : undefined,
   snackBars: [],
@@ -41,7 +41,6 @@ export function MenuProvider({
   iconImageObj?: File;
   creatorName: string;
 }) {
-  const initialMenuState = getInitialMenuState();
-  const menuState = useMenuReducer({ ...initialMenuState, iconImageObj, creatorName });
+  const menuState = useMenuReducer({ ...getInitialMenuState(), iconImageObj, creatorName });
   return <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>;
 }
