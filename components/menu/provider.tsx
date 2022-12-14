@@ -24,6 +24,7 @@ export const INITIAL_DIMENSIONS = {
 };
 
 export const getInitialMenuState = (): MenuState => ({
+  isNative: isNative(),
   menuState: isNative() ? "open" : "closed",
   menuPosition: isNative() ? "top-left" : undefined,
   snackBars: [],

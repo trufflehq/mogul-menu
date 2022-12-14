@@ -4,6 +4,7 @@ import { DimensionModifiers } from "../draggable/draggable.tsx";
 export type MenuPosition = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
 export interface MenuState {
+  isNative: boolean;
   menuState: string;
   iconImageObj?: File;
   creatorName: string;

@@ -134,7 +134,7 @@ function OAuthButton(
         border: "none",
       }}
     />
-    // For local development<>
+    // For local development
     // <LocalOAuthFrame sourceType={sourceType} accessToken={accessToken} orgId={orgId} />
   );
 }
