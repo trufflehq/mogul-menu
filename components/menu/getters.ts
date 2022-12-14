@@ -38,7 +38,7 @@ export function getCreatorName(state: MenuState) {
 }
 
 export function getMenuPosition(state: MenuState) {
-  return isNative() ?  "top-left" : state.menuPosition;
+  return false ?  "top-left" : state.menuPosition;
 }
 
 export function getModifiersByPosition(position?: MenuPosition) {
