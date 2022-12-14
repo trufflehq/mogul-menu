@@ -31,12 +31,21 @@ export default function ChatTab() {
 
   return (
     <Memo>
+      {/* <iframe
+        style={{
+          width: "100%",
+          height: "100%",
+          border: "none",
+        }}
+        src="https://local-chat.rileymiller.dev/chat"
+      /> */}
       <YoutubeChat
         visibleBanners={[
           <ActivityBannerEmbed banners={banners} isStandalone={false} />,
         ]}
         onSend={onSend}
         hasChatInput
+        hasScrollToBottom
         inputControls={
           <ChannelPoints
             highlightButtonBg="var(--mm-gradient)"

@@ -5,7 +5,7 @@ import {
   getIsOpen,
   getMenuPosition,
   getModifiersByPosition,
-  INITIAL_MENU_STATE,
+  INITIAL_DIMENSIONS,
   MenuPosition,
   updateDimensions as updateDimensionsAction,
   useMenu,
@@ -78,7 +78,7 @@ export default function DraggableMenu({
         querySelector: defaultPositionElementQuerySelector,
       })) || {};
 
-      const dimensions = INITIAL_MENU_STATE.dimensions;
+      const dimensions = INITIAL_DIMENSIONS;
       if (!defaultPosition?.x && !defaultPosition?.y) {
         defaultPosition.x = defaultPosition?.x || 0;
         defaultPosition.y = defaultPosition?.y || 0;

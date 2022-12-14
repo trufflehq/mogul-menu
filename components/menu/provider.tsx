@@ -11,23 +11,26 @@ import {
   DEFAULT_MENU_ICON_WIDTH,
 } from "./constants.ts";
 
-export const INITIAL_MENU_STATE: MenuState = {
+export const INITIAL_DIMENSIONS = {
+  base: {
+    x: BASE_MENU_WIDTH,
+    y: BASE_MENU_HEIGHT,
+    width: DEFAULT_MENU_ICON_WIDTH,
+    height: DEFAULT_MENU_ICON_HEIGHT,
+  },
+  modifiers: {
+    transition: "none",
+  },
+};
+
+export const getInitialMenuState = (): MenuState => ({
+  isNative: isNative() ?? false,
   menuState: isNative() ? "open" : "closed",
   menuPosition: isNative() ? "top-left" : undefined,
   snackBars: [],
   creatorName: "",
-  dimensions: {
-    base: {
-      x: BASE_MENU_WIDTH,
-      y: BASE_MENU_HEIGHT,
-      width: DEFAULT_MENU_ICON_WIDTH,
-      height: DEFAULT_MENU_ICON_HEIGHT,
-    },
-    modifiers: {
-      transition: "none",
-    },
-  },
-};
+  dimensions: INITIAL_DIMENSIONS,
+});
 
 export function MenuProvider({
   children,
@@ -38,6 +41,6 @@ export function MenuProvider({
   iconImageObj?: File;
   creatorName: string;
 }) {
-  const menuState = useMenuReducer({ ...INITIAL_MENU_STATE, iconImageObj, creatorName });
+  const menuState = useMenuReducer({ ...getInitialMenuState(), iconImageObj, creatorName });
   return <MenuContext.Provider value={menuState}>{children}</MenuContext.Provider>;
 }

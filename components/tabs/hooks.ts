@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useReducer, useRef, useState } from "../../deps.ts";
 import { tabsReducer } from "./reducer.ts";
 import { TabDefinition, TabsActions, TabsState, TabState } from "./types.ts";
-import { isNative, useSeasonPassData } from "../../shared/mod.ts";
+import { isNative as getIsNative, useSeasonPassData } from "../../shared/mod.ts";
 import { TabsContext, TabSlugContext } from "./context.ts";
 import { CHAT_TAB, DEFAULT_TABS, SEASON_PASS_TAB } from "./constants.ts";
 
@@ -76,6 +76,7 @@ export function useDynamicTabs() {
   const [tabs, setTabs] = useState<TabDefinition[]>();
   const hasSetTabsRef = useRef(false);
   const seasonPassRes = useSeasonPassData();
+  const isNative = getIsNative();
   useEffect(() => {
     const hasSetTabs = hasSetTabsRef.current;
     if (!hasSetTabs) {
@@ -93,7 +94,7 @@ export function useDynamicTabs() {
           tabs.push(SEASON_PASS_TAB);
         }
 
-        if (isNative()) {
+        if (isNative) {
           tabs.splice(1, 0, CHAT_TAB);
         }
 
@@ -101,7 +102,7 @@ export function useDynamicTabs() {
         hasSetTabsRef.current = true;
       }
     }
-  }, [seasonPassRes]);
+  }, [seasonPassRes, isNative]);
 
   return tabs;
 }
