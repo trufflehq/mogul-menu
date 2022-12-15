@@ -1,6 +1,5 @@
 import { React } from "../../deps.ts";
-import { useUserKV } from "../../shared/util/kv/hooks.ts";
-import { HAS_SEEN_NOTIFICATION_SETUP_BANNER } from "../../shared/util/notifications/constants.ts";
+import { useHasSeenNotificationBanner } from "../../shared/mod.ts";
 import ActionBanner from "../action-banner/action-banner.tsx";
 import { useActionBanner } from "../action-banner/mod.ts";
 import Button from "../base/button/button.tsx";
@@ -12,16 +11,16 @@ export default function SetupNotificationsBanner(
 ) {
   const { pushPage } = usePageStack();
   const { removeActionBanner } = useActionBanner();
-  const { setUserKV: setHasSeen } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER);
+  const { setHasSeen } = useHasSeenNotificationBanner();
 
   const affirmativeClickHandler = () => {
-    setHasSeen("true");
+    setHasSeen(true);
     removeActionBanner(actionBannerIdRef.current);
     pushPage(<NotificationSettingsPage />);
   };
 
   const negativeClickHandler = () => {
-    setHasSeen("true");
+    setHasSeen(true);
     removeActionBanner(actionBannerIdRef.current);
   };
 

@@ -3,12 +3,13 @@ import SetupNotificationsBanner from "../../../components/notifications/setup-no
 import {
   jumper,
   React,
+  useComputed,
   useEffect,
   useMemo,
   useMutation,
+  useObserve,
   useQuery,
   useRef,
-  useSelector,
 } from "../../../deps.ts";
 import { NotificationTopic } from "../../../types/notification.types.ts";
 import {
@@ -123,14 +124,13 @@ export function useDesktopNotificationSetting() {
 }
 
 export function useFirstTimeNotificationBanner() {
-  const { value$: hasSeenBanner$ } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER, true);
-  const hasSeenBanner = useSelector(hasSeenBanner$);
   const actionBannerIdRef = useRef("");
+  const { hasSeenBanner$ } = useHasSeenNotificationBanner();
 
   const { displayActionBanner, removeActionBanner } = useActionBanner();
 
-  useEffect(() => {
-    if (hasSeenBanner) {
+  useObserve(() => {
+    if (hasSeenBanner$.get()) {
       removeActionBanner(actionBannerIdRef.current);
 
       // notifications only supported on Google Chrome atm
@@ -140,5 +140,17 @@ export function useFirstTimeNotificationBanner() {
         React.createElement(SetupNotificationsBanner, { actionBannerIdRef }),
       ) ?? "";
     }
-  }, [hasSeenBanner]);
+  });
+}
+
+export function useHasSeenNotificationBanner() {
+  // if you want to force this banner to show up again for users, change this "truthyValue"
+  const truthyValue = "1";
+
+  const { value$, setUserKV } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER, true);
+  const hasSeenBanner$ = useComputed(() => value$.get() === truthyValue);
+
+  const setHasSeen = (hasSeen: boolean) => setUserKV(hasSeen ? truthyValue : null);
+
+  return { hasSeenBanner$, setHasSeen };
 }
