@@ -1,6 +1,6 @@
-import { _, gql, Obs, React, useMutation, useObservables } from "../../../deps.ts";
+import { _, gql, React, useMutation } from "../../../deps.ts";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
-import { invalidateExtensionUser } from '../../../shared/mod.ts'
+import { invalidateExtensionUser } from "../../../shared/mod.ts";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { useSnackBar } from "../../snackbar/mod.ts";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
@@ -37,12 +37,6 @@ export function ActivatePowerupDialog({
 }) {
   const { popDialog } = useDialog();
 
-  // rm this if we're not invalidating cache using jumper
-  const { org } = useObservables(() => ({
-    // org: model.org.getMe(),
-    org: Obs.from([{}]),
-  }));
-
   const collectible = redeemableCollectible?.source;
   const enqueueSnackBar = useSnackBar();
   const [_redeemResult, executeRedeemMutation] = useMutation(
@@ -75,7 +69,7 @@ export function ActivatePowerupDialog({
         enqueueSnackBar(<PowerupActivatedSnackBar collectible={collectible} />);
       }
 
-      invalidateExtensionUser()
+      invalidateExtensionUser();
     } catch (err) {
       console.log("err", err);
       alert("There was an error redeeming: " + err?.info || err?.message);

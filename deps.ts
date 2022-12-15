@@ -17,7 +17,6 @@ export {
 } from "https://tfl.dev/@truffle/api@~0.2.0/mod.ts";
 
 export type { TruffleGQlConnection } from "https://tfl.dev/@truffle/api@^0.2.0/types/mod.ts";
-export { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
 
 export { default as _ } from "https://cdn.skypack.dev/lodash?dts";
 
@@ -36,7 +35,6 @@ export {
 } from "https://npm.tfl.dev/react";
 export type { MutableRefObject } from "https://npm.tfl.dev/react";
 export { default as semver } from "https://npm.tfl.dev/semver@7.3.7";
-export { default as useObservables } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
 export { default as scss } from "https://tfl.dev/@truffle/utils@~0.0.17/css/css.ts";
 export { useStyleSheet } from "https://tfl.dev/@truffle/distribute@^2.0.0/format/wc/react/index.ts"; // DO NOT BUMP
 export { default as classKebab } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/class-kebab.ts";

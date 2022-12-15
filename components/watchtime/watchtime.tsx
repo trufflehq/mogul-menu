@@ -5,7 +5,6 @@ import {
   React,
   useCallback,
   useEffect,
-  useObservables,
   useQuery,
   useState,
   useStyleSheet,
@@ -81,18 +80,12 @@ export default function Watchtime(props: WatchtimeProps) {
     });
   }, []);
 
-  const { resetTimer, secondsRemainingSubject, timeWatchedSecondsSubject, claim } =
-    useWatchtimeCounter({
-      source: "youtube",
-      onFinishedCountdown,
-      isClaimable,
-      setIsClaimable,
-    });
-
-  const { secondsRemaining, timeWatchedSeconds } = useObservables(() => ({
-    timeWatchedSeconds: timeWatchedSecondsSubject.obs,
-    secondsRemaining: secondsRemainingSubject.obs,
-  }));
+  const { resetTimer, claim } = useWatchtimeCounter({
+    source: "youtube",
+    onFinishedCountdown,
+    isClaimable,
+    setIsClaimable,
+  });
 
   const onClaim = async (e?: React.MouseEvent) => {
     e?.preventDefault();

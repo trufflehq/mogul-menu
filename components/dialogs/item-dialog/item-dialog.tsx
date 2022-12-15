@@ -1,12 +1,9 @@
 // TODO: delete this component entirely
 
 import React from "https://npm.tfl.dev/react";
-import useObservables from "https://tfl.dev/@truffle/utils@~0.0.17/obs/use-observables-react.ts";
 import { getSrcByImageObj } from "../../../deps.ts";
-import { createSubject, Obs, op } from "https://tfl.dev/@truffle/utils@~0.0.17/obs/subject.ts";
 
 import Button from "../../base/button/button.tsx";
-import Icon from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
 import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import StyleSheet from "../../base/stylesheet/stylesheet.tsx";
@@ -44,7 +41,6 @@ export default function ItemDialog({
   $controls,
   onExit,
   $title,
-  errorStream,
   highlightBg,
   headerText,
   primaryText,
@@ -60,9 +56,8 @@ export default function ItemDialog({
     console.warn("[browser-extension-item-dialog] fileRel not defined");
   }
 
-  const { error } = useObservables(() => ({
-    error: errorStream?.obs,
-  }));
+  // const { error } = useSelector(() => error$.get());
+
   const onExitHandler = () => {
     onExit?.();
   };

@@ -1,75 +1,74 @@
 import {
   _,
-  createSubject,
   getCookie,
-  gql,
-  Obs,
-  op,
-  queryObservable,
   setCookie,
   useEffect,
-  useMemo,
+  useQuery,
   useMutation,
-  useObservables,
-  useRef,
+  useObserve,
+  useSelector,
+  useSignal
 } from "../../deps.ts";
 
-import { ECONOMY_ACTION_QUERY } from "./gql.ts";
-
-const WATCH_TIME_INCREMENT_MUTATION = gql`
-  mutation ($secondsWatched: Int, $sourceType: String) {
-    watchTimeIncrement(
-      input: { secondsWatched: $secondsWatched, sourceType: $sourceType }
-    ) {
-      isUpdated
-    }
-  }
-`;
-
-const WATCH_TIME_CLAIM_MUTATION = gql`
-  mutation ($sourceType: String!) {
-    watchTimeClaim(input: { sourceType: $sourceType }) {
-      economyTransactions {
-        amountId
-        amountValue
-      }
-    }
-  }
-`;
+import {
+  ECONOMY_ACTION_QUERY,
+  WATCH_TIME_CLAIM_MUTATION,
+  WATCH_TIME_INCREMENT_MUTATION
+} from "./gql.ts";
 
 const CHANNEL_POINTS_CLAIM_TRIGGER_ID = "41760be0-6f68-11ec-b706-956d4fcf75c0";
 const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";
-const TIMER_INCREMENT_MS = 1000;
-const MS_TO_SECONDS = 1000;
-const UPDATE_WATCH_TIME_FREQ_SECONDS = 60;
+const UPDATE_WATCH_TIME_FREQ_MS = 60 * 1000; // 1 min
 // keep their state if they're gone from stream for < this amount of time
 // this is a fix for if they're just refreshing, or if they're going fullscreen (component gets reloaded)
 // we could reset more frequently (ie shorter amount of time here), but for now we're
-// tying the cookie ttl refresh to the UPDATE_WATCH_TIME_FREQ_SECONDS (probably good to not update cookies too often)
-const ALLOWED_TIME_AWAY_MS = 1000 * (UPDATE_WATCH_TIME_FREQ_SECONDS + 10);
+// tying the cookie ttl refresh to the UPDATE_WATCH_TIME_FREQ_MS (probably good to not update cookies too often)
+const ALLOWED_TIME_AWAY_MS = UPDATE_WATCH_TIME_FREQ_MS + 10 * 1000;
 const INITIAL_TIME_MS_COOKIE = "extensionInitialTimeMs";
 const LAST_CLAIM_TIME_MS_COOKIE = "extensionLastClaimTimeMs";
 
-const DEFAULT_TIMER_SECONDS = 60 * 5;
-const DEFAULT_INTERVAL_SECONDS = 1;
-function secondsSinceByMilliseconds(minuend: number, subtrahend: number) {
-  return Math.round((minuend - subtrahend) / MS_TO_SECONDS);
+const DEFAULT_TIMER_MS = 60 * 5;
+
+function Timer ({ timerMs$, Component }) {
+  const timerMs = useSelector(() => timerMs$.get())
+
+  useEffect(() => {
+    const startTimeMs = Date.now()
+    // time diff because setTimeout stops when browser tab isn't active
+    const timeout = setTimeout(() => {
+      const curVal = timerMs
+      const nowMs = Date.now()
+      if (curVal > 0) {
+        const timeDiffMs = nowMs - startTimeMs
+        let newVal = curVal - timeDiffMs
+        if (newVal < 0) {
+          newVal = 0
+        }
+        timerMs$.set(newVal)
+      }
+    }, 1000)
+
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [timerMs])
+
+  return Component
+    ? <Component timerMs={timerMs} />
+    : `${timerMs}`
 }
 
-function secondsSinceBySeconds(minuend: number, subtrahend: number) {
-  return Math.round(minuend - subtrahend);
-}
 
 export function useWatchtimeCounter({
   onFinishedCountdown,
   source,
   isClaimable,
-  setIsClaimable
+  setIsClaimable,
 }: {
   onFinishedCountdown?: () => void;
   source: string;
-  isClaimable: boolean
-  setIsClaimable: (isClaimable: boolean) => void
+  isClaimable: boolean;
+  setIsClaimable: (isClaimable: boolean) => void;
 }) {
   const [_incrementWatchtimeResult, executeIncrementWatchtimeMutation] = useMutation(
     WATCH_TIME_INCREMENT_MUTATION,
@@ -79,45 +78,37 @@ export function useWatchtimeCounter({
     WATCH_TIME_CLAIM_MUTATION,
   );
 
-  const intervalRef = useRef(null);
-  const lastUpdateTimeRef = useRef(null);
-  const initialTimeRef = useRef(null);
-  const decrementStartTimeRef = useRef(null);
-  const lootTimerRef = useRef(null);
-  const messageTimerRef = useRef(null);
-
-  const {
-    watchTimeSubject,
-    initialTimeSubject,
-    lastUpdateTimeSubject,
-    decrementStartTimeSubject,
-    isClaimButtonVisibleSubject,
-    claimChannelPointEconomyActionAmountObs,
-    claimXpEconomyActionAmountObs,
-    claimTimerCountdownSecondsObs,
-    claimXpEconomyActionObs,
-    claimChannelPointEconomyActionObs,
-    timeWatchedSecondsSubject,
-    secondsRemainingSubject,
-  } = useMemo(() => {
-    const claimChannelPointEconomyActionObs = queryObservable(
-      ECONOMY_ACTION_QUERY,
-      { economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID },
-    ).pipe(op.map((result) => {
-      return result?.data?.economyAction;
-    }));
-
-    const claimXpEconomyActionObs = queryObservable(ECONOMY_ACTION_QUERY, {
+  const channelPointsClaimEconomyAction = useQuery({
+    query: ECONOMY_ACTION_QUERY,
+    variables: {
+      economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID,
+    }
+  });
+  const claimXpEconomyAction = useQuery({
+    query: ECONOMY_ACTION_QUERY,
+    variables: {
       economyTriggerId: XP_CLAIM_TRIGGER_ID,
-    }).pipe(op.map((result) => result?.data?.economyAction));
+    }
+  });
 
-    const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
-    const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
-    const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
-    const decrementTimeMs = lastClaimTimeMsFromCookie
-      ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
-      : Date.now();
+  const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
+  const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
+  const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
+  const lastClaimTimeMs = lastClaimTimeMsFromCookie
+    ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
+    : Date.now();
 
+  const claimCountdownSeconds = channelPointsClaimEconomyAction?.data?.cooldownSeconds ||
+    claimXpEconomyAction?.data?.cooldownSeconds;
+  const baseClaimCountdownMs = claimCountdownSeconds ? claimCountdownSeconds * 1000 : DEFAULT_TIMER_MS;
+  const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
+
+  const timeWatchedMs$ = useSignal(Date.now() - initialTimeMs);
+  const claimCountdownMs$ = useSignal(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
+  const lastUpdateTime$ = useSignal(0);
+
+  // every second
+  useObserve(timeWatchedMs$, () => {
     // set a cookie for when they started watching
     // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
     // and if they come back it'll resume their timer
@@ -126,101 +117,22 @@ export function useWatchtimeCounter({
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
     // set initial
-    setCookie(LAST_CLAIM_TIME_MS_COOKIE, decrementTimeMs, {
+    setCookie(LAST_CLAIM_TIME_MS_COOKIE, lastClaimTimeMs, {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
+  })
 
-    const claimXpEconomyActionAndClaimChannelPointActionObs = Obs.combineLatest(
-      claimXpEconomyActionObs,
-      claimChannelPointEconomyActionObs,
-    );
-
-    return {
-      timeWatchedSecondsSubject: createSubject(),
-      secondsRemainingSubject: createSubject(),
-      watchTimeSubject: createSubject(null),
-      initialTimeSubject: createSubject(initialTimeMs),
-      lastUpdateTimeSubject: createSubject(Date.now()),
-      decrementStartTimeSubject: createSubject(decrementTimeMs),
-      isClaimButtonVisibleSubject: createSubject(false),
-      claimChannelPointEconomyActionObs,
-      claimChannelPointEconomyActionAmountObs: claimChannelPointEconomyActionObs.pipe(
-        op.map((economyAction) => economyAction?.amountValue),
-      ),
-      claimXpEconomyActionObs,
-      claimXpEconomyActionAmountObs: claimXpEconomyActionObs.pipe(
-        op.map((economyAction) => economyAction?.amountValue),
-      ),
-      claimTimerCountdownSecondsObs: claimXpEconomyActionAndClaimChannelPointActionObs.pipe(
-        op.map(([claimXpEconomyAction, claimChannelPointEconomyAction]) => {
-          const cooldownSeconds = claimChannelPointEconomyAction?.data?.cooldownSeconds ||
-            claimXpEconomyAction?.data?.cooldownSeconds;
-          if (cooldownSeconds) {
-            return Math.max(cooldownSeconds, DEFAULT_INTERVAL_SECONDS);
-          } else {
-            return DEFAULT_TIMER_SECONDS;
-          }
-        }),
-      ),
-    };
-  }, []);
-
-  const {
-    initialTime,
-    lastUpdateTime,
-    decrementStartTime,
-    isClaimButtonVisible,
-    claimChannelPointEconomyActionAmount,
-    claimXpEconomyActionAmount,
-    claimTimerCountdownSeconds,
-    claimXpEconomyAction,
-    claimChannelPointEconomyAction,
-  } = useObservables(() => ({
-    initialTime: initialTimeSubject.obs,
-    lastUpdateTime: lastUpdateTimeSubject.obs,
-    decrementStartTime: decrementStartTimeSubject.obs,
-    isClaimButtonVisible: isClaimButtonVisibleSubject.obs,
-    claimChannelPointEconomyActionAmount: claimChannelPointEconomyActionAmountObs,
-    claimXpEconomyActionAmount: claimXpEconomyActionAmountObs,
-    claimTimerCountdownSeconds: claimTimerCountdownSecondsObs,
-    claimXpEconomyAction: claimXpEconomyActionObs,
-    claimChannelPointEconomyAction: claimChannelPointEconomyActionObs,
-  }));
-
-  const incrementTimer = async () => {
-    const updatedTime = Date.now();
-
-    const secondsElapsedSinceLastUpdate = secondsSinceByMilliseconds(
-      updatedTime,
-      lastUpdateTimeRef.current,
-    );
-
-    const secondsSinceInitialLoad = secondsSinceByMilliseconds(
-      updatedTime,
-      initialTimeRef.current,
-    );
-    timeWatchedSecondsSubject.next(secondsSinceInitialLoad);
-
+  useObserve(() => {
     // update the server every 60s to keep track of watch time progress
-    const shouldUpdateWatchTime = secondsElapsedSinceLastUpdate >= UPDATE_WATCH_TIME_FREQ_SECONDS;
-
+    const msSinceLastUpdate = Date.now() - lastUpdateTime$.get();
+    const shouldUpdateWatchTime = msSinceLastUpdate >= UPDATE_WATCH_TIME_FREQ_MS;
     if (shouldUpdateWatchTime) {
-      // refresh this cookie for another ALLOWED_TIME_AWAY_MS
-      setCookie(INITIAL_TIME_MS_COOKIE, initialTimeRef.current, {
-        ttlMs: ALLOWED_TIME_AWAY_MS,
-      });
-      // refresh last claim time cookie
-      setCookie(
-        LAST_CLAIM_TIME_MS_COOKIE,
-        getCookie(LAST_CLAIM_TIME_MS_COOKIE),
-        { ttlMs: ALLOWED_TIME_AWAY_MS },
-      );
-      lastUpdateTimeSubject.next(Date.now());
-      const secondsWatched = secondsElapsedSinceLastUpdate;
+      refreshCookie(INITIAL_TIME_MS_COOKIE);
+      refreshCookie(LAST_CLAIM_TIME_MS_COOKIE);
 
       if (source) {
         await executeIncrementWatchtimeMutation({
-          secondsWatched,
+          secondsWatched: msSinceLastUpdate / 1000,
           sourceType: source,
         }, {
           additionalTypenames: [
@@ -233,40 +145,16 @@ export function useWatchtimeCounter({
         });
       }
     }
+  })
 
-    watchTimeSubject.next(updatedTime);
-  };
-
-  const decrementTimer = () => {
-    const currentTime = Date.now();
-
-    const secondsSinceDecrementStart = secondsSinceByMilliseconds(
-      currentTime,
-      decrementStartTimeRef.current,
-    );
-
-    const secondsRemaining = secondsSinceBySeconds(
-      claimTimerCountdownSeconds,
-      secondsSinceDecrementStart,
-    );
-
-    secondsRemainingSubject.next(secondsRemaining);
-
-    if (secondsRemaining <= 0 && !isClaimable) {
-      isClaimButtonVisibleSubject.next(true);
-      onFinishedCountdown?.();
-      setIsClaimable(true);
-    }
-  };
+  // FIXME: isClaimButtonVisible
+  // FIXME: onFinishedCountdown
 
   const claim = async () => {
     setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
-    decrementStartTimeSubject.next(Date.now());
-    isClaimButtonVisibleSubject.next(false);
-
-    clearTimeout(messageTimerRef.current);
+    isClaimButtonVisible$.set(false);
     if (source) {
       const economyTransactions = await executeWatchtimeClaimMutation({
         sourceType: source,
@@ -281,11 +169,11 @@ export function useWatchtimeCounter({
       });
 
       const channelPointsClaimed = _.find(economyTransactions, {
-        amountId: claimChannelPointEconomyAction?.amountId,
-      })?.amountValue || claimChannelPointEconomyActionAmount;
+        amountId: channelPointsClaimEconomyAction?.amountId,
+      })?.amountValue || channelPointsClaimEconomyAction?.amountValue;
       const xpClaimed = _.find(economyTransactions, {
         amountId: claimXpEconomyAction?.amountId,
-      })?.amountValue || claimXpEconomyActionAmount;
+      })?.amountValue || claimXpEconomyAction?.amountValue;
       return {
         channelPointsClaimed,
         xpClaimed,
@@ -294,36 +182,28 @@ export function useWatchtimeCounter({
   };
 
   const resetTimer = () => {
-    decrementStartTimeSubject.next(Date.now());
-  }
-
-  lastUpdateTimeRef.current = lastUpdateTime;
-  decrementStartTimeRef.current = decrementStartTime;
-  initialTimeRef.current = initialTime;
+    claimCountdownMs$.set(baseClaimCountdownMs);
+  };
 
   useEffect(() => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(incrementTimer, TIMER_INCREMENT_MS);
-
     if (!getCookie("hasReceivedInitial")) {
       setCookie("hasReceivedInitial", "1");
-      isClaimButtonVisibleSubject.next(true);
+      isClaimButtonVisible$.set(true);
     }
 
     if (!getCookie("hasReceivedInitialExtra")) {
       setCookie("hasReceivedInitialExtra", "1");
-      // this causes invalidation / refetching of all data, so leaving out for now
-      // could optimize to have it only invalidate orgUserCounters
     }
 
-    clearInterval(lootTimerRef.current);
-    lootTimerRef.current = setInterval(decrementTimer, TIMER_INCREMENT_MS);
+  }, []);
 
-    return () => {
-      clearInterval(intervalRef.current);
-      clearInterval(lootTimerRef.current);
-    };
-  }, [claimTimerCountdownSeconds, isClaimable]);
+  return { claim, resetTimer };
+}
 
-  return { claim, timeWatchedSecondsSubject, secondsRemainingSubject, resetTimer };
+function refreshCookie (cookie) {
+  setCookie(
+    cookie,
+    getCookie(cookie),
+    { ttlMs: ALLOWED_TIME_AWAY_MS },
+  );
 }

@@ -1,10 +1,10 @@
-import { _, gql, Obs, React, useMutation, useObservables, useQuery } from "../../../deps.ts";
+import { _, gql, React, useMutation } from "../../../deps.ts";
 import { useCurrentTab } from "../../tabs/mod.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 import { ActivePowerupRedeemData, Collectible } from "../../../types/mod.ts";
-import { useCollectibleConnection, invalidateExtensionUser } from '../../../shared/mod.ts'
+import { invalidateExtensionUser, useCollectibleConnection } from "../../../shared/mod.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
@@ -22,12 +22,7 @@ const REDEEM_COLLECTIBLE_MUTATION = gql`
 export default function OpenCollectiblePackDialog({ redeemableCollectible }: RedeemableDialog) {
   const { pushDialog, popDialog } = useDialog();
 
-  // rm this if we're not invalidating cache using jumper
-  const { org } = useObservables(() => ({
-    org: Obs.from([{}]),
-  }));
-
-  const { collectibleConnectionData } = useCollectibleConnection()
+  const { collectibleConnectionData } = useCollectibleConnection();
   const collectibles: Collectible<ActivePowerupRedeemData>[] = collectibleConnectionData
     ?.collectibleConnection
     ?.nodes;
@@ -69,7 +64,7 @@ export default function OpenCollectiblePackDialog({ redeemableCollectible }: Red
         );
       }
 
-      invalidateExtensionUser()
+      invalidateExtensionUser();
     } catch (err) {
       console.log("err", err);
       alert("There was an error redeeming: " + err?.info || err?.message);
