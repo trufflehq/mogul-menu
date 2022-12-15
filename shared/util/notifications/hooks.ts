@@ -144,6 +144,7 @@ export function useFirstTimeNotificationBanner() {
 }
 
 export function useHasSeenNotificationBanner() {
+  // if you want to force this banner to show up again for users, change this "truthyValue"
   const truthyValue = "1";
 
   const { value$, setUserKV } = useUserKV(HAS_SEEN_NOTIFICATION_SETUP_BANNER, true);
