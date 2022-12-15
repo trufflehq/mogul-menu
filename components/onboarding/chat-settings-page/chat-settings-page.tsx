@@ -3,19 +3,21 @@ import {
   React,
   TextField,
   useEffect,
+  useSignal,
   useState,
   useStyleSheet,
 } from "../../../deps.ts";
 import { useOrgUserChatSettings, useSaveOrgUserSettings } from "../../../shared/mod.ts";
 import { Page } from "../../page-stack/mod.ts";
 import Button from "../../base/button/button.tsx";
+import Input from "../../base/input/input.tsx";
 import stylesheet from "./chat-settings-page.scss.js";
 
 export default function ChatSettingsPage(
   { onContinue }: { onContinue?: () => void },
 ) {
   const { orgUser } = useOrgUserChatSettings();
-  const [userName, setUsername] = useState<string>();
+  const username$ = useSignal<string>("");
   const [nameColor, setNameColor] = useState<string>();
   useStyleSheet(stylesheet);
 
@@ -27,12 +29,12 @@ export default function ChatSettingsPage(
     const username = orgUser?.name;
     const nameColor = orgUser?.keyValue?.value;
 
-    setUsername(username);
+    username$.set(username);
     setNameColor(nameColor);
   }, [orgUser]);
 
   const onClick = async () => {
-    await saveOrgUserSettings(orgUser, userName, nameColor);
+    await saveOrgUserSettings(orgUser, username$.get(), nameColor);
     onContinue?.();
   };
 
@@ -55,11 +57,10 @@ export default function ChatSettingsPage(
         <div className="settings">
           <div className="username">
             <div className="label">Chat username</div>
-            <TextField
+            <Input
               label="Chat username"
               placeholder="Chat username"
-              value={userName}
-              onInput={(e: any) => setUsername(e.target?.value)}
+              value$={username$}
             />
           </div>
           <div className="name-color-input input">
