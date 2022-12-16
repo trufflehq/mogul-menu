@@ -28,6 +28,7 @@ export function createMenuIframeStyle(
     top: "0",
     left: "0",
     "z-index": "9999",
+    "color-scheme": "only light",
   };
   // remove clip path if mouse is pressed so we get mouse events across the entire page
   if (dragInfo.pressed) style["clip-path"] = "none";
