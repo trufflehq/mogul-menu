@@ -7,7 +7,8 @@ import {
   useMutation,
   useObserve,
   useSelector,
-  useSignal
+  useSignal,
+  signal
 } from "../../deps.ts";
 
 import {
@@ -58,6 +59,81 @@ function Timer ({ timerMs$, Component }) {
     : `${timerMs}`
 }
 
+function passiveWatchTimeCounter() {
+  const [_incrementWatchtimeResult, executeIncrementWatchtimeMutation] = useMutation(
+    WATCH_TIME_INCREMENT_MUTATION,
+  );
+  const claimXpEconomyAction = useQuery({
+    query: ECONOMY_ACTION_QUERY,
+    variables: {
+      economyTriggerId: XP_CLAIM_TRIGGER_ID,
+    }
+  });
+
+  const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
+  const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
+
+  const timeWatchedMs$ = useSignal(Date.now() - initialTimeMs);
+
+  // every second
+  useObserve(() => {
+    timeWatchedMs$.get(); // useObserve is supposed to accept signal as first param, but ts didn't like that
+    // set a cookie for when they started watching
+    // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
+    // and if they come back it'll resume their timer
+    // refresh this cookie for another ALLOWED_TIME_AWAY_MS
+    setCookie(INITIAL_TIME_MS_COOKIE, initialTimeMs, {
+      ttlMs: ALLOWED_TIME_AWAY_MS,
+    });
+  })
+
+}
+
+function claimWatchTimeCounter({
+  onFinishedCountdown,
+  source,
+  isClaimable$,
+}: {
+  onFinishedCountdown?: () => void;
+  source: string;
+  isClaimable$: signal<boolean>;
+}) {
+  const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
+    WATCH_TIME_CLAIM_MUTATION,
+  ); 
+  const channelPointsClaimEconomyAction = useQuery({
+    query: ECONOMY_ACTION_QUERY,
+    variables: {
+      economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID,
+    }
+  });
+
+  const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
+  const lastClaimTimeMs = lastClaimTimeMsFromCookie
+    ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
+    : Date.now();
+
+  const claimCountdownSeconds = channelPointsClaimEconomyAction?.data?.cooldownSeconds;
+  const baseClaimCountdownMs = claimCountdownSeconds ? claimCountdownSeconds * 1000 : DEFAULT_TIMER_MS;
+  const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
+
+  const claimCountdownMs$ = useSignal(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
+  const lastUpdateTime$ = useSignal(0);
+
+  // every second
+  useObserve(() => {
+    claimCountdownMs$.get(); // useObserve is supposed to accept signal as first param, but ts didn't like that
+    // set a cookie for when they started watching
+    // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
+    // and if they come back it'll resume their timer
+    // refresh this cookie for another ALLOWED_TIME_AWAY_MS
+    setCookie(LAST_CLAIM_TIME_MS_COOKIE, lastClaimTimeMs, {
+      ttlMs: ALLOWED_TIME_AWAY_MS,
+    });
+  })
+
+}
+
 
 export function useWatchtimeCounter({
   onFinishedCountdown,
@@ -70,57 +146,6 @@ export function useWatchtimeCounter({
   isClaimable: boolean;
   setIsClaimable: (isClaimable: boolean) => void;
 }) {
-  const [_incrementWatchtimeResult, executeIncrementWatchtimeMutation] = useMutation(
-    WATCH_TIME_INCREMENT_MUTATION,
-  );
-
-  const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
-    WATCH_TIME_CLAIM_MUTATION,
-  );
-
-  const channelPointsClaimEconomyAction = useQuery({
-    query: ECONOMY_ACTION_QUERY,
-    variables: {
-      economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID,
-    }
-  });
-  const claimXpEconomyAction = useQuery({
-    query: ECONOMY_ACTION_QUERY,
-    variables: {
-      economyTriggerId: XP_CLAIM_TRIGGER_ID,
-    }
-  });
-
-  const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
-  const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
-  const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
-  const lastClaimTimeMs = lastClaimTimeMsFromCookie
-    ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
-    : Date.now();
-
-  const claimCountdownSeconds = channelPointsClaimEconomyAction?.data?.cooldownSeconds ||
-    claimXpEconomyAction?.data?.cooldownSeconds;
-  const baseClaimCountdownMs = claimCountdownSeconds ? claimCountdownSeconds * 1000 : DEFAULT_TIMER_MS;
-  const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
-
-  const timeWatchedMs$ = useSignal(Date.now() - initialTimeMs);
-  const claimCountdownMs$ = useSignal(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
-  const lastUpdateTime$ = useSignal(0);
-
-  // every second
-  useObserve(timeWatchedMs$, () => {
-    // set a cookie for when they started watching
-    // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
-    // and if they come back it'll resume their timer
-    // refresh this cookie for another ALLOWED_TIME_AWAY_MS
-    setCookie(INITIAL_TIME_MS_COOKIE, initialTimeMs, {
-      ttlMs: ALLOWED_TIME_AWAY_MS,
-    });
-    // set initial
-    setCookie(LAST_CLAIM_TIME_MS_COOKIE, lastClaimTimeMs, {
-      ttlMs: ALLOWED_TIME_AWAY_MS,
-    });
-  })
 
   useObserve(() => {
     // update the server every 60s to keep track of watch time progress
