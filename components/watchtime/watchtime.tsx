@@ -1,36 +1,26 @@
-import {
-  GLOBAL_JUMPER_MESSAGES,
-  gql,
-  jumper,
-  React,
-  useCallback,
-  useEffect,
-  useQuery,
-  useState,
-  useStyleSheet,
-} from "../../deps.ts";
+import { formatCountdown, gql, React, useSelector, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
 import { getCreatorName, useMenu } from "../menu/mod.ts";
 import Button from "../../components/base/button/button.tsx";
-import { MOGUL_MENU_JUMPER_MESSAGES } from "../../shared/mod.ts";
-import Timer from "../timer/timer.tsx";
-import { useWatchtimeCounter } from "./watchtime-counter.ts";
+import useWatchtimeClaimCounter from "./watchtime-claim-counter.tsx";
+import useWatchtimePassiveCounter from "./watchtime-passive-counter.tsx";
+import Timer from "./timer.tsx";
 
-const POINTS_QUERY = gql`
-  query {
-    seasonPass {
-      xp: orgUserCounter {
-        count
-      }
-    }
+// const POINTS_QUERY = gql`
+//   query {
+//     seasonPass {
+//       xp: orgUserCounter {
+//         count
+//       }
+//     }
 
-    channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
-      orgUserCounter {
-        count
-      }
-    }
-  }
-`;
+//     channelPoints: orgUserCounterType(input: { slug: "channel-points" }) {
+//       orgUserCounter {
+//         count
+//       }
+//     }
+//   }
+// `;
 
 interface WatchtimeProps {
   highlightButtonBg?: string;
@@ -47,58 +37,13 @@ export default function Watchtime(props: WatchtimeProps) {
     hasChannelPoints,
     hasBattlePass,
   } = props;
-  const [isClaimable, setIsClaimable] = useState(false);
 
-  const [
-    { data: pointsData, fetching: isFetchingPoints },
-    reexecutePointsQuery,
-  ] = useQuery({
-    query: POINTS_QUERY,
+  const { claim, claimCountdownMs$, canClaim$ } = useWatchtimeClaimCounter({
+    sourceType: "youtube",
   });
+  const { timeWatchedMs$ } = useWatchtimePassiveCounter({ sourceType: "youtube" });
 
-  const onFinishedCountdown = useCallback(async () => {
-    await reexecutePointsQuery({
-      requestPolicy: "network-only",
-      additionalTypenames: [
-        "OrgUserCounter",
-        "OwnedCollectible",
-        "SeasonPassProgression",
-        "ActivePowerup",
-        "EconomyTransaction",
-      ],
-    });
-    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS);
-    setIsClaimable(true);
-  }, []);
-
-  useEffect(() => {
-    jumper.call("comms.onMessage", (message: string) => {
-      if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
-        setIsClaimable(false);
-        resetTimer();
-      }
-    });
-  }, []);
-
-  const { resetTimer, claim } = useWatchtimeCounter({
-    source: "youtube",
-    onFinishedCountdown,
-    isClaimable,
-    setIsClaimable,
-  });
-
-  const onClaim = async (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    setIsClaimable(false);
-
-    await claim();
-
-    // invalidate the user and let the channel points component know to invalidate its state
-    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
-    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
-    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.INVALIDATE_CHANNEL_POINTS);
-  };
+  const canClaim = useSelector(() => canClaim$.get());
 
   return (
     <div className="c-live-info">
@@ -123,21 +68,50 @@ export default function Watchtime(props: WatchtimeProps) {
             : "Channel Points and XP not currently enabled"}
         </div>
         <div className="grid">
-          {(hasChannelPoints || hasBattlePass || true) && (
-            <Timer timerSeconds={timeWatchedSeconds} message={"Time watched"} />
-          )}
-          {
-            <Button isDisabled={!isClaimable} className="claim" style="gradient" onClick={onClaim}>
-              {isClaimable ? "Claim Reward" : (
-                <Timer
-                  timerSeconds={secondsRemaining}
-                  message={"Claim reward in"}
-                />
-              )}
-            </Button>
-          }
+          <Timer timerMs$={timeWatchedMs$} message={"Time watched"} />
+          <Button isDisabled={!canClaim} className="claim" style="gradient" onClick={onClaim}>
+            {canClaim
+              ? "Claim Reward"
+              : <Timer
+                timerMs$={claimCountdownMs$}
+                Component={WatchtimeClaimCounterDisplayTimer}
+              />}
+          </Button>
+          <WatchtimeClaimCounter Component={WatchtimeClaimCounterDisplay} />
         </div>
       </div>
     </div>
+  );
+}
+
+function WatchtimeClaimCounterDisplay({ canClaim$, claimCountdownMs$, onClaim }) {
+  const canClaim = useSelector(() => canClaim$.get());
+  return (
+    <Button isDisabled={!canClaim} className="claim" style="gradient" onClick={onClaim}>
+      {canClaim
+        ? "Claim Reward"
+        : <Timer timerMs$={claimCountdownMs$} Component={WatchtimeClaimCounterDisplayTimer} />}
+    </Button>
+  );
+}
+
+function WatchtimeClaimCounterDisplayTimer({ timerMs }) {
+  return (
+    <>
+      <div className="title">
+        Claim reward in
+        {formatCountdown(timerMs / 1000, { shouldAlwaysShowHours: false })}
+      </div>
+    </>
+  );
+}
+function WatchtimePassiveCounterDisplayTimer({ timerMs }) {
+  return (
+    <>
+      <div className="title">
+        Time watched
+        {formatCountdown(timerMs / 1000, { shouldAlwaysShowHours: false })}
+      </div>
+    </>
   );
 }
