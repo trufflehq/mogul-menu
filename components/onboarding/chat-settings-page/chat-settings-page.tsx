@@ -56,7 +56,6 @@ export default function ChatSettingsPage(
         </div>
         <div className="settings">
           <div className="username">
-            <div className="label">Chat username</div>
             <Input
               label="Chat username"
               placeholder="Chat username"
