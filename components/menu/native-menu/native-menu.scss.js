@@ -1,6 +1,14 @@
 import { scss } from "../../../deps.ts";
 
 export default scss`
+:root {
+  background-color: #000 !important;
+}
+
+body {
+  background-color: #000 !important;
+}
+
 .c-native-menu {
   height: 100%;
   width: 100%;
@@ -61,13 +69,13 @@ export default scss`
 
 
       > .landscape-collapsed-button {
-        transition: clip-path $clip-path-transition cubic-bezier(.4, .71, .18, .99);
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         margin-top: 60px;
         padding: 10px 0;
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(0, 0, 0, 0.8);
         border: 2px solid rgba(255, 255, 255, 0.36);
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;

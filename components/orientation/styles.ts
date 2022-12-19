@@ -18,6 +18,15 @@ export const YOUTUBE_COLLAPSED_PORTRAIT_MENU_STYLES = {
   "clip-path": "inset(calc(100% - 52px) 36% 12px 36% round 40px)",
 };
 
+export const YOUTUBE_COLLAPSED_LANDSCAPE_MENU_STYLES = {
+  ...BASE_MENU_STYLES,
+  width: "5%",
+  position: "fixed",
+  right: "0",
+  left: "unset",
+  "clip-path": "inset(60px 0px calc(100% - 116px) 0px round 4px)",
+};
+
 export const YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES = {
   ...BASE_MENU_STYLES,
   height: `calc(100vh - 56.25vw - ${YOUTUBE_HEADER_HEIGHT_PX}px)`,
