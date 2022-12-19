@@ -1,16 +1,17 @@
 import {
   abbreviateNumber,
+  formatCountdown,
   formatNumber,
   GLOBAL_JUMPER_MESSAGES,
   jumper,
   React,
   useEffect,
   useRef,
-  useState,
+  useSelector,
   useStyleSheet,
 } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
+import useWatchtimeClaimCounter from "../watchtime/use-watchtime-claim-counter.tsx";
 import { MOGUL_MENU_JUMPER_MESSAGES, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
@@ -33,7 +34,6 @@ export default function ChannelPoints(
   },
 ) {
   useStyleSheet(stylesheet);
-  const [isClaimable, setIsClaimable] = useState(false);
   const { refetchOrgUserConnections } = useOrgUserConnectionsQuery();
   const { channelPointsData, channelPointsError, reexecuteChannelPointsQuery } = useChannelPoints();
 
@@ -54,7 +54,6 @@ export default function ChannelPoints(
         reexecuteChannelPointsQuery({ requestPolicy: "network-only" });
       } else if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
         // claim recorded elsewhere (menu watchtime.tsx), reset the timer
-        setIsClaimable(false);
         resetTimer();
       }
     });
@@ -70,16 +69,6 @@ export default function ChannelPoints(
     }
   }, []);
 
-  const onClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsClaimable(false);
-
-    await claim();
-    jumper.call("comms.postMessage", GLOBAL_JUMPER_MESSAGES.INVALIDATE_USER);
-    jumper.call("comms.postMessage", MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER);
-  };
-
   const fullChannelPoints = rawChannelPointsRef.current != null
     ? formatNumber(rawChannelPointsRef.current)
     : "...";
@@ -87,19 +76,18 @@ export default function ChannelPoints(
     ? abbreviateNumber(rawChannelPointsRef.current, 2)
     : "..";
 
-  const onFinishedCountdown = () => {
-    setIsClaimable(true);
-  };
-
-  const { claim, resetTimer } = useWatchtimeCounter({
-    source: "youtube",
-    onFinishedCountdown,
-    isClaimable,
-    setIsClaimable,
+  const { canClaim$, claimCountdownMs$, claim, resetTimer } = useWatchtimeClaimCounter({
+    sourceType: "youtube",
   });
+  const canClaim = useSelector(() => canClaim$.get());
+  const claimCountdownMs = useSelector(() => claimCountdownMs$.get());
+
+  const title = canClaim
+    ? ""
+    : formatCountdown(claimCountdownMs / 1000, { shouldAlwaysShowHours: false });
 
   return (
-    <div className={`c-channel-points ${style}`}>
+    <div className={`c-channel-points ${style}`} title={title}>
       <ThemeComponent />
       <div className="inner">
         <div className="coin">
@@ -111,14 +99,14 @@ export default function ChannelPoints(
           </div>
         }
         <IsLive sourceType="youtubeLive">
-          {isClaimable &&
+          {canClaim &&
             (
               <div
                 className="claim"
                 style={{
                   background: highlightButtonBg,
                 }}
-                onClick={onClick}
+                onClick={claim}
               >
                 <ChannelPointsIcon size={16} variant="dark" />
                 {style === "expanded" && <span className="title">Claim</span>}

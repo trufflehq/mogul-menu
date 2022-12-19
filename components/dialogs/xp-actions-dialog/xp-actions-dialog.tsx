@@ -1,5 +1,4 @@
-import { _, gql, op, queryObservable, React, useMemo, useObservables } from "../../../deps.ts";
-import Button from "../../base/button/button.tsx";
+import { _, gql, React, useQuery } from "../../../deps.ts";
 import XPIcon from "../../xp-icon/xp-icon.tsx";
 import EconomyActionDialog from "../economy-action-dialog/economy-action-dialog.tsx";
 
@@ -26,28 +25,13 @@ const SEASON_PASS_QUERY = gql`
 `;
 
 export default function XpActionsDialog() {
-  const { seasonPassWatchTimeActionsObs } = useMemo(() => {
-    const seasonPassObs = queryObservable(SEASON_PASS_QUERY);
-
-    const seasonPassWatchTimeActionsObs = seasonPassObs.pipe(
-      op.map((result) => result?.data?.seasonPass),
-      op.map((seasonPass) => {
-        return _.filter(
-          seasonPass?.economyActionConnection?.nodes,
-          (action) =>
-            action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
-            action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
-        );
-      }),
-    );
-    return {
-      seasonPassWatchTimeActionsObs,
-    };
-  }, []);
-
-  const { seasonPassWatchTimeActions } = useObservables(() => ({
-    seasonPassWatchTimeActions: seasonPassWatchTimeActionsObs,
-  }));
+  const [{ data: seasonPassData }] = useQuery({ query: SEASON_PASS_QUERY });
+  const seasonPass = seasonPassData.seasonPass;
+  const seasonPassWatchTimeActions = seasonPass?.economyActionConnection?.nodes?.filter(
+    (action) =>
+      action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
+      action?.economyTriggerId === XP_CLAIM_TRIGGER_ID,
+  );
 
   return (
     <EconomyActionDialog

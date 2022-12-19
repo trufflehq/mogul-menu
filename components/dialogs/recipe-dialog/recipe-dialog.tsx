@@ -1,22 +1,12 @@
-import { createSubject, React, useMemo } from "../../../deps.ts";
+import { React } from "../../../deps.ts";
 import Button from "../../base/button/button.tsx";
 import { useDialog } from "../../base/dialog-container/dialog-service.ts";
 import Dialog from "../../base/dialog/dialog.tsx";
-import { RedeemableDialog } from '../redeemable-dialog/redeemable-dialog.tsx'
+import { RedeemableDialog } from "../redeemable-dialog/redeemable-dialog.tsx";
 import DefaultDialogContentFragment from "../content-fragments/default/default-dialog-content-fragment.tsx";
 
 export default function RecipeDialog({ redeemableCollectible }: RedeemableDialog) {
   const { popDialog } = useDialog();
-
-  const { errorStream } = useMemo(() => {
-    return {
-      selectedColorStream: createSubject(null),
-      colorsStream: createSubject(
-        redeemableCollectible.source?.data?.redeemData?.colors
-      ),
-      errorStream: createSubject(""),
-    };
-  }, []);
 
   const openCraftTable = () => {
     // overlay.close();
@@ -47,10 +37,8 @@ export default function RecipeDialog({ redeemableCollectible }: RedeemableDialog
       <DefaultDialogContentFragment
         imageRel={redeemableCollectible?.source?.fileRel?.fileObj}
         primaryText={`${redeemableCollectible?.source?.name} unlocked`}
-        secondaryText={
-          redeemableCollectible?.description ??
-          redeemableCollectible?.source?.data?.description
-        }
+        secondaryText={redeemableCollectible?.description ??
+          redeemableCollectible?.source?.data?.description}
       />
     </Dialog>
   );
@@ -63,7 +51,7 @@ export default function RecipeDialog({ redeemableCollectible }: RedeemableDialog
   //       headerText={headerText}
   //       $title={$title}
   //       highlightBg={highlightBg}
-  //       errorStream={errorStream}
+  //       error$={error$}
   //       primaryText={
   //         primaryText ?? `${redeemableCollectible?.source?.name} unlocked`
   //       }

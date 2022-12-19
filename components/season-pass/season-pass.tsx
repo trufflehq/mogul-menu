@@ -1,17 +1,16 @@
 import {
   _,
   classKebab,
-  createSubject,
   cssVars,
   getSrcByImageObj,
   gql,
   ImageByAspectRatio,
   React,
   useEffect,
-  useMemo,
-  useObservables,
   useQuery,
   useRef,
+  useSelector,
+  useSignal,
   useStyleSheet,
   zeroPrefix,
 } from "../../deps.ts";
@@ -102,16 +101,10 @@ export default function SeasonPass(props) {
 
   const $$levelsRef = useRef(null);
   const $$levelRef = useRef(null);
-  const { focalIndexStream, selectedRewardStream } = useMemo(() => {
-    return {
-      focalIndexStream: createSubject(0),
-      selectedRewardStream: createSubject(),
-    };
-  }, []);
+  const focalIndex$ = useSignal(0);
+  const selectedReward$ = useSignal();
 
-  const { focalIndex } = useObservables(() => ({
-    focalIndex: focalIndexStream.obs,
-  }));
+  const focalIndex = useSelector(() => focalIndex$.get());
 
   const {
     data: seasonPassData,
@@ -147,31 +140,31 @@ export default function SeasonPass(props) {
   useEffect(() => {
     if (currentLevelNum && numTiles) {
       if (currentLevelNum < numTiles) {
-        focalIndexStream.next(0);
+        focalIndex$.set(0);
       } else if (currentLevelNum + numTiles - 1 > levelRange?.length) {
-        focalIndexStream.next(levelRange?.length - numTiles);
+        focalIndex$.set(levelRange?.length - numTiles);
       } else {
-        focalIndexStream.next(currentLevelNum - 1);
+        focalIndex$.set(currentLevelNum - 1);
       }
     }
   }, [currentLevelNum]);
 
   const onLeftClick = () => {
     if (focalIndex - numTiles < 0) {
-      focalIndexStream.next(0);
+      focalIndex$.set(0);
     } else {
-      focalIndexStream.next(focalIndex - numTiles);
+      focalIndex$.set(focalIndex - numTiles);
     }
-    selectedRewardStream.next();
+    selectedReward$.set("");
   };
 
   const onRightClick = () => {
     if (focalIndex + numTiles * 2 > levelRange?.length) {
-      focalIndexStream.next(levelRange?.length - numTiles);
+      focalIndex$.set(levelRange?.length - numTiles);
     } else {
-      focalIndexStream.next(focalIndex + numTiles);
+      focalIndex$.set(focalIndex + numTiles);
     }
-    selectedRewardStream.next();
+    selectedReward$.set("");
   };
 
   // TODO: detect when user levels up
@@ -351,7 +344,7 @@ export default function SeasonPass(props) {
                       shouldUseLevelsZeroPrefix={shouldUseLevelsZeroPrefix}
                       premiumAccentColor={premiumAccentColor}
                       premiumBgColor={premiumBgColor}
-                      selectedRewardStream={selectedRewardStream}
+                      selectedReward$={selectedReward$}
                       currentLevelNum={currentLevelNum}
                       xpRange={range}
                       xpProgress={progress}
@@ -379,7 +372,7 @@ export function $level(props) {
     shouldUseLevelsZeroPrefix,
     premiumAccentColor,
     premiumBgColor,
-    selectedRewardStream,
+    selectedReward$,
     currentLevelNum,
     xp,
     xpImgSrc,
@@ -389,9 +382,7 @@ export function $level(props) {
   const { pushDialog, popDialog } = useDialog();
   const { setActiveTab } = useCurrentTab();
 
-  const { selectedReward } = useObservables(() => ({
-    selectedReward: selectedRewardStream.obs,
-  }));
+  const selectedReward = useSelector(() => selectedReward$.get());
 
   const onRewardClick = (reward, $$rewardRef, tierNum) => {
     if (reward) {
@@ -399,7 +390,7 @@ export function $level(props) {
       const isEmote = reward?.source?.type === "emote";
       const isRedeemable = reward?.source?.type === "redeemable";
       const minXp = level?.minXp;
-      selectedRewardStream.next({ sourceId: reward?.sourceId, level });
+      selectedReward$.set({ sourceId: reward?.sourceId, level });
       // this series of if statements categorize different rewards
       // and displays the appropriate dialog for each
       // if the user hasn't unlocked the item yet

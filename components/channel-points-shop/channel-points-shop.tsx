@@ -1,21 +1,18 @@
 import {
-  React,
-  getSrcByImageObj,
-  useQuery,
-  useStyleSheet,
+  _,
   abbreviateNumber,
   classKebab,
   formatNumber,
+  getSrcByImageObj,
   ImageByAspectRatio,
+  React,
   Spinner,
+  useQuery,
   useRef,
-  _,
+  useStyleSheet,
 } from "../../deps.ts";
-import { Product, OrgUserCounter, File } from "../../types/mod.ts";
-import {
-  CHANNEL_POINTS_QUERY,
-  CHANNEL_POINTS_SHOP_QUERY,
-} from "./gql.ts";
+import { File, OrgUserCounter, Product } from "../../types/mod.ts";
+import { CHANNEL_POINTS_QUERY, CHANNEL_POINTS_SHOP_QUERY } from "./gql.ts";
 import { useDialog } from "../base/dialog-container/dialog-service.ts";
 import ChannelPointsActionsDialog from "../dialogs/channel-points-actions-dialog/channel-points-actions-dialog.tsx";
 import LinkButton from "../base/link-button/link-button.tsx";
@@ -30,16 +27,6 @@ export default function ChannelPointsShop() {
   const { pushDialog } = useDialog();
   const channelPointsImageObj = undefined;
 
-  // const {
-  //   channelPointsOrgUserCounterObs,
-  //   channelPointsImageObj,
-  //   onViewCollection,
-  //   buttonBg,
-  //   onHowToEarnClick,
-  //   enqueueSnackBar,
-  // } = props;
-  // const { model } = useContext(context);
-
   // shop items
   const [{ data: storeItemsData }] = useQuery({
     query: CHANNEL_POINTS_SHOP_QUERY,
@@ -49,15 +36,14 @@ export default function ChannelPointsShop() {
     storeItemsData?.productConnection?.nodes ?? [],
     (node: Product) => {
       return node?.productVariants?.nodes?.[0]?.amountValue;
-    }
+    },
   );
 
   // channel points
   const [{ data: channelPointsData }] = useQuery({
     query: CHANNEL_POINTS_QUERY,
   });
-  const channelPoints: OrgUserCounter =
-    channelPointsData?.channelPoints?.orgUserCounter;
+  const channelPoints: OrgUserCounter = channelPointsData?.channelPoints?.orgUserCounter;
 
   const onHowToEarnClick = () => {
     pushDialog(<ChannelPointsActionsDialog />);
@@ -129,8 +115,7 @@ interface CollectibleItemProps {
 }
 
 function CollectibleItem(props: CollectibleItemProps) {
-  const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } =
-    props;
+  const { channelPoints, collectibleItem, channelPointsImageObj, buttonBg } = props;
 
   const { pushDialog } = useDialog();
 
@@ -154,15 +139,17 @@ function CollectibleItem(props: CollectibleItemProps) {
         collectibleItem={collectibleItem}
         channelPointsImageObj={channelPointsImageObj}
         buttonBg="var(--mm-gradient)"
-      />
+      />,
     );
   };
 
   return (
     <div
-      className={`item ${classKebab({
-        isDisabled: !hasSufficientFunds,
-      })}`}
+      className={`item ${
+        classKebab({
+          isDisabled: !hasSufficientFunds,
+        })
+      }`}
       ref={$$itemRef}
     >
       <div className="overlay" />

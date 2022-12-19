@@ -1,13 +1,4 @@
-import {
-  React,
-  gql,
-  Obs,
-  op,
-  queryObservable,
-  useMemo,
-  useObservables,
-  _,
-} from "../../../deps.ts";
+import { _, gql, React, useMemo, useQuery } from "../../../deps.ts";
 import ChannelPointsIcon from "../../channel-points-icon/channel-points-icon.tsx";
 import EconomyActionDialog from "../economy-action-dialog/economy-action-dialog.tsx";
 
@@ -49,52 +40,25 @@ const ECONOMY_ACTIONS_QUERY = gql`
 `;
 
 export default function ChannelPointsActionsDialog() {
-  const { channelPointsEarnActionsObs } = useMemo(() => {
-    const channelPointsOrgUserCounterTypeObs = queryObservable(
-      ORG_USER_COUNTER_TYPE_QUERY,
-      {}
-    ).pipe(op.map((result) => result?.data?.orgUserCounterType));
+  const [{ data: orgUserCounterTypeData }] = useQuery({
+    query: ORG_USER_COUNTER_TYPE_QUERY,
+  });
+  const channelPointsOrgUserCounterType = orgUserCounterTypeData?.orgUserCounterType;
 
-    const economyActionsObs = queryObservable(ECONOMY_ACTIONS_QUERY, {}).pipe(
-      op.map((result) => result?.data?.economyActionConnection)
-    );
+  const [{ data: economyActionConnectionData }] = useQuery({ query: ECONOMY_ACTIONS_QUERY });
+  const economyActionConnection = economyActionConnectionData.economyActionConnection;
 
-    const channelPointsEarnActionsObs = Obs.combineLatest(
-      channelPointsOrgUserCounterTypeObs,
-      economyActionsObs
-    ).pipe(
-      op.map(([orgUserCounterType, economyActions]) => {
-        return _.filter(economyActions?.nodes, {
-          amountId: orgUserCounterType?.id,
-        });
-      }),
-      op.map((channelPointsActions) => {
-        return _.filter(channelPointsActions, (action) => {
-          return action?.amountValue || action?.data?.amountDescription;
-        });
-      }),
-      op.map((channelPointsActions) =>
-        _.filter(
-          channelPointsActions,
-          (action) => action?.name !== "Prediction refund"
-        )
-      ),
-      op.map((channelPointsActions) => _.reverse(channelPointsActions))
-    );
-    return {
-      economyActionsObs,
-      channelPointsOrgUserCounterTypeObs,
-      channelPointsEarnActionsObs,
-    };
-  }, []);
-
-  const { channelPointsEarnActions } = useObservables(() => ({
-    channelPointsEarnActions: channelPointsEarnActionsObs,
-  }));
+  const channelPointsEconomyActions = _.reverse(
+    economyActionConnection?.nodes?.filter((economyAction) =>
+      economyAction?.amountId === channelPointsOrgUserCounterType?.id &&
+      (economyAction?.amountValue || economyAction?.data?.amountDescription) &&
+      economyAction?.name !== "Prediction refund"
+    ),
+  );
 
   return (
     <EconomyActionDialog
-      economyActions={channelPointsEarnActions}
+      economyActions={channelPointsEconomyActions}
       oucIcon={<ChannelPointsIcon />}
       title={"How to earn channel points"}
     />
