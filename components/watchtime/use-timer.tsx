@@ -11,7 +11,7 @@ export default function useTimer(
     const timeout = setTimeout(() => {
       const curVal = timerMs;
       const nowMs = Date.now();
-      if (curVal > 0) {
+      if (curVal > 0 || direction === "up") {
         const timeDiffMs = nowMs - startTimeMs;
         let newVal = direction === "up" ? curVal + timeDiffMs : curVal - timeDiffMs;
         if (newVal < 0) {

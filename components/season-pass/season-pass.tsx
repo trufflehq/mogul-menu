@@ -5,6 +5,7 @@ import {
   getSrcByImageObj,
   gql,
   ImageByAspectRatio,
+  React,
   useEffect,
   useQuery,
   useRef,

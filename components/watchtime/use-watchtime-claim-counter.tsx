@@ -7,7 +7,7 @@ import {
   useEffect,
   useMutation,
   useObserve,
-  useQuery,
+  useQuerySignal,
   useSignal,
 } from "../../deps.ts";
 import { MOGUL_MENU_JUMPER_MESSAGES } from "../../shared/mod.ts";
@@ -24,7 +24,7 @@ const UPDATE_WATCH_TIME_FREQ_MS = 60 * 1000; // 1 min
 const ALLOWED_TIME_AWAY_MS = UPDATE_WATCH_TIME_FREQ_MS + 10 * 1000;
 const LAST_CLAIM_TIME_MS_COOKIE = "extensionLastClaimTimeMs";
 
-const DEFAULT_TIMER_MS = 5 * 5 * 1000; // 5 min
+const DEFAULT_TIMER_MS = 60 * 5 * 1000; // 5 min
 
 export default function useWatchtimeClaimCounter({ sourceType }: {
   sourceType: string;
@@ -32,34 +32,30 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
   const [_watchtimeClaimResult, executeWatchtimeClaimMutation] = useMutation(
     WATCH_TIME_CLAIM_MUTATION,
   );
-  const [{ data: channelPointsClaimEconomyActionData }] = useQuery({
-    query: ECONOMY_ACTION_QUERY,
-    variables: {
-      economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID,
-    },
+  const channelPointsClaimEconomyAction$ = useQuerySignal(ECONOMY_ACTION_QUERY, {
+    economyTriggerId: CHANNEL_POINTS_CLAIM_TRIGGER_ID,
   });
-  const channelPointsClaimEconomyAction = channelPointsClaimEconomyActionData?.economyAction;
-
-  // const [{ data: claimXpEconomyActionData }] = useQuery({
-  //   query: ECONOMY_ACTION_QUERY,
-  //   variables: {
-  //     economyTriggerId: XP_CLAIM_TRIGGER_ID,
-  //   },
-  // });
-  // const claimXpEconomyAction = claimXpEconomyActionData?.economyAction;
 
   const lastClaimTimeMsFromCookie = getCookie(LAST_CLAIM_TIME_MS_COOKIE);
   const lastClaimTimeMs = lastClaimTimeMsFromCookie
     ? !isNaN(lastClaimTimeMsFromCookie) ? parseInt(lastClaimTimeMsFromCookie) : Date.now()
     : Date.now();
 
-  const claimCountdownSeconds = channelPointsClaimEconomyAction?.data?.cooldownSeconds;
-  const baseClaimCountdownMs = claimCountdownSeconds
-    ? claimCountdownSeconds * 1000
-    : DEFAULT_TIMER_MS;
-  const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
+  // TODO: figure out a better way to do this... (waiting for initial data)
+  const baseClaimCountdownMs$ = useSignal(DEFAULT_TIMER_MS);
+  useObserve(() => {
+    const channelPointsClaimEconomyAction = channelPointsClaimEconomyAction$.get()?.economyAction;
+    const claimCountdownSeconds = channelPointsClaimEconomyAction?.data?.cooldownSeconds;
 
-  const claimCountdownMs$ = useSignal(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
+    if (claimCountdownSeconds) {
+      const baseClaimCountdownMs = claimCountdownSeconds * 1000;
+      const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
+      baseClaimCountdownMs$.set(baseClaimCountdownMs);
+      claimCountdownMs$.set(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
+    }
+  });
+
+  const claimCountdownMs$ = useSignal(DEFAULT_TIMER_MS);
   const canClaim$ = useSignal(claimCountdownMs$.get() > 0 ? false : true);
 
   useTimer({ timerMs$: claimCountdownMs$ });
@@ -88,8 +84,8 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
   });
 
   const claim = async () => {
-    canClaim$.set(false);
     resetTimer();
+    canClaim$.set(false);
     setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
@@ -108,22 +104,11 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
           "EconomyTransaction",
         ],
       });
-
-      // const channelPointsClaimed = _.find(economyTransactions, {
-      //   amountId: channelPointsClaimEconomyAction?.amountId,
-      // })?.amountValue || channelPointsClaimEconomyAction?.amountValue;
-      // const xpClaimed = _.find(economyTransactions, {
-      //   amountId: claimXpEconomyAction?.amountId,
-      // })?.amountValue || claimXpEconomyAction?.amountValue;
-      // return {
-      //   channelPointsClaimed,
-      //   xpClaimed,
-      // };
     }
   };
 
   const resetTimer = () => {
-    claimCountdownMs$.set(baseClaimCountdownMs);
+    claimCountdownMs$.set(baseClaimCountdownMs$.get());
   };
 
   useEffect(() => {

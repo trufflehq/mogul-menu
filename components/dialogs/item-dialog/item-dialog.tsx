@@ -4,7 +4,7 @@ import React from "https://npm.tfl.dev/react";
 import { getSrcByImageObj } from "../../../deps.ts";
 
 import Button from "../../base/button/button.tsx";
-import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+import ImageByAspectRatio from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 import Dialog from "../../base/dialog/dialog.tsx";
 import StyleSheet from "../../base/stylesheet/stylesheet.tsx";
 

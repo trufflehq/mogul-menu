@@ -118,10 +118,6 @@ export default function HomeTab() {
         </div>
       </div>
       <div className="tile-grid">
-        <Watchtime
-          hasChannelPoints={hasChannelPoints}
-          hasBattlePass={hasBattlePass}
-        />
         <IsLive sourceType="youtube">
           <Watchtime
             hasChannelPoints={hasChannelPoints}

@@ -1,13 +1,4 @@
-import {
-  _,
-  getCookie,
-  React,
-  setCookie,
-  signal,
-  useMutation,
-  useObserve,
-  useSignal,
-} from "../../deps.ts";
+import { _, getCookie, setCookie, useMutation, useObserve, useSignal } from "../../deps.ts";
 import { WATCH_TIME_INCREMENT_MUTATION } from "./gql.ts";
 import useTimer from "./use-timer.tsx";
 
@@ -27,7 +18,9 @@ export default function useWatchtimePassiveCounter(
     WATCH_TIME_INCREMENT_MUTATION,
   );
   const initialTimeMsFromCookie = getCookie(INITIAL_TIME_MS_COOKIE);
-  const initialTimeMs = initialTimeMsFromCookie ? parseInt(initialTimeMsFromCookie) : Date.now();
+  const initialTimeMs = initialTimeMsFromCookie
+    ? !isNaN(initialTimeMsFromCookie) ? parseInt(initialTimeMsFromCookie) : Date.now()
+    : Date.now();
 
   const lastUpdateTime$ = useSignal(0);
   const timeWatchedMs$ = useSignal(Date.now() - initialTimeMs);

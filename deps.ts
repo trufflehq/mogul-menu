@@ -49,7 +49,7 @@ export {
   default as cssVars,
   hexOpacity,
   rgb2rgba,
-} from "https://tfl.dev/@truffle/ui@~0.1.0/legacy/css-vars.js";
+} from "https://tfl.dev/@truffle/ui@~0.2.0/legacy/css-vars.js";
 export {
   getConnectionSourceType,
   GLOBAL_JUMPER_MESSAGES,
@@ -62,13 +62,13 @@ export type {
   PageIdentifier,
 } from "https://tfl.dev/@truffle/utils@0.0.22/embed/mod.ts";
 // components
-export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/icon/icon.tsx";
-export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
+export { default as Icon } from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/icon/icon.tsx";
+export { default as ImageByAspectRatio } from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/image-by-aspect-ratio/image-by-aspect-ratio.tsx";
 // I don't think ripple actually works with web components; might have to fix
-export { default as Ripple } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/ripple/ripple.tsx";
-export { default as Spinner } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/spinner/spinner.tsx";
-export { default as Avatar } from "https://tfl.dev/@truffle/ui@~0.1.0/components/legacy/avatar/avatar.tsx";
-export { default as TextField } from "https://tfl.dev/@truffle/ui@~0.1.0/components/text-field/text-field.tag.ts";
+export { default as Ripple } from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/ripple/ripple.tsx";
+export { default as Spinner } from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/spinner/spinner.tsx";
+export { default as Avatar } from "https://tfl.dev/@truffle/ui@~0.2.0/components/legacy/avatar/avatar.tsx";
+export { default as TextField } from "https://tfl.dev/@truffle/ui@~0.2.0/components/text-field/text-field.tag.ts";
 export { default as FocusTrap } from "https://npm.tfl.dev/focus-trap-react@9.0.2?bundle";
 export { formatCountdown } from "https://tfl.dev/@truffle/utils@~0.0.17/legacy/format/format.ts";
 export { default as globalContext } from "https://tfl.dev/@truffle/global-context@^1.0.0/index.ts";
