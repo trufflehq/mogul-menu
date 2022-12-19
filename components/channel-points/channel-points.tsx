@@ -22,6 +22,7 @@ const CHANNEL_POINTS_STYLES = {
   height: "30px",
   background: "transparent",
   "z-index": "999",
+  "color-scheme": "only light",
 };
 
 export default function ChannelPoints(

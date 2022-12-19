@@ -2,6 +2,7 @@ import { React, semver, useExtensionInfo, useSelector } from "../../../deps.ts";
 import { hasPermission, isGoogleChrome, useOrgUserWithRoles$ } from "../../../shared/mod.ts";
 import MenuItem from "../../base/menu-item/menu-item.tsx";
 import { Page, usePageStack } from "../../page-stack/mod.ts";
+import Version from "../../version/version.tsx";
 import AccountDetailsPage from "../account-details-page/account-details-page.tsx";
 import AdminSettingsPage from "../admin-settings-page/admin-settings-page.tsx";
 import NotificationSettingsPage from "../notification-settings-page/notification-settings-page.tsx";
@@ -53,6 +54,7 @@ export default function SettingsPage() {
           </MenuItem>
         )
         : null}
+      <Version />
     </Page>
   );
 }

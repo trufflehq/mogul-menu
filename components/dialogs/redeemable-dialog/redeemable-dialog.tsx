@@ -49,7 +49,7 @@ export default function RedeemableDialog(props: RedeemableDialog) {
 
   const { ownedCollectibleConnectionData } = useOwnedCollectibleConnection();
 
-  const collectibles = ownedCollectibleConnectionData.ownedCollectibleConnection?.nodes?.map((
+  const collectibles = ownedCollectibleConnectionData?.ownedCollectibleConnection?.nodes?.map((
     ownedCollectible,
   ) => ownedCollectible?.collectible);
 

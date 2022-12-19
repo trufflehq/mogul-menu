@@ -89,6 +89,14 @@ $closed-offest-width: 60px;
 $ease-function: cubic-bezier(.4, .71, .18, .99);
 $clip-path-transition: .5s;
 
+html, body {
+  color-scheme: only light; /* otherwise dark mode inverts images and text too much */
+}
+
+:root {
+  color-scheme: only light;
+}
+
 .c-browser-extension-menu {
   height: 100%;
   width: 100%;
