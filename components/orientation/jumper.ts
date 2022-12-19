@@ -2,6 +2,7 @@ import { jumper } from "../../deps.ts";
 
 import {
   BASE_MENU_STYLES,
+  YOUTUBE_COLLAPSED_LANDSCAPE_MENU_STYLES,
   YOUTUBE_COLLAPSED_PORTRAIT_MENU_STYLES,
   YOUTUBE_EXPANDED_LANDSCAPE_MENU_STYLES,
   YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES,
@@ -38,7 +39,7 @@ function getMenuStyleSteps(orientation: "landscape" | "portrait", isCollapsed: b
           ? YOUTUBE_COLLAPSED_PORTRAIT_MENU_STYLES
           : YOUTUBE_EXPANDED_PORTRAIT_MENU_STYLES
         : isCollapsed
-        ? BASE_MENU_STYLES
+        ? YOUTUBE_COLLAPSED_LANDSCAPE_MENU_STYLES
         : YOUTUBE_EXPANDED_LANDSCAPE_MENU_STYLES,
     },
     { action: "useDocument", value: "null" },
