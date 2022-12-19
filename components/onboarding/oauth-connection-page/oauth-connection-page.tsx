@@ -3,6 +3,7 @@ import {
   getAccessToken$,
   globalContext,
   ImageByAspectRatio,
+  jumper,
   OAuthIframe,
   OAuthResponse,
   onAccessTokenChange,
@@ -10,7 +11,6 @@ import {
   setAccessToken,
   useHandleTruffleOAuth,
   useSelector,
-  useSignal,
   useStyleSheet,
 } from "../../../deps.ts";
 import { isGoogleChrome } from "../../../shared/mod.ts";
@@ -61,6 +61,13 @@ export default function OAuthConnectionPage(
           target={"_blank"}
           href={"https://truffle.vip/policies"}
           rel="noreferrer"
+          onClick={(e) => {
+            e.preventDefault();
+            jumper.call("browser.openWindow", {
+              url: e.target.href,
+              target: "_blank",
+            });
+          }}
         >
           Privacy Policies
         </a>
