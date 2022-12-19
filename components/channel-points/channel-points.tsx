@@ -10,7 +10,7 @@ import {
   useStyleSheet,
 } from "../../deps.ts";
 import ThemeComponent from "../../components/base/theme-component/theme-component.tsx";
-import { useWatchtimeCounter } from "../watchtime/watchtime-counter.ts";
+// import { useWatchtimeCounter } from "../watchtime/use-watchtime-counter.ts";
 import { MOGUL_MENU_JUMPER_MESSAGES, useOrgUserConnectionsQuery } from "../../shared/mod.ts";
 import { useChannelPoints } from "./hooks.ts";
 import ChannelPointsIcon from "../channel-points-icon/channel-points-icon.tsx";
@@ -54,7 +54,7 @@ export default function ChannelPoints(
       } else if (message === MOGUL_MENU_JUMPER_MESSAGES.RESET_TIMER) {
         // claim recorded elsewhere (menu watchtime.tsx), reset the timer
         setIsClaimable(false);
-        resetTimer();
+        // resetTimer();
       }
     });
 
@@ -90,41 +90,41 @@ export default function ChannelPoints(
     setIsClaimable(true);
   };
 
-  const { claim, resetTimer } = useWatchtimeCounter({
-    source: "youtube",
-    onFinishedCountdown,
-    isClaimable,
-    setIsClaimable,
-  });
+  // const { claim, resetTimer } = useWatchtimeCounter({
+  //   source: "youtube",
+  //   onFinishedCountdown,
+  //   isClaimable,
+  //   setIsClaimable,
+  // });
 
-  return (
-    <div className={`c-channel-points ${style}`}>
-      <ThemeComponent />
-      <div className="inner">
-        <div className="coin">
-          <ChannelPointsIcon />
-        </div>
-        {
-          <div className="points" title={fullChannelPoints}>
-            {channelPoints}
-          </div>
-        }
-        <IsLive sourceType="youtubeLive">
-          {isClaimable &&
-            (
-              <div
-                className="claim"
-                style={{
-                  background: highlightButtonBg,
-                }}
-                onClick={onClick}
-              >
-                <ChannelPointsIcon size={16} variant="dark" />
-                {style === "expanded" && <span className="title">Claim</span>}
-              </div>
-            )}
-        </IsLive>
-      </div>
-    </div>
-  );
+  // return (
+  //   <div className={`c-channel-points ${style}`}>
+  //     <ThemeComponent />
+  //     <div className="inner">
+  //       <div className="coin">
+  //         <ChannelPointsIcon />
+  //       </div>
+  //       {
+  //         <div className="points" title={fullChannelPoints}>
+  //           {channelPoints}
+  //         </div>
+  //       }
+  //       <IsLive sourceType="youtubeLive">
+  //         {isClaimable &&
+  //           (
+  //             <div
+  //               className="claim"
+  //               style={{
+  //                 background: highlightButtonBg,
+  //               }}
+  //               onClick={onClick}
+  //             >
+  //               <ChannelPointsIcon size={16} variant="dark" />
+  //               {style === "expanded" && <span className="title">Claim</span>}
+  //             </div>
+  //           )}
+  //       </IsLive>
+  //     </div>
+  //   </div>
+  // );
 }

@@ -3,9 +3,7 @@ import {
   getCookie,
   GLOBAL_JUMPER_MESSAGES,
   jumper,
-  React,
   setCookie,
-  signal,
   useEffect,
   useMutation,
   useObserve,
@@ -17,7 +15,7 @@ import { ECONOMY_ACTION_QUERY, WATCH_TIME_CLAIM_MUTATION } from "./gql.ts";
 import useTimer from "./use-timer.tsx";
 
 const CHANNEL_POINTS_CLAIM_TRIGGER_ID = "41760be0-6f68-11ec-b706-956d4fcf75c0";
-const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";
+// const XP_CLAIM_TRIGGER_ID = "fc93de80-929e-11ec-b349-c56a67a258a0";
 const UPDATE_WATCH_TIME_FREQ_MS = 60 * 1000; // 1 min
 // keep their state if they're gone from stream for < this amount of time
 // this is a fix for if they're just refreshing, or if they're going fullscreen (component gets reloaded)
@@ -26,7 +24,7 @@ const UPDATE_WATCH_TIME_FREQ_MS = 60 * 1000; // 1 min
 const ALLOWED_TIME_AWAY_MS = UPDATE_WATCH_TIME_FREQ_MS + 10 * 1000;
 const LAST_CLAIM_TIME_MS_COOKIE = "extensionLastClaimTimeMs";
 
-const DEFAULT_TIMER_MS = 60 * 5;
+const DEFAULT_TIMER_MS = 5 * 5 * 1000; // 5 min
 
 export default function useWatchtimeClaimCounter({ sourceType }: {
   sourceType: string;
@@ -62,9 +60,9 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
   const timeSinceLastClaimTimeMs = Date.now() - lastClaimTimeMs;
 
   const claimCountdownMs$ = useSignal(baseClaimCountdownMs - timeSinceLastClaimTimeMs);
-  const canClaim$ = useSignal(false);
+  const canClaim$ = useSignal(claimCountdownMs$.get() > 0 ? false : true);
 
-  const { timerMs: claimCountdownMs } = useTimer({ timerMs$: claimCountdownMs$ });
+  useTimer({ timerMs$: claimCountdownMs$ });
 
   useEffect(() => {
     jumper.call("comms.onMessage", (message: string) => {
@@ -77,7 +75,9 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
 
   // every second
   useObserve(() => {
-    claimCountdownMs$.get(); // useObserve is supposed to accept signal as first param, but ts didn't like that
+    if (claimCountdownMs$.get() <= 0 && !canClaim$.peek()) {
+      canClaim$.set(true);
+    }
     // set a cookie for when they started watching
     // we'll give them benefit of the doubt where they can stop watching for up to 70 seconds
     // and if they come back it'll resume their timer
@@ -89,6 +89,7 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
 
   const claim = async () => {
     canClaim$.set(false);
+    resetTimer();
     setCookie(LAST_CLAIM_TIME_MS_COOKIE, Date.now(), {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
@@ -136,5 +137,5 @@ export default function useWatchtimeClaimCounter({ sourceType }: {
     }
   }, []);
 
-  return { resetTimer, claim, claimCountdownMs, canClaim$ };
+  return { resetTimer, claim, claimCountdownMs$, canClaim$ };
 }

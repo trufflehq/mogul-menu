@@ -1,10 +1,9 @@
-import { formatCountdown, gql, React, useSelector, useStyleSheet } from "../../deps.ts";
+import { formatCountdown, React, signal, useSelector, useStyleSheet } from "../../deps.ts";
 import styleSheet from "./watchtime.scss.js";
 import { getCreatorName, useMenu } from "../menu/mod.ts";
 import Button from "../../components/base/button/button.tsx";
-import useWatchtimeClaimCounter from "./watchtime-claim-counter.tsx";
-import useWatchtimePassiveCounter from "./watchtime-passive-counter.tsx";
-import Timer from "./timer.tsx";
+import useWatchtimeClaimCounter from "./use-watchtime-claim-counter.tsx";
+import useWatchtimePassiveCounter from "./use-watchtime-passive-counter.tsx";
 
 // const POINTS_QUERY = gql`
 //   query {
@@ -68,50 +67,29 @@ export default function Watchtime(props: WatchtimeProps) {
             : "Channel Points and XP not currently enabled"}
         </div>
         <div className="grid">
-          <Timer timerMs$={timeWatchedMs$} message={"Time watched"} />
-          <Button isDisabled={!canClaim} className="claim" style="gradient" onClick={onClaim}>
+          <TimerDisplay timerMs$={timeWatchedMs$} title="Time watched" />
+          <Button isDisabled={!canClaim} className="claim" style="gradient" onClick={claim}>
             {canClaim
               ? "Claim Reward"
-              : <Timer
-                timerMs$={claimCountdownMs$}
-                Component={WatchtimeClaimCounterDisplayTimer}
-              />}
+              : <TimerDisplay timerMs$={claimCountdownMs$} title="Claim reward in" />}
           </Button>
-          <WatchtimeClaimCounter Component={WatchtimeClaimCounterDisplay} />
         </div>
       </div>
     </div>
   );
 }
 
-function WatchtimeClaimCounterDisplay({ canClaim$, claimCountdownMs$, onClaim }) {
-  const canClaim = useSelector(() => canClaim$.get());
-  return (
-    <Button isDisabled={!canClaim} className="claim" style="gradient" onClick={onClaim}>
-      {canClaim
-        ? "Claim Reward"
-        : <Timer timerMs$={claimCountdownMs$} Component={WatchtimeClaimCounterDisplayTimer} />}
-    </Button>
-  );
-}
+function TimerDisplay({ timerMs$, title }: { timerMs$: signal<number>; title: string }) {
+  const timerMs = useSelector(() => timerMs$.get());
 
-function WatchtimeClaimCounterDisplayTimer({ timerMs }) {
   return (
-    <>
+    <div className="timer">
       <div className="title">
-        Claim reward in
+        {title}
+      </div>
+      <div className="time">
         {formatCountdown(timerMs / 1000, { shouldAlwaysShowHours: false })}
       </div>
-    </>
-  );
-}
-function WatchtimePassiveCounterDisplayTimer({ timerMs }) {
-  return (
-    <>
-      <div className="title">
-        Time watched
-        {formatCountdown(timerMs / 1000, { shouldAlwaysShowHours: false })}
-      </div>
-    </>
+    </div>
   );
 }

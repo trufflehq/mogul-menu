@@ -1,9 +1,9 @@
 import { signal, useObserve, useSelector } from "../../deps.ts";
 
 // TODO: move to utils package?
-export default function useTimer({ timerMs$ }) {
-  const timerMs = useSelector(() => timerMs$.get());
-
+export default function useTimer(
+  { timerMs$, direction = "down" }: { timerMs$: signal<number>; direction?: "up" | "down" },
+) {
   useObserve(() => {
     const timerMs = timerMs$.get();
     const startTimeMs = Date.now();
@@ -13,18 +13,17 @@ export default function useTimer({ timerMs$ }) {
       const nowMs = Date.now();
       if (curVal > 0) {
         const timeDiffMs = nowMs - startTimeMs;
-        let newVal = curVal - timeDiffMs;
+        let newVal = direction === "up" ? curVal + timeDiffMs : curVal - timeDiffMs;
         if (newVal < 0) {
           newVal = 0;
         }
+
         timerMs$.set(newVal);
       }
-    }, 1000);
+    }, 950); // a little less than 1 second to prevent rendering a 2 second difference since js takes some ms too
 
     return () => {
       clearTimeout(timeout);
     };
   });
-
-  return timerMs;
 }

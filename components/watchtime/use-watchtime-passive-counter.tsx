@@ -8,8 +8,8 @@ import {
   useObserve,
   useSignal,
 } from "../../deps.ts";
-
 import { WATCH_TIME_INCREMENT_MUTATION } from "./gql.ts";
+import useTimer from "./use-timer.tsx";
 
 const UPDATE_WATCH_TIME_FREQ_MS = 60 * 1000; // 1 min
 // keep their state if they're gone from stream for < this amount of time
@@ -32,6 +32,8 @@ export default function useWatchtimePassiveCounter(
   const lastUpdateTime$ = useSignal(0);
   const timeWatchedMs$ = useSignal(Date.now() - initialTimeMs);
 
+  useTimer({ timerMs$: timeWatchedMs$, direction: "up" });
+
   // every second
   useObserve(() => {
     timeWatchedMs$.get(); // useObserve is supposed to accept signal as first param, but ts didn't like that
@@ -42,19 +44,19 @@ export default function useWatchtimePassiveCounter(
     setCookie(INITIAL_TIME_MS_COOKIE, initialTimeMs, {
       ttlMs: ALLOWED_TIME_AWAY_MS,
     });
-  });
-
-  useObserve(() => {
     // update the server every 60s to keep track of watch time progress
-    const msSinceLastUpdate = Date.now() - lastUpdateTime$.get();
+    const now = Date.now();
+    const msSinceLastUpdate = now - lastUpdateTime$.get();
+
     const shouldUpdateWatchtime = msSinceLastUpdate >= UPDATE_WATCH_TIME_FREQ_MS;
     if (shouldUpdateWatchtime) {
+      lastUpdateTime$.set(now);
       refreshCookie(INITIAL_TIME_MS_COOKIE);
       refreshCookie(LAST_CLAIM_TIME_MS_COOKIE);
 
       if (sourceType) {
         executeIncrementWatchtimeMutation({
-          secondsWatched: msSinceLastUpdate / 1000,
+          secondsWatched: Math.round(msSinceLastUpdate / 1000),
           sourceType,
         }, {
           additionalTypenames: [
