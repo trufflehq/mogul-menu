@@ -119,6 +119,10 @@ export default function HomeTab() {
       </div>
       <div className="tile-grid">
         <IsLive sourceType="youtube">
+          {/* FIXME: rm after 12/11/22 */}
+          {typeof window !== "undefined" && window.location.href.includes("new.ludwig.social")
+            ? <a className="mobile-beta" href="https://bit.ly/3WfPtSn" target="_blank"></a>
+            : ""}
           <Watchtime
             hasChannelPoints={hasChannelPoints}
             hasBattlePass={hasBattlePass}
