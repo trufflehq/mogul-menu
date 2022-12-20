@@ -99,7 +99,7 @@ export default scss`
     gap: 16px;
 
 
-    > .mobile-beta {
+    .mobile-beta {
       display: block;
       height: 0;
       padding-bottom: 40%;
