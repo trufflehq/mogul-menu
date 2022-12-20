@@ -97,6 +97,19 @@ export default scss`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+
+
+    > .mobile-beta {
+      display: block;
+      height: 0;
+      padding-bottom: 40%;
+      border-radius: 6px;
+      grid-column-end: span 2;
+      background: url('https://cdn.bio/assets/images/creators/ludwig/desktop_mobile_promo.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100%;
+    }
   }
 
 
@@ -106,18 +119,6 @@ export default scss`
     background: var(--tertiary-base);
     padding: 4px 15px;
     // margin: auto (-$tab-body-padding);
-  }
-
-  > .mobile-beta {
-    display: block;
-    height: 0;
-    padding-bottom: 40%;
-    border-radius: 6px;
-    grid-column-end: span 2;
-    background: url('https://cdn.bio/assets/images/creators/ludwig/desktop_mobile_promo.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
   }
 }
 `;
