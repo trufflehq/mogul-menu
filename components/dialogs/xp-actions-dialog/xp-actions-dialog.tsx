@@ -26,7 +26,7 @@ const SEASON_PASS_QUERY = gql`
 
 export default function XpActionsDialog() {
   const [{ data: seasonPassData }] = useQuery({ query: SEASON_PASS_QUERY });
-  const seasonPass = seasonPassData.seasonPass;
+  const seasonPass = seasonPassData?.seasonPass;
   const seasonPassWatchTimeActions = seasonPass?.economyActionConnection?.nodes?.filter(
     (action) =>
       action?.economyTriggerId === XP_INCREMENT_TRIGGER_ID ||
