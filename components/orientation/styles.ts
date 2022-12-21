@@ -8,7 +8,7 @@ export const BASE_MENU_STYLES = {
   position: "absolute",
   top: "0",
   left: "0",
-  "z-index": "9999",
+  "z-index": "4", // below video settings (clicking on ... top right of yt), but above most other things
   "clip-path": "inset(0 0 0 0)",
 };
 
